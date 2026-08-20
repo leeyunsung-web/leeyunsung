@@ -6,10 +6,16 @@
   "works": [
     {
       "id": "w2",
-      "title": "",
-      "cover": "",
+      "title": "The Annunciation​​​​​​​",
+      "cover": "./images/w2-cover.jpg",
       "description": "",
-      "photos": []
+      "photos": [
+        {
+          "id": "p-1787220387297-es97k",
+          "image": "./images/w2-p-1787220387297-es97k.jpg",
+          "caption": ""
+        }
+      ]
     },
     {
       "id": "w3",
@@ -60,13 +66,13 @@
     "links": []
   },
   "design": {
-    "fontSize": 18,
+    "fontSize": 15,
     "letterSpacing": 0,
     "italic": false,
     "bold": false,
-    "align": "center",
+    "align": "left",
     "pagePadding": 0,
-    "frameGap": 6,
+    "frameGap": 8,
     "frameCols": 2
   }
 }
