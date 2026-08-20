@@ -5,13 +5,6 @@
   },
   "works": [
     {
-      "id": "w1",
-      "title": "",
-      "cover": "./images/w1-cover.jpg",
-      "description": "",
-      "photos": []
-    },
-    {
       "id": "w2",
       "title": "",
       "cover": "",
@@ -65,5 +58,15 @@
   "contact": {
     "email": "",
     "links": []
+  },
+  "design": {
+    "fontSize": 18,
+    "letterSpacing": 0,
+    "italic": false,
+    "bold": false,
+    "align": "center",
+    "pagePadding": 0,
+    "frameGap": 6,
+    "frameCols": 2
   }
 }
