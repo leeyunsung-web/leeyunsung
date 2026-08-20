@@ -23,8 +23,8 @@
       },
       "descStyle": {
         "align": "left",
-        "bold": true,
-        "letterSpacing": -2
+        "bold": false,
+        "letterSpacing": 0
       }
     },
     {
@@ -84,6 +84,8 @@
     "frameGap": 4,
     "frameCols": 2,
     "detailMargin": 32,
+    "captionSize": 15,
+    "frameTitleSize": 14,
     "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
