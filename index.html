@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEE YUNSUNG</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#111111;
+    --ink-soft:#555555;
+    --ink-faint:#999999;
+    --line:#e2e2e2;
+    --line-strong:#cfcfcf;
+    --accent:#111111;
+    --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--bg);color:var(--ink);}
+  body{font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100%;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:var(--sans);cursor:pointer;}
+  img{max-width:100%;display:block;}
+  ::selection{background:#111;color:#fff;}
+
+  .shell{max-width:1120px;margin:0 auto;padding:0 32px;}
+
+  /* ---------- header ---------- */
+  header.site-head{
+    border-bottom:1px solid var(--line);
+    padding:26px 0;
+    position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); z-index:50;
+  }
+  .head-grid{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;}
+  .head-left{display:flex; align-items:center; gap:8px;}
+  .site-name{
+    grid-column:2; justify-self:center;
+    font-size:19px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap;
+  }
+  .site-name-edit{
+    background:none;border:1px solid var(--line-strong); border-radius:4px; width:22px;height:22px;
+    font-size:11px; color:var(--ink-soft); display:none; align-items:center; justify-content:center; margin-left:8px;
+  }
+  .master-on .site-name-edit{display:inline-flex;}
+  nav.site-nav{
+    grid-column:3; justify-self:end;
+    display:flex; gap:26px;
+  }
+  nav.site-nav a{
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+    padding-bottom:3px; border-bottom:1px solid transparent;
+  }
+  nav.site-nav a:hover{color:var(--ink);}
+  nav.site-nav a.active{color:var(--ink); border-bottom-color:var(--ink);}
+
+  @media (max-width:640px){
+    .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
+    .site-name{grid-column:1;}
+    nav.site-nav{grid-column:1; justify-self:center; gap:16px; flex-wrap:wrap; justify-content:center;}
+  }
+
+  /* ---------- page ---------- */
+  main{min-height:60vh; padding:64px 0 120px;}
+  .page-title{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:36px;}
+
+  /* ---------- CV ---------- */
+  .cv-wrap{max-width:640px; position:relative;}
+  .cv-text{font-size:15px; color:var(--ink); white-space:pre-wrap; line-height:1.9;}
+  .edit-fab{
+    display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; border-radius:100px;
+    margin-bottom:24px;
+  }
+  .master-on .edit-fab{display:inline-flex;}
+  .edit-fab:hover{background:#000;}
+
+  /* ---------- WORKS / TEXT grid ---------- */
+  .col-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px 28px;
+  }
+  @media (max-width:640px){ .col-grid{grid-template-columns:1fr;} }
+
+  .frame{
+    position:relative; aspect-ratio:3/2; background:#fafafa; border:1px solid var(--line);
+    overflow:hidden; cursor:pointer;
+  }
+  .frame img{width:100%;height:100%;object-fit:cover;}
+  .frame .placeholder-label{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  }
+  .frame .hover-title{
+    position:absolute; inset:0; background:rgba(255,255,255,.88);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:16px;
+    opacity:0; transition:opacity .25s ease;
+  }
+  .frame:hover .hover-title{opacity:1;}
+  .frame.empty .hover-title{display:none;}
+  .hover-title span{font-size:14px; letter-spacing:.04em; font-weight:600;}
+
+  .frame-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px; z-index:5;}
+  .master-on .frame-editctl{display:flex;}
+  .frame-editctl button{
+    width:26px;height:26px;border-radius:5px;border:1px solid var(--line-strong); background:#fff; color:var(--ink);
+    font-size:12px; display:flex; align-items:center; justify-content:center;
+  }
+  .frame-editctl button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
+
+  .frame.add-tile{
+    display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--line-strong); background:#fff;
+  }
+  .frame.add-tile:hover{border-color:var(--ink);}
+  .frame.add-tile span{font-size:26px; color:var(--ink-faint); font-weight:300;}
+
+  .empty-collection{color:var(--ink-faint); font-size:13px; padding:20px 0;}
+
+  /* ---------- detail page ---------- */
+  .detail-back{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); display:inline-block; margin-bottom:28px;}
+  .detail-back:hover{color:var(--ink);}
+  .detail-head{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:8px;}
+  .detail-title{font-size:26px; font-weight:700; letter-spacing:.01em;}
+  .detail-actions{display:none; gap:8px; flex-shrink:0;}
+  .master-on .detail-actions{display:flex;}
+  .detail-actions button{
+    font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:8px 12px; border-radius:5px;
+    border:1px solid var(--line-strong); background:#fff; color:var(--ink);
+  }
+  .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
+  .detail-desc{max-width:680px; color:var(--ink-soft); font-size:14.5px; line-height:1.85; white-space:pre-wrap; margin:20px 0 48px;}
+
+  .photo-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px;
+  }
+  .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line);}
+  .photo-cell img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo-caption{
+    position:absolute; left:0; right:0; bottom:0; padding:10px 12px;
+    background:linear-gradient(to top, rgba(0,0,0,.72), transparent);
+    color:#fff; font-size:12px; letter-spacing:.02em; opacity:0; transition:opacity .2s ease;
+  }
+  .photo-cell:hover .photo-caption{opacity:1;}
+  .photo-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px;}
+  .master-on .photo-editctl{display:flex;}
+  .photo-editctl button{
+    width:24px;height:24px;border-radius:5px;border:none; background:rgba(255,255,255,.92); color:#111; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo-editctl button:hover{background:var(--ink); color:#fff;}
+  .photo-cell.add-tile{
+    aspect-ratio:3/2; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--line-strong);
+  }
+  .photo-cell.add-tile span{font-size:24px; color:var(--ink-faint); font-weight:300;}
+
+  /* ---------- contact ---------- */
+  .contact-wrap{max-width:480px;}
+  .contact-email{font-size:20px; font-weight:600; margin-bottom:22px; display:block;}
+  .contact-email:hover{text-decoration:underline;}
+  .contact-links{display:flex; flex-direction:column; gap:10px;}
+  .contact-link-row{display:flex; align-items:center; gap:10px; font-size:14px;}
+  .contact-link-row a{border-bottom:1px solid var(--line-strong);}
+  .contact-link-row a:hover{border-color:var(--ink);}
+  .contact-empty{color:var(--ink-faint); font-size:13px;}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line); padding:22px 0; font-size:11px; color:var(--ink-faint); letter-spacing:.03em;}
+  footer .shell{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+
+  /* ---------- modals ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:200; padding:24px;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff; border:1px solid var(--line-strong); border-radius:8px; width:100%; max-width:460px; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.2);}
+  .modal.wide{max-width:640px;}
+  .modal-head{padding:20px 22px 0; display:flex; align-items:center; justify-content:space-between;}
+  .modal-head h2{font-size:15px; letter-spacing:.06em; text-transform:uppercase; font-weight:700;}
+  .modal-close{background:none;border:none;color:var(--ink-faint);font-size:20px;line-height:1;padding:4px;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:18px 22px 22px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:7px;}
+  .field input[type=text], .field input[type=password], .field input[type=email], .field textarea{
+    width:100%; background:#fff; border:1px solid var(--line-strong); border-radius:5px;
+    color:var(--ink); padding:10px 11px; font-family:var(--sans); font-size:14px; outline:none;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--ink);}
+  .field textarea{resize:vertical; min-height:70px;}
+  .field textarea.tall{min-height:280px; font-size:14px; line-height:1.8;}
+  .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
+
+  .imgdrop{border:1.5px dashed var(--line-strong); border-radius:6px; padding:18px; text-align:center; cursor:pointer; color:var(--ink-faint); font-size:12.5px; position:relative; overflow:hidden;}
+  .imgdrop.hasimg{padding:0; border-style:solid;}
+  .imgdrop img{width:100%; max-height:220px; object-fit:cover; display:block;}
+  .imgdrop:hover{border-color:var(--ink);}
+
+  .btnrow{display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;}
+  .btn{font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; padding:11px 18px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink); transition:.15s;}
+  .btn:hover{border-color:var(--ink);}
+  .btn.primary{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .btn.primary:hover{background:#000;}
+  .btn.danger{color:#c0392b; border-color:rgba(192,57,43,.35);}
+  .btn.danger:hover{background:rgba(192,57,43,.08);}
+  .btn.ghost{border-color:transparent; color:var(--ink-faint);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  .status-msg{font-size:11px; margin-top:12px; padding:9px 11px; border-radius:5px; display:none;}
+  .status-msg.show{display:block;}
+  .status-msg.ok{background:#eef7ee; color:#2e7d32;}
+  .status-msg.err{background:#fdecea; color:#c0392b;}
+
+  .linkrow{display:flex; gap:8px; margin-bottom:8px;}
+  .linkrow input{flex:1;}
+  .linkrow button{width:34px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:#c0392b;}
+
+  #pwModal .modal{max-width:320px;}
+  #pwInput{text-align:center; letter-spacing:.4em; font-family:var(--mono); font-size:20px;}
+  .shake{animation:shake .4s;}
+  @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+
+  /* ---------- master toolbar ---------- */
+  #masterbar{
+    position:fixed; left:20px; bottom:20px; z-index:150;
+    background:#111; border-radius:8px; padding:8px; display:none; gap:6px; align-items:center;
+    box-shadow:0 12px 32px rgba(0,0,0,.28); flex-wrap:wrap; max-width:calc(100vw - 40px);
+  }
+  #masterbar.show{display:flex;}
+  #masterbar .tag{font-size:10px; letter-spacing:.1em; color:#fff; padding:6px 10px; text-transform:uppercase;}
+  #masterbar button.icon{width:34px;height:34px;border-radius:6px;border:1px solid #333; background:#1c1c1c; color:#fff; font-size:14px; display:flex; align-items:center; justify-content:center;}
+  #masterbar button.icon:hover{background:#333;}
+  #masterbar .sep{width:1px; height:20px; background:#333;}
+
+  .draftnotice{position:fixed; top:86px; right:16px; z-index:120; background:#fff; border:1px solid var(--line-strong); border-radius:8px; padding:12px 14px; font-size:12px; color:var(--ink-soft); max-width:280px; display:none; box-shadow:0 10px 24px rgba(0,0,0,.12);}
+  .draftnotice.show{display:block;}
+  .draftnotice b{color:var(--ink); display:block; margin-bottom:4px; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;}
+  .draftnotice .btnrow{margin-top:10px;}
+  .draftnotice .btn{padding:7px 11px; font-size:10px;}
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="shell head-grid">
+      <div class="head-left"></div>
+      <div class="head-left" style="grid-column:2; justify-self:center; display:flex; align-items:center;">
+        <a href="#works" class="site-name" id="siteNameLink">LEE YUNSUNG</a>
+        <button class="site-name-edit" id="btnEditSiteName" title="이름 수정">✎</button>
+      </div>
+      <nav class="site-nav">
+        <a href="#cv" data-page="cv">CV</a>
+        <a href="#works" data-page="works">WORKS</a>
+        <a href="#text" data-page="text">TEXT</a>
+        <a href="#contact" data-page="contact">CONTACT</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div id="app"></div>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <span>&copy; <span id="yearNow"></span> LEE YUNSUNG</span>
+      <span style="opacity:.6">Ctrl + Alt + Enter</span>
+    </div>
+  </footer>
+
+  <!-- master toolbar -->
+  <div id="masterbar">
+    <span class="tag">Master</span>
+    <button class="icon" id="btnPublish" title="Publish to GitHub">⇪</button>
+    <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
+    <div class="sep"></div>
+    <button class="icon" id="btnExport" title="Export JSON">⬇</button>
+    <button class="icon" id="btnImport" title="Import JSON">⬆</button>
+    <div class="sep"></div>
+    <button class="icon" id="btnExitMaster" title="Exit master mode">✕</button>
+  </div>
+  <input type="file" id="importFile" accept="application/json" style="display:none;">
+
+  <div class="draftnotice" id="draftNotice">
+    <b>Unpublished changes</b>
+    이 브라우저에만 있는 임시 변경사항이 있어요. 게시하면 GitHub에 반영됩니다.
+    <div class="btnrow">
+      <button class="btn primary" id="draftPublishBtn">지금 게시</button>
+      <button class="btn ghost" id="draftDismissBtn">닫기</button>
+    </div>
+  </div>
+
+  <!-- password modal -->
+  <div class="overlay" id="pwModal">
+    <div class="modal">
+      <div class="modal-head"><h2>Master Mode</h2><button class="modal-close" data-close="pwModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><label>Password</label><input type="password" id="pwInput" maxlength="12" inputmode="numeric" autocomplete="off" placeholder="••••"></div>
+        <div class="btnrow"><button class="btn primary" id="pwSubmit" style="flex:1;">확인</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- site name modal -->
+  <div class="overlay" id="siteNameModal">
+    <div class="modal">
+      <div class="modal-head"><h2>Site Name</h2><button class="modal-close" data-close="siteNameModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><label>Name</label><input type="text" id="siteNameInput"></div>
+        <div class="btnrow"><button class="btn primary" id="siteNameSaveBtn" style="flex:1;">저장</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CV edit modal -->
+  <div class="overlay" id="cvModal">
+    <div class="modal wide">
+      <div class="modal-head"><h2>Edit CV</h2><button class="modal-close" data-close="cvModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><textarea id="cvTextarea" class="tall" placeholder="이력을 입력하세요"></textarea></div>
+        <div class="btnrow"><button class="btn primary" id="cvSaveBtn" style="flex:1;">저장</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- series (works/text item) add/edit modal -->
+  <div class="overlay" id="itemModal">
+    <div class="modal wide">
+      <div class="modal-head"><h2 id="itemModalTitle">Add Series</h2><button class="modal-close" data-close="itemModal">✕</button></div>
+      <div class="modal-body">
+        <input type="hidden" id="itemId"><input type="hidden" id="itemCollection">
+        <div class="field">
+          <label>Cover Image</label>
+          <div class="imgdrop" id="itemImgDrop">
+            <span id="itemImgDropText">클릭하거나 이미지를 드래그해서 업로드</span>
+            <img id="itemImgPreview" style="display:none;">
+          </div>
+          <input type="file" id="itemImageFile" accept="image/*" style="display:none;">
+        </div>
+        <div class="field"><label>Title</label><input type="text" id="itemTitle" placeholder="시리즈 제목"></div>
+        <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
+        <div class="btnrow">
+          <button class="btn primary" id="itemSaveBtn" style="flex:1;">저장</button>
+          <button class="btn danger" id="itemDeleteBtn" style="display:none;">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- photo add/edit modal -->
+  <div class="overlay" id="photoModal">
+    <div class="modal">
+      <div class="modal-head"><h2 id="photoModalTitle">Add Photo</h2><button class="modal-close" data-close="photoModal">✕</button></div>
+      <div class="modal-body">
+        <input type="hidden" id="photoId"><input type="hidden" id="photoCollection"><input type="hidden" id="photoItemId">
+        <div class="field">
+          <label>Image</label>
+          <div class="imgdrop" id="photoImgDrop">
+            <span id="photoImgDropText">클릭하거나 이미지를 드래그해서 업로드</span>
+            <img id="photoImgPreview" style="display:none;">
+          </div>
+          <input type="file" id="photoImageFile" accept="image/*" style="display:none;">
+        </div>
+        <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
+        <div class="btnrow">
+          <button class="btn primary" id="photoSaveBtn" style="flex:1;">저장</button>
+          <button class="btn danger" id="photoDeleteBtn" style="display:none;">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- contact edit modal -->
+  <div class="overlay" id="contactModal">
+    <div class="modal">
+      <div class="modal-head"><h2>Edit Contact</h2><button class="modal-close" data-close="contactModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><label>Email</label><input type="email" id="contactEmailInput" placeholder="you@example.com"></div>
+        <div class="field">
+          <label>Links (label / url)</label>
+          <div id="contactLinksList"></div>
+          <button class="btn ghost" id="addLinkRowBtn" style="margin-top:4px;">+ Add Link</button>
+        </div>
+        <div class="btnrow"><button class="btn primary" id="contactSaveBtn" style="flex:1;">저장</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- github settings modal -->
+  <div class="overlay" id="ghModal">
+    <div class="modal">
+      <div class="modal-head"><h2>GitHub Publish Settings</h2><button class="modal-close" data-close="ghModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><label>Owner</label><input type="text" id="ghOwner" placeholder="예: yunseong"></div>
+        <div class="field"><label>Repository</label><input type="text" id="ghRepo" placeholder="예: my-archive"></div>
+        <div class="field"><label>Branch</label><input type="text" id="ghBranch" placeholder="main" value="main"></div>
+        <div class="field"><label>data.json Path</label><input type="text" id="ghDataPath" placeholder="data.json" value="data.json"></div>
+        <div class="field"><label>Image Folder</label><input type="text" id="ghImgPath" placeholder="images" value="images"></div>
+        <div class="field">
+          <label>Personal Access Token</label>
+          <input type="password" id="ghToken" placeholder="repo 쓰기 권한이 있는 fine-grained PAT" autocomplete="off">
+          <div class="field-hint">이 저장소에만 Contents 쓰기 권한을 준 fine-grained PAT 사용을 권장해요. 토큰은 이 브라우저의 localStorage에만 저장됩니다.</div>
+        </div>
+        <div class="btnrow"><button class="btn primary" id="ghSaveBtn" style="flex:1;">저장</button></div>
+        <div class="status-msg" id="ghStatus"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  const MASTER_PASSWORD = "0702";
+  const LS_DATA = "leeArchiveDraft_v2";
+  const LS_GH = "leeArchiveGhConfig_v2";
+  const LS_MASTER_TS = "leeArchiveDraftTs_v2";
+
+  const DEFAULT_DATA = {
+    siteTitle:"LEE YUNSUNG",
+    cv:{text:""},
+    works:[],
+    text:[],
+    contact:{email:"",links:[]}
+  };
+
+  let state = { data:null, master:false, publishedRaw:null };
+  let ghConfig = null;
+
+  const $ = (id)=>document.getElementById(id);
+  const el = (tag,cls)=>{const e=document.createElement(tag); if(cls)e.className=cls; return e;};
+  const uid = (p)=> p+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,7);
+
+  // ---------------- init ----------------
+  async function init(){
+    $("yearNow").textContent = new Date().getFullYear();
+    ghConfig = loadGhConfig();
+
+    let published = null;
+    try{
+      const res = await fetch("./data.json", {cache:"no-store"});
+      if(res.ok) published = await res.json();
+    }catch(e){}
+
+    state.publishedRaw = published ? JSON.stringify(published) : null;
+    const draft = loadDraft();
+
+    if(draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw){
+      state.data = draft;
+      showDraftNotice(true);
+    } else if(draft && !published){
+      state.data = draft;
+    } else if(published){
+      state.data = published;
+    } else if(draft){
+      state.data = draft;
+    } else {
+      state.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+    normalizeData();
+
+    window.addEventListener("hashchange", renderRoute);
+    bindGlobalEvents();
+    if(!location.hash) location.hash = "#works";
+    renderRoute();
+  }
+
+  function normalizeData(){
+    const d = state.data;
+    if(!d.siteTitle) d.siteTitle = "LEE YUNSUNG";
+    if(!d.cv) d.cv = {text:""};
+    if(!d.works) d.works = [];
+    if(!d.text) d.text = [];
+    if(!d.contact) d.contact = {email:"",links:[]};
+    if(!d.contact.links) d.contact.links = [];
+    d.works.forEach(w=>{ if(!w.photos) w.photos = []; });
+    d.text.forEach(w=>{ if(!w.photos) w.photos = []; });
+  }
+
+  function loadDraft(){ try{ const r=localStorage.getItem(LS_DATA); return r?JSON.parse(r):null; }catch(e){ return null; } }
+  function saveDraft(){ localStorage.setItem(LS_DATA, JSON.stringify(state.data)); localStorage.setItem(LS_MASTER_TS, String(Date.now())); }
+  function loadGhConfig(){ try{ const r=localStorage.getItem(LS_GH); return r?JSON.parse(r):null; }catch(e){ return null; } }
+  function saveGhConfig(cfg){ ghConfig = cfg; localStorage.setItem(LS_GH, JSON.stringify(cfg)); }
+
+  // ---------------- router ----------------
+  function parseHash(){
+    const h = (location.hash||"#works").replace(/^#\/?/,"");
+    const parts = h.split("/").filter(Boolean);
+    return { page: parts[0]||"works", id: parts[1]||null };
+  }
+
+  function renderRoute(){
+    const r = parseHash();
+    document.querySelectorAll(".site-nav a").forEach(a=>{
+      a.classList.toggle("active", a.dataset.page===r.page);
+    });
+    $("siteNameLink").textContent = state.data.siteTitle;
+    document.title = state.data.siteTitle;
+
+    const app = $("app");
+    app.innerHTML = "";
+    if(r.page==="cv") renderCV(app);
+    else if(r.page==="works" && !r.id) renderCollectionGrid(app,"works","WORKS");
+    else if(r.page==="works" && r.id) renderCollectionDetail(app,"works",r.id);
+    else if(r.page==="text" && !r.id) renderCollectionGrid(app,"text","TEXT");
+    else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
+    else if(r.page==="contact") renderContact(app);
+    else renderCollectionGrid(app,"works","WORKS");
+  }
+
+  // ---------------- CV ----------------
+  function renderCV(app){
+    const wrap = el("div","cv-wrap");
+    const editBtn = el("button","edit-fab"); editBtn.textContent = "✎ Edit CV";
+    editBtn.addEventListener("click", openCvModal);
+    const text = el("div","cv-text");
+    text.textContent = state.data.cv.text || "";
+    wrap.appendChild(editBtn); wrap.appendChild(text);
+    app.appendChild(wrap);
+  }
+  function openCvModal(){
+    $("cvTextarea").value = state.data.cv.text || "";
+    openModal("cvModal");
+  }
+  function saveCv(){
+    state.data.cv.text = $("cvTextarea").value;
+    saveDraft();
+    closeModal("cvModal");
+    renderRoute();
+  }
+
+  // ---------------- collection grid (WORKS / TEXT) ----------------
+  function renderCollectionGrid(app, key, label){
+    const title = el("div","page-title"); title.textContent = label;
+    app.appendChild(title);
+
+    const items = state.data[key];
+    const grid = el("div","col-grid");
+
+    items.forEach(item=>{
+      const frame = el("a","frame"+(!item.cover && !item.title ? " empty":""));
+      frame.href = "#"+key+"/"+item.id;
+      if(item.cover){
+        const img = el("img"); img.src = item.cover; img.alt = item.title||"";
+        frame.appendChild(img);
+      } else {
+        const ph = el("div","placeholder-label"); ph.textContent = item.title ? "" : "Empty Slot";
+        frame.appendChild(ph);
+      }
+      if(item.title){
+        const hov = el("div","hover-title");
+        const span = document.createElement("span"); span.textContent = item.title;
+        hov.appendChild(span);
+        frame.appendChild(hov);
+      }
+      const ctl = el("div","frame-editctl");
+      const editBtn = el("button"); editBtn.textContent="✎"; editBtn.title="수정";
+      editBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); openItemModal(key,item.id); });
+      const delBtn = el("button"); delBtn.textContent="✕"; delBtn.title="삭제";
+      delBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); deleteItem(key,item.id); });
+      ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+      frame.appendChild(ctl);
+      grid.appendChild(frame);
+    });
+
+    const addTile = el("div","frame add-tile master-only-tile");
+    addTile.style.display = state.master ? "flex" : "none";
+    const plus = el("span"); plus.textContent = "+";
+    addTile.appendChild(plus);
+    addTile.addEventListener("click", ()=>openItemModal(key,null));
+    grid.appendChild(addTile);
+
+    app.appendChild(grid);
+
+    if(!items.length && !state.master){
+      const empty = el("div","empty-collection"); empty.textContent = "아직 등록된 작품이 없습니다.";
+      app.appendChild(empty);
+    }
+  }
+
+  // ---------------- item (series) modal ----------------
+  let pendingItemImage = null;
+
+  function openItemModal(key,id){
+    $("itemCollection").value = key;
+    $("itemId").value = id || "";
+    pendingItemImage = null;
+
+    if(id){
+      const item = state.data[key].find(x=>x.id===id);
+      $("itemModalTitle").textContent = "Edit Series";
+      $("itemTitle").value = item.title || "";
+      $("itemDesc").value = item.description || "";
+      if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
+      else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
+      $("itemDeleteBtn").style.display = "inline-block";
+    } else {
+      $("itemModalTitle").textContent = "Add Series";
+      $("itemTitle").value = "";
+      $("itemDesc").value = "";
+      clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop");
+      $("itemDeleteBtn").style.display = "none";
+    }
+    openModal("itemModal");
+  }
+
+  function saveItem(){
+    const key = $("itemCollection").value;
+    const id = $("itemId").value || uid(key[0]);
+    const payload = {
+      id,
+      title: $("itemTitle").value.trim(),
+      cover: pendingItemImage || "",
+      description: $("itemDesc").value.trim(),
+      photos: []
+    };
+    const arr = state.data[key];
+    const idx = arr.findIndex(x=>x.id===id);
+    if(idx>=0){ payload.photos = arr[idx].photos || []; arr[idx] = payload; }
+    else arr.push(payload);
+
+    saveDraft();
+    closeModal("itemModal");
+    renderRoute();
+  }
+
+  function deleteItem(key,id){
+    if(!confirm("이 시리즈를 삭제할까요? 포함된 사진도 함께 삭제됩니다.")) return;
+    state.data[key] = state.data[key].filter(x=>x.id!==id);
+    saveDraft();
+    closeModal("itemModal");
+    if(parseHash().id===id) location.hash = "#"+key;
+    else renderRoute();
+  }
+
+  // ---------------- collection detail ----------------
+  function renderCollectionDetail(app, key, id){
+    const item = state.data[key].find(x=>x.id===id);
+    if(!item){
+      const p = el("div","empty-collection"); p.textContent = "항목을 찾을 수 없습니다.";
+      app.appendChild(p);
+      return;
+    }
+    const back = el("a","detail-back"); back.href = "#"+key; back.textContent = "← Back to " + key.toUpperCase();
+    app.appendChild(back);
+
+    const head = el("div","detail-head");
+    const h = el("div","detail-title"); h.textContent = item.title || "(Untitled)";
+    const actions = el("div","detail-actions");
+    const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal(key,item.id));
+    const delBtn = el("button","danger"); delBtn.textContent="Delete Series"; delBtn.addEventListener("click",()=>deleteItem(key,item.id));
+    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    head.appendChild(h); head.appendChild(actions);
+    app.appendChild(head);
+
+    const desc = el("div","detail-desc");
+    desc.textContent = item.description || "";
+    app.appendChild(desc);
+
+    const grid = el("div","photo-grid");
+    item.photos.forEach(photo=>{
+      const cell = el("div","photo-cell");
+      const img = el("img"); img.src = photo.image; img.alt = photo.caption||"";
+      cell.appendChild(img);
+      if(photo.caption){
+        const cap = el("div","photo-caption"); cap.textContent = photo.caption;
+        cell.appendChild(cap);
+      }
+      const ctl = el("div","photo-editctl");
+      const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",()=>openPhotoModal(key,item.id,photo.id));
+      const db = el("button"); db.textContent="✕"; db.addEventListener("click",()=>deletePhoto(key,item.id,photo.id));
+      ctl.appendChild(eb); ctl.appendChild(db);
+      cell.appendChild(ctl);
+      grid.appendChild(cell);
+    });
+
+    const addTile = el("div","photo-cell add-tile");
+    addTile.style.display = state.master ? "flex" : "none";
+    const plus = el("span"); plus.textContent = "+";
+    addTile.appendChild(plus);
+    addTile.addEventListener("click", ()=>openPhotoModal(key,item.id,null));
+    grid.appendChild(addTile);
+
+    app.appendChild(grid);
+
+    if(!item.photos.length && !state.master){
+      const empty = el("div","empty-collection"); empty.textContent = "등록된 사진이 없습니다.";
+      app.appendChild(empty);
+    }
+  }
+
+  // ---------------- photo modal ----------------
+  let pendingPhotoImage = null;
+
+  function openPhotoModal(key,itemId,photoId){
+    $("photoCollection").value = key;
+    $("photoItemId").value = itemId;
+    $("photoId").value = photoId || "";
+    pendingPhotoImage = null;
+
+    if(photoId){
+      const item = state.data[key].find(x=>x.id===itemId);
+      const photo = item.photos.find(p=>p.id===photoId);
+      $("photoModalTitle").textContent = "Edit Photo";
+      $("photoCaption").value = photo.caption || "";
+      showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", photo.image);
+      pendingPhotoImage = photo.image;
+      $("photoDeleteBtn").style.display = "inline-block";
+    } else {
+      $("photoModalTitle").textContent = "Add Photo";
+      $("photoCaption").value = "";
+      clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
+      $("photoDeleteBtn").style.display = "none";
+    }
+    openModal("photoModal");
+  }
+
+  function savePhoto(){
+    const key = $("photoCollection").value;
+    const itemId = $("photoItemId").value;
+    const item = state.data[key].find(x=>x.id===itemId);
+    if(!item) return;
+    if(!pendingPhotoImage){ alert("이미지를 업로드해주세요."); return; }
+
+    const id = $("photoId").value || uid("p");
+    const payload = { id, image: pendingPhotoImage, caption: $("photoCaption").value.trim() };
+    const idx = item.photos.findIndex(p=>p.id===id);
+    if(idx>=0) item.photos[idx] = payload; else item.photos.push(payload);
+
+    saveDraft();
+    closeModal("photoModal");
+    renderRoute();
+  }
+
+  function deletePhoto(key,itemId,photoId){
+    if(!confirm("이 사진을 삭제할까요?")) return;
+    const item = state.data[key].find(x=>x.id===itemId);
+    item.photos = item.photos.filter(p=>p.id!==photoId);
+    saveDraft();
+    closeModal("photoModal");
+    renderRoute();
+  }
+
+  // ---------------- contact ----------------
+  function renderContact(app){
+    const title = el("div","page-title"); title.textContent = "CONTACT";
+    app.appendChild(title);
+
+    const editBtn = el("button","edit-fab"); editBtn.textContent = "✎ Edit Contact";
+    editBtn.addEventListener("click", openContactModal);
+    app.appendChild(editBtn);
+
+    const wrap = el("div","contact-wrap");
+    const c = state.data.contact;
+    if(c.email){
+      const a = el("a","contact-email"); a.href = "mailto:"+c.email; a.textContent = c.email;
+      wrap.appendChild(a);
+    }
+    if(c.links && c.links.length){
+      const list = el("div","contact-links");
+      c.links.forEach(l=>{
+        const row = el("div","contact-link-row");
+        const a = el("a"); a.href = l.url; a.target="_blank"; a.rel="noopener"; a.textContent = l.label || l.url;
+        row.appendChild(a);
+        list.appendChild(row);
+      });
+      wrap.appendChild(list);
+    }
+    if(!c.email && (!c.links || !c.links.length)){
+      const empty = el("div","contact-empty"); empty.textContent = "아직 등록된 연락처가 없습니다.";
+      wrap.appendChild(empty);
+    }
+    app.appendChild(wrap);
+  }
+
+  function openContactModal(){
+    $("contactEmailInput").value = state.data.contact.email || "";
+    const list = $("contactLinksList");
+    list.innerHTML = "";
+    (state.data.contact.links||[]).forEach(l=> addLinkRow(l.label,l.url) );
+    openModal("contactModal");
+  }
+  function addLinkRow(label,url){
+    const row = el("div","linkrow");
+    const l = el("input"); l.type="text"; l.placeholder="Instagram"; l.value = label||""; l.className="link-label";
+    const u = el("input"); u.type="text"; u.placeholder="https://..."; u.value = url||""; u.className="link-url";
+    const del = el("button"); del.textContent="✕"; del.addEventListener("click",()=>row.remove());
+    row.appendChild(l); row.appendChild(u); row.appendChild(del);
+    $("contactLinksList").appendChild(row);
+  }
+  function saveContact(){
+    state.data.contact.email = $("contactEmailInput").value.trim();
+    const rows = $("contactLinksList").querySelectorAll(".linkrow");
+    const links = [];
+    rows.forEach(r=>{
+      const label = r.querySelector(".link-label").value.trim();
+      const url = r.querySelector(".link-url").value.trim();
+      if(url) links.push({label,url});
+    });
+    state.data.contact.links = links;
+    saveDraft();
+    closeModal("contactModal");
+    renderRoute();
+  }
+
+  // ---------------- image helpers ----------------
+  function showImgPreview(imgId,textId,dropId,dataUrl){
+    $(imgId).src = dataUrl; $(imgId).style.display="block";
+    $(textId).style.display="none";
+    $(dropId).classList.add("hasimg");
+  }
+  function clearImgPreview(imgId,textId,dropId){
+    $(imgId).style.display="none";
+    $(textId).style.display="block";
+    $(dropId).classList.remove("hasimg");
+  }
+  function handleFileToDataUrl(file, cb){
+    if(!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = ()=>cb(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  // ---------------- site name ----------------
+  function openSiteNameModal(){
+    $("siteNameInput").value = state.data.siteTitle || "";
+    openModal("siteNameModal");
+  }
+  function saveSiteName(){
+    state.data.siteTitle = $("siteNameInput").value.trim() || "LEE YUNSUNG";
+    saveDraft();
+    closeModal("siteNameModal");
+    renderRoute();
+  }
+
+  // ---------------- master mode ----------------
+  function tryMasterUnlock(pw){
+    if(pw===MASTER_PASSWORD){
+      state.master = true;
+      $("masterbar").classList.add("show");
+      document.body.classList.add("master-on");
+      closeModal("pwModal");
+      renderRoute();
+    } else {
+      const modal = document.querySelector("#pwModal .modal");
+      modal.classList.remove("shake"); void modal.offsetWidth; modal.classList.add("shake");
+      $("pwInput").value = "";
+    }
+  }
+  function exitMaster(){
+    state.master = false;
+    $("masterbar").classList.remove("show");
+    document.body.classList.remove("master-on");
+    renderRoute();
+  }
+
+  // ---------------- modal helpers ----------------
+  function openModal(id){ $(id).classList.add("show"); }
+  function closeModal(id){ $(id).classList.remove("show"); }
+  function setStatus(id,msg,type){ const e=$(id); e.textContent=msg; e.className="status-msg"+(msg?" show":"")+(type?(" "+type):""); }
+  function showDraftNotice(show){ $("draftNotice").classList.toggle("show", !!show); }
+
+  // ---------------- github publish ----------------
+  function ghHeaders(){ return {"Authorization":"token "+ghConfig.token, "Accept":"application/vnd.github+json"}; }
+  function ghApiUrl(path){ return `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`; }
+
+  async function ghGetSha(path){
+    const res = await fetch(ghApiUrl(path)+`?ref=${encodeURIComponent(ghConfig.branch)}`, {headers: ghHeaders()});
+    if(res.status===404) return null;
+    if(!res.ok) throw new Error("조회 실패 ("+res.status+")");
+    const json = await res.json();
+    return json.sha || null;
+  }
+  async function ghPutFile(path, base64Content, message){
+    const sha = await ghGetSha(path);
+    const body = {message, content: base64Content, branch: ghConfig.branch};
+    if(sha) body.sha = sha;
+    const res = await fetch(ghApiUrl(path), {method:"PUT", headers:Object.assign({"Content-Type":"application/json"},ghHeaders()), body:JSON.stringify(body)});
+    if(!res.ok){ const t = await res.text(); throw new Error(`${path} 업로드 실패 (${res.status}): ${t.slice(0,180)}`); }
+    return res.json();
+  }
+  function utf8ToBase64(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function extFromDataUrl(dataUrl){
+    const m = /^data:image\/([a-zA-Z0-9+.-]+);base64,/.exec(dataUrl);
+    if(!m) return "png";
+    let ext = m[1].split("+")[0];
+    if(ext==="jpeg") ext="jpg";
+    return ext;
+  }
+
+  async function publishToGithub(){
+    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token){ openGhModal(); return; }
+    const btn = $("btnPublish");
+    btn.disabled = true; btn.textContent = "…";
+    try{
+      for(const key of ["works","text"]){
+        for(const item of state.data[key]){
+          if(item.cover && item.cover.startsWith("data:")){
+            const ext = extFromDataUrl(item.cover);
+            const base64 = item.cover.split(",")[1];
+            const fname = `${ghConfig.imgPath}/${item.id}-cover.${ext}`;
+            await ghPutFile(fname, base64, `Add cover for "${item.title||item.id}"`);
+            item.cover = "./"+fname;
+          }
+          for(const photo of item.photos){
+            if(photo.image && photo.image.startsWith("data:")){
+              const ext = extFromDataUrl(photo.image);
+              const base64 = photo.image.split(",")[1];
+              const fname = `${ghConfig.imgPath}/${item.id}-${photo.id}.${ext}`;
+              await ghPutFile(fname, base64, `Add photo for "${item.title||item.id}"`);
+              photo.image = "./"+fname;
+            }
+          }
+        }
+      }
+      const jsonStr = JSON.stringify(state.data, null, 2);
+      await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
+      state.publishedRaw = jsonStr;
+      saveDraft();
+      showDraftNotice(false);
+      alert("게시 완료! GitHub Pages 반영까지 1분 정도 걸릴 수 있어요.");
+      renderRoute();
+    }catch(err){
+      alert("게시 중 오류가 발생했어요:\n"+err.message);
+    }finally{
+      btn.disabled = false; btn.textContent = "⇪";
+    }
+  }
+
+  function openGhModal(){
+    const c = ghConfig || {};
+    $("ghOwner").value=c.owner||""; $("ghRepo").value=c.repo||""; $("ghBranch").value=c.branch||"main";
+    $("ghDataPath").value=c.dataPath||"data.json"; $("ghImgPath").value=c.imgPath||"images"; $("ghToken").value=c.token||"";
+    setStatus("ghStatus","","");
+    openModal("ghModal");
+  }
+  function saveGhSettings(){
+    const cfg = {
+      owner:$("ghOwner").value.trim(), repo:$("ghRepo").value.trim(), branch:$("ghBranch").value.trim()||"main",
+      dataPath:$("ghDataPath").value.trim()||"data.json", imgPath:$("ghImgPath").value.trim()||"images", token:$("ghToken").value.trim()
+    };
+    if(!cfg.owner||!cfg.repo||!cfg.token){ setStatus("ghStatus","owner / repo / token은 필수예요.","err"); return; }
+    saveGhConfig(cfg);
+    setStatus("ghStatus","저장했어요. 이제 ⇪ 게시 버튼을 눌러보세요.","ok");
+  }
+
+  // ---------------- export/import ----------------
+  function exportJson(){
+    const blob = new Blob([JSON.stringify(state.data,null,2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href=url; a.download="data.json"; a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importJson(file){
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{ state.data = JSON.parse(reader.result); normalizeData(); saveDraft(); renderRoute(); alert("불러오기 완료"); }
+      catch(e){ alert("JSON 파싱 실패: "+e.message); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------------- global events ----------------
+  function bindGlobalEvents(){
+    document.addEventListener("keydown",(e)=>{
+      if(e.ctrlKey && e.altKey && e.key==="Enter"){
+        e.preventDefault();
+        if(state.master) return;
+        $("pwInput").value = "";
+        openModal("pwModal");
+        setTimeout(()=>$("pwInput").focus(),50);
+      }
+      if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>o.classList.remove("show")); }
+    });
+
+    $("pwSubmit").addEventListener("click", ()=>tryMasterUnlock($("pwInput").value.trim()));
+    $("pwInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") tryMasterUnlock($("pwInput").value.trim()); });
+
+    document.querySelectorAll("[data-close]").forEach(b=> b.addEventListener("click", ()=>closeModal(b.dataset.close)) );
+    document.querySelectorAll(".overlay").forEach(o=> o.addEventListener("click",(e)=>{ if(e.target===o) o.classList.remove("show"); }) );
+
+    $("btnEditSiteName").addEventListener("click", openSiteNameModal);
+    $("siteNameSaveBtn").addEventListener("click", saveSiteName);
+
+    $("cvSaveBtn").addEventListener("click", saveCv);
+
+    $("itemSaveBtn").addEventListener("click", saveItem);
+    $("itemDeleteBtn").addEventListener("click", ()=>deleteItem($("itemCollection").value, $("itemId").value));
+    const itemDrop = $("itemImgDrop");
+    itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
+    $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
+    itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
+    itemDrop.addEventListener("dragleave",()=>{ itemDrop.style.borderColor=""; });
+    itemDrop.addEventListener("drop",(e)=>{ e.preventDefault(); itemDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
+
+    $("photoSaveBtn").addEventListener("click", savePhoto);
+    $("photoDeleteBtn").addEventListener("click", ()=>deletePhoto($("photoCollection").value,$("photoItemId").value,$("photoId").value));
+    const photoDrop = $("photoImgDrop");
+    photoDrop.addEventListener("click", ()=>$("photoImageFile").click());
+    $("photoImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingPhotoImage=d; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+    photoDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); photoDrop.style.borderColor="#111"; });
+    photoDrop.addEventListener("dragleave",()=>{ photoDrop.style.borderColor=""; });
+    photoDrop.addEventListener("drop",(e)=>{ e.preventDefault(); photoDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingPhotoImage=d; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+
+    $("addLinkRowBtn").addEventListener("click", ()=>addLinkRow("",""));
+    $("contactSaveBtn").addEventListener("click", saveContact);
+
+    $("btnPublish").addEventListener("click", publishToGithub);
+    $("btnGhSettings").addEventListener("click", openGhModal);
+    $("ghSaveBtn").addEventListener("click", saveGhSettings);
+    $("btnExport").addEventListener("click", exportJson);
+    $("btnImport").addEventListener("click", ()=>$("importFile").click());
+    $("importFile").addEventListener("change",(e)=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=""; });
+    $("btnExitMaster").addEventListener("click", exitMaster);
+
+    $("draftPublishBtn").addEventListener("click", publishToGithub);
+    $("draftDismissBtn").addEventListener("click", ()=>showDraftNotice(false));
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
