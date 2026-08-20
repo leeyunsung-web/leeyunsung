@@ -43,6 +43,8 @@
     --frame-gap:28px;
     --frame-cols:2;
     --detail-margin:32px;
+    --caption-font-size:12px;
+    --frame-title-size:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:var(--bg);color:var(--ink); overflow-x:hidden;}
@@ -133,7 +135,7 @@
   }
   .frame:hover .hover-title{opacity:1;}
   .frame.empty .hover-title{display:none;}
-  .hover-title span{font-size:14px; letter-spacing:.04em; font-weight:600; text-shadow:0 1px 4px rgba(255,255,255,.85), 0 0 12px rgba(255,255,255,.6);}
+  .hover-title span{font-size:var(--frame-title-size); letter-spacing:.04em; font-weight:600; text-shadow:0 1px 4px rgba(255,255,255,.85), 0 0 12px rgba(255,255,255,.6);}
 
   .frame-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px; z-index:5;}
   .master-on .frame-editctl{display:flex;}
@@ -173,10 +175,10 @@
   .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line); width:100%;}
   .photo-cell img{width:100%; height:auto; object-fit:cover; display:block;}
   .photo-caption{
-    position:absolute; left:0; right:0; bottom:0; padding:10px 12px;
+    position:absolute; left:0; right:0; bottom:0; padding:14px 12px;
     background:linear-gradient(to top, rgba(0,0,0,.36), transparent);
-    color:#fff; font-size:12px; letter-spacing:.02em; opacity:0; transition:opacity .2s ease;
-    text-shadow:0 1px 3px rgba(0,0,0,.6);
+    color:#fff; font-size:var(--caption-font-size); letter-spacing:.02em; opacity:0; transition:opacity .2s ease;
+    text-shadow:0 1px 3px rgba(0,0,0,.6); text-align:center;
   }
   .photo-cell:hover .photo-caption{opacity:1;}
   .photo-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px;}
@@ -527,6 +529,16 @@
             <input type="range" id="dsgDetailMargin" min="0" max="120" step="4" value="32">
             <div class="field-hint">작품 상세페이지에서 세로로 쌓인 사진들의 좌우 · 아래쪽 여백이에요.</div>
           </div>
+          <div class="field">
+            <label>Photo Caption Size <span class="range-val" id="valCaptionSize">12px</span></label>
+            <input type="range" id="dsgCaptionSize" min="10" max="24" step="1" value="12">
+            <div class="field-hint">사진에 마우스를 올렸을 때 하단 중앙에 뜨는 캡션 글자 크기예요.</div>
+          </div>
+          <div class="field">
+            <label>Series Title Size <span class="range-val" id="valFrameTitleSize">14px</span></label>
+            <input type="range" id="dsgFrameTitleSize" min="12" max="28" step="1" value="14">
+            <div class="field-hint">WORKS / TEXT 네모칸에 마우스를 올렸을 때 뜨는 시리즈 제목 글자 크기예요.</div>
+          </div>
         </div>
 
         <div class="btnrow"><button class="btn ghost" id="dsgResetBtn">기본값으로 초기화</button></div>
@@ -546,6 +558,7 @@
   const DEFAULT_DESIGN = {
     fontSize:15, letterSpacing:0, bold:false, align:"left",
     pagePadding:32, frameGap:28, frameCols:2, detailMargin:32,
+    captionSize:12, frameTitleSize:14,
     fontFamily:"helvetica", textWidth:640, uiItalic:false
   };
 
@@ -1056,6 +1069,8 @@
     root.setProperty("--active-font-family", d.fontFamily==="helvetica" ? "var(--sans-helvetica)" : "var(--sans)");
     root.setProperty("--content-max-width", (d.textWidth!=null ? d.textWidth : 640) + "px");
     root.setProperty("--ui-font-style", d.uiItalic ? "italic" : "normal");
+    root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
+    root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
   }
 
   // computeStyle: merges a partial per-element override on top of the global
@@ -1126,6 +1141,12 @@
       const dm = state.data.design.detailMargin!=null ? state.data.design.detailMargin : 32;
       $("dsgDetailMargin").value = dm;
       $("valDetailMargin").textContent = dm + "px";
+      const cs = state.data.design.captionSize!=null ? state.data.design.captionSize : 12;
+      $("dsgCaptionSize").value = cs;
+      $("valCaptionSize").textContent = cs + "px";
+      const fts = state.data.design.frameTitleSize!=null ? state.data.design.frameTitleSize : 14;
+      $("dsgFrameTitleSize").value = fts;
+      $("valFrameTitleSize").textContent = fts + "px";
       setSegActive("segFont", state.data.design.fontFamily || "system");
       setSegActive("segUiStyle", state.data.design.uiItalic ? "italic" : "normal");
       const tw = state.data.design.textWidth!=null ? state.data.design.textWidth : 640;
@@ -1204,6 +1225,26 @@
     });
     detailMarginInput.addEventListener("change", ()=>{
       state.data.design.detailMargin = parseInt(detailMarginInput.value,10);
+      saveDraft();
+    });
+
+    const captionSizeInput = $("dsgCaptionSize");
+    captionSizeInput.addEventListener("input", ()=>{
+      $("valCaptionSize").textContent = captionSizeInput.value + "px";
+      document.documentElement.style.setProperty("--caption-font-size", captionSizeInput.value+"px");
+    });
+    captionSizeInput.addEventListener("change", ()=>{
+      state.data.design.captionSize = parseInt(captionSizeInput.value,10);
+      saveDraft();
+    });
+
+    const frameTitleSizeInput = $("dsgFrameTitleSize");
+    frameTitleSizeInput.addEventListener("input", ()=>{
+      $("valFrameTitleSize").textContent = frameTitleSizeInput.value + "px";
+      document.documentElement.style.setProperty("--frame-title-size", frameTitleSizeInput.value+"px");
+    });
+    frameTitleSizeInput.addEventListener("change", ()=>{
+      state.data.design.frameTitleSize = parseInt(frameTitleSizeInput.value,10);
       saveDraft();
     });
 
