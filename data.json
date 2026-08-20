@@ -4,14 +4,62 @@
     "text": "Ctrl + Alt + Enter → 0702 로 마스터 모드에 들어가서 이 자리에 이력을 입력하세요.\n\n예)\nEducation\n...\n\nExhibitions\n...\n\nAwards\n..."
   },
   "works": [
-    { "id": "w1", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w2", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w3", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w4", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w5", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w6", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w7", "title": "", "cover": "", "description": "", "photos": [] },
-    { "id": "w8", "title": "", "cover": "", "description": "", "photos": [] }
+    {
+      "id": "w1",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w2",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w3",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w4",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w5",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w6",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w7",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    },
+    {
+      "id": "w8",
+      "title": "",
+      "cover": "",
+      "description": "",
+      "photos": []
+    }
   ],
   "text": [],
   "contact": {
