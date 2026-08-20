@@ -22,7 +22,8 @@
         "bold": false
       },
       "descStyle": {
-        "align": "left"
+        "align": "left",
+        "bold": true
       }
     },
     {
@@ -83,6 +84,7 @@
     "frameCols": 2,
     "detailMargin": 32,
     "fontFamily": "system",
-    "textWidth": 640
+    "textWidth": 640,
+    "uiItalic": false
   }
 }
