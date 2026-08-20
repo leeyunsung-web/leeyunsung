@@ -456,6 +456,12 @@
     }
     normalizeData();
 
+    if(loadMasterFlag()){
+      state.master = true;
+      $("masterbar").classList.add("show");
+      document.body.classList.add("master-on");
+    }
+
     window.addEventListener("hashchange", renderRoute);
     bindGlobalEvents();
     if(!location.hash) location.hash = "#works";
@@ -475,7 +481,18 @@
   }
 
   function loadDraft(){ try{ const r=localStorage.getItem(LS_DATA); return r?JSON.parse(r):null; }catch(e){ return null; } }
-  function saveDraft(){ localStorage.setItem(LS_DATA, JSON.stringify(state.data)); localStorage.setItem(LS_MASTER_TS, String(Date.now())); }
+  function saveDraft(){
+    try{
+      localStorage.setItem(LS_DATA, JSON.stringify(state.data));
+      localStorage.setItem(LS_MASTER_TS, String(Date.now()));
+    }catch(e){
+      console.warn("draft save failed", e);
+      alert("브라우저 임시저장 공간이 부족해요. 화면에는 반영되었으니, 지금 바로 ⇪ 게시로 GitHub에 저장하는 걸 추천해요.");
+    }
+  }
+  const LS_MASTER = "leeArchiveMasterOn_v2";
+  function loadMasterFlag(){ try{ return sessionStorage.getItem(LS_MASTER)==="1"; }catch(e){ return false; } }
+  function saveMasterFlag(on){ try{ if(on) sessionStorage.setItem(LS_MASTER,"1"); else sessionStorage.removeItem(LS_MASTER); }catch(e){} }
   function loadGhConfig(){ try{ const r=localStorage.getItem(LS_GH); return r?JSON.parse(r):null; }catch(e){ return null; } }
   function saveGhConfig(cfg){ ghConfig = cfg; localStorage.setItem(LS_GH, JSON.stringify(cfg)); }
 
@@ -813,8 +830,36 @@
   }
   function handleFileToDataUrl(file, cb){
     if(!file || !file.type.startsWith("image/")) return;
+    resizeImageFile(file, 1600, 0.85, cb);
+  }
+
+  // Downscale + compress via canvas so large phone photos don't blow past
+  // localStorage / GitHub file-size limits. Falls back to the original file
+  // if anything about decoding fails.
+  function resizeImageFile(file, maxDim, quality, cb){
     const reader = new FileReader();
-    reader.onload = ()=>cb(reader.result);
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w >= h){ h = Math.round(h * (maxDim / w)); w = maxDim; }
+          else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+        }
+        try{
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          cb(canvas.toDataURL("image/jpeg", quality));
+        }catch(err){
+          cb(e.target.result);
+        }
+      };
+      img.onerror = ()=> cb(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.onerror = ()=>{};
     reader.readAsDataURL(file);
   }
 
@@ -834,6 +879,7 @@
   function tryMasterUnlock(pw){
     if(pw===MASTER_PASSWORD){
       state.master = true;
+      saveMasterFlag(true);
       $("masterbar").classList.add("show");
       document.body.classList.add("master-on");
       closeModal("pwModal");
@@ -846,6 +892,7 @@
   }
   function exitMaster(){
     state.master = false;
+    saveMasterFlag(false);
     $("masterbar").classList.remove("show");
     document.body.classList.remove("master-on");
     renderRoute();
