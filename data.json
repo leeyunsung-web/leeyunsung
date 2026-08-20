@@ -17,9 +17,9 @@
         }
       ],
       "titleStyle": {
-        "fontSize": 14,
+        "fontSize": 18,
         "align": "left",
-        "bold": false
+        "bold": true
       },
       "descStyle": {
         "align": "left",
@@ -50,9 +50,9 @@
     },
     {
       "id": "w6",
-      "title": "",
-      "cover": "",
-      "description": "",
+      "title": "Medusa",
+      "cover": "./images/w6-cover.jpg",
+      "description": "나는 〈Medusa〉 연작을 통해 가장 널리 알려진 도상이면서도, 정작 누구도 그 실체를 직접 목격하지 못한 메두사의 얼굴에 질문을 던진다. 메두사의 얼굴을 보면 돌이 된다는 신화적 설정은 역설적으로 그 누구도 그녀의 얼굴을 정면으로 바라볼 수 없었음을 전제한다. 페르세우스조차 방패에 비친 상(像)을 통해서만 메두사를 마주했듯이, 우리가 알고 있는 메두사의 형상은 실재라기보다 타인의 시선과 공포, 소문이 중첩되어 형성된 이미지에 가깝다. 나는 이 연작에서 메두사가 본래 지녔을지도 모를 아름다움을 상상하며, 사각형 캔버스 안에 방패의 장식을 연상시키는 은색 원을 설정하고 그 안에 그녀의 얼굴을 배치했다. 1980년대 고전 아니메의 서정적인 화풍을 차용해 금발의 머리칼과 장식처럼 배열된 뱀들을 그려내고, 잘린 목에서 흐르는 선명한 붉은 피를 통해 신화의 비극적 순간을 고정한다. 이 이미지는 괴물이라는 명명 이전의 얼굴을 호출하는 동시에, 타인의 실체를 함부로 규정해온 시선의 구조를 드러낸다. 이 작업은 회화에 머무르지 않고, 애니메이션의 형식 논리를 따라 3D 디지털 이미지와 조각으로 확장되었다. 나는 메두사의 얼굴을 하나의 고정된 초상으로 제시하기보다, 애니메이션 캐릭터처럼 다양한 각도와 매체 안에서 반복적으로 생성되는 이미지로 다루고자 했다. 회화에서 디지털 모델로, 다시 물성을 지닌 조각으로 이어지는 과정은 메두사의 형상이 단일한 실체가 아니라, 끊임없이 재구성되고 소비되는 이미지임을 드러낸다. 이러한 매체의 전이는 메두사를 고전 신화 속 인물로 환원하기보다, 오늘날 시각 문화 안에서 작동하는 하나의 형식으로 위치시킨다. 애니메이션의 문법을 통해 생성된 메두사는 더 이상 돌로 만드는 괴물이 아니라, 시선과 해석에 따라 끊임없이 다른 모습으로 변주되는 존재가 된다. 나는 이 연작을 통해 고전적 도상이 동시대의 시각 언어와 결합할 때 어떻게 새로운 의미 층위를 획득하는지, 그리고 이미지가 매체를 가로지르며 어떤 방식으로 다시 살아나는지를 탐색한다.\n\nThrough the Medusa series, I pose a question to one of the most widely recognized yet paradoxically unseen images in Western mythology: the face of Medusa. The myth that anyone who looks directly at her face turns to stone paradoxically presupposes that no one could ever truly confront her gaze. Even Perseus encountered Medusa only through her reflection on a shield. In this sense, the image of Medusa that we know today is less a direct representation than a composite shaped by fear, rumor, and the projections of others. In this series, I imagine the beauty Medusa might once have possessed. Within a square canvas, I introduce a silver circle reminiscent of the ornamental surface of a shield and place her face within it. Drawing from the lyrical visual language of 1980s classical anime, I depict her flowing blond hair and serpents arranged like decorative motifs, while the vivid red blood flowing from her severed neck fixes the tragic moment of the myth. The image simultaneously evokes a face that existed before the name of “monster” was imposed upon it, while revealing the structure of a gaze that has long defined others through fear. The project does not remain confined to painting. Following the formal logic of animation, the image extends into 3D digital renderings and sculpture. Rather than presenting Medusa’s face as a fixed portrait, I approach it like an animated character—an image repeatedly generated across different angles and media. The transition from painting to digital model, and again to sculpture with physical presence, reveals Medusa not as a singular entity but as an image continuously reconstructed and circulated. This shift across media positions Medusa not simply as a figure of classical mythology but as a form operating within contemporary visual culture. Through the grammar of animation, Medusa is no longer merely a monster who turns viewers to stone, but a figure whose appearance continuously transforms according to the gaze and interpretation directed toward her. Through this series, I explore how classical iconography acquires new layers of meaning when combined with contemporary visual language, and how images are revived as they move across different media.",
       "photos": []
     },
     {
