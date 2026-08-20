@@ -31,7 +31,7 @@
       "id": "w3",
       "title": "Torso",
       "cover": "./images/w3-cover.jpg",
-      "description": "",
+      "description": "〈토르소〉시리즈는 팔과 다리가 제거된 고전 조각의 토르소에서 출발해, 이를 애니메이션과 서브컬처의 시각 언어로 재구성한 작업이다. 1990년대 일본 마법소녀 만화 속 변신 장면의 클라이맥스를 참조하며, 작품들은 격렬하게 휘몰아치는 시공간—소용돌이치는 움직임, 파열된 신체, 분출하는 피—을 그려낸다. 이 폭발적인 연속성 속에서 토르소는 붕괴와 생성이 동시에 발생하는 긴장의 장소가 되며, 파괴와 탄생이 공존하는 가능성의 상태로 제시된다. 팔과 다리가 결손된 고전 조각을 이미 하나의 완결된 미적 형식으로 인식하는 태도처럼, 나는 흔히 하위문화로 분류되는 만화와 애니메이션의 시각 언어가 지닌 특이성과 잠재력을 적극적으로 끌어들여 이를 회화적 언어로 전환한다. 이러한 접근은 회화 속 인물을 탐구해온 오래된 질문을 동시대의 관점에서 새롭게 갱신하려는 시도다. 동시에 이 작업은 고전의 형식을 현재로 옮겨오는 데 목적이 있기보다, 내가 체화해온 이미지들이 회화 안에서 충돌하며 끝내 하나의 통합된 의미로 봉합되지 않는 상태를 드러내는 데 가깝다.\nThe Torso series begins with classical torso sculptures—figures stripped of arms and legs—and reconfigures them through the visual language of anime and subculture. Drawing from the climactic transformation scenes of 1990s Japanese magical-girl manga, the works depict violently swirling space and time—whirling motion, ruptured bodies, and erupting blood. Within this explosive continuity, the torso becomes a site of tension where collapse and formation occur simultaneously, presenting a state of possibility in which destruction and birth coexist. Just as fragmented classical sculptures can be perceived as complete aesthetic forms, I actively draw upon the distinctiveness and latent potential of manga and anime—often categorized as subculture—and translate them into a painterly language. This approach seeks to renew a long-standing inquiry into the painted figure from a contemporary perspective. At the same time, the work is less about transporting classical forms into the present than about revealing a condition in which the images I have internalized collide within painting and ultimately resist being sealed into a single, unified meaning.",
       "photos": [],
       "titleStyle": {
         "fontSize": 18
@@ -42,7 +42,10 @@
       "title": "Danae",
       "cover": "./images/w4-cover.jpg",
       "description": "",
-      "photos": []
+      "photos": [],
+      "titleStyle": {
+        "fontSize": 18
+      }
     },
     {
       "id": "w5",
