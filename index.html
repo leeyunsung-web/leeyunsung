@@ -278,11 +278,12 @@
   #masterbar button.icon:hover{background:#333;}
   #masterbar .sep{width:1px; height:20px; background:#333;}
 
-  .draftnotice{position:fixed; top:86px; right:16px; z-index:120; background:#fff; border:1px solid var(--line-strong); border-radius:8px; padding:12px 14px; font-size:12px; color:var(--ink-soft); max-width:280px; display:none; box-shadow:0 10px 24px rgba(0,0,0,.12);}
-  .draftnotice.show{display:block;}
-  .draftnotice b{color:var(--ink); display:block; margin-bottom:4px; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;}
-  .draftnotice .btnrow{margin-top:10px;}
-  .draftnotice .btn{padding:7px 11px; font-size:10px;}
+  #masterbar button.icon{position:relative;}
+  .unpub-dot{
+    position:absolute; top:-3px; right:-3px; width:9px; height:9px; border-radius:50%;
+    background:var(--ink); border:2px solid #fff; display:none;
+  }
+  .unpub-dot.show{display:block;}
 </style>
 </head>
 <body>
@@ -318,7 +319,7 @@
     <span class="tag">Master</span>
     <button class="icon" id="btnDesign" title="Design settings">Aa</button>
     <div class="sep"></div>
-    <button class="icon" id="btnPublish" title="Publish to GitHub">⇪</button>
+    <button class="icon" id="btnPublish" title="Publish to GitHub"><span id="publishGlyph">⇪</span><span class="unpub-dot" id="unpubDot"></span></button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
     <div class="sep"></div>
     <button class="icon" id="btnExport" title="Export JSON">⬇</button>
@@ -327,15 +328,6 @@
     <button class="icon" id="btnExitMaster" title="Exit master mode">✕</button>
   </div>
   <input type="file" id="importFile" accept="application/json" style="display:none;">
-
-  <div class="draftnotice" id="draftNotice">
-    <b>Unpublished changes</b>
-    이 브라우저에만 있는 임시 변경사항이 있어요. 게시하면 GitHub에 반영됩니다.
-    <div class="btnrow">
-      <button class="btn primary" id="draftPublishBtn">지금 게시</button>
-      <button class="btn ghost" id="draftDismissBtn">닫기</button>
-    </div>
-  </div>
 
   <!-- password modal -->
   <div class="overlay" id="pwModal">
@@ -629,10 +621,12 @@
   }
 
   function loadDraft(){ try{ const r=localStorage.getItem(LS_DATA); return r?JSON.parse(r):null; }catch(e){ return null; } }
-  function saveDraft(){
+  function saveDraft(scheduleAuto){
     try{
       localStorage.setItem(LS_DATA, JSON.stringify(state.data));
       localStorage.setItem(LS_MASTER_TS, String(Date.now()));
+      showDraftNotice(true);
+      if(scheduleAuto !== false) scheduleAutoPublish();
     }catch(e){
       console.warn("draft save failed", e);
       alert("브라우저 임시저장 공간이 부족해요. 화면에는 반영되었으니, 지금 바로 ⇪ 게시로 GitHub에 저장하는 걸 추천해요.");
@@ -1310,7 +1304,7 @@
   function openModal(id){ $(id).classList.add("show"); }
   function closeModal(id){ $(id).classList.remove("show"); }
   function setStatus(id,msg,type){ const e=$(id); e.textContent=msg; e.className="status-msg"+(msg?" show":"")+(type?(" "+type):""); }
-  function showDraftNotice(show){ $("draftNotice").classList.toggle("show", !!show); }
+  function showDraftNotice(show){ $("unpubDot").classList.toggle("show", !!show); }
 
   // ---------------- github publish ----------------
   function ghHeaders(){ return {"Authorization":"token "+ghConfig.token, "Accept":"application/vnd.github+json"}; }
@@ -1340,10 +1334,25 @@
     return ext;
   }
 
-  async function publishToGithub(){
-    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token){ openGhModal(); return; }
-    const btn = $("btnPublish");
-    btn.disabled = true; btn.textContent = "…";
+  let autoPublishTimer = null;
+  let isPublishing = false;
+
+  function scheduleAutoPublish(){
+    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token) return;
+    clearTimeout(autoPublishTimer);
+    autoPublishTimer = setTimeout(()=>{ publishToGithub(true); }, 2500);
+  }
+
+  async function publishToGithub(silent){
+    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token){
+      if(!silent) openGhModal();
+      return;
+    }
+    if(isPublishing){ scheduleAutoPublish(); return; }
+    clearTimeout(autoPublishTimer);
+    isPublishing = true;
+    const glyph = $("publishGlyph");
+    glyph.textContent = "…";
     try{
       for(const key of ["works","text"]){
         for(const item of state.data[key]){
@@ -1368,14 +1377,18 @@
       const jsonStr = JSON.stringify(state.data, null, 2);
       await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
       state.publishedRaw = jsonStr;
-      saveDraft();
+      saveDraft(false);
       showDraftNotice(false);
-      alert("게시 완료! GitHub Pages 반영까지 1분 정도 걸릴 수 있어요.");
+      glyph.textContent = "✓";
+      setTimeout(()=>{ glyph.textContent = "⇪"; }, 1200);
+      if(!silent) alert("게시 완료! GitHub Pages 반영까지 1분 정도 걸릴 수 있어요.");
       renderRoute();
     }catch(err){
-      alert("게시 중 오류가 발생했어요:\n"+err.message);
+      glyph.textContent = "⇪";
+      if(!silent) alert("게시 중 오류가 발생했어요:\n"+err.message);
+      else console.warn("auto-publish failed", err);
     }finally{
-      btn.disabled = false; btn.textContent = "⇪";
+      isPublishing = false;
     }
   }
 
@@ -1467,7 +1480,7 @@
     $("addLinkRowBtn").addEventListener("click", ()=>addLinkRow("",""));
     $("contactSaveBtn").addEventListener("click", saveContact);
 
-    $("btnPublish").addEventListener("click", publishToGithub);
+    $("btnPublish").addEventListener("click", ()=>publishToGithub(false));
     $("btnGhSettings").addEventListener("click", openGhModal);
     $("ghSaveBtn").addEventListener("click", saveGhSettings);
     $("btnExport").addEventListener("click", exportJson);
@@ -1475,8 +1488,7 @@
     $("importFile").addEventListener("change",(e)=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=""; });
     $("btnExitMaster").addEventListener("click", exitMaster);
 
-    $("draftPublishBtn").addEventListener("click", publishToGithub);
-    $("draftDismissBtn").addEventListener("click", ()=>showDraftNotice(false));
+
   }
 
   init();
