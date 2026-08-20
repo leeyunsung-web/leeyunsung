@@ -15,6 +15,12 @@
     --accent:#111111;
     --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
     --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --content-font-size:15px;
+    --content-letter-spacing:0em;
+    --content-font-style:normal;
+    --content-text-align:left;
+    --page-padding:32px;
+    --frame-gap:28px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:var(--bg);color:var(--ink);}
@@ -24,7 +30,7 @@
   img{max-width:100%;display:block;}
   ::selection{background:#111;color:#fff;}
 
-  .shell{max-width:1120px;margin:0 auto;padding:0 32px;}
+  .shell{max-width:1120px;margin:0 auto;padding:0 var(--page-padding);}
 
   /* ---------- header ---------- */
   header.site-head{
@@ -33,9 +39,9 @@
     position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); z-index:50;
   }
   .head-grid{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;}
-  .head-left{display:flex; align-items:center; gap:8px;}
+  .head-spacer{grid-column:1;}
+  .head-center{grid-column:2; justify-self:center; display:flex; align-items:center; gap:8px;}
   .site-name{
-    grid-column:2; justify-self:center;
     font-size:19px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap;
   }
   .site-name-edit{
@@ -56,7 +62,8 @@
 
   @media (max-width:640px){
     .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
-    .site-name{grid-column:1;}
+    .head-spacer{display:none;}
+    .head-center{grid-column:1; justify-self:center;}
     nav.site-nav{grid-column:1; justify-self:center; gap:16px; flex-wrap:wrap; justify-content:center;}
   }
 
@@ -66,7 +73,7 @@
 
   /* ---------- CV ---------- */
   .cv-wrap{max-width:640px; position:relative;}
-  .cv-text{font-size:15px; color:var(--ink); white-space:pre-wrap; line-height:1.9;}
+  .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
     font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; border-radius:100px;
@@ -77,7 +84,7 @@
 
   /* ---------- WORKS / TEXT grid ---------- */
   .col-grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:36px 28px;
+    display:grid; grid-template-columns:1fr 1fr; gap:var(--frame-gap);
   }
   @media (max-width:640px){ .col-grid{grid-template-columns:1fr;} }
 
@@ -128,10 +135,10 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{max-width:680px; color:var(--ink-soft); font-size:14.5px; line-height:1.85; white-space:pre-wrap; margin:20px 0 48px;}
+  .detail-desc{max-width:680px; color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px;}
 
   .photo-grid{
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:var(--frame-gap);
   }
   .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line);}
   .photo-cell img{width:100%; height:100%; object-fit:cover; display:block;}
@@ -212,6 +219,17 @@
   .linkrow input{flex:1;}
   .linkrow button{width:34px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:#c0392b;}
 
+  .design-section-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--line);}
+  .design-hint{text-transform:none; letter-spacing:0; font-size:11px;}
+  .range-val{float:right; color:var(--ink-soft); font-size:11px; text-transform:none; letter-spacing:0;}
+  .field input[type=range]{width:100%; accent-color:#111; height:4px;}
+  .segbtns{display:flex; gap:6px; flex-wrap:wrap;}
+  .segbtns button{
+    font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
+  }
+  .segbtns button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .segbtns button:hover{border-color:var(--ink);}
+
   #pwModal .modal{max-width:320px;}
   #pwInput{text-align:center; letter-spacing:.4em; font-family:var(--mono); font-size:20px;}
   .shake{animation:shake .4s;}
@@ -240,8 +258,8 @@
 
   <header class="site-head">
     <div class="shell head-grid">
-      <div class="head-left"></div>
-      <div class="head-left" style="grid-column:2; justify-self:center; display:flex; align-items:center;">
+      <div class="head-spacer"></div>
+      <div class="head-center">
         <a href="#works" class="site-name" id="siteNameLink">LEE YUNSUNG</a>
         <button class="site-name-edit" id="btnEditSiteName" title="이름 수정">✎</button>
       </div>
@@ -261,13 +279,14 @@
   <footer>
     <div class="shell">
       <span>&copy; <span id="yearNow"></span> LEE YUNSUNG</span>
-      <span style="opacity:.6">Ctrl + Alt + Enter</span>
     </div>
   </footer>
 
   <!-- master toolbar -->
   <div id="masterbar">
     <span class="tag">Master</span>
+    <button class="icon" id="btnDesign" title="Design settings">Aa</button>
+    <div class="sep"></div>
     <button class="icon" id="btnPublish" title="Publish to GitHub">⇪</button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
     <div class="sep"></div>
@@ -404,6 +423,53 @@
     </div>
   </div>
 
+  <!-- design settings modal -->
+  <div class="overlay" id="designModal">
+    <div class="modal">
+      <div class="modal-head"><h2>Design</h2><button class="modal-close" data-close="designModal">✕</button></div>
+      <div class="modal-body">
+
+        <div class="design-section-label">Body Text <span class="design-hint">(CV / 작품 설명)</span></div>
+        <div class="field">
+          <label>Font Size <span class="range-val" id="valFontSize">15px</span></label>
+          <input type="range" id="dsgFontSize" min="12" max="22" step="1" value="15">
+        </div>
+        <div class="field">
+          <label>Letter Spacing <span class="range-val" id="valLetterSpacing">0em</span></label>
+          <input type="range" id="dsgLetterSpacing" min="-2" max="20" step="1" value="0">
+        </div>
+        <div class="field">
+          <label>Style</label>
+          <div class="segbtns" id="segItalic">
+            <button type="button" data-val="normal" class="active">Normal</button>
+            <button type="button" data-val="italic">Italic</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Align</label>
+          <div class="segbtns" id="segAlign">
+            <button type="button" data-val="left" class="active">Left</button>
+            <button type="button" data-val="center">Center</button>
+            <button type="button" data-val="right">Right</button>
+            <button type="button" data-val="justify">Justify</button>
+          </div>
+        </div>
+
+        <div class="design-section-label" style="margin-top:22px;">Layout</div>
+        <div class="field">
+          <label>Page Margin <span class="range-val" id="valPagePadding">32px</span></label>
+          <input type="range" id="dsgPagePadding" min="12" max="100" step="2" value="32">
+        </div>
+        <div class="field">
+          <label>Frame Gap <span class="range-val" id="valFrameGap">28px</span></label>
+          <input type="range" id="dsgFrameGap" min="0" max="80" step="2" value="28">
+        </div>
+
+        <div class="btnrow"><button class="btn ghost" id="dsgResetBtn">기본값으로 초기화</button></div>
+      </div>
+    </div>
+  </div>
+
 <script>
 (function(){
   "use strict";
@@ -413,12 +479,18 @@
   const LS_GH = "leeArchiveGhConfig_v2";
   const LS_MASTER_TS = "leeArchiveDraftTs_v2";
 
+  const DEFAULT_DESIGN = {
+    fontSize:15, letterSpacing:0, italic:false, align:"left",
+    pagePadding:32, frameGap:28
+  };
+
   const DEFAULT_DATA = {
     siteTitle:"LEE YUNSUNG",
     cv:{text:""},
     works:[],
     text:[],
-    contact:{email:"",links:[]}
+    contact:{email:"",links:[]},
+    design: Object.assign({}, DEFAULT_DESIGN)
   };
 
   let state = { data:null, master:false, publishedRaw:null };
@@ -455,6 +527,7 @@
       state.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
     normalizeData();
+    applyDesignVars();
 
     if(loadMasterFlag()){
       state.master = true;
@@ -476,6 +549,8 @@
     if(!d.text) d.text = [];
     if(!d.contact) d.contact = {email:"",links:[]};
     if(!d.contact.links) d.contact.links = [];
+    if(!d.design) d.design = Object.assign({}, DEFAULT_DESIGN);
+    else d.design = Object.assign({}, DEFAULT_DESIGN, d.design);
     d.works.forEach(w=>{ if(!w.photos) w.photos = []; });
     d.text.forEach(w=>{ if(!w.photos) w.photos = []; });
   }
@@ -875,6 +950,104 @@
     renderRoute();
   }
 
+  // ---------------- design settings ----------------
+  function applyDesignVars(){
+    const d = state.data.design || DEFAULT_DESIGN;
+    const root = document.documentElement.style;
+    root.setProperty("--content-font-size", d.fontSize + "px");
+    root.setProperty("--content-letter-spacing", (d.letterSpacing/100) + "em");
+    root.setProperty("--content-font-style", d.italic ? "italic" : "normal");
+    root.setProperty("--content-text-align", d.align || "left");
+    root.setProperty("--page-padding", d.pagePadding + "px");
+    root.setProperty("--frame-gap", d.frameGap + "px");
+  }
+
+  function openDesignModal(){
+    const d = state.data.design;
+    $("dsgFontSize").value = d.fontSize;
+    $("valFontSize").textContent = d.fontSize + "px";
+    $("dsgLetterSpacing").value = d.letterSpacing;
+    $("valLetterSpacing").textContent = (d.letterSpacing/100) + "em";
+    $("dsgPagePadding").value = d.pagePadding;
+    $("valPagePadding").textContent = d.pagePadding + "px";
+    $("dsgFrameGap").value = d.frameGap;
+    $("valFrameGap").textContent = d.frameGap + "px";
+    setSegActive("segItalic", d.italic ? "italic" : "normal");
+    setSegActive("segAlign", d.align || "left");
+    openModal("designModal");
+  }
+
+  function setSegActive(groupId, val){
+    $(groupId).querySelectorAll("button").forEach(b=> b.classList.toggle("active", b.dataset.val===val) );
+  }
+
+  function bindDesignEvents(){
+    const fontSizeInput = $("dsgFontSize");
+    fontSizeInput.addEventListener("input", ()=>{
+      $("valFontSize").textContent = fontSizeInput.value + "px";
+      document.documentElement.style.setProperty("--content-font-size", fontSizeInput.value+"px");
+    });
+    fontSizeInput.addEventListener("change", ()=>{
+      state.data.design.fontSize = parseInt(fontSizeInput.value,10);
+      saveDraft();
+    });
+
+    const letterSpacingInput = $("dsgLetterSpacing");
+    letterSpacingInput.addEventListener("input", ()=>{
+      const em = (letterSpacingInput.value/100);
+      $("valLetterSpacing").textContent = em + "em";
+      document.documentElement.style.setProperty("--content-letter-spacing", em+"em");
+    });
+    letterSpacingInput.addEventListener("change", ()=>{
+      state.data.design.letterSpacing = parseInt(letterSpacingInput.value,10);
+      saveDraft();
+    });
+
+    const pagePaddingInput = $("dsgPagePadding");
+    pagePaddingInput.addEventListener("input", ()=>{
+      $("valPagePadding").textContent = pagePaddingInput.value + "px";
+      document.documentElement.style.setProperty("--page-padding", pagePaddingInput.value+"px");
+    });
+    pagePaddingInput.addEventListener("change", ()=>{
+      state.data.design.pagePadding = parseInt(pagePaddingInput.value,10);
+      saveDraft();
+    });
+
+    const frameGapInput = $("dsgFrameGap");
+    frameGapInput.addEventListener("input", ()=>{
+      $("valFrameGap").textContent = frameGapInput.value + "px";
+      document.documentElement.style.setProperty("--frame-gap", frameGapInput.value+"px");
+    });
+    frameGapInput.addEventListener("change", ()=>{
+      state.data.design.frameGap = parseInt(frameGapInput.value,10);
+      saveDraft();
+    });
+
+    $("segItalic").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segItalic", b.dataset.val);
+        state.data.design.italic = (b.dataset.val==="italic");
+        document.documentElement.style.setProperty("--content-font-style", b.dataset.val);
+        saveDraft();
+      });
+    });
+    $("segAlign").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segAlign", b.dataset.val);
+        state.data.design.align = b.dataset.val;
+        document.documentElement.style.setProperty("--content-text-align", b.dataset.val);
+        saveDraft();
+      });
+    });
+
+    $("dsgResetBtn").addEventListener("click", ()=>{
+      state.data.design = Object.assign({}, DEFAULT_DESIGN);
+      applyDesignVars();
+      saveDraft();
+      openDesignModal();
+    });
+  }
+
   // ---------------- master mode ----------------
   function tryMasterUnlock(pw){
     if(pw===MASTER_PASSWORD){
@@ -1024,6 +1197,8 @@
     document.querySelectorAll(".overlay").forEach(o=> o.addEventListener("click",(e)=>{ if(e.target===o) o.classList.remove("show"); }) );
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
+    $("btnDesign").addEventListener("click", openDesignModal);
+    bindDesignEvents();
     $("siteNameSaveBtn").addEventListener("click", saveSiteName);
 
     $("cvSaveBtn").addEventListener("click", saveCv);
