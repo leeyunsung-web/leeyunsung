@@ -81,7 +81,7 @@
     "bold": false,
     "align": "left",
     "pagePadding": 32,
-    "frameGap": 28,
+    "frameGap": 4,
     "frameCols": 2,
     "detailMargin": 32,
     "fontFamily": "system",
