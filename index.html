@@ -830,7 +830,7 @@
   }
   function handleFileToDataUrl(file, cb){
     if(!file || !file.type.startsWith("image/")) return;
-    resizeImageFile(file, 1600, 0.85, cb);
+    resizeImageFile(file, 1920, 0.85, cb);
   }
 
   // Downscale + compress via canvas so large phone photos don't blow past
