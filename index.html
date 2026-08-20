@@ -18,9 +18,11 @@
     --content-font-size:15px;
     --content-letter-spacing:0em;
     --content-font-style:normal;
+    --content-font-weight:400;
     --content-text-align:left;
     --page-padding:32px;
     --frame-gap:28px;
+    --frame-cols:2;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{background:var(--bg);color:var(--ink);}
@@ -48,6 +50,8 @@
     background:none;border:1px solid var(--line-strong); border-radius:4px; width:22px;height:22px;
     font-size:11px; color:var(--ink-soft); display:none; align-items:center; justify-content:center; margin-left:8px;
   }
+  .master-on .style-clickable{cursor:pointer; transition:outline-color .15s;}
+  .master-on .style-clickable:hover{outline:1px dashed var(--line-strong); outline-offset:6px;}
   .master-on .site-name-edit{display:inline-flex;}
   nav.site-nav{
     grid-column:3; justify-self:end;
@@ -73,7 +77,7 @@
 
   /* ---------- CV ---------- */
   .cv-wrap{max-width:640px; position:relative;}
-  .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
+  .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); font-weight:var(--content-font-weight); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
     font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; border-radius:100px;
@@ -84,7 +88,7 @@
 
   /* ---------- WORKS / TEXT grid ---------- */
   .col-grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:var(--frame-gap);
+    display:grid; grid-template-columns:repeat(var(--frame-cols),1fr); gap:var(--frame-gap);
   }
   @media (max-width:640px){ .col-grid{grid-template-columns:1fr;} }
 
@@ -135,7 +139,7 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{max-width:680px; color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px;}
+  .detail-desc{max-width:680px; color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-style:var(--content-font-style); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px;}
 
   .photo-grid{
     display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:var(--frame-gap);
@@ -426,7 +430,7 @@
   <!-- design settings modal -->
   <div class="overlay" id="designModal">
     <div class="modal">
-      <div class="modal-head"><h2>Design</h2><button class="modal-close" data-close="designModal">✕</button></div>
+      <div class="modal-head"><h2 id="designModalTitle">Design</h2><button class="modal-close" data-close="designModal">✕</button></div>
       <div class="modal-body">
 
         <div class="design-section-label">Body Text <span class="design-hint">(CV / 작품 설명)</span></div>
@@ -446,6 +450,13 @@
           </div>
         </div>
         <div class="field">
+          <label>Weight</label>
+          <div class="segbtns" id="segBold">
+            <button type="button" data-val="normal" class="active">Normal</button>
+            <button type="button" data-val="bold">Bold</button>
+          </div>
+        </div>
+        <div class="field">
           <label>Align</label>
           <div class="segbtns" id="segAlign">
             <button type="button" data-val="left" class="active">Left</button>
@@ -455,14 +466,27 @@
           </div>
         </div>
 
-        <div class="design-section-label" style="margin-top:22px;">Layout</div>
-        <div class="field">
-          <label>Page Margin <span class="range-val" id="valPagePadding">32px</span></label>
-          <input type="range" id="dsgPagePadding" min="12" max="100" step="2" value="32">
-        </div>
-        <div class="field">
-          <label>Frame Gap <span class="range-val" id="valFrameGap">28px</span></label>
-          <input type="range" id="dsgFrameGap" min="0" max="80" step="2" value="28">
+        <div id="layoutSection">
+          <div class="design-section-label" style="margin-top:22px;">Layout</div>
+          <div class="field">
+            <label>Frame Columns <span class="range-val" id="valFrameCols">2</span></label>
+            <div class="segbtns" id="segCols">
+              <button type="button" data-val="1">1</button>
+              <button type="button" data-val="2" class="active">2</button>
+              <button type="button" data-val="3">3</button>
+              <button type="button" data-val="4">4</button>
+            </div>
+            <div class="field-hint">WORKS / TEXT 그리드의 한 줄에 놓일 네모칸 개수예요. 1로 하면 프레임이 크게, 화면 전체 너비로 표시돼요.</div>
+          </div>
+          <div class="field">
+            <label>Page Margin <span class="range-val" id="valPagePadding">32px</span></label>
+            <input type="range" id="dsgPagePadding" min="0" max="100" step="2" value="32">
+            <div class="field-hint">0으로 두면 여백 없이 화면 끝까지 꽉 채워져요.</div>
+          </div>
+          <div class="field">
+            <label>Frame Gap <span class="range-val" id="valFrameGap">28px</span></label>
+            <input type="range" id="dsgFrameGap" min="0" max="80" step="2" value="28">
+          </div>
         </div>
 
         <div class="btnrow"><button class="btn ghost" id="dsgResetBtn">기본값으로 초기화</button></div>
@@ -480,8 +504,8 @@
   const LS_MASTER_TS = "leeArchiveDraftTs_v2";
 
   const DEFAULT_DESIGN = {
-    fontSize:15, letterSpacing:0, italic:false, align:"left",
-    pagePadding:32, frameGap:28
+    fontSize:15, letterSpacing:0, italic:false, bold:false, align:"left",
+    pagePadding:32, frameGap:28, frameCols:2
   };
 
   const DEFAULT_DATA = {
@@ -606,6 +630,15 @@
     text.textContent = state.data.cv.text || "";
     wrap.appendChild(editBtn); wrap.appendChild(text);
     app.appendChild(wrap);
+
+    const target = makeCvStyleTarget();
+    target.el = text;
+    applyElStyleOverride(text, target.get());
+    if(state.master){
+      text.classList.add("style-clickable");
+      text.title = "클릭하면 이 텍스트만의 스타일을 조절할 수 있어요";
+      text.addEventListener("click", ()=>openDesignModal(target,"CV 텍스트"));
+    }
   }
   function openCvModal(){
     $("cvTextarea").value = state.data.cv.text || "";
@@ -633,7 +666,7 @@
         const img = el("img"); img.src = item.cover; img.alt = item.title||"";
         frame.appendChild(img);
       } else {
-        const ph = el("div","placeholder-label"); ph.textContent = item.title ? "" : "Empty Slot";
+        const ph = el("div","placeholder-label"); ph.textContent = "";
         frame.appendChild(ph);
       }
       if(item.title){
@@ -742,9 +775,27 @@
     head.appendChild(h); head.appendChild(actions);
     app.appendChild(head);
 
+    const titleTarget = makeItemStyleTarget(key,item.id,"titleStyle");
+    titleTarget.el = h;
+    applyElStyleOverride(h, titleTarget.get());
+    if(state.master){
+      h.classList.add("style-clickable");
+      h.title = "클릭하면 이 제목만의 스타일을 조절할 수 있어요";
+      h.addEventListener("click", ()=>openDesignModal(titleTarget,"작품 제목"));
+    }
+
     const desc = el("div","detail-desc");
     desc.textContent = item.description || "";
     app.appendChild(desc);
+
+    const descTarget = makeItemStyleTarget(key,item.id,"descStyle");
+    descTarget.el = desc;
+    applyElStyleOverride(desc, descTarget.get());
+    if(state.master){
+      desc.classList.add("style-clickable");
+      desc.title = "클릭하면 이 설명만의 스타일을 조절할 수 있어요";
+      desc.addEventListener("click", ()=>openDesignModal(descTarget,"작품 설명"));
+    }
 
     const grid = el("div","photo-grid");
     item.photos.forEach(photo=>{
@@ -957,23 +1008,81 @@
     root.setProperty("--content-font-size", d.fontSize + "px");
     root.setProperty("--content-letter-spacing", (d.letterSpacing/100) + "em");
     root.setProperty("--content-font-style", d.italic ? "italic" : "normal");
+    root.setProperty("--content-font-weight", d.bold ? "700" : "400");
     root.setProperty("--content-text-align", d.align || "left");
     root.setProperty("--page-padding", d.pagePadding + "px");
     root.setProperty("--frame-gap", d.frameGap + "px");
+    root.setProperty("--frame-cols", d.frameCols || 2);
   }
 
-  function openDesignModal(){
-    const d = state.data.design;
-    $("dsgFontSize").value = d.fontSize;
-    $("valFontSize").textContent = d.fontSize + "px";
-    $("dsgLetterSpacing").value = d.letterSpacing;
-    $("valLetterSpacing").textContent = (d.letterSpacing/100) + "em";
-    $("dsgPagePadding").value = d.pagePadding;
-    $("valPagePadding").textContent = d.pagePadding + "px";
-    $("dsgFrameGap").value = d.frameGap;
-    $("valFrameGap").textContent = d.frameGap + "px";
-    setSegActive("segItalic", d.italic ? "italic" : "normal");
-    setSegActive("segAlign", d.align || "left");
+  // computeStyle: merges a partial per-element override on top of the global
+  // design defaults, purely for pre-filling the modal's sliders.
+  function computeStyle(override){
+    const g = state.data.design;
+    const o = override || {};
+    return {
+      fontSize: o.fontSize!=null ? o.fontSize : g.fontSize,
+      letterSpacing: o.letterSpacing!=null ? o.letterSpacing : g.letterSpacing,
+      italic: o.italic!=null ? o.italic : g.italic,
+      bold: o.bold!=null ? o.bold : g.bold,
+      align: o.align || g.align
+    };
+  }
+
+  // Only sets inline styles for properties actually present in the override,
+  // so elements with no override keep inheriting the global CSS variables.
+  function applyElStyleOverride(elm, override){
+    if(!elm) return;
+    elm.style.fontSize = override && override.fontSize!=null ? override.fontSize+"px" : "";
+    elm.style.letterSpacing = override && override.letterSpacing!=null ? (override.letterSpacing/100)+"em" : "";
+    elm.style.fontStyle = override && override.italic!=null ? (override.italic?"italic":"normal") : "";
+    elm.style.fontWeight = override && override.bold!=null ? (override.bold?"700":"400") : "";
+    elm.style.textAlign = override && override.align ? override.align : "";
+  }
+
+  function makeCvStyleTarget(){
+    return {
+      get: ()=> state.data.cv.style,
+      set: (patch)=>{ state.data.cv.style = Object.assign({}, state.data.cv.style||{}, patch); },
+      clear: ()=>{ delete state.data.cv.style; },
+      el: null
+    };
+  }
+  function makeItemStyleTarget(key,itemId,field){
+    return {
+      get: ()=>{ const item = state.data[key].find(x=>x.id===itemId); return item ? item[field] : null; },
+      set: (patch)=>{ const item = state.data[key].find(x=>x.id===itemId); if(item) item[field] = Object.assign({}, item[field]||{}, patch); },
+      clear: ()=>{ const item = state.data[key].find(x=>x.id===itemId); if(item) delete item[field]; },
+      el: null
+    };
+  }
+
+  let activeStyleTarget = null;
+
+  function openDesignModal(target, label){
+    activeStyleTarget = target || null;
+    const isGlobal = !target;
+    $("designModalTitle").textContent = isGlobal ? "Design" : "Style — " + label;
+    $("layoutSection").style.display = isGlobal ? "" : "none";
+    $("dsgResetBtn").textContent = isGlobal ? "기본값으로 초기화" : "전역 스타일 사용 (개별 설정 해제)";
+
+    const styleObj = isGlobal ? state.data.design : computeStyle(target.get());
+    $("dsgFontSize").value = styleObj.fontSize;
+    $("valFontSize").textContent = styleObj.fontSize + "px";
+    $("dsgLetterSpacing").value = styleObj.letterSpacing;
+    $("valLetterSpacing").textContent = (styleObj.letterSpacing/100) + "em";
+    setSegActive("segItalic", styleObj.italic ? "italic" : "normal");
+    setSegActive("segBold", styleObj.bold ? "bold" : "normal");
+    setSegActive("segAlign", styleObj.align || "left");
+
+    if(isGlobal){
+      $("dsgPagePadding").value = state.data.design.pagePadding;
+      $("valPagePadding").textContent = state.data.design.pagePadding + "px";
+      $("dsgFrameGap").value = state.data.design.frameGap;
+      $("valFrameGap").textContent = state.data.design.frameGap + "px";
+      $("valFrameCols").textContent = state.data.design.frameCols || 2;
+      setSegActive("segCols", String(state.data.design.frameCols || 2));
+    }
     openModal("designModal");
   }
 
@@ -981,27 +1090,44 @@
     $(groupId).querySelectorAll("button").forEach(b=> b.classList.toggle("active", b.dataset.val===val) );
   }
 
+  // Applies one field either to the global design (CSS vars) or to the
+  // active per-element target (inline style), live as the user drags.
+  function previewField(prop, cssVarName, value){
+    if(activeStyleTarget && activeStyleTarget.el){
+      if(prop==="fontSize") activeStyleTarget.el.style.fontSize = value+"px";
+      else if(prop==="letterSpacing") activeStyleTarget.el.style.letterSpacing = (value/100)+"em";
+      else if(prop==="italic") activeStyleTarget.el.style.fontStyle = value;
+      else if(prop==="bold") activeStyleTarget.el.style.fontWeight = value;
+      else if(prop==="align") activeStyleTarget.el.style.textAlign = value;
+    } else if(!activeStyleTarget){
+      document.documentElement.style.setProperty(cssVarName, prop==="letterSpacing" ? (value/100)+"em" : (prop==="fontSize" ? value+"px" : value));
+    }
+  }
+  function commitField(prop, value){
+    if(activeStyleTarget){
+      const patch = {}; patch[prop] = value;
+      activeStyleTarget.set(patch);
+    } else {
+      state.data.design[prop] = value;
+    }
+    saveDraft();
+  }
+
   function bindDesignEvents(){
     const fontSizeInput = $("dsgFontSize");
     fontSizeInput.addEventListener("input", ()=>{
       $("valFontSize").textContent = fontSizeInput.value + "px";
-      document.documentElement.style.setProperty("--content-font-size", fontSizeInput.value+"px");
+      previewField("fontSize","--content-font-size", parseInt(fontSizeInput.value,10));
     });
-    fontSizeInput.addEventListener("change", ()=>{
-      state.data.design.fontSize = parseInt(fontSizeInput.value,10);
-      saveDraft();
-    });
+    fontSizeInput.addEventListener("change", ()=> commitField("fontSize", parseInt(fontSizeInput.value,10)) );
 
     const letterSpacingInput = $("dsgLetterSpacing");
     letterSpacingInput.addEventListener("input", ()=>{
-      const em = (letterSpacingInput.value/100);
-      $("valLetterSpacing").textContent = em + "em";
-      document.documentElement.style.setProperty("--content-letter-spacing", em+"em");
+      const raw = parseInt(letterSpacingInput.value,10);
+      $("valLetterSpacing").textContent = (raw/100) + "em";
+      previewField("letterSpacing","--content-letter-spacing", raw);
     });
-    letterSpacingInput.addEventListener("change", ()=>{
-      state.data.design.letterSpacing = parseInt(letterSpacingInput.value,10);
-      saveDraft();
-    });
+    letterSpacingInput.addEventListener("change", ()=> commitField("letterSpacing", parseInt(letterSpacingInput.value,10)) );
 
     const pagePaddingInput = $("dsgPagePadding");
     pagePaddingInput.addEventListener("input", ()=>{
@@ -1026,25 +1152,47 @@
     $("segItalic").querySelectorAll("button").forEach(b=>{
       b.addEventListener("click", ()=>{
         setSegActive("segItalic", b.dataset.val);
-        state.data.design.italic = (b.dataset.val==="italic");
-        document.documentElement.style.setProperty("--content-font-style", b.dataset.val);
-        saveDraft();
+        previewField("italic","--content-font-style", b.dataset.val);
+        commitField("italic", b.dataset.val==="italic");
+      });
+    });
+    $("segBold").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segBold", b.dataset.val);
+        previewField("bold","--content-font-weight", b.dataset.val==="bold" ? "700" : "400");
+        commitField("bold", b.dataset.val==="bold");
       });
     });
     $("segAlign").querySelectorAll("button").forEach(b=>{
       b.addEventListener("click", ()=>{
         setSegActive("segAlign", b.dataset.val);
-        state.data.design.align = b.dataset.val;
-        document.documentElement.style.setProperty("--content-text-align", b.dataset.val);
+        previewField("align","--content-text-align", b.dataset.val);
+        commitField("align", b.dataset.val);
+      });
+    });
+    $("segCols").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segCols", b.dataset.val);
+        $("valFrameCols").textContent = b.dataset.val;
+        state.data.design.frameCols = parseInt(b.dataset.val,10);
+        document.documentElement.style.setProperty("--frame-cols", b.dataset.val);
         saveDraft();
       });
     });
 
     $("dsgResetBtn").addEventListener("click", ()=>{
-      state.data.design = Object.assign({}, DEFAULT_DESIGN);
-      applyDesignVars();
-      saveDraft();
-      openDesignModal();
+      if(activeStyleTarget){
+        activeStyleTarget.clear();
+        applyElStyleOverride(activeStyleTarget.el, null);
+        saveDraft();
+        closeModal("designModal");
+        renderRoute();
+      } else {
+        state.data.design = Object.assign({}, DEFAULT_DESIGN);
+        applyDesignVars();
+        saveDraft();
+        openDesignModal();
+      }
     });
   }
 
@@ -1197,7 +1345,7 @@
     document.querySelectorAll(".overlay").forEach(o=> o.addEventListener("click",(e)=>{ if(e.target===o) o.classList.remove("show"); }) );
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
-    $("btnDesign").addEventListener("click", openDesignModal);
+    $("btnDesign").addEventListener("click", ()=>openDesignModal());
     bindDesignEvents();
     $("siteNameSaveBtn").addEventListener("click", saveSiteName);
 
