@@ -32,7 +32,7 @@
   html,body{background:var(--bg);color:var(--ink); overflow-x:hidden;}
   body{font-family:var(--active-font-family);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100%;}
   a{color:inherit;text-decoration:none;}
-  button{font-family:var(--sans);cursor:pointer;}
+  button{font-family:var(--active-font-family);cursor:pointer;}
   img{max-width:100%;display:block;}
   ::selection{background:#111;color:#fff;}
 
@@ -138,9 +138,9 @@
   /* ---------- detail page ---------- */
   .detail-back{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); display:inline-block; margin-bottom:28px; font-style:var(--ui-font-style);}
   .detail-back:hover{color:var(--ink);}
-  .detail-head{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:8px;}
-  .detail-title{font-size:26px; font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style);}
-  .detail-actions{display:none; gap:8px; flex-shrink:0;}
+  .detail-head{position:relative; margin-bottom:8px; padding:0 0 8px;}
+  .detail-title{font-size:26px; font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style); text-align:center !important;}
+  .detail-actions{display:none; gap:8px; position:absolute; top:0; right:0;}
   .master-on .detail-actions{display:flex;}
   .detail-actions button{
     font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:8px 12px; border-radius:5px;
@@ -203,7 +203,7 @@
   .field label{display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:7px;}
   .field input[type=text], .field input[type=password], .field input[type=email], .field textarea{
     width:100%; background:#fff; border:1px solid var(--line-strong); border-radius:5px;
-    color:var(--ink); padding:10px 11px; font-family:var(--sans); font-size:14px; outline:none;
+    color:var(--ink); padding:10px 11px; font-family:var(--active-font-family); font-size:14px; outline:none;
   }
   .field input:focus, .field textarea:focus{border-color:var(--ink);}
   .field textarea{resize:vertical; min-height:70px;}
@@ -460,7 +460,7 @@
             <button type="button" data-val="bold">Bold</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" id="alignField">
           <label>Align</label>
           <div class="segbtns" id="segAlign">
             <button type="button" data-val="left" class="active">Left</button>
@@ -475,8 +475,8 @@
           <div class="field">
             <label>Font</label>
             <div class="segbtns" id="segFont">
-              <button type="button" data-val="system" class="active">System</button>
-              <button type="button" data-val="helvetica">Helvetica</button>
+              <button type="button" data-val="system">System</button>
+              <button type="button" data-val="helvetica" class="active">Helvetica</button>
             </div>
             <div class="field-hint">System은 기기별 기본 서체(맥/윈도우 자동), Helvetica는 헬베티카 계열로 강제 적용해요.</div>
           </div>
@@ -538,7 +538,7 @@
   const DEFAULT_DESIGN = {
     fontSize:15, letterSpacing:0, bold:false, align:"left",
     pagePadding:32, frameGap:28, frameCols:2, detailMargin:32,
-    fontFamily:"system", textWidth:640, uiItalic:false
+    fontFamily:"helvetica", textWidth:640, uiItalic:false
   };
 
   const DEFAULT_DATA = {
@@ -809,6 +809,7 @@
 
     const titleTarget = makeItemStyleTarget(key,item.id,"titleStyle");
     titleTarget.el = h;
+    titleTarget.hideAlign = true;
     applyElStyleOverride(h, titleTarget.get());
     if(state.master){
       h.classList.add("style-clickable");
@@ -1094,6 +1095,7 @@
     const isGlobal = !target;
     $("designModalTitle").textContent = isGlobal ? "Design" : "Style — " + label;
     $("layoutSection").style.display = isGlobal ? "" : "none";
+    $("alignField").style.display = (target && target.hideAlign) ? "none" : "";
     $("dsgResetBtn").textContent = isGlobal ? "기본값으로 초기화" : "전역 스타일 사용 (개별 설정 해제)";
 
     const styleObj = isGlobal ? state.data.design : computeStyle(target.get());
@@ -1211,6 +1213,7 @@
         document.documentElement.style.setProperty("--active-font-family", b.dataset.val==="helvetica" ? "var(--sans-helvetica)" : "var(--sans)");
         state.data.design.fontFamily = b.dataset.val;
         saveDraft();
+        renderRoute();
       });
     });
 
@@ -1220,6 +1223,7 @@
         document.documentElement.style.setProperty("--ui-font-style", b.dataset.val);
         state.data.design.uiItalic = (b.dataset.val==="italic");
         saveDraft();
+        renderRoute();
       });
     });
 
