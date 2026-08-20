@@ -32,7 +32,10 @@
       "title": "Torso",
       "cover": "./images/w3-cover.jpg",
       "description": "",
-      "photos": []
+      "photos": [],
+      "titleStyle": {
+        "fontSize": 18
+      }
     },
     {
       "id": "w4",
