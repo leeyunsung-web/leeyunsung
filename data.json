@@ -49,7 +49,13 @@
       "title": "Zodiac",
       "cover": "./images/w5-cover.jpg",
       "description": "나는 〈Zodiac〉 연작을 통해, 인류가 흩어진 별빛의 점들을 이어 형상을 만들고 신화를 부여해왔던 행위가 어쩌면 ‘인류 최초의 드로잉’이었을지도 모른다는 가설에서 작업을 시작했다. 점과 선을 통해 보이지 않는 질서를 상상하고, 우주에 의미를 부여하려는 이 원초적인 행위는 오늘날 이미지가 생성되는 방식과도 깊이 연결되어 있다. 이 작업은 1.1m 정방형 유화 캔버스 아홉 점이 결합되어 3.3m의 하나의 구조를 이루는 형식으로 구성된다. 각각의 캔버스는 독립된 화면인 동시에 전체 질서의 일부로 기능하며, 캔버스가 맞닿는 물리적 접합선은 천체도의 방위선처럼 작동한다. 이는 수학적 비례와 구조적 조화를 바탕으로 우주의 체계를 평면 위에 옮기려는 시도이자, 회화를 하나의 이미지가 아닌 체계로 다루기 위한 장치다. 무한한 깊이를 지닌 우주는 역설적으로 하나의 거대한 평면처럼 인식된다. 나는 이 평면성을 현대적 감각으로 받아들이며, 명료한 아니메 스타일의 선을 통해 새로운 도상(icon)을 구축한다. 이는 과거 인류가 점들을 이어 신과 괴물을 상상했던 행위와 맞닿아 있으며, 이야기를 시각화하려는 인간의 근원적 본능에 대한 동시대적 응답이기도 하다. 총천연색의 팔레트로 구성된 12성좌의 이미지는 회화에 머무르지 않고, SD 타입, 3D 이미지, 프로필 회화 등 다양한 형식으로 확장된다. 이러한 변주는 고전적 신화가 고정된 서사가 아니라, 동시대의 시각 문법 안에서 반복적으로 재구성될 수 있는 열린 이미지임을 드러낸다. 〈Zodiac〉은 신화를 재현하기보다, 신화가 생성되는 방식 자체를 오늘의 시각 언어로 다시 묻는 작업이다.\n\nIn the Zodiac series, I begin from a speculative idea: that the act of connecting scattered points of starlight to form figures and assign them mythological meaning might have been humanity’s first drawing. Through points and lines, early humans imagined invisible orders and projected meaning onto the cosmos. This primordial gesture resonates deeply with the ways images are generated today. The work is composed of nine square oil paintings, each measuring 1.1 meters, which combine to form a single structure measuring 3.3 meters. Each canvas functions as an independent image while simultaneously operating as part of a larger visual system. The physical seams where the canvases meet act like the coordinate lines of a celestial chart. Based on mathematical proportion and structural harmony, the composition attempts to translate the order of the universe onto a flat surface, while also proposing a way to approach painting not merely as a single image but as a system. Paradoxically, the universe—despite its infinite depth—is often perceived as a vast plane. I embrace this sense of flatness through a contemporary visual sensibility, constructing new icons through the clear linear language of anime-style drawing. This approach echoes humanity’s ancient act of connecting distant points to imagine gods and monsters, while simultaneously responding to the fundamental human impulse to visualize narrative. Rendered in a vividly chromatic palette, the imagery of the twelve zodiac constellations does not remain confined to painting. Instead, it expands into multiple forms, including SD-type characters, 3D images, and profile paintings. Through these variations, the project suggests that classical mythology is not a fixed narrative but an open image—one that can be continuously reconstructed within the visual grammar of the present. Rather than simply representing myth, Zodiac ultimately asks how myth itself comes into being, reframing its generative logic through the visual language of today.",
-      "photos": [],
+      "photos": [
+        {
+          "id": "p-1787231956160-lug0q",
+          "image": "./images/w5-p-1787231956160-lug0q.jpg",
+          "caption": ""
+        }
+      ],
       "titleStyle": {
         "fontSize": 18
       }
@@ -91,7 +97,7 @@
     "frameCols": 2,
     "detailMargin": 32,
     "captionSize": 15,
-    "frameTitleSize": 15,
+    "frameTitleSize": 20,
     "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
