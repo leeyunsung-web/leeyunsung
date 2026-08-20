@@ -80,11 +80,11 @@
     "letterSpacing": 0,
     "bold": false,
     "align": "left",
-    "pagePadding": 0,
-    "frameGap": 6,
+    "pagePadding": 32,
+    "frameGap": 28,
     "frameCols": 2,
     "detailMargin": 32,
-    "fontFamily": "helvetica",
+    "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
   }
