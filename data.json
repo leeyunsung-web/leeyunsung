@@ -17,26 +17,27 @@
         }
       ],
       "titleStyle": {
-        "fontSize": 13,
-        "align": "center",
+        "fontSize": 14,
+        "align": "left",
         "bold": false
       },
       "descStyle": {
         "align": "left",
-        "bold": true
+        "bold": true,
+        "letterSpacing": -2
       }
     },
     {
       "id": "w3",
-      "title": "",
-      "cover": "",
+      "title": "Torso",
+      "cover": "./images/w3-cover.jpg",
       "description": "",
       "photos": []
     },
     {
       "id": "w4",
-      "title": "",
-      "cover": "",
+      "title": "danae",
+      "cover": "./images/w4-cover.jpg",
       "description": "",
       "photos": []
     },
@@ -83,7 +84,7 @@
     "frameGap": 6,
     "frameCols": 2,
     "detailMargin": 32,
-    "fontFamily": "system",
+    "fontFamily": "helvetica",
     "textWidth": 640,
     "uiItalic": false
   }
