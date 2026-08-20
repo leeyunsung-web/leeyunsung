@@ -20,6 +20,9 @@
         "fontSize": 13,
         "align": "center",
         "bold": false
+      },
+      "descStyle": {
+        "align": "left"
       }
     },
     {
@@ -75,9 +78,11 @@
     "letterSpacing": 0,
     "bold": false,
     "align": "left",
-    "pagePadding": 32,
-    "frameGap": 28,
+    "pagePadding": 0,
+    "frameGap": 6,
     "frameCols": 2,
-    "detailMargin": 32
+    "detailMargin": 32,
+    "fontFamily": "system",
+    "textWidth": 640
   }
 }
