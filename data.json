@@ -8,14 +8,19 @@
       "id": "w2",
       "title": "The Annunciation​​​​​​​",
       "cover": "./images/w2-cover.jpg",
-      "description": "",
+      "description": "이 작품은 고전 회화에서 가장 상징적인 서사 중 하나인 ‘수태고지’를 분절된 다중 패널 구성으로 재해석한 작업으로, 나의 토르소 연작의 연장선상에 위치한다. 전통적인 종교화에서 하나의 장면으로 제시되던 신성의 계시는, 이 작업에서 단일한 사건이 아니라 신체 내부에서 발생하는 과정으로 전환된다. 나는 수태를 외부로부터 전달되는 계시가 아닌, 몸 안에서 생성되고 축적되는 시각적 사건으로 바라본다. 작품은 네 개의 캔버스로 구성되어 있지만, 삼면화처럼 세 개의 화면으로 인식되도록 배치되었다. 중앙의 두 캔버스는 하나의 이미지로 결합되어 있으며, 이는 종교화의 삼면화 구조를 참조하는 동시에 만화책을 펼쳤을 때의 화면 분할을 떠올리며 구성한 것이다. 이 작업은 종교 회화의 형식을 차용하면서도, 만화의 컷이라는 시각 문법을 함께 호출한다. 천사 가브리엘과 성모 마리아, 백합과 같은 전통적 도상은 직접적으로 재현되지 않는다. 대신 인물은 모두 여성으로 전치되며, 신체는 이미 분절된 상태로 제시된다. 화면을 지배하는 것은 인물의 서사적 정체성보다 피, 꽃, 체액, 색채가 뒤섞이며 형성되는 소용돌이의 운동성이다. 이 소용돌이 구도는 망가·아니메에서 극적인 전환을 위해 반복적으로 사용되는 시각 장치이자, 동시에 고전 종교화가 지닌 종교적 열락의 감각과 맞닿아 있다. 특히 백합은 전통적으로 순결을 상징하는 도상이지만, 망가 스타일의 이미지 안에서 등장할 때 서브컬처의 장르 코드로 읽히며 전혀 다른 의미 층위를 획득한다. 나는 동일한 도상과 이미지가 시공간과 문화에 따라 다르게 해석되는 방식, 그리고 그 이질적인 해석들이 하나의 화면 안에서 충돌하고 뒤엉킬 때 발생하는 복합적인 상징의 상태에 관심을 둔다. 이 작업에서 신체는 고전 회화와 신화, 하위문화의 시각 언어가 중첩되는 장소로 기능한다. 신체는 더 이상 이상화된 형상이 아니라, 의미가 주어지기 이전의 상태에서 스스로 의미를 생성하는 장(field)이 된다. 이 신체는 욕망을 단순히 자극하는 대상이 아니라, 삶과 죽음의 경계에서 발생하는 감각—긴장과 평온이 동시에 존재하는 상태—를 향한다.\n\nThis work reinterprets The Annunciation, one of the most iconic narratives in classical painting, through a fragmented multi-panel structure, and is positioned as an extension of my Torso series. Rather than presenting divine revelation as a single, unified moment—as in traditional religious painting—this work shifts annunciation into a process that unfolds within the body itself. I understand conception not as a message delivered from outside, but as a visual event generated and accumulated internally by the body. Although the work consists of four canvases, it is arranged to be perceived as three panels, echoing the structure of a triptych. The two central canvases merge into a single image, referencing the format of religious triptychs while simultaneously evoking the experience of opening a manga spread. In this way, the work adopts the formal language of religious painting while also calling upon the visual grammar of comic panels. Traditional iconography associated with the Annunciation—such as the angel Gabriel, the Virgin Mary, or the lily—is not directly depicted. Instead, all figures are transposed into female bodies, already presented in fragmented states. What dominates the composition is not narrative identity, but the dynamic motion of swirling forms created by blood, flowers, bodily fluids, and color. This vortex-like composition, frequently used in manga and anime to signal moments of dramatic transformation, intersects here with the sense of religious ecstasy found in classical sacred painting. The lily, traditionally a symbol of purity, acquires an entirely different register when rendered within a manga-influenced visual language, where it is read as a genre-specific sign of subcultural imagery. I am interested in how the same icons and images are interpreted differently across time, space, and cultural contexts, and in the complex symbolic states that emerge when these divergent readings collide and intertwine within a single frame. Within this work, the body functions as a site where classical painting, mythology, and subcultural visual languages overlap. The body is no longer an idealized form, but a field in which meaning is generated prior to being assigned. Rather than provoking desire, the body in this work moves toward a state beyond it—a sensation that arises at the threshold between life and death, where tension and calm coexist.",
       "photos": [
         {
           "id": "p-1787220387297-es97k",
           "image": "./images/w2-p-1787220387297-es97k.jpg",
           "caption": ""
         }
-      ]
+      ],
+      "titleStyle": {
+        "fontSize": 13,
+        "align": "center",
+        "bold": false
+      }
     },
     {
       "id": "w3",
@@ -68,11 +73,11 @@
   "design": {
     "fontSize": 15,
     "letterSpacing": 0,
-    "italic": false,
     "bold": false,
     "align": "left",
-    "pagePadding": 0,
-    "frameGap": 8,
-    "frameCols": 2
+    "pagePadding": 32,
+    "frameGap": 28,
+    "frameCols": 2,
+    "detailMargin": 32
   }
 }
