@@ -149,6 +149,22 @@
               "id": "p-1787464242838-rtg3t",
               "image": "./images/w3-p-1787464242838-rtg3t.jpg",
               "caption": "Torso 01, 2012, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787464255794-6t81e",
+              "image": "./images/w3-p-1787464255794-6t81e.jpg",
+              "caption": "Torso 02, 2012, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464576033-74fl2",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787464576033-gohda",
+              "image": "./images/w3-p-1787464576033-gohda.jpg",
+              "caption": "Torso 03, 2013, Oil on canvas, 162 × 130 cm"
             }
           ]
         }
@@ -387,7 +403,7 @@
     "detailMargin": 32,
     "captionSize": 15,
     "frameTitleSize": 20,
-    "photoGap": 16,
+    "photoGap": 4,
     "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
