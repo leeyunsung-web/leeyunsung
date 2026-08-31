@@ -903,7 +903,7 @@
     <div class="brand">
       <div>
         <h1>NU-LAYER</h1>
-        <p>Drawing becomes specimen, specimens compose multiple layers <span id="buildTag" title="Build tag — tells you which file you are looking at">b27</span></p>
+        <p>Drawing becomes specimen, specimens compose multiple layers <span id="buildTag" title="Build tag — tells you which file you are looking at">b28</span></p>
       </div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -11305,7 +11305,9 @@ showLayerMenu(ev.clientX, ev.clientY, [
           + `and that the branch name is right.</p>`;
         return;
       }
-      items.sort((a,b)=> b.path.localeCompare(a.path));   // 최신순 (경로에 날짜가 들어 있다)
+      // 파일명에 ISO 시각이 들어 있다. 이름으로 정렬해야 폴더를 넘나들어도
+      // 최신순이 된다 -- 경로로 정렬하면 옛 평면 파일이 날짜 폴더보다 앞에 온다.
+      items.sort((a,b)=> b.name.localeCompare(a.name) || b.path.localeCompare(a.path));
       if(!items.length){
         grid.innerHTML = `<p class="empty-hint">No compositions found under <b>compositions/</b> in `
           + `${escMgr(owner + '/' + repo + '@' + br)} (via ${how}).<br>`
