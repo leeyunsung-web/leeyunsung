@@ -903,7 +903,7 @@
     <div class="brand">
       <div>
         <h1>NU-LAYER</h1>
-        <p>Drawing becomes specimen, specimens compose multiple layers <span id="buildTag" title="Build tag — tells you which file you are looking at">b28</span></p>
+        <p>Drawing becomes specimen, specimens compose multiple layers <span id="buildTag" title="Build tag — tells you which file you are looking at">b29</span></p>
       </div>
     </div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -918,7 +918,7 @@
         <button class="link-btn accent" id="connectGhBtn">CONFIG</button>
       </div>
       <a class="archive-link" href="archive.html" target="_blank">ARCHIVE →</a>
-      <a class="archive-link" href="gallery.html" target="_blank">GALLERY →</a>
+      <a class="archive-link" id="galleryLink" href="gallery.html" target="_blank">GALLERY →</a>
       <button class="link-btn accent" id="openMgrBtn" style="display:none; font-family:var(--font-mono); font-size:11px; padding:8px 12px; border-radius:8px; border:1px solid var(--ink); background:var(--ink); color:#fff; cursor:pointer; font-weight:600;">ARCHIVE MANAGER</button>
       <div class="role-chip" id="roleChip">
         <span class="role-badge" id="roleBadge">GUEST</span>
@@ -12974,6 +12974,19 @@ showLayerMenu(ev.clientX, ev.clientY, [
     prefsLoaded = true;
     toast('Tool and composition settings reset to defaults.');
   });
+
+  // 누를 때마다 주소를 새로 만든다. 저장이 있었으면 그 표식까지 붙어,
+  // 방금 올린 작품이 빠진 목록을 보게 되는 일도 없다.
+  {
+    const gl = $('galleryLink');
+    if(gl) gl.addEventListener('click', () => {
+      let v = '';
+      try { v = localStorage.getItem('nulayer_archive_ver') || ''; } catch(e){}
+      const b = $('buildTag') ? $('buildTag').textContent.trim() : '';
+      gl.href = 'gallery.html?b=' + encodeURIComponent(b)
+              + (v ? '&t=' + encodeURIComponent(v) : '');
+    });
+  }
 
   loadPrefs();
 
