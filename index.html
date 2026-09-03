@@ -915,6 +915,52 @@
   }
 
   // ---------------- collection detail ----------------
+  // ---------------- justified photo rows ----------------
+  // Rows with 2+ photos: read each image's real aspect ratio, then scale the
+  // whole row (height + widths together) so it fills the row edge-to-edge,
+  // the same technique Adobe Portfolio / Flickr use for balanced galleries.
+  let justifyTimer = null;
+  function scheduleJustifyLayout(){
+    clearTimeout(justifyTimer);
+    justifyTimer = setTimeout(layoutJustifiedRows, 30);
+  }
+
+  function layoutJustifiedRows(){
+    document.querySelectorAll(".photo-grid.multi").forEach(grid=>{
+      const cells = Array.from(grid.querySelectorAll(".photo-cell:not(.add-tile)"));
+      if(!cells.length) return;
+      const ratios = [];
+      for(const cell of cells){
+        const img = cell.querySelector("img");
+        if(!img || !img.naturalWidth || !img.naturalHeight) return; // wait for load event to retry
+        ratios.push(img.naturalWidth / img.naturalHeight);
+      }
+
+      const gapPx = parseFloat(getComputedStyle(grid).columnGap || getComputedStyle(grid).gap) || 0;
+      const addTile = grid.querySelector(".photo-cell.add-tile");
+      const baseHeight = 380;
+      const rawWidths = ratios.map(r => r * baseHeight);
+      const addTileBaseWidth = addTile ? baseHeight * 0.75 : 0;
+      const slots = cells.length + (addTile ? 1 : 0);
+      const totalGaps = gapPx * Math.max(0, slots - 1);
+      const totalRaw = rawWidths.reduce((a,b)=>a+b, 0) + addTileBaseWidth;
+      const availableWidth = grid.clientWidth;
+      if(!availableWidth || !totalRaw) return;
+
+      const scale = (availableWidth - totalGaps) / totalRaw;
+      const finalHeight = Math.min(560, Math.max(140, baseHeight * scale));
+
+      cells.forEach((cell,i)=>{
+        cell.style.height = finalHeight + "px";
+        cell.style.width = (ratios[i] * finalHeight) + "px";
+      });
+      if(addTile){
+        addTile.style.height = finalHeight + "px";
+        addTile.style.width = (finalHeight * 0.75) + "px";
+      }
+    });
+  }
+
   function renderCollectionDetail(app, key, id){
     const item = state.data[key].find(x=>x.id===id);
     if(!item){
@@ -967,7 +1013,9 @@
       row.photos.forEach(photo=>{
         const myIdx = flatIdx++;
         const cell = el("div","photo-cell");
-        const img = el("img"); img.src = photo.image; img.alt = photo.caption||"";
+        const img = el("img"); img.alt = photo.caption||"";
+        img.addEventListener("load", scheduleJustifyLayout);
+        img.src = photo.image;
         cell.appendChild(img);
         if(photo.caption){
           const cap = el("div","photo-caption"); cap.textContent = photo.caption;
@@ -1007,6 +1055,7 @@
     }
 
     app.appendChild(rowsWrap);
+    scheduleJustifyLayout();
 
     if(!flatIdx && !state.master){
       const empty = el("div","empty-collection"); empty.textContent = "등록된 사진이 없습니다.";
@@ -1433,6 +1482,7 @@
     detailMarginInput.addEventListener("input", ()=>{
       $("valDetailMargin").textContent = detailMarginInput.value + "px";
       document.documentElement.style.setProperty("--detail-margin", detailMarginInput.value+"px");
+      scheduleJustifyLayout();
     });
     detailMarginInput.addEventListener("change", ()=>{
       state.data.design.detailMargin = parseInt(detailMarginInput.value,10);
@@ -1443,6 +1493,7 @@
     photoGapInput.addEventListener("input", ()=>{
       $("valPhotoGap").textContent = photoGapInput.value + "px";
       document.documentElement.style.setProperty("--photo-gap", photoGapInput.value+"px");
+      scheduleJustifyLayout();
     });
     photoGapInput.addEventListener("change", ()=>{
       state.data.design.photoGap = parseInt(photoGapInput.value,10);
@@ -1691,6 +1742,8 @@
 
   // ---------------- global events ----------------
   function bindGlobalEvents(){
+    window.addEventListener("resize", scheduleJustifyLayout);
+
     document.addEventListener("keydown",(e)=>{
       if(e.ctrlKey && e.altKey && e.key==="Enter"){
         e.preventDefault();
