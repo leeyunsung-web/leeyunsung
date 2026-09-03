@@ -960,7 +960,8 @@
       if(!availableWidth || !totalRaw) return;
 
       const scale = (availableWidth - totalGaps) / totalRaw;
-      const finalHeight = Math.min(560, Math.max(140, baseHeight * scale));
+      const maxHeight = Math.max(500, window.innerHeight * 0.85);
+      const finalHeight = Math.min(maxHeight, Math.max(140, baseHeight * scale));
 
       cells.forEach((cell,i)=>{
         cell.style.height = finalHeight + "px";
