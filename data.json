@@ -473,17 +473,33 @@
             {
               "id": "p-1788448072287-8wqte",
               "image": "./images/w4-p-1788448072287-8wqte.jpg",
-              "caption": ""
+              "caption": "Danae Cut-In 01, 2015,  Acrylic on canvas, 146 x 95 cm"
             },
             {
               "id": "p-1788448077435-swby7",
               "image": "./images/w4-p-1788448077435-swby7.jpg",
-              "caption": ""
+              "caption": "Danae Cut-In 02, 2015,  Acrylic on canvas, 146 x 115 cm"
             },
             {
               "id": "p-1788448083338-3x7yq",
               "image": "./images/w4-p-1788448083338-3x7yq.jpg",
               "caption": "Danae Cut-In 03, 2015,  Acrylic on canvas, 146 x 111 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788448384397-wz9ku",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788448384397-b7gsi",
+              "image": "./images/w4-p-1788448384397-b7gsi.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1788448389158-f4zdt",
+              "image": "./images/w4-p-1788448389158-f4zdt.jpg",
+              "caption": ""
             }
           ]
         }
