@@ -1008,6 +1008,33 @@
               "caption": "Leo innerspace, 2018, Acrylic on canvas, 63x53cm"
             }
           ]
+        },
+        {
+          "id": "row-1788443971573-ldwhw",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1788443971573-3lloz",
+              "image": "./images/w5-p-1788443971573-3lloz.jpg",
+              "caption": "Libra innerspace, 2018, Acrylic on canvas, 68x71cm"
+            },
+            {
+              "id": "p-1788443988060-49o0d",
+              "image": "./images/w5-p-1788443988060-49o0d.jpg",
+              "caption": "Pisces innerspace, 2018, Acrylic on canvas, 44x59cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788444141678-rz42x",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1788444141678-cys96",
+              "image": "./images/w5-p-1788444141678-cys96.jpg",
+              "caption": "Sagittarius innerspace, 2018, Acrylic on canvas, 50x65cm"
+            }
+          ]
         }
       ]
     },
