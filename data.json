@@ -694,6 +694,22 @@
               "id": "p-1788439641334-qy05y",
               "image": "./images/w5-p-1788439641334-qy05y.jpg",
               "caption": "Gemini drawing, 2019, Oil on canvas, 91x91cm"
+            },
+            {
+              "id": "p-1788439667422-ghx4l",
+              "image": "./images/w5-p-1788439667422-ghx4l.jpg",
+              "caption": "Leo drawing, 2019, Oil on canvas, 72x72cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788439861680-bwhvy",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788439861680-6ujsm",
+              "image": "./images/w5-p-1788439861680-6ujsm.jpg",
+              "caption": "Libra drawing, 2019, Oil on canvas, 162x162cm"
             }
           ]
         }
