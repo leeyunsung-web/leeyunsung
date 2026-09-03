@@ -925,6 +925,18 @@
     justifyTimer = setTimeout(layoutJustifiedRows, 30);
   }
 
+  // Watches the actual photo container for ANY size change (window resize,
+  // scrollbar showing/hiding, sidebar panel, slider tweaks, master mode
+  // toggling, font swap reflow, etc.) so the layout can never silently go
+  // stale — this is more reliable than hooking every individual trigger by hand.
+  let justifyResizeObserver = null;
+  function observeJustifyContainer(container){
+    if(typeof ResizeObserver === "undefined") return;
+    if(justifyResizeObserver) justifyResizeObserver.disconnect();
+    justifyResizeObserver = new ResizeObserver(()=> scheduleJustifyLayout());
+    justifyResizeObserver.observe(container);
+  }
+
   function layoutJustifiedRows(){
     document.querySelectorAll(".photo-grid.multi").forEach(grid=>{
       const cells = Array.from(grid.querySelectorAll(".photo-cell:not(.add-tile)"));
@@ -1055,6 +1067,7 @@
     }
 
     app.appendChild(rowsWrap);
+    observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
 
     if(!flatIdx && !state.master){
