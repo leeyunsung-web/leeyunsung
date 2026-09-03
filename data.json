@@ -863,6 +863,22 @@
               "id": "p-1788441864288-y9ejg",
               "image": "./images/w5-p-1788441864288-y9ejg.jpg",
               "caption": "Gemini, 53x45cm, Oil on Canvas, 2022"
+            },
+            {
+              "id": "p-1788441884574-q3oov",
+              "image": "./images/w5-p-1788441884574-q3oov.jpg",
+              "caption": "Leo, 53x45cm, Oil on Canvas, 2022"
+            }
+          ]
+        },
+        {
+          "id": "row-1788441991545-mn2f3",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788441991545-f8gfd",
+              "image": "./images/w5-p-1788441991545-f8gfd.jpg",
+              "caption": "Libra, 53x45cm, Oil on canvas, 2022"
             }
           ]
         }
