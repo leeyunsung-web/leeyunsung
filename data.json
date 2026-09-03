@@ -647,6 +647,27 @@
               "id": "p-1788438765095-1ne0q",
               "image": "./images/w5-p-1788438765095-1ne0q.jpg",
               "caption": "Scorpio, 2021, Oil on canvas, 53x45cm"
+            },
+            {
+              "id": "p-1788438792638-voqnu",
+              "image": "./images/w5-p-1788438792638-voqnu.jpg",
+              "caption": "Taurus, 2021, Oil on canvas, 53x45cm"
+            },
+            {
+              "id": "p-1788438817831-yxxc0",
+              "image": "./images/w5-p-1788438817831-yxxc0.jpg",
+              "caption": "Virgo, 2021, Oil on canvas, 53x45cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788439168823-v3q6q",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788439168823-sc0qj",
+              "image": "./images/w5-p-1788439168823-sc0qj.jpg",
+              "caption": "Aquarius drawing, 2019, Oil on canvas, 45x45cm"
             }
           ]
         }
