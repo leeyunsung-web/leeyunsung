@@ -862,12 +862,12 @@
             {
               "id": "p-1788441864288-y9ejg",
               "image": "./images/w5-p-1788441864288-y9ejg.jpg",
-              "caption": "Gemini, 53x45cm, Oil on Canvas, 2022"
+              "caption": "Gemini, 2022, Oil on canvas, 53x45cm"
             },
             {
               "id": "p-1788441884574-q3oov",
               "image": "./images/w5-p-1788441884574-q3oov.jpg",
-              "caption": "Leo, 53x45cm, Oil on Canvas, 2022"
+              "caption": "Leo, 2022, Oil on canvas, 53x45cm"
             }
           ]
         },
@@ -878,17 +878,17 @@
             {
               "id": "p-1788441991545-f8gfd",
               "image": "./images/w5-p-1788441991545-f8gfd.jpg",
-              "caption": "Libra, 53x45cm, Oil on canvas, 2022"
+              "caption": "Libra, 2022, Oil on canvas, 53x45cm"
             },
             {
               "id": "p-1788442009976-i914d",
               "image": "./images/w5-p-1788442009976-i914d.jpg",
-              "caption": "Pisces, 53x45cm, Oil on canvas, 2022"
+              "caption": "Pisces, 2022, Oil on canvas, 53x45cm"
             },
             {
               "id": "p-1788442034664-jg4qm",
               "image": "./images/w5-p-1788442034664-jg4qm.jpg",
-              "caption": "Sagittarius, 53x45cm, Oil on canvas, 2022"
+              "caption": "Sagittarius, 2022, Oil on canvas, 53x45cm"
             }
           ]
         },
@@ -899,12 +899,28 @@
             {
               "id": "p-1788442082080-fsewc",
               "image": "./images/w5-p-1788442082080-fsewc.jpg",
-              "caption": "Scorpio, 53x45cm, Oil on canvas, 2022"
+              "caption": "Scorpio, 2022, Oil on canvas, 53x45cm"
             },
             {
               "id": "p-1788442106405-3i5op",
               "image": "./images/w5-p-1788442106405-3i5op.jpg",
-              "caption": "Taurus, 53x45cm, Oil on canvas, 2022"
+              "caption": "Taurus, 2022, Oil on canvas, 53x45cm"
+            },
+            {
+              "id": "p-1788442302016-bfpvy",
+              "image": "./images/w5-p-1788442302016-bfpvy.jpg",
+              "caption": "Virgo, 2022, Oil on canvas, 53x45cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788442437558-jcer4",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1788442437558-svf8p",
+              "image": "./images/w5-p-1788442437558-svf8p.jpg",
+              "caption": "Light-left, 2018, acrylic and gold, 26x30cm"
             }
           ]
         }
