@@ -920,7 +920,23 @@
             {
               "id": "p-1788442437558-svf8p",
               "image": "./images/w5-p-1788442437558-svf8p.jpg",
-              "caption": "Light-left, 2018, acrylic and gold, 26x30cm"
+              "caption": "Light-left, 2018, Acrylic and gold, 26x30cm"
+            },
+            {
+              "id": "p-1788442462845-0gl6w",
+              "image": "./images/w5-p-1788442462845-0gl6w.jpg",
+              "caption": "Light-right, 2018, Acrylic and gold, 26x30cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788442701595-fpieg",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1788442701595-6m6t8",
+              "image": "./images/w5-p-1788442701595-6m6t8.jpg",
+              "caption": "Sub-frame, LEE EUGEAN GALLERY, Seoul, Korea"
             }
           ]
         }
