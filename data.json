@@ -1218,6 +1218,22 @@
               "caption": "SD Constellation - Pisces, 2022, Oil on Canvas, 45x45cm"
             }
           ]
+        },
+        {
+          "id": "row-1788446407212-sp02t",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788446407212-7w5iz",
+              "image": "./images/w5-p-1788446407212-7w5iz.jpg",
+              "caption": "SD Constellation - Capricorn, 2022, Oil on canvas, 45x45cm"
+            },
+            {
+              "id": "p-1788446483378-19iel",
+              "image": "./images/w5-p-1788446483378-19iel.jpg",
+              "caption": "SD Constellation - Aries, 2022, Oil on canvas, 45x45cm"
+            }
+          ]
         }
       ]
     },
