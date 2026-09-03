@@ -626,6 +626,27 @@
               "id": "p-1788438641495-fh1zo",
               "image": "./images/w5-p-1788438641495-fh1zo.jpg",
               "caption": "Libra, 2021, Oil on canvas, 53x45cm"
+            },
+            {
+              "id": "p-1788438672324-18k43",
+              "image": "./images/w5-p-1788438672324-18k43.jpg",
+              "caption": "Pisces, 2021, Oil on canvas, 53x45cm"
+            },
+            {
+              "id": "p-1788438699726-org24",
+              "image": "./images/w5-p-1788438699726-org24.jpg",
+              "caption": "Sagittarius, 2021, Oil on canvas, 53x45cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788438765095-dmlu6",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788438765095-1ne0q",
+              "image": "./images/w5-p-1788438765095-1ne0q.jpg",
+              "caption": "Scorpio, 2021, Oil on canvas, 53x45cm"
             }
           ]
         }
