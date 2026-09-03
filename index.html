@@ -178,6 +178,23 @@
   }
   .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line); width:100%; cursor:pointer;}
   .photo-cell img{width:100%; height:auto; object-fit:cover; display:block;}
+
+  /* rows with 2+ photos: match every photo's height, let width follow its own ratio */
+  .photo-grid.multi{
+    display:flex; flex-wrap:wrap; align-items:stretch; justify-content:flex-start;
+  }
+  .photo-grid.multi .photo-cell{
+    width:auto; height:var(--photo-row-height,380px); flex:0 0 auto;
+  }
+  .photo-grid.multi .photo-cell img{
+    width:auto; height:100%; object-fit:cover;
+  }
+  .photo-grid.multi .photo-cell.add-tile{
+    height:var(--photo-row-height,380px); width:calc(var(--photo-row-height,380px) * 0.75); aspect-ratio:auto;
+  }
+  @media (max-width:640px){
+    .photo-grid.multi{ --photo-row-height:220px; }
+  }
   .photo-caption{
     position:absolute; left:0; right:0; bottom:0; padding:14px 12px;
     background:linear-gradient(to top, rgba(0,0,0,.36), transparent);
@@ -945,7 +962,7 @@
     const rows = item.photoRows || [];
 
     rows.forEach(row=>{
-      const rowGrid = el("div","photo-grid");
+      const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
       row.photos.forEach(photo=>{
         const myIdx = flatIdx++;
