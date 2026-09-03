@@ -457,11 +457,27 @@
             {
               "id": "p-1788447362933-ybvj0",
               "image": "./images/w4-p-1788447362933-ybvj0.jpg",
-              "caption": ""
+              "caption": "Danae Yellow Composition 01, 2015, Oil on canvas,  73x117cm"
             },
             {
               "id": "p-1788447368589-cgfmn",
               "image": "./images/w4-p-1788447368589-cgfmn.jpg",
+              "caption": "Danae Pink Composition 01, 2015, Oil on canvas,  73x117cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788448072287-6jd1l",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788448072287-8wqte",
+              "image": "./images/w4-p-1788448072287-8wqte.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1788448077435-swby7",
+              "image": "./images/w4-p-1788448077435-swby7.jpg",
               "caption": ""
             }
           ]
