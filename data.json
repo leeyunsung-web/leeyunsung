@@ -960,6 +960,22 @@
               "caption": "2018, Sub-frame, LEE EUGEAN GALLERY, Seoul, Korea"
             }
           ]
+        },
+        {
+          "id": "row-1788442827989-msl9g",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1788442827989-pks7p",
+              "image": "./images/w5-p-1788442827989-pks7p.jpg",
+              "caption": "Aquarius innerspace, 2018, Acrylic on canvas, 63x76cm"
+            },
+            {
+              "id": "p-1788443801439-81w3z",
+              "image": "./images/w5-p-1788443801439-81w3z.jpg",
+              "caption": "Aries innerspace, 2018, Acrylic on canvas, 104x47cm"
+            }
+          ]
         }
       ]
     },
