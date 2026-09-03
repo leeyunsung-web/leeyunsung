@@ -710,6 +710,27 @@
               "id": "p-1788439861680-6ujsm",
               "image": "./images/w5-p-1788439861680-6ujsm.jpg",
               "caption": "Libra drawing, 2019, Oil on canvas, 162x162cm"
+            },
+            {
+              "id": "p-1788439888242-94ki4",
+              "image": "./images/w5-p-1788439888242-94ki4.jpg",
+              "caption": "Pisces drawing, 2019, Oil on canvas, 91x91cm"
+            },
+            {
+              "id": "p-1788439915438-g1h1h",
+              "image": "./images/w5-p-1788439915438-g1h1h.jpg",
+              "caption": "Sagittarius drawing, 2019, Oil on canvas, 72x72cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788439949824-ebgy3",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788439949824-t8wb0",
+              "image": "./images/w5-p-1788439949824-t8wb0.jpg",
+              "caption": "Scorpio drawing, 2019, Oil on canvas, 45x45cm"
             }
           ]
         }
