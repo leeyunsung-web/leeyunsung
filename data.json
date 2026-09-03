@@ -1169,6 +1169,22 @@
               "id": "p-1788445668902-aogpf",
               "image": "./images/w5-p-1788445668902-aogpf.jpg",
               "caption": "SD Zodiac Capricorn, 2022, Oil on canvas, 45 x 45 cm"
+            },
+            {
+              "id": "p-1788445694854-gyldx",
+              "image": "./images/w5-p-1788445694854-gyldx.jpg",
+              "caption": "SD Zodiac Aquarius, 2022, Oil on canvas, 45 x 45 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1788445755325-zpkol",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788445755325-ixv93",
+              "image": "./images/w5-p-1788445755325-ixv93.jpg",
+              "caption": "SD Zodiac Pisces, 2022, Oil on canvas, 45 x 45 cm"
             }
           ]
         }
