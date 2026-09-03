@@ -879,6 +879,27 @@
               "id": "p-1788441991545-f8gfd",
               "image": "./images/w5-p-1788441991545-f8gfd.jpg",
               "caption": "Libra, 53x45cm, Oil on canvas, 2022"
+            },
+            {
+              "id": "p-1788442009976-i914d",
+              "image": "./images/w5-p-1788442009976-i914d.jpg",
+              "caption": "Pisces, 53x45cm, Oil on canvas, 2022"
+            },
+            {
+              "id": "p-1788442034664-jg4qm",
+              "image": "./images/w5-p-1788442034664-jg4qm.jpg",
+              "caption": "Sagittarius, 53x45cm, Oil on canvas, 2022"
+            }
+          ]
+        },
+        {
+          "id": "row-1788442082080-z2v2n",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1788442082080-fsewc",
+              "image": "./images/w5-p-1788442082080-fsewc.jpg",
+              "caption": "Scorpio, 53x45cm, Oil on canvas, 2022"
             }
           ]
         }
