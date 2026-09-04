@@ -647,7 +647,7 @@
 (function(){
   "use strict";
 
-  const MASTER_PASSWORD = "0702";
+  const MASTER_PASSWORD = "091712";
   const LS_DATA = "leeArchiveDraft_v2";
   const LS_GH = "leeArchiveGhConfig_v2";
   const LS_MASTER_TS = "leeArchiveDraftTs_v2";
@@ -961,7 +961,7 @@
 
       const scale = (availableWidth - totalGaps) / totalRaw;
       const maxHeight = Math.max(500, window.innerHeight * 0.85);
-      const finalHeight = Math.min(maxHeight, Math.max(140, baseHeight * scale));
+      const finalHeight = Math.min(maxHeight, baseHeight * scale);
 
       cells.forEach((cell,i)=>{
         cell.style.height = finalHeight + "px";
