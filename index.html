@@ -154,6 +154,39 @@
 
   .empty-collection{color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
+  /* ---------- text list (essays / reviews) ---------- */
+  .text-list-wrap{max-width:760px;}
+  .text-list-item{
+    display:flex; align-items:baseline; justify-content:space-between; gap:20px;
+    padding:22px 0;
+    text-decoration:none; position:relative;
+  }
+  .text-list-title{
+    font-size:21px; font-weight:600; letter-spacing:-.005em; color:var(--ink);
+    transition:opacity .18s ease; font-style:var(--ui-font-style);
+  }
+  .text-list-item:hover .text-list-title{opacity:.5;}
+  .text-list-right{display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .text-list-arrow{
+    font-size:15px; color:var(--ink-faint); opacity:0; transform:translateX(-6px);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .text-list-item:hover .text-list-arrow{opacity:1; transform:translateX(0);}
+  .text-list-editctl{display:none; gap:6px;}
+  .master-on .text-list-editctl{display:flex;}
+  .text-list-editctl button{
+    width:26px;height:26px;border-radius:5px;border:1px solid var(--line-strong); background:#fff; color:var(--ink);
+    font-size:12px; display:flex; align-items:center; justify-content:center;
+  }
+  .text-list-editctl button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .text-list-add{
+    display:none; align-items:center; gap:10px; padding:22px 0; cursor:pointer; color:var(--ink-faint);
+    font-size:14px; letter-spacing:.04em;
+  }
+  .master-on .text-list-add{display:flex;}
+  .text-list-add:hover{color:var(--ink);}
+  .text-list-add span:first-child{font-size:18px; font-weight:300;}
+
   /* ---------- detail page ---------- */
   .detail-back{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); display:inline-block; margin-bottom:28px; font-style:var(--ui-font-style);}
   .detail-back:hover{color:var(--ink);}
@@ -214,14 +247,25 @@
   }
   .photo-cell.add-tile span{font-size:24px; color:var(--ink-faint); font-weight:300;}
 
+  /* ---------- next works (bottom of detail page) ---------- */
+  .next-works-section{margin-top:72px; padding-top:36px; border-top:1px solid var(--line);}
+  .next-works-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:22px;}
+  .next-works-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--frame-gap);}
+  @media (max-width:640px){ .next-works-grid{grid-template-columns:1fr;} }
+
   /* ---------- contact ---------- */
-  .contact-wrap{max-width:480px;}
-  .contact-email{font-size:20px; font-weight:600; margin-bottom:22px; display:block;}
-  .contact-email:hover{text-decoration:underline;}
-  .contact-links{display:flex; flex-direction:column; gap:10px;}
-  .contact-link-row{display:flex; align-items:center; gap:10px; font-size:14px;}
-  .contact-link-row a{border-bottom:1px solid var(--line-strong);}
-  .contact-link-row a:hover{border-color:var(--ink);}
+  .contact-wrap{max-width:480px; padding-top:24px; margin:0 auto; text-align:center;}
+  .contact-block{
+    padding:20px 0;
+  }
+  .contact-label{
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:8px;
+  }
+  .contact-value{
+    font-size:23px; font-weight:600; letter-spacing:-.005em; color:var(--ink); display:inline-block;
+    text-decoration:none; transition:opacity .18s ease;
+  }
+  .contact-value:hover{opacity:.5;}
   .contact-empty{color:var(--ink-faint); font-size:13px;}
 
   /* ---------- footer ---------- */
@@ -509,8 +553,9 @@
       <div class="modal-head"><h2>Edit Contact</h2><button class="modal-close" data-close="contactModal">✕</button></div>
       <div class="modal-body">
         <div class="field"><label>Email</label><input type="email" id="contactEmailInput" placeholder="you@example.com"></div>
+        <div class="field"><label>Instagram</label><input type="text" id="contactInstagramInput" placeholder="handle (예: leeyunsung, @ 없이)"></div>
         <div class="field">
-          <label>Links (label / url)</label>
+          <label>Other Links (label / url)</label>
           <div id="contactLinksList"></div>
           <button class="btn ghost" id="addLinkRowBtn" style="margin-top:4px;">+ Add Link</button>
         </div>
@@ -775,7 +820,7 @@
     if(r.page==="cv") renderCV(app);
     else if(r.page==="works" && !r.id) renderCollectionGrid(app,"works","WORKS");
     else if(r.page==="works" && r.id) renderCollectionDetail(app,"works",r.id);
-    else if(r.page==="text" && !r.id) renderCollectionGrid(app,"text","TEXT");
+    else if(r.page==="text" && !r.id) renderTextList(app);
     else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
     else if(r.page==="contact") renderContact(app);
     else renderCollectionGrid(app,"works","WORKS");
@@ -859,6 +904,53 @@
     }
   }
 
+  // ---------------- text list (essays / reviews) ----------------
+  function renderTextList(app){
+    const items = state.data.text;
+    const wrap = el("div","text-list-wrap");
+
+    items.forEach(item=>{
+      const row = el("a","text-list-item");
+      row.href = "#text/"+item.id;
+
+      const title = el("span","text-list-title");
+      title.textContent = item.title || "(제목 없음)";
+      row.appendChild(title);
+
+      const right = el("span","text-list-right");
+      const arrow = el("span","text-list-arrow"); arrow.textContent = "→";
+      right.appendChild(arrow);
+      row.appendChild(right);
+
+      if(state.master){
+        const ctl = el("div","text-list-editctl");
+        const editBtn = el("button"); editBtn.textContent="✎"; editBtn.title="수정";
+        editBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); openItemModal("text",item.id); });
+        const delBtn = el("button"); delBtn.textContent="✕"; delBtn.title="삭제";
+        delBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); deleteItem("text",item.id); });
+        ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+        row.appendChild(ctl);
+      }
+      wrap.appendChild(row);
+    });
+
+    if(state.master){
+      const addRow = el("div","text-list-add");
+      const plus = el("span"); plus.textContent = "+";
+      const label = el("span"); label.textContent = "새 글 추가";
+      addRow.appendChild(plus); addRow.appendChild(label);
+      addRow.addEventListener("click", ()=>openItemModal("text",null));
+      wrap.appendChild(addRow);
+    }
+
+    app.appendChild(wrap);
+
+    if(!items.length && !state.master){
+      const empty = el("div","empty-collection"); empty.textContent = "아직 등록된 글이 없습니다.";
+      app.appendChild(empty);
+    }
+  }
+
   // ---------------- item (series) modal ----------------
   let pendingItemImage = null;
 
@@ -869,14 +961,14 @@
 
     if(id){
       const item = state.data[key].find(x=>x.id===id);
-      $("itemModalTitle").textContent = "Edit Series";
+      $("itemModalTitle").textContent = key==="text" ? "Edit Essay" : "Edit Series";
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
       if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
       else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
-      $("itemModalTitle").textContent = "Add Series";
+      $("itemModalTitle").textContent = key==="text" ? "Add Essay" : "Add Series";
       $("itemTitle").value = "";
       $("itemDesc").value = "";
       clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop");
@@ -1075,6 +1167,49 @@
       const empty = el("div","empty-collection"); empty.textContent = "등록된 사진이 없습니다.";
       app.appendChild(empty);
     }
+
+    renderNextWorks(app, key, id);
+  }
+
+  // ---------------- next works (bottom-of-page navigation) ----------------
+  function renderNextWorks(app, key, currentId){
+    if(key !== "works") return;
+    const arr = state.data.works.filter(it => it.title || it.cover);
+    if(arr.length <= 1) return;
+    const idx = arr.findIndex(it=>it.id===currentId);
+    if(idx < 0) return;
+
+    const next = [];
+    for(let i=1; i<=arr.length && next.length<3; i++){
+      const candidate = arr[(idx+i) % arr.length];
+      if(candidate.id !== currentId) next.push(candidate);
+    }
+    if(!next.length) return;
+
+    const section = el("div","next-works-section");
+    const label = el("div","next-works-label"); label.textContent = "More Works";
+    section.appendChild(label);
+
+    const grid = el("div","next-works-grid");
+    next.forEach(item=>{
+      const frame = el("a","frame");
+      frame.href = "#works/"+item.id;
+      if(item.cover){
+        const img = el("img"); img.src = item.cover; img.alt = item.title||"";
+        frame.appendChild(img);
+      } else {
+        const ph = el("div","placeholder-label"); frame.appendChild(ph);
+      }
+      if(item.title){
+        const hov = el("div","hover-title");
+        const span = document.createElement("span"); span.textContent = item.title;
+        hov.appendChild(span);
+        frame.appendChild(hov);
+      }
+      grid.appendChild(frame);
+    });
+    section.appendChild(grid);
+    app.appendChild(section);
   }
 
   // ---------------- photo modal ----------------
@@ -1215,21 +1350,37 @@
 
     const wrap = el("div","contact-wrap");
     const c = state.data.contact;
+    let hasAny = false;
+
     if(c.email){
-      const a = el("a","contact-email"); a.href = "mailto:"+c.email; a.textContent = c.email;
-      wrap.appendChild(a);
+      hasAny = true;
+      const block = el("div","contact-block");
+      const label = el("div","contact-label"); label.textContent = "Email";
+      const a = el("a","contact-value"); a.href = "mailto:"+c.email; a.textContent = c.email;
+      block.appendChild(label); block.appendChild(a);
+      wrap.appendChild(block);
+    }
+    if(c.instagram){
+      hasAny = true;
+      const handle = c.instagram.replace(/^@/,"");
+      const block = el("div","contact-block");
+      const label = el("div","contact-label"); label.textContent = "Instagram";
+      const a = el("a","contact-value"); a.href = "https://instagram.com/"+handle; a.target="_blank"; a.rel="noopener"; a.textContent = "@"+handle;
+      block.appendChild(label); block.appendChild(a);
+      wrap.appendChild(block);
     }
     if(c.links && c.links.length){
-      const list = el("div","contact-links");
       c.links.forEach(l=>{
-        const row = el("div","contact-link-row");
-        const a = el("a"); a.href = l.url; a.target="_blank"; a.rel="noopener"; a.textContent = l.label || l.url;
-        row.appendChild(a);
-        list.appendChild(row);
+        if(!l.url) return;
+        hasAny = true;
+        const block = el("div","contact-block");
+        const label = el("div","contact-label"); label.textContent = l.label || "Link";
+        const a = el("a","contact-value"); a.href = l.url; a.target="_blank"; a.rel="noopener"; a.textContent = l.label || l.url;
+        block.appendChild(label); block.appendChild(a);
+        wrap.appendChild(block);
       });
-      wrap.appendChild(list);
     }
-    if(!c.email && (!c.links || !c.links.length)){
+    if(!hasAny){
       const empty = el("div","contact-empty"); empty.textContent = "아직 등록된 연락처가 없습니다.";
       wrap.appendChild(empty);
     }
@@ -1238,6 +1389,7 @@
 
   function openContactModal(){
     $("contactEmailInput").value = state.data.contact.email || "";
+    $("contactInstagramInput").value = state.data.contact.instagram || "";
     const list = $("contactLinksList");
     list.innerHTML = "";
     (state.data.contact.links||[]).forEach(l=> addLinkRow(l.label,l.url) );
@@ -1253,6 +1405,7 @@
   }
   function saveContact(){
     state.data.contact.email = $("contactEmailInput").value.trim();
+    state.data.contact.instagram = $("contactInstagramInput").value.trim().replace(/^@/,"");
     const rows = $("contactLinksList").querySelectorAll(".linkrow");
     const links = [];
     rows.forEach(r=>{
