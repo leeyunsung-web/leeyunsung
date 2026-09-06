@@ -1467,6 +1467,8 @@
     "contactAlign": "center",
     "textListTopSpace": 64,
     "textListItemGap": 16,
+    "contactFontSize": 23,
+    "contactTopSpace": 80,
     "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
