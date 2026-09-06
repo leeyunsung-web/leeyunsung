@@ -1469,7 +1469,7 @@
     "frameTitleSize": 20,
     "photoGap": 4,
     "textListTitleSize": 21,
-    "textListAlign": "left",
+    "textListAlign": "center",
     "contactAlign": "center",
     "fontFamily": "system",
     "textWidth": 640,
