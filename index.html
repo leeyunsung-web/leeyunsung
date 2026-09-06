@@ -48,6 +48,8 @@
     --text-list-title-size:21px;
     --text-list-top-space:40px;
     --text-list-item-gap:22px;
+    --contact-font-size:23px;
+    --contact-top-space:24px;
     --photo-gap:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -258,7 +260,7 @@
   @media (max-width:640px){ .next-works-grid{grid-template-columns:1fr;} }
 
   /* ---------- contact ---------- */
-  .contact-wrap{max-width:480px; padding-top:24px;}
+  .contact-wrap{max-width:480px; padding-top:var(--contact-top-space);}
   .contact-block{
     padding:20px 0;
   }
@@ -266,7 +268,7 @@
     font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:8px;
   }
   .contact-value{
-    font-size:23px; font-weight:600; letter-spacing:-.005em; color:var(--ink); display:inline-block;
+    font-size:var(--contact-font-size); font-weight:600; letter-spacing:-.005em; color:var(--ink); display:inline-block;
     text-decoration:none; transition:opacity .18s ease;
   }
   .contact-value:hover{opacity:.5;}
@@ -721,6 +723,16 @@
               <button type="button" data-val="right">Right</button>
             </div>
           </div>
+          <div class="field">
+            <label>Contact Font Size <span class="range-val" id="valContactFontSize">23px</span></label>
+            <input type="range" id="dsgContactFontSize" min="14" max="40" step="1" value="23">
+            <div class="field-hint">이메일 / 인스타그램 값 글자 크기예요.</div>
+          </div>
+          <div class="field">
+            <label>Contact Top Space <span class="range-val" id="valContactTopSpace">24px</span></label>
+            <input type="range" id="dsgContactTopSpace" min="0" max="200" step="4" value="24">
+            <div class="field-hint">CONTACT 내용이 페이지 상단에서 얼마나 떨어져서 시작할지예요.</div>
+          </div>
         </div>
 
         <div class="btnrow"><button class="btn ghost" id="dsgResetBtn">기본값으로 초기화</button></div>
@@ -743,6 +755,7 @@
     captionSize:12, frameTitleSize:14, photoGap:16,
     textListTitleSize:21, textListAlign:"left", contactAlign:"center",
     textListTopSpace:40, textListItemGap:22,
+    contactFontSize:23, contactTopSpace:24,
     fontFamily:"helvetica", textWidth:640, uiItalic:false
   };
 
@@ -1550,6 +1563,8 @@
     root.setProperty("--text-list-title-size", (d.textListTitleSize!=null ? d.textListTitleSize : 21) + "px");
     root.setProperty("--text-list-top-space", (d.textListTopSpace!=null ? d.textListTopSpace : 40) + "px");
     root.setProperty("--text-list-item-gap", (d.textListItemGap!=null ? d.textListItemGap : 22) + "px");
+    root.setProperty("--contact-font-size", (d.contactFontSize!=null ? d.contactFontSize : 23) + "px");
+    root.setProperty("--contact-top-space", (d.contactTopSpace!=null ? d.contactTopSpace : 24) + "px");
     root.setProperty("--photo-gap", (d.photoGap!=null ? d.photoGap : 16) + "px");
   }
 
@@ -1641,6 +1656,12 @@
       $("valTextListItemGap").textContent = tlig + "px";
       setSegActive("segTextListAlign", state.data.design.textListAlign || "left");
       setSegActive("segContactAlign", state.data.design.contactAlign || "center");
+      const cfs = state.data.design.contactFontSize!=null ? state.data.design.contactFontSize : 23;
+      $("dsgContactFontSize").value = cfs;
+      $("valContactFontSize").textContent = cfs + "px";
+      const cts = state.data.design.contactTopSpace!=null ? state.data.design.contactTopSpace : 24;
+      $("dsgContactTopSpace").value = cts;
+      $("valContactTopSpace").textContent = cts + "px";
       setSegActive("segFont", state.data.design.fontFamily || "system");
       setSegActive("segUiStyle", state.data.design.uiItalic ? "italic" : "normal");
       const tw = state.data.design.textWidth!=null ? state.data.design.textWidth : 640;
@@ -1800,6 +1821,26 @@
         saveDraft();
         renderRoute();
       });
+    });
+
+    const contactFontSizeInput = $("dsgContactFontSize");
+    contactFontSizeInput.addEventListener("input", ()=>{
+      $("valContactFontSize").textContent = contactFontSizeInput.value + "px";
+      document.documentElement.style.setProperty("--contact-font-size", contactFontSizeInput.value+"px");
+    });
+    contactFontSizeInput.addEventListener("change", ()=>{
+      state.data.design.contactFontSize = parseInt(contactFontSizeInput.value,10);
+      saveDraft();
+    });
+
+    const contactTopSpaceInput = $("dsgContactTopSpace");
+    contactTopSpaceInput.addEventListener("input", ()=>{
+      $("valContactTopSpace").textContent = contactTopSpaceInput.value + "px";
+      document.documentElement.style.setProperty("--contact-top-space", contactTopSpaceInput.value+"px");
+    });
+    contactTopSpaceInput.addEventListener("change", ()=>{
+      state.data.design.contactTopSpace = parseInt(contactTopSpaceInput.value,10);
+      saveDraft();
     });
 
     const textWidthInput = $("dsgTextWidth");
