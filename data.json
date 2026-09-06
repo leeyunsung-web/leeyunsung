@@ -1463,7 +1463,7 @@
     "frameTitleSize": 20,
     "photoGap": 4,
     "textListTitleSize": 17,
-    "textListAlign": "center",
+    "textListAlign": "left",
     "contactAlign": "center",
     "textListTopSpace": 64,
     "textListItemGap": 16,
