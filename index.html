@@ -46,6 +46,8 @@
     --caption-font-size:12px;
     --frame-title-size:14px;
     --text-list-title-size:21px;
+    --text-list-top-space:40px;
+    --text-list-item-gap:22px;
     --photo-gap:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -62,8 +64,9 @@
   header.site-head{
     border-bottom:1px solid var(--line);
     padding:26px 0;
-    position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); z-index:50;
+    position:fixed; top:0; left:0; right:0; width:100%; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); z-index:50;
   }
+  body{padding-top:var(--header-height,90px);}
   .head-grid{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;}
   .head-spacer{grid-column:1;}
   .head-center{grid-column:2; justify-self:center; display:flex; align-items:center; gap:8px;}
@@ -156,10 +159,10 @@
   .empty-collection{color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
   /* ---------- text list (essays / reviews) ---------- */
-  .text-list-wrap{max-width:760px;}
+  .text-list-wrap{max-width:760px; padding-top:var(--text-list-top-space);}
   .text-list-item{
     display:flex; align-items:baseline; justify-content:space-between; gap:20px;
-    padding:22px 0;
+    padding:var(--text-list-item-gap) 0;
     text-decoration:none; position:relative;
   }
   .text-list-title{
@@ -693,6 +696,16 @@
             <div class="field-hint">TEXT 목록에 나열되는 글 제목 크기예요.</div>
           </div>
           <div class="field">
+            <label>Text List Top Space <span class="range-val" id="valTextListTopSpace">40px</span></label>
+            <input type="range" id="dsgTextListTopSpace" min="0" max="150" step="4" value="40">
+            <div class="field-hint">TEXT 목록이 페이지 상단에서 얼마나 떨어져서 시작할지예요.</div>
+          </div>
+          <div class="field">
+            <label>Text List Item Gap <span class="range-val" id="valTextListItemGap">22px</span></label>
+            <input type="range" id="dsgTextListItemGap" min="6" max="60" step="2" value="22">
+            <div class="field-hint">TEXT 목록의 제목과 제목 사이 간격이에요.</div>
+          </div>
+          <div class="field">
             <label>Text List Position</label>
             <div class="segbtns" id="segTextListAlign">
               <button type="button" data-val="left" class="active">Left</button>
@@ -729,6 +742,7 @@
     pagePadding:32, frameGap:28, frameCols:2, detailMargin:32,
     captionSize:12, frameTitleSize:14, photoGap:16,
     textListTitleSize:21, textListAlign:"left", contactAlign:"center",
+    textListTopSpace:40, textListItemGap:22,
     fontFamily:"helvetica", textWidth:640, uiItalic:false
   };
 
@@ -852,6 +866,8 @@
     else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
     else if(r.page==="contact") renderContact(app);
     else renderCollectionGrid(app,"works","WORKS");
+
+    updateHeaderHeightVar();
   }
 
   // ---------------- CV ----------------
@@ -1532,6 +1548,8 @@
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
     root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
     root.setProperty("--text-list-title-size", (d.textListTitleSize!=null ? d.textListTitleSize : 21) + "px");
+    root.setProperty("--text-list-top-space", (d.textListTopSpace!=null ? d.textListTopSpace : 40) + "px");
+    root.setProperty("--text-list-item-gap", (d.textListItemGap!=null ? d.textListItemGap : 22) + "px");
     root.setProperty("--photo-gap", (d.photoGap!=null ? d.photoGap : 16) + "px");
   }
 
@@ -1615,6 +1633,12 @@
       const tlts = state.data.design.textListTitleSize!=null ? state.data.design.textListTitleSize : 21;
       $("dsgTextListTitleSize").value = tlts;
       $("valTextListTitleSize").textContent = tlts + "px";
+      const tlsp = state.data.design.textListTopSpace!=null ? state.data.design.textListTopSpace : 40;
+      $("dsgTextListTopSpace").value = tlsp;
+      $("valTextListTopSpace").textContent = tlsp + "px";
+      const tlig = state.data.design.textListItemGap!=null ? state.data.design.textListItemGap : 22;
+      $("dsgTextListItemGap").value = tlig;
+      $("valTextListItemGap").textContent = tlig + "px";
       setSegActive("segTextListAlign", state.data.design.textListAlign || "left");
       setSegActive("segContactAlign", state.data.design.contactAlign || "center");
       setSegActive("segFont", state.data.design.fontFamily || "system");
@@ -1737,6 +1761,26 @@
     });
     textListTitleSizeInput.addEventListener("change", ()=>{
       state.data.design.textListTitleSize = parseInt(textListTitleSizeInput.value,10);
+      saveDraft();
+    });
+
+    const textListTopSpaceInput = $("dsgTextListTopSpace");
+    textListTopSpaceInput.addEventListener("input", ()=>{
+      $("valTextListTopSpace").textContent = textListTopSpaceInput.value + "px";
+      document.documentElement.style.setProperty("--text-list-top-space", textListTopSpaceInput.value+"px");
+    });
+    textListTopSpaceInput.addEventListener("change", ()=>{
+      state.data.design.textListTopSpace = parseInt(textListTopSpaceInput.value,10);
+      saveDraft();
+    });
+
+    const textListItemGapInput = $("dsgTextListItemGap");
+    textListItemGapInput.addEventListener("input", ()=>{
+      $("valTextListItemGap").textContent = textListItemGapInput.value + "px";
+      document.documentElement.style.setProperty("--text-list-item-gap", textListItemGapInput.value+"px");
+    });
+    textListItemGapInput.addEventListener("change", ()=>{
+      state.data.design.textListItemGap = parseInt(textListItemGapInput.value,10);
       saveDraft();
     });
 
@@ -1979,8 +2023,14 @@
   }
 
   // ---------------- global events ----------------
+  function updateHeaderHeightVar(){
+    const header = document.querySelector("header.site-head");
+    if(header) document.documentElement.style.setProperty("--header-height", header.offsetHeight + "px");
+  }
+
   function bindGlobalEvents(){
     window.addEventListener("resize", scheduleJustifyLayout);
+    window.addEventListener("resize", updateHeaderHeightVar);
 
     document.addEventListener("keydown",(e)=>{
       if(e.ctrlKey && e.altKey && e.key==="Enter"){
