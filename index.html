@@ -45,6 +45,7 @@
     --detail-margin:32px;
     --caption-font-size:12px;
     --frame-title-size:14px;
+    --text-list-title-size:21px;
     --photo-gap:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -162,7 +163,7 @@
     text-decoration:none; position:relative;
   }
   .text-list-title{
-    font-size:21px; font-weight:600; letter-spacing:-.005em; color:var(--ink);
+    font-size:var(--text-list-title-size); font-weight:600; letter-spacing:-.005em; color:var(--ink);
     transition:opacity .18s ease; font-style:var(--ui-font-style);
   }
   .text-list-item:hover .text-list-title{opacity:.5;}
@@ -254,7 +255,7 @@
   @media (max-width:640px){ .next-works-grid{grid-template-columns:1fr;} }
 
   /* ---------- contact ---------- */
-  .contact-wrap{max-width:480px; padding-top:24px; margin:0 auto; text-align:center;}
+  .contact-wrap{max-width:480px; padding-top:24px;}
   .contact-block{
     padding:20px 0;
   }
@@ -267,6 +268,11 @@
   }
   .contact-value:hover{opacity:.5;}
   .contact-empty{color:var(--ink-faint); font-size:13px;}
+
+  /* ---------- shared position/align utility ---------- */
+  .align-left{margin-left:0; margin-right:auto; text-align:left;}
+  .align-center{margin-left:auto; margin-right:auto; text-align:center;}
+  .align-right{margin-left:auto; margin-right:0; text-align:right;}
 
   /* ---------- footer ---------- */
   footer{border-top:1px solid var(--line); padding:22px 0; font-size:11px; color:var(--ink-faint); letter-spacing:.03em;}
@@ -681,6 +687,27 @@
             <input type="range" id="dsgFrameTitleSize" min="12" max="28" step="1" value="14">
             <div class="field-hint">WORKS / TEXT 네모칸에 마우스를 올렸을 때 뜨는 시리즈 제목 글자 크기예요.</div>
           </div>
+          <div class="field">
+            <label>Text List Title Size <span class="range-val" id="valTextListTitleSize">21px</span></label>
+            <input type="range" id="dsgTextListTitleSize" min="14" max="40" step="1" value="21">
+            <div class="field-hint">TEXT 목록에 나열되는 글 제목 크기예요.</div>
+          </div>
+          <div class="field">
+            <label>Text List Position</label>
+            <div class="segbtns" id="segTextListAlign">
+              <button type="button" data-val="left" class="active">Left</button>
+              <button type="button" data-val="center">Center</button>
+              <button type="button" data-val="right">Right</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Contact Position</label>
+            <div class="segbtns" id="segContactAlign">
+              <button type="button" data-val="left">Left</button>
+              <button type="button" data-val="center" class="active">Center</button>
+              <button type="button" data-val="right">Right</button>
+            </div>
+          </div>
         </div>
 
         <div class="btnrow"><button class="btn ghost" id="dsgResetBtn">기본값으로 초기화</button></div>
@@ -701,6 +728,7 @@
     fontSize:15, letterSpacing:0, bold:false, align:"left",
     pagePadding:32, frameGap:28, frameCols:2, detailMargin:32,
     captionSize:12, frameTitleSize:14, photoGap:16,
+    textListTitleSize:21, textListAlign:"left", contactAlign:"center",
     fontFamily:"helvetica", textWidth:640, uiItalic:false
   };
 
@@ -907,7 +935,7 @@
   // ---------------- text list (essays / reviews) ----------------
   function renderTextList(app){
     const items = state.data.text;
-    const wrap = el("div","text-list-wrap");
+    const wrap = el("div","text-list-wrap align-"+(state.data.design.textListAlign||"left"));
 
     items.forEach(item=>{
       const row = el("a","text-list-item");
@@ -915,6 +943,7 @@
 
       const title = el("span","text-list-title");
       title.textContent = item.title || "(제목 없음)";
+      applyElStyleOverride(title, item.titleStyle);
       row.appendChild(title);
 
       const right = el("span","text-list-right");
@@ -924,11 +953,19 @@
 
       if(state.master){
         const ctl = el("div","text-list-editctl");
+        const styleBtn = el("button"); styleBtn.textContent="Aa"; styleBtn.title="이 제목만 스타일 조절";
+        styleBtn.addEventListener("click",(e)=>{
+          e.preventDefault(); e.stopPropagation();
+          const titleTarget = makeItemStyleTarget("text",item.id,"titleStyle");
+          titleTarget.el = title;
+          titleTarget.hideAlign = true;
+          openDesignModal(titleTarget,"글 제목");
+        });
         const editBtn = el("button"); editBtn.textContent="✎"; editBtn.title="수정";
         editBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); openItemModal("text",item.id); });
         const delBtn = el("button"); delBtn.textContent="✕"; delBtn.title="삭제";
         delBtn.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); deleteItem("text",item.id); });
-        ctl.appendChild(editBtn); ctl.appendChild(delBtn);
+        ctl.appendChild(styleBtn); ctl.appendChild(editBtn); ctl.appendChild(delBtn);
         row.appendChild(ctl);
       }
       wrap.appendChild(row);
@@ -1348,7 +1385,7 @@
     editBtn.addEventListener("click", openContactModal);
     app.appendChild(editBtn);
 
-    const wrap = el("div","contact-wrap");
+    const wrap = el("div","contact-wrap align-"+(state.data.design.contactAlign||"center"));
     const c = state.data.contact;
     let hasAny = false;
 
@@ -1494,6 +1531,7 @@
     root.setProperty("--ui-font-style", d.uiItalic ? "italic" : "normal");
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
     root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
+    root.setProperty("--text-list-title-size", (d.textListTitleSize!=null ? d.textListTitleSize : 21) + "px");
     root.setProperty("--photo-gap", (d.photoGap!=null ? d.photoGap : 16) + "px");
   }
 
@@ -1574,6 +1612,11 @@
       const fts = state.data.design.frameTitleSize!=null ? state.data.design.frameTitleSize : 14;
       $("dsgFrameTitleSize").value = fts;
       $("valFrameTitleSize").textContent = fts + "px";
+      const tlts = state.data.design.textListTitleSize!=null ? state.data.design.textListTitleSize : 21;
+      $("dsgTextListTitleSize").value = tlts;
+      $("valTextListTitleSize").textContent = tlts + "px";
+      setSegActive("segTextListAlign", state.data.design.textListAlign || "left");
+      setSegActive("segContactAlign", state.data.design.contactAlign || "center");
       setSegActive("segFont", state.data.design.fontFamily || "system");
       setSegActive("segUiStyle", state.data.design.uiItalic ? "italic" : "normal");
       const tw = state.data.design.textWidth!=null ? state.data.design.textWidth : 640;
@@ -1685,6 +1728,34 @@
     frameTitleSizeInput.addEventListener("change", ()=>{
       state.data.design.frameTitleSize = parseInt(frameTitleSizeInput.value,10);
       saveDraft();
+    });
+
+    const textListTitleSizeInput = $("dsgTextListTitleSize");
+    textListTitleSizeInput.addEventListener("input", ()=>{
+      $("valTextListTitleSize").textContent = textListTitleSizeInput.value + "px";
+      document.documentElement.style.setProperty("--text-list-title-size", textListTitleSizeInput.value+"px");
+    });
+    textListTitleSizeInput.addEventListener("change", ()=>{
+      state.data.design.textListTitleSize = parseInt(textListTitleSizeInput.value,10);
+      saveDraft();
+    });
+
+    $("segTextListAlign").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segTextListAlign", b.dataset.val);
+        state.data.design.textListAlign = b.dataset.val;
+        saveDraft();
+        renderRoute();
+      });
+    });
+
+    $("segContactAlign").querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        setSegActive("segContactAlign", b.dataset.val);
+        state.data.design.contactAlign = b.dataset.val;
+        saveDraft();
+        renderRoute();
+      });
     });
 
     const textWidthInput = $("dsgTextWidth");
