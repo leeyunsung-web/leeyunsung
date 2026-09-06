@@ -1468,9 +1468,11 @@
     "captionSize": 15,
     "frameTitleSize": 20,
     "photoGap": 4,
-    "textListTitleSize": 21,
+    "textListTitleSize": 20,
     "textListAlign": "center",
     "contactAlign": "center",
+    "textListTopSpace": 64,
+    "textListItemGap": 22,
     "fontFamily": "system",
     "textWidth": 640,
     "uiItalic": false
