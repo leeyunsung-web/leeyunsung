@@ -253,6 +253,20 @@
   }
   .photo-cell.add-tile span{font-size:24px; color:var(--ink-faint); font-weight:300;}
 
+  /* master-only insert bar between photo rows */
+  .row-insert{
+    display:flex; align-items:center; justify-content:center; height:22px; margin:-8px 0; cursor:pointer;
+    position:relative; opacity:.35; transition:opacity .15s;
+  }
+  .row-insert::before{
+    content:""; position:absolute; left:0; right:0; top:50%; height:1px; border-top:1px dashed var(--line-strong);
+  }
+  .row-insert span{
+    position:relative; background:#fff; padding:0 8px; font-size:16px; font-weight:300; color:var(--ink-faint); line-height:1;
+  }
+  .row-insert:hover{opacity:1;}
+  .row-insert:hover span{color:var(--ink);}
+
   /* ---------- next works (bottom of detail page) ---------- */
   .next-works-section{margin-top:72px; padding-top:36px; border-top:1px solid var(--line);}
   .next-works-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:22px;}
@@ -510,7 +524,7 @@
       <div class="modal-head"><h2 id="photoModalTitle">Add Photo</h2><button class="modal-close" data-close="photoModal">✕</button></div>
       <div class="modal-body">
         <input type="hidden" id="photoId"><input type="hidden" id="photoCollection"><input type="hidden" id="photoItemId">
-        <input type="hidden" id="photoRowId"><input type="hidden" id="photoNewRowCols">
+        <input type="hidden" id="photoRowId"><input type="hidden" id="photoNewRowCols"><input type="hidden" id="photoInsertIndex">
         <div class="field">
           <label>Image</label>
           <div class="imgdrop" id="photoImgDrop">
@@ -1178,7 +1192,15 @@
     let flatIdx = 0;
     const rows = item.photoRows || [];
 
-    rows.forEach(row=>{
+    rows.forEach((row, rowIndex)=>{
+      if(state.master){
+        const insertBar = el("div","row-insert");
+        const plus = el("span"); plus.textContent = "+";
+        insertBar.appendChild(plus);
+        insertBar.title = "여기에 새 줄 끼워넣기";
+        insertBar.addEventListener("click", ()=>startNewRowFlow(key,item.id,rowIndex));
+        rowsWrap.appendChild(insertBar);
+      }
       const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
       row.photos.forEach(photo=>{
@@ -1282,8 +1304,8 @@
   let pendingPhotoImage = null;
   let pendingNewRowFor = null;
 
-  function startNewRowFlow(key,itemId){
-    pendingNewRowFor = {key,itemId};
+  function startNewRowFlow(key,itemId,insertIndex){
+    pendingNewRowFor = {key,itemId,insertIndex:(insertIndex==null ? null : insertIndex)};
     openModal("rowColsModal");
   }
 
@@ -1292,6 +1314,7 @@
     $("photoItemId").value = itemId;
     $("photoRowId").value = rowId || "";
     $("photoNewRowCols").value = "";
+    $("photoInsertIndex").value = "";
     $("photoId").value = photoId || "";
     pendingPhotoImage = null;
 
@@ -1313,11 +1336,12 @@
     openModal("photoModal");
   }
 
-  function openPhotoModalForNewRow(key,itemId,cols){
+  function openPhotoModalForNewRow(key,itemId,cols,insertIndex){
     $("photoCollection").value = key;
     $("photoItemId").value = itemId;
     $("photoRowId").value = "";
     $("photoNewRowCols").value = cols;
+    $("photoInsertIndex").value = (insertIndex==null ? "" : String(insertIndex));
     $("photoId").value = "";
     pendingPhotoImage = null;
     $("photoModalTitle").textContent = "Add Photo";
@@ -1340,7 +1364,13 @@
     if(!rowId){
       const cols = parseInt($("photoNewRowCols").value,10) || 1;
       row = { id: uid("row"), cols, photos: [] };
-      item.photoRows.push(row);
+      const insertRaw = $("photoInsertIndex").value;
+      const insertIndex = insertRaw==="" ? null : parseInt(insertRaw,10);
+      if(insertIndex!=null && insertIndex>=0 && insertIndex<=item.photoRows.length){
+        item.photoRows.splice(insertIndex, 0, row);
+      } else {
+        item.photoRows.push(row);
+      }
     } else {
       row = item.photoRows.find(r=>r.id===rowId);
       if(!row) return;
@@ -2128,7 +2158,7 @@
       b.addEventListener("click", ()=>{
         closeModal("rowColsModal");
         if(!pendingNewRowFor) return;
-        openPhotoModalForNewRow(pendingNewRowFor.key, pendingNewRowFor.itemId, parseInt(b.dataset.val,10));
+        openPhotoModalForNewRow(pendingNewRowFor.key, pendingNewRowFor.itemId, parseInt(b.dataset.val,10), pendingNewRowFor.insertIndex);
         pendingNewRowFor = null;
       });
     });
