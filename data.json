@@ -1666,6 +1666,28 @@
               "caption": ""
             }
           ]
+        },
+        {
+          "id": "row-1789630735475-io19q",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789630735475-28t2v",
+              "image": "./images/w7-p-1789630735475-28t2v.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1789630786622-j8bk0",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789630786622-nbtwm",
+              "image": "./images/w7-p-1789630786622-nbtwm.jpg",
+              "caption": ""
+            }
+          ]
         }
       ]
     },
