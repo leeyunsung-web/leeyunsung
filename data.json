@@ -1571,6 +1571,28 @@
               "caption": ""
             }
           ]
+        },
+        {
+          "id": "row-1789629220673-i4igi",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629220673-tzg7x",
+              "image": "./images/w6-p-1789629220673-tzg7x.jpg",
+              "caption": "Head of Medusa - PInk, 2022, Oil on canvas, 73x91cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629315021-voeuf",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629315021-h77ns",
+              "image": "./images/w6-p-1789629315021-h77ns.jpg",
+              "caption": ""
+            }
+          ]
         }
       ]
     },
