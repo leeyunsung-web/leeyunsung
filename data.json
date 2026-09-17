@@ -1983,6 +1983,55 @@
               "caption": ""
             }
           ]
+        },
+        {
+          "id": "row-1789632266117-b8a2c",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1789632266117-um0p8",
+              "image": "./images/w8-p-1789632266117-um0p8.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1789632282320-mdqfw",
+              "image": "./images/w8-p-1789632282320-mdqfw.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1789632295312-sm1x9",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789632295312-1zgbc",
+              "image": "./images/w8-p-1789632295312-1zgbc.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1789632306073-9q88m",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789632306073-nc60i",
+              "image": "./images/w8-p-1789632306073-nc60i.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1789632343034-xct7i",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789632343034-x9vao",
+              "image": "./images/w8-p-1789632343034-x9vao.jpg",
+              "caption": ""
+            }
+          ]
         }
       ]
     }
