@@ -353,7 +353,8 @@
   }
 
   /* ---------- lightbox ---------- */
-  #photoLightbox{background:rgba(10,10,10,.96); padding:0;}
+  #photoLightbox{background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;}
+  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
   #photoLightbox .lb-stage{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     max-width:min(92vw,1100px); max-height:88vh;
