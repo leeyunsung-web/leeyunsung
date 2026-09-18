@@ -8,7 +8,7 @@
      외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
      연결 허용 대상은 이 사이트 자신과 api.github.com 뿐입니다.
      혹시 기능이 깨지면 아래 한 줄만 지우면 원래대로 돌아갑니다. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
 <title>이윤성 Yunsung Lee — 회화 아카이브</title>
@@ -169,6 +169,49 @@
   .frame:hover .hover-title{opacity:1;}
   .frame.empty .hover-title{display:none;}
   .hover-title span{font-size:var(--frame-title-size); letter-spacing:.04em; font-weight:600; text-shadow:0 1px 4px rgba(255,255,255,.85), 0 0 12px rgba(255,255,255,.6);}
+
+  /* ---------- SHOP ---------- */
+  .shop-grid{
+    display:grid; grid-template-columns:repeat(var(--frame-cols),1fr); gap:var(--frame-gap) calc(var(--frame-gap) + 8px);
+  }
+  @media (max-width:640px){ .shop-grid{grid-template-columns:repeat(2,1fr);} }
+  .shop-card{position:relative; display:block; color:inherit;}
+  .shop-thumb{
+    position:relative; background:#fafafa; border:1px solid var(--line); overflow:hidden; aspect-ratio:1/1;
+  }
+  .shop-thumb img{width:100%; height:100%; object-fit:cover; display:block; transition:opacity .25s ease;}
+  .shop-card:hover .shop-thumb img{opacity:.82;}
+  .shop-thumb .placeholder-label{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  }
+  .shop-sold-badge{
+    position:absolute; left:0; bottom:0; padding:5px 10px; background:var(--ink); color:#fff;
+    font-size:10px; letter-spacing:.14em;
+  }
+  .shop-info{padding:12px 2px 0;}
+  .shop-name{font-size:var(--content-font-size); letter-spacing:.01em; line-height:1.45;}
+  .shop-spec{font-size:var(--caption-font-size); color:var(--ink-soft); line-height:1.5; margin-top:4px;}
+  .shop-edition{font-size:var(--caption-font-size); color:var(--ink-faint); margin-top:2px; font-family:var(--mono);}
+  .shop-price{font-size:var(--content-font-size); margin-top:8px; letter-spacing:.02em;}
+  .shop-price.sold{color:var(--ink-faint);}
+
+  .buy-box{margin:36px auto 0; max-width:var(--content-max-width); padding:0 var(--detail-margin);}
+  .buy-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .buy-btn{
+    flex:1 1 200px; display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:15px 18px; border:1px solid var(--ink); background:var(--ink); color:#fff;
+    font-size:14px; letter-spacing:.04em; text-align:center; transition:opacity .18s ease;
+  }
+  .buy-btn:hover{opacity:.82;}
+  .buy-btn.alt{background:transparent; color:var(--ink);}
+  .buy-btn .cur{font-size:12px; opacity:.72;}
+  .buy-note{font-size:11px; color:var(--ink-faint); margin-top:14px; line-height:1.7;}
+  .buy-soldout{
+    padding:15px 18px; border:1px solid var(--line); color:var(--ink-faint);
+    font-size:13px; letter-spacing:.12em; text-align:center;
+  }
+  .shop-specs-line{text-align:center; color:var(--ink-soft); font-size:var(--caption-font-size); margin-bottom:8px; line-height:1.7;}
 
   .frame-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px; z-index:5;}
   .master-on .frame-editctl{display:flex;}
@@ -443,6 +486,15 @@
   }
   .unpub-dot.show{display:block;}
 </style>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TBFPJKSNZ7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TBFPJKSNZ7');
+</script>
 </head>
 <body>
 
@@ -457,6 +509,7 @@
         <a href="#cv" data-page="cv">CV</a>
         <a href="#works" data-page="works">WORKS</a>
         <a href="#text" data-page="text">TEXT</a>
+        <a href="#shop" data-page="shop">SHOP</a>
         <a href="#contact" data-page="contact">CONTACT</a>
       </nav>
     </div>
@@ -549,6 +602,16 @@
         </div>
         <div class="field"><label>Title</label><input type="text" id="itemTitle" placeholder="시리즈 제목"></div>
         <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
+        <div id="shopFields" style="display:none;">
+          <div class="field"><label>사양 1 <span style="color:#999;font-weight:400;">— 예: 162 × 130 cm</span></label><input type="text" id="itemSpec1" placeholder="크기"></div>
+          <div class="field"><label>사양 2 <span style="color:#999;font-weight:400;">— 예: Oil on canvas</span></label><input type="text" id="itemSpec2" placeholder="재료 / 인쇄 방식"></div>
+          <div class="field"><label>에디션 <span style="color:#999;font-weight:400;">— 예: 12/50 (없으면 비워두세요)</span></label><input type="text" id="itemEdition" placeholder=""></div>
+          <div class="field"><label>가격 ₩ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceKrw" inputmode="numeric" placeholder="120000"></div>
+          <div class="field"><label>가격 $ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceUsd" inputmode="decimal" placeholder="95"></div>
+          <div class="field"><label>구매 링크 — 국내 (아임웹 등)</label><input type="text" id="itemBuyKr" placeholder="https://… (비워두면 버튼이 안 나옵니다)"></div>
+          <div class="field"><label>구매 링크 — 해외 (Big Cartel 등)</label><input type="text" id="itemBuyUs" placeholder="https://…"></div>
+          <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (SOLD OUT 표시)</label></div>
+        </div>
         <div class="field"><label>주소(slug) <span style="color:#999;font-weight:400;">— leeyunsung.com/works/<b id="itemSlugKind">works</b>/…</span></label><input type="text" id="itemSlug" placeholder="비워두면 제목에서 자동 생성" autocomplete="off"></div>
         <div class="btnrow">
           <button class="btn primary" id="itemSaveBtn" style="flex:1;">저장</button>
@@ -830,6 +893,19 @@
     if(t.length <= n) return t;
     return t.slice(0, n-1).replace(/[\s,.·]+$/,"") + "…";
   }
+  /* 링크 주소 살균 — http/https/mailto만 허용합니다.
+     data.json을 통째로 불러오는 기능(⬆ Import)이 있어서, 남이 만든 JSON에
+     javascript: 주소가 섞여 들어오면 페이지에서 코드가 실행될 수 있습니다.
+     그 경로를 막습니다. */
+  function safeUrl(u){
+    const t = String(u||"").trim().replace(/[\u0000-\u001f\u007f]/g,"");
+    if(!t) return "";
+    if(/^(https?:\/\/|mailto:)/i.test(t)) return t;
+    if(/^[\w.-]+@[\w.-]+\.\w+$/.test(t)) return "mailto:" + t;   // 이메일만 적은 경우
+    if(/^\/(?!\/)/.test(t)) return t;                             // 사이트 내부 경로
+    return "";
+  }
+
   function absUrl(p){
     if(!p) return "";
     if(/^https?:/i.test(p)) return p;
@@ -862,7 +938,8 @@
     "t-1788707622726-8ev94":"exploding-bishojo-baek-jihong"
   };
   function slugify(s){
-    return cleanText(s).toLowerCase()
+    // é → e 처럼 발음기호를 먼저 풀어줍니다 (gicl-e-print 같은 주소 방지)
+    return cleanText(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()
       .replace(/[\u2018\u2019\u201c\u201d'"()\[\]<>:,.·]/g,"")
       .replace(/&/g,"-and-")
       .replace(/[^a-z0-9]+/g,"-")
@@ -872,7 +949,7 @@
   // 모든 항목에 유일한 slug를 보장합니다
   function ensureSlugs(){
     const d = state.data; let changed = false;
-    [["works", d.works||[]], ["text", d.text||[]]].forEach(([kind, arr])=>{
+    [["works", d.works||[]], ["text", d.text||[]], ["shop", d.shop||[]]].forEach(([kind, arr])=>{
       const used = new Set();
       arr.forEach((it, i)=>{
         let s = slugify(it.slug || "");
@@ -925,6 +1002,34 @@
     "email":"mailto:reyunsung@gmail.com",
     "sameAs":["https://instagram.com/reyunsung"]
   };
+
+  // 상품 구조화 데이터 (구글 쇼핑/리치 결과용)
+  function productLd(item, url){
+    const offers = [];
+    const kr = parseFloat(String(item.priceKrw||"").replace(/[^0-9.]/g,""));
+    const us = parseFloat(String(item.priceUsd||"").replace(/[^0-9.]/g,""));
+    const avail = item.soldOut ? "https://schema.org/SoldOut" : "https://schema.org/InStock";
+    if(isFinite(kr) && kr>0) offers.push({"@type":"Offer","price":String(kr),"priceCurrency":"KRW","availability":avail,"url":item.buyKr||url});
+    if(isFinite(us) && us>0) offers.push({"@type":"Offer","price":String(us),"priceCurrency":"USD","availability":avail,"url":item.buyUs||url});
+    const imgs = [];
+    if(item.cover) imgs.push(absUrl(item.cover));
+    (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) imgs.push(absUrl(p.image)); }));
+    const ld = {
+      "@context":"https://schema.org","@type":"Product",
+      "name": cleanText(item.title) || "Untitled",
+      "url": url,
+      "image": imgs.slice(0,12),
+      "brand": {"@type":"Brand","name":"LEE YUNSUNG"},
+      "creator": PERSON_LD,
+      "inLanguage":"ko"
+    };
+    const d = [cleanText(item.spec1), cleanText(item.spec2), excerpt(item.description,300)].filter(Boolean).join(" · ");
+    if(d) ld.description = d;
+    if(cleanText(item.spec2)) ld.material = cleanText(item.spec2);
+    if(cleanText(item.spec1)) ld.size = cleanText(item.spec1);
+    if(offers.length) ld.offers = offers.length===1 ? offers[0] : offers;
+    return ld;
+  }
 
   function updateSeo(route){
     const d = state.data;
@@ -994,6 +1099,23 @@
         const authorName = firstLine.replace(/[(（<][^)）>]*[)）>]/g,"").trim();
         if(authorName && authorName.length <= 40) ld.author = {"@type":"Person","name":authorName};
       }
+    } else if(page === "shop" && id){
+      const it = (d.shop||[]).find(x=>x.id===id);
+      if(it){
+        const name = cleanText(it.title) || "Untitled";
+        const spec = [cleanText(it.spec1), cleanText(it.spec2)].filter(Boolean).join(", ");
+        title = name + " — SHOP | " + ARTIST + " Yunsung Lee";
+        desc  = (spec ? spec + ". " : "") + (excerpt(it.description,120) || "이윤성 작품·굿즈 구매.");
+        if(it.cover) image = absUrl(it.cover);
+        type  = "product";
+        if(it.slug) canonicalOverride = pageUrl("shop", it);
+        ld = productLd(it, canonicalOverride || canonical);
+      }
+    } else if(page === "shop"){
+      title = "SHOP — " + ARTIST + " Yunsung Lee";
+      desc  = "이윤성(Yunsung Lee)의 원화, 프린트, 굿즈를 구매할 수 있습니다. 국내 원화 결제와 해외 USD 결제를 모두 지원합니다.";
+      const first = (d.shop||[]).find(x=>x.cover);
+      if(first) image = absUrl(first.cover);
     } else if(page === "cv"){
       title = "CV — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee, b.1985) 약력. " + excerpt(d.cv && d.cv.text, 120);
@@ -1048,6 +1170,7 @@
     cv:{text:""},
     works:[],
     text:[],
+    shop:[],
     contact:{email:"",links:[]},
     design: Object.assign({}, DEFAULT_DESIGN)
   };
@@ -1107,12 +1230,13 @@
     if(!d.cv) d.cv = {text:""};
     if(!d.works) d.works = [];
     if(!d.text) d.text = [];
+    if(!d.shop) d.shop = [];
     if(!d.contact) d.contact = {email:"",links:[]};
     if(!d.contact.links) d.contact.links = [];
     if(!d.design) d.design = Object.assign({}, DEFAULT_DESIGN);
     else d.design = Object.assign({}, DEFAULT_DESIGN, d.design);
     if(!Array.isArray(d.publishedPages)) d.publishedPages = [];
-    [d.works, d.text].forEach(arr=>{
+    [d.works, d.text, d.shop].forEach(arr=>{
       arr.forEach(item=>{
         if(!item.photoRows){
           // migrate legacy flat photos[] into one-column rows
@@ -1184,6 +1308,17 @@
 
   function renderRoute(){
     const r = parseHash();
+
+    // Pages swap via the hash here, so GA's automatic page_view only fires on
+    // first load — send one per in-app navigation too.
+    if(typeof gtag === "function"){
+      gtag('event', 'page_view', {
+        page_title: r.id ? (r.page + "/" + r.id) : r.page,
+        page_location: location.href,
+        page_path: location.pathname + location.hash
+      });
+    }
+
     document.querySelectorAll(".site-nav a").forEach(a=>{
       a.classList.toggle("active", a.dataset.page===r.page);
     });
@@ -1196,6 +1331,8 @@
     else if(r.page==="works" && r.id) renderCollectionDetail(app,"works",r.id);
     else if(r.page==="text" && !r.id) renderTextList(app);
     else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
+    else if(r.page==="shop" && !r.id) renderShopGrid(app);
+    else if(r.page==="shop" && r.id) renderShopDetail(app, r.id);
     else if(r.page==="contact") renderContact(app);
     else renderCollectionGrid(app,"works","WORKS");
 
@@ -1285,6 +1422,224 @@
     }
   }
 
+  // ---------------- shop ----------------
+  function fmtKrw(v){
+    const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,""));
+    return isFinite(n) && n>0 ? "₩" + n.toLocaleString("ko-KR") : "";
+  }
+  function fmtUsd(v){
+    const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,""));
+    return isFinite(n) && n>0 ? "$" + n.toLocaleString("en-US",{minimumFractionDigits:0, maximumFractionDigits:2}) : "";
+  }
+  function priceLabel(item){
+    if(item.soldOut) return "SOLD";
+    const p = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean);
+    return p.join(" / ") || "문의";
+  }
+
+  function renderShopGrid(app){
+    const items = state.data.shop || [];
+    const grid = el("div","shop-grid");
+
+    items.forEach((item, idx)=>{
+      const card = el("a","shop-card");
+      setItemLink(card, "shop", item);
+
+      const thumb = el("div","shop-thumb");
+      if(item.cover){
+        const img = el("img");
+        img.alt = (cleanText(item.title)||"상품") + " — " + ARTIST;
+        img.loading = idx < 4 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.src = item.cover;
+        thumb.appendChild(img);
+      } else {
+        thumb.appendChild(el("div","placeholder-label"));
+      }
+      if(item.soldOut){
+        const b = el("div","shop-sold-badge"); b.textContent = "SOLD OUT";
+        thumb.appendChild(b);
+      }
+      card.appendChild(thumb);
+
+      const info = el("div","shop-info");
+      const nm = el("div","shop-name"); nm.textContent = cleanText(item.title) || "(Untitled)";
+      info.appendChild(nm);
+      [item.spec1, item.spec2].forEach(s=>{
+        if(cleanText(s)){ const d = el("div","shop-spec"); d.textContent = cleanText(s); info.appendChild(d); }
+      });
+      if(cleanText(item.edition)){
+        const e = el("div","shop-edition"); e.textContent = cleanText(item.edition); info.appendChild(e);
+      }
+      const pr = el("div","shop-price"+(item.soldOut?" sold":"")); pr.textContent = priceLabel(item);
+      info.appendChild(pr);
+      card.appendChild(info);
+
+      const ctl = el("div","frame-editctl");
+      const eb = el("button"); eb.textContent="✎"; eb.title="수정";
+      eb.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); openItemModal("shop",item.id); });
+      const db = el("button"); db.textContent="✕"; db.title="삭제";
+      db.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); deleteItem("shop",item.id); });
+      ctl.appendChild(eb); ctl.appendChild(db);
+      card.appendChild(ctl);
+
+      grid.appendChild(card);
+    });
+
+    const addTile = el("div","shop-card master-only-tile");
+    addTile.style.display = state.master ? "block" : "none";
+    const at = el("div","shop-thumb");
+    const plus = el("div","placeholder-label"); plus.textContent = "+ 상품 추가";
+    at.appendChild(plus);
+    addTile.appendChild(at);
+    addTile.style.cursor = "pointer";
+    addTile.addEventListener("click", ()=>openItemModal("shop",null));
+    grid.appendChild(addTile);
+
+    const bleed = el("div","grid-bleed");
+    bleed.appendChild(grid);
+    app.appendChild(bleed);
+
+    if(!items.length && !state.master){
+      const empty = el("div","empty-collection"); empty.textContent = "준비 중입니다.";
+      app.appendChild(empty);
+    }
+  }
+
+  function buyRow(item){
+    const box = el("div","buy-box");
+    if(item.soldOut){
+      const s = el("div","buy-soldout"); s.textContent = "SOLD OUT";
+      box.appendChild(s);
+      return box;
+    }
+    const row = el("div","buy-row");
+    const kr = safeUrl(item.buyKr);
+    const us = safeUrl(item.buyUs);
+
+    if(kr){
+      const a = el("a","buy-btn"); a.href = kr; a.target="_blank"; a.rel="noopener";
+      a.innerHTML = "";
+      const t = document.createElement("span"); t.textContent = "국내 구매";
+      const c = el("span","cur"); c.textContent = fmtKrw(item.priceKrw) || "₩";
+      a.appendChild(t); a.appendChild(c);
+      row.appendChild(a);
+    }
+    if(us){
+      const a = el("a","buy-btn"+(kr?" alt":"")); a.href = us; a.target="_blank"; a.rel="noopener";
+      const t = document.createElement("span"); t.textContent = "International";
+      const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd) || "$";
+      a.appendChild(t); a.appendChild(c);
+      row.appendChild(a);
+    }
+    if(!kr && !us){
+      const s = el("div","buy-soldout"); s.textContent = "구매 문의: reyunsung@gmail.com";
+      box.appendChild(s);
+      return box;
+    }
+    box.appendChild(row);
+    const note = el("div","buy-note");
+    note.textContent = kr && us
+      ? "국내 구매는 원화 결제와 국내 배송, International은 USD 결제와 국제 배송입니다."
+      : (kr ? "원화 결제 · 국내 배송" : "USD 결제 · 국제 배송");
+    box.appendChild(note);
+    return box;
+  }
+
+  function renderShopDetail(app, id){
+    const item = (state.data.shop||[]).find(x=>x.id===id);
+    if(!item){
+      const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
+      app.appendChild(p); return;
+    }
+    const back = el("a","detail-back"); back.href = "#shop"; back.textContent = "← Back to SHOP";
+    app.appendChild(back);
+
+    const head = el("div","detail-head");
+    const h = el("div","detail-title"); h.textContent = cleanText(item.title) || "(Untitled)";
+    const actions = el("div","detail-actions");
+    const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal("shop",item.id));
+    const delBtn = el("button","danger"); delBtn.textContent="Delete"; delBtn.addEventListener("click",()=>deleteItem("shop",item.id));
+    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    head.appendChild(h); head.appendChild(actions);
+    app.appendChild(head);
+
+    const specs = [cleanText(item.spec1), cleanText(item.spec2), cleanText(item.edition)].filter(Boolean);
+    if(specs.length){
+      const s = el("div","shop-specs-line"); s.textContent = specs.join("  ·  ");
+      app.appendChild(s);
+    }
+
+    if(cleanText(item.description)){
+      const desc = el("div","detail-desc"); desc.textContent = item.description;
+      app.appendChild(desc);
+    }
+
+    app.appendChild(buyRow(item));
+
+    const rowsWrap = el("div","photo-rows-wrap");
+    rowsWrap.style.marginTop = "48px";
+    let flatIdx = 0;
+    (item.photoRows||[]).forEach((row, rowIndex)=>{
+      if(state.master){
+        const insertBar = el("div","row-insert");
+        const plus = el("span"); plus.textContent = "+";
+        insertBar.appendChild(plus);
+        insertBar.addEventListener("click", ()=>startNewRowFlow("shop",item.id,rowIndex));
+        rowsWrap.appendChild(insertBar);
+      }
+      const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
+      rowGrid.style.setProperty("--row-cols", row.cols || 1);
+      row.photos.forEach(photo=>{
+        const myIdx = flatIdx++;
+        const cell = el("div","photo-cell");
+        const img = el("img");
+        img.alt = cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST);
+        img.loading = myIdx < 2 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.addEventListener("load", scheduleJustifyLayout);
+        img.src = photo.image;
+        cell.appendChild(img);
+        if(photo.caption){
+          const cap = el("div","photo-caption"); cap.textContent = photo.caption;
+          cell.appendChild(cap);
+        }
+        cell.addEventListener("click", ()=>openPhotoLightbox("shop",item.id,myIdx));
+        const ctl = el("div","photo-editctl");
+        const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",(e)=>{ e.stopPropagation(); openPhotoModal("shop",item.id,row.id,photo.id); });
+        const db = el("button"); db.textContent="✕"; db.addEventListener("click",(e)=>{ e.stopPropagation(); deletePhoto("shop",item.id,row.id,photo.id); });
+        ctl.appendChild(eb); ctl.appendChild(db);
+        cell.appendChild(ctl);
+        rowGrid.appendChild(cell);
+      });
+      if(state.master && row.photos.length < (row.cols||1)){
+        const addTile = el("div","photo-cell add-tile");
+        const plus = el("span"); plus.textContent = "+";
+        addTile.appendChild(plus);
+        addTile.addEventListener("click", ()=>openPhotoModal("shop",item.id,row.id,null));
+        rowGrid.appendChild(addTile);
+      }
+      rowsWrap.appendChild(rowGrid);
+    });
+    if(state.master){
+      const rows = item.photoRows || [];
+      const lastRow = rows[rows.length-1];
+      if(!lastRow || lastRow.photos.length >= (lastRow.cols||1)){
+        const soloGrid = el("div","photo-grid");
+        soloGrid.style.setProperty("--row-cols", 1);
+        const addTile = el("div","photo-cell add-tile");
+        const plus = el("span"); plus.textContent = "+";
+        addTile.appendChild(plus);
+        addTile.addEventListener("click", ()=>startNewRowFlow("shop",item.id));
+        soloGrid.appendChild(addTile);
+        rowsWrap.appendChild(soloGrid);
+      }
+    }
+    app.appendChild(rowsWrap);
+    observeJustifyContainer(rowsWrap);
+    scheduleJustifyLayout();
+  }
+
   // ---------------- text list (essays / reviews) ----------------
   function renderTextList(app){
     const items = state.data.text;
@@ -1351,7 +1706,15 @@
 
     if(id){
       const item = state.data[key].find(x=>x.id===id);
-      $("itemModalTitle").textContent = key==="text" ? "Edit Essay" : "Edit Series";
+      $("itemModalTitle").textContent = key==="text" ? "Edit Essay" : (key==="shop" ? "Edit Product" : "Edit Series");
+      $("itemSpec1").value = item.spec1 || "";
+      $("itemSpec2").value = item.spec2 || "";
+      $("itemEdition").value = item.edition || "";
+      $("itemPriceKrw").value = item.priceKrw || "";
+      $("itemPriceUsd").value = item.priceUsd || "";
+      $("itemBuyKr").value = item.buyKr || "";
+      $("itemBuyUs").value = item.buyUs || "";
+      $("itemSoldOut").checked = !!item.soldOut;
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
       $("itemSlug").value = item.slug || "";
@@ -1359,7 +1722,9 @@
       else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
-      $("itemModalTitle").textContent = key==="text" ? "Add Essay" : "Add Series";
+      $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
+      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
+      $("itemSoldOut").checked = false;
       $("itemTitle").value = "";
       $("itemDesc").value = "";
       $("itemSlug").value = "";
@@ -1367,6 +1732,9 @@
       $("itemDeleteBtn").style.display = "none";
     }
     $("itemSlugKind").textContent = key;
+    $("shopFields").style.display = key==="shop" ? "block" : "none";
+    $("itemTitle").placeholder = key==="shop" ? "상품 이름" : "시리즈 제목";
+    $("itemDesc").placeholder  = key==="shop" ? "상품 설명 (선택)" : "작품 설명";
     openModal("itemModal");
   }
 
@@ -1387,6 +1755,17 @@
       photoRows: prev ? (prev.photoRows || []) : []
     });
 
+    if(key === "shop"){
+      payload.spec1    = $("itemSpec1").value.trim();
+      payload.spec2    = $("itemSpec2").value.trim();
+      payload.edition  = $("itemEdition").value.trim();
+      payload.priceKrw = $("itemPriceKrw").value.replace(/[^0-9.]/g,"");
+      payload.priceUsd = $("itemPriceUsd").value.replace(/[^0-9.]/g,"");
+      payload.buyKr    = $("itemBuyKr").value.trim();
+      payload.buyUs    = $("itemBuyUs").value.trim();
+      payload.soldOut  = $("itemSoldOut").checked;
+    }
+
     if(idx>=0) arr[idx] = payload; else arr.push(payload);
     ensureSlugs();
 
@@ -1396,7 +1775,8 @@
   }
 
   function deleteItem(key,id){
-    if(!confirm("이 시리즈를 삭제할까요? 포함된 사진도 함께 삭제됩니다.")) return;
+    const what = key==="shop" ? "이 상품을" : (key==="text" ? "이 글을" : "이 시리즈를");
+    if(!confirm(what + " 삭제할까요? 포함된 사진도 함께 삭제됩니다.")) return;
     state.data[key] = state.data[key].filter(x=>x.id!==id);
     saveDraft();
     closeModal("itemModal");
@@ -1773,7 +2153,7 @@
       hasAny = true;
       const block = el("div","contact-block");
       const label = el("div","contact-label"); label.textContent = "Email";
-      const a = el("a","contact-value"); a.href = "mailto:"+c.email; a.textContent = c.email;
+      const a = el("a","contact-value"); a.href = safeUrl("mailto:"+String(c.email).replace(/[\s,;]+/g,"")); a.textContent = c.email;
       block.appendChild(label); block.appendChild(a);
       wrap.appendChild(block);
     }
@@ -1782,7 +2162,7 @@
       const handle = c.instagram.replace(/^@/,"");
       const block = el("div","contact-block");
       const label = el("div","contact-label"); label.textContent = "Instagram";
-      const a = el("a","contact-value"); a.href = "https://instagram.com/"+handle; a.target="_blank"; a.rel="noopener"; a.textContent = "@"+handle;
+      const a = el("a","contact-value"); a.href = "https://instagram.com/"+encodeURIComponent(handle); a.target="_blank"; a.rel="noopener"; a.textContent = "@"+handle;
       block.appendChild(label); block.appendChild(a);
       wrap.appendChild(block);
     }
@@ -1792,7 +2172,9 @@
         hasAny = true;
         const block = el("div","contact-block");
         const label = el("div","contact-label"); label.textContent = l.label || "Link";
-        const a = el("a","contact-value"); a.href = l.url; a.target="_blank"; a.rel="noopener"; a.textContent = l.label || l.url;
+        const href = safeUrl(l.url);
+        if(!href) return;
+        const a = el("a","contact-value"); a.href = href; a.target="_blank"; a.rel="noopener"; a.textContent = l.label || l.url;
         block.appendChild(label); block.appendChild(a);
         wrap.appendChild(block);
       });
@@ -2456,44 +2838,83 @@
      작품마다 /works/<slug>/index.html 을 진짜 파일로 만들어 올립니다.
      리다이렉트가 아니라 제목·본문·이미지가 HTML에 그대로 들어 있는 페이지입니다. */
 
+  /* ---------- 사이트 본체의 CSS/폰트를 그대로 재사용 ----------
+     정적 페이지가 따로 노는 걸 막기 위해, index.html 안의 <style> 내용을
+     그대로 뽑아 /page.css 로 올리고 모든 정적 페이지가 공유합니다.
+     Design 패널에서 값을 바꾸면 게시할 때 정적 페이지에도 똑같이 반영됩니다. */
+
+  const FONT_FILES = ["fonts/lys-sans-400.woff2", "fonts/lys-sans-700.woff2"];
+
+  function siteStyleText(){
+    const s = document.querySelector("head style");
+    return s ? s.textContent : "";
+  }
+  // @font-face 안에 박혀 있는 base64 두 벌(400/700)을 꺼냅니다
+  function extractFontBase64(){
+    const out = [];
+    const re = /url\(data:font\/woff2;base64,([A-Za-z0-9+/=]+)\)/g;
+    let m; const css = siteStyleText();
+    while((m = re.exec(css))) out.push(m[1]);
+    return out;
+  }
+  // 정적 페이지 전용으로 조금 얹는 규칙들
+  const EXTRA_CSS = [
+    "a.photo-cell{display:block;}",
+    ".photo-cell{cursor:zoom-in;}",
+    ".static-page .detail-desc{margin-top:20px;}",
+    ".static-page .frame{cursor:pointer;}",
+    "@media print{header.site-head,footer{display:none}}"
+  ].join("");
+
+  function buildPageCss(){
+    let css = siteStyleText();
+    // 거대한 base64 폰트는 파일 참조로 바꿔 13개 페이지가 나눠 씁니다
+    let i = 0;
+    css = css.replace(/url\(data:font\/woff2;base64,[A-Za-z0-9+/=]+\)/g, ()=>{
+      const f = FONT_FILES[i] || FONT_FILES[FONT_FILES.length-1]; i++;
+      return "url(/" + f + ")";
+    });
+    // 현재 Design 패널 값(=:root 인라인 변수)을 그대로 얹습니다
+    const vars = document.documentElement.style.cssText || "";
+    return css + "\n:root{" + vars + "}\n" + EXTRA_CSS + "\n";
+  }
+
+  // 여러 장이 한 줄에 들어간 경우 높이를 맞추는 계산 (본체와 동일한 방식)
+  const JUSTIFY_JS = [
+    "(function(){",
+    "function L(){document.querySelectorAll('.photo-grid.multi').forEach(function(g){",
+    "var c=Array.prototype.slice.call(g.querySelectorAll('.photo-cell')),r=[];",
+    "if(!c.length)return;",
+    "for(var i=0;i<c.length;i++){var m=c[i].querySelector('img');",
+    "if(!m||!m.naturalWidth||!m.naturalHeight)return;r.push(m.naturalWidth/m.naturalHeight);}",
+    "var cs=getComputedStyle(g),gp=parseFloat(cs.columnGap||cs.gap)||0,B=380;",
+    "var raw=r.reduce(function(a,x){return a+x*B;},0),w=g.clientWidth;",
+    "if(!w||!raw)return;",
+    "var sc=(w-gp*(c.length-1))/raw,h=Math.min(Math.max(500,window.innerHeight*0.85),B*sc);",
+    "c.forEach(function(el,i){el.style.height=h+'px';el.style.width=(r[i]*h)+'px';});});}",
+    "window.addEventListener('resize',L);window.addEventListener('load',L);",
+    "document.addEventListener('DOMContentLoaded',L);",
+    "document.querySelectorAll('.photo-grid.multi img').forEach(function(m){m.addEventListener('load',L);});",
+    "L();})();"
+  ].join("");
+
   function esc(s){
     return String(s==null?"":s)
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
   }
   function rootPath(p){ return "/" + String(p||"").replace(/^\.?\//,""); }
-  function paragraphs(text){
-    return String(text||"").split(/\n\s*\n/).map(p=>cleanText(p)).filter(Boolean)
-      .map(p=>"    <p>"+esc(p)+"</p>").join("\n");
-  }
 
-  const PAGE_CSS = [
-    ":root{--ink:#111;--soft:#555;--faint:#999;--line:#e2e2e2;--bg:#fff}",
-    "*{box-sizing:border-box;margin:0;padding:0}",
-    "body{background:var(--bg);color:var(--ink);line-height:1.7;",
-    "font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;",
-    "-webkit-font-smoothing:antialiased}",
-    "a{color:inherit}",
-    "img{max-width:100%;height:auto;display:block}",
-    ".shell{max-width:940px;margin:0 auto;padding:0 24px}",
-    "header{border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:56px}",
-    "header .shell{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}",
-    ".brand{font-size:15px;letter-spacing:.14em;text-decoration:none}",
-    "nav a{font-size:12px;letter-spacing:.12em;margin-left:18px;text-decoration:none;color:var(--soft)}",
-    ".back{font-size:12px;letter-spacing:.1em;color:var(--faint);text-decoration:none;display:inline-block;margin-bottom:28px}",
-    "h1{font-size:26px;font-weight:400;letter-spacing:.01em;margin-bottom:8px}",
-    ".meta{font-size:12px;color:var(--faint);letter-spacing:.06em;margin-bottom:34px}",
-    ".body{max-width:640px;margin-bottom:64px}",
-    ".body p{margin-bottom:16px;font-size:15px}",
-    "figure{margin-bottom:44px}",
-    "figcaption{font-size:12px;color:var(--soft);margin-top:10px;line-height:1.5}",
-    ".more{border-top:1px solid var(--line);padding-top:28px;margin-top:64px}",
-    ".more h2{font-size:12px;letter-spacing:.14em;color:var(--faint);font-weight:400;margin-bottom:14px}",
-    ".more ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px}",
-    ".more a{font-size:14px;text-decoration:none;border-bottom:1px solid var(--line)}",
-    "footer{border-top:1px solid var(--line);margin-top:64px;padding:26px 0 48px;font-size:11px;color:var(--faint);letter-spacing:.08em}",
-    "@media(max-width:600px){h1{font-size:21px}header{margin-bottom:36px}}"
-  ].join("");
+  // titleStyle / descStyle 같은 개별 스타일을 인라인 style 문자열로
+  function styleAttr(o){
+    if(!o) return "";
+    const p = [];
+    if(o.fontSize != null)      p.push("font-size:"+o.fontSize+"px");
+    if(o.letterSpacing != null) p.push("letter-spacing:"+(o.letterSpacing/100)+"em");
+    if(o.bold != null)          p.push("font-weight:"+(o.bold?"700":"400"));
+    if(o.align)                 p.push("text-align:"+o.align);
+    return p.length ? ' style="'+esc(p.join(";"))+'"' : "";
+  }
 
   function buildStaticPage(kind, item, siblings){
     const title   = cleanText(item.title) || "Untitled";
@@ -2503,9 +2924,11 @@
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) photos.push(p); }));
     const cover   = item.cover ? absUrl(item.cover) : (photos[0] ? absUrl(photos[0].image) : SITE_URL+"/images/w6-cover.jpg");
 
-    // 구조화 데이터
+    /* ---- 구조화 데이터 ---- */
     let ld;
-    if(kind === "works"){
+    if(kind === "shop"){
+      ld = productLd(item, url);
+    } else if(kind === "works"){
       let bestCap = "";
       photos.forEach(p=>{
         const c = cleanText(p.caption); if(!c) return;
@@ -2529,22 +2952,60 @@
       if(author && author.length <= 40) ld.author = {"@type":"Person","name":author};
     }
 
-    const figures = photos.map((p,i)=>{
-      const cap = cleanText(p.caption);
-      const alt = cap || (title + " — " + ARTIST);
-      return '    <figure>\n' +
-             '      <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
-             (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
-             (cap ? '      <figcaption>'+esc(cap)+'</figcaption>\n' : '') +
-             '    </figure>';
+    /* ---- 사진: photoRows의 열 구성을 그대로 재현 ---- */
+    let flat = 0;
+    const rowsHtml = (item.photoRows||[]).map(row=>{
+      const cols = row.cols || 1;
+      const cells = (row.photos||[]).map(p=>{
+        const i = flat++;
+        const cap = cleanText(p.caption);
+        const alt = cap || (title + " — " + ARTIST);
+        return '        <a class="photo-cell" href="'+esc(rootPath(p.image))+'">\n' +
+               '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
+               (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
+               (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
+               '        </a>';
+      }).join("\n");
+      if(!cells) return "";
+      return '      <div class="photo-grid'+(cols>1?' multi':'')+'" style="--row-cols:'+cols+'">\n'+cells+'\n      </div>';
+    }).filter(Boolean).join("\n");
+
+    /* ---- 하단: 다른 작업 썸네일 (본체의 Next와 동일한 모양) ---- */
+    const others = siblings.filter(x=>x.id!==item.id).slice(0,3).map(x=>{
+      const t = esc(cleanText(x.title)||"Untitled");
+      return '        <a class="frame" href="/'+esc(pagePath(kind,x))+'">\n' +
+             (x.cover ? '          <img src="'+esc(rootPath(x.cover))+'" alt="'+t+' — '+ARTIST+'" loading="lazy" decoding="async">\n'
+                      : '          <div class="placeholder-label"></div>\n') +
+             '          <div class="hover-title"><span>'+t+'</span></div>\n' +
+             '        </a>';
     }).join("\n");
 
-    const others = siblings.filter(x=>x.id!==item.id).slice(0,8)
-      .map(x=>'      <li><a href="/'+esc(pagePath(kind,x))+'">'+esc(cleanText(x.title)||"Untitled")+'</a></li>').join("\n");
+    const backHref  = kind === "works" ? "/" : (kind === "shop" ? "/#shop" : "/#text");
+    const backLabel = kind === "works" ? "WORKS" : (kind === "shop" ? "SHOP" : "TEXT");
+    const navActive = kind;
 
-    const backLabel = kind === "works" ? "WORKS" : "TEXT";
-    const backHref  = kind === "works" ? "/" : "/#text";
-    const moreLabel = kind === "works" ? "다른 작업" : "다른 글";
+    /* 상품이면 사양 줄과 구매 버튼을 넣습니다 */
+    let shopBlock = "";
+    if(kind === "shop"){
+      const specs = [cleanText(item.spec1), cleanText(item.spec2), cleanText(item.edition)].filter(Boolean);
+      const kr = safeUrl(item.buyKr), us = safeUrl(item.buyUs);
+      let buy;
+      if(item.soldOut){
+        buy = '      <div class="buy-soldout">SOLD OUT</div>';
+      } else if(!kr && !us){
+        buy = '      <div class="buy-soldout">구매 문의: reyunsung@gmail.com</div>';
+      } else {
+        const btns = [];
+        if(kr) btns.push('        <a class="buy-btn" href="'+esc(kr)+'" target="_blank" rel="noopener"><span>국내 구매</span><span class="cur">'+esc(fmtKrw(item.priceKrw)||"₩")+'</span></a>');
+        if(us) btns.push('        <a class="buy-btn'+(kr?' alt':'')+'" href="'+esc(us)+'" target="_blank" rel="noopener"><span>International</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
+        buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
+              '      <div class="buy-note">'+(kr&&us ? "국내 구매는 원화 결제와 국내 배송, International은 USD 결제와 국제 배송입니다."
+                                                    : (kr ? "원화 결제 · 국내 배송" : "USD 결제 · 국제 배송"))+'</div>';
+      }
+      shopBlock =
+        (specs.length ? '    <div class="shop-specs-line">'+esc(specs.join("  ·  "))+'</div>\n' : '') +
+        '    <div class="buy-box">\n'+buy+'\n    </div>';
+    }
 
     return [
 '<!DOCTYPE html>',
@@ -2568,28 +3029,44 @@
 '<meta name="twitter:title" content="'+esc(title)+'">',
 '<meta name="twitter:description" content="'+esc(desc)+'">',
 '<meta name="twitter:image" content="'+esc(cover)+'">',
-'<script type="application/ld+json">'+JSON.stringify(ld)+'<\/script>',
-'<style>'+PAGE_CSS+'</style>',
+'<link rel="preload" href="/'+FONT_FILES[0]+'" as="font" type="font/woff2" crossorigin>',
+'<link rel="stylesheet" href="/page.css">',
+'<script type="application/ld+json">'+JSON.stringify(ld).replace(/<\//g,"<\\/")+'<\/script>',
+'<script async src="https://www.googletagmanager.com/gtag/js?id=G-TBFPJKSNZ7"><\/script>',
+'<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-TBFPJKSNZ7");<\/script>',
 '</head>',
-'<body>',
-'  <header><div class="shell">',
-'    <a class="brand" href="/">LEE YUNSUNG</a>',
-'    <nav><a href="/#cv">CV</a><a href="/">WORKS</a><a href="/#text">TEXT</a><a href="/#contact">CONTACT</a></nav>',
-'  </div></header>',
-'  <main class="shell">',
-'    <a class="back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
-'    <h1>'+esc(title)+'</h1>',
-'    <div class="meta">'+ARTIST+' Yunsung Lee</div>',
-'    <div class="body">',
-paragraphs(item.description),
+'<body class="static-page">',
+'  <header class="site-head">',
+'    <div class="shell head-grid">',
+'      <div class="head-spacer"></div>',
+'      <div class="head-center"><a href="/" class="site-name">'+esc(state.data.siteTitle||"LEE YUNSUNG")+'</a></div>',
+'      <nav class="site-nav">',
+'        <a href="/#cv">CV</a>',
+'        <a href="/"'+(navActive==="works"?' class="active"':'')+'>WORKS</a>',
+'        <a href="/#text"'+(navActive==="text"?' class="active"':'')+'>TEXT</a>',
+'        <a href="/#shop"'+(navActive==="shop"?' class="active"':'')+'>SHOP</a>',
+'        <a href="/#contact">CONTACT</a>',
+'      </nav>',
 '    </div>',
-figures,
-(others ? '    <div class="more">\n      <h2>'+moreLabel+'</h2>\n      <ul>\n'+others+'\n      </ul>\n    </div>' : ''),
+'  </header>',
+'  <main class="shell">',
+'    <a class="detail-back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
+'    <div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>',
+(cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+esc(cleanText0(item.description))+'</div>' : ''),
+shopBlock,
+(rowsHtml ? '    <div class="photo-rows-wrap">\n'+rowsHtml+'\n    </div>' : ''),
+(others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),
 '  </main>',
-'  <footer><div class="shell">&copy; '+new Date().getFullYear()+' LEE YUNSUNG</div></footer>',
+'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span></div></footer>',
+'<script>'+JUSTIFY_JS+'<\/script>',
 '</body>',
 '</html>',
 ''].join("\n");
+  }
+
+  // 줄바꿈은 살리고 zero-width 문자만 털어냅니다 (detail-desc는 pre-wrap)
+  function cleanText0(s){
+    return String(s||"").replace(/[\u200b-\u200f\ufeff]/g,"");
   }
 
   function buildSitemap(){
@@ -2614,6 +3091,13 @@ figures,
     (state.data.text||[]).forEach(it=>{
       rows.push('  <url><loc>'+pageUrl("text",it)+'</loc><lastmod>'+today+'</lastmod><priority>0.7</priority></url>');
     });
+    (state.data.shop||[]).forEach(it=>{
+      rows.push('  <url>');
+      rows.push('    <loc>'+pageUrl("shop",it)+'</loc>');
+      rows.push('    <lastmod>'+today+'</lastmod><priority>0.8</priority>');
+      if(it.cover) rows.push('    <image:image><image:loc>'+esc(absUrl(it.cover))+'</image:loc></image:image>');
+      rows.push('  </url>');
+    });
     rows.push('</urlset>');
     return rows.join("\n");
   }
@@ -2623,7 +3107,7 @@ figures,
   }
 
   // 슬러그가 바뀌거나 항목이 지워졌을 때 남는 옛 페이지를 정리합니다
-  const PAGE_PATH_GUARD = /^(works|text)\/[A-Za-z0-9._-]+\/index\.html$/;
+  const PAGE_PATH_GUARD = /^(works|text|shop)\/[A-Za-z0-9._-]+\/index\.html$/;
   async function ghDeleteFile(path){
     if(!PAGE_PATH_GUARD.test(path)) return;           // 안전장치: 생성한 페이지만 삭제
     const sha = await ghGetSha(path);
@@ -2641,6 +3125,7 @@ figures,
     const jobs = [];
     (d.works||[]).forEach(it=>jobs.push(["works", it, d.works]));
     (d.text||[]).forEach(it=>jobs.push(["text", it, d.text]));
+    (d.shop||[]).forEach(it=>jobs.push(["shop", it, d.shop]));
 
     let i = 0;
     for(const [kind, item, sibs] of jobs){
@@ -2649,6 +3134,17 @@ figures,
       await ghPutFile(path, utf8ToBase64(html), "Update page: " + (cleanText(item.title)||item.id));
       written.push(path);
       if(onProgress) onProgress(++i, jobs.length);
+    }
+
+    // 공유 스타일시트 (Design 패널 값 포함)
+    await ghPutFile("page.css", utf8ToBase64(buildPageCss()), "Update shared page stylesheet");
+
+    // 폰트는 바뀌지 않으므로 없을 때 한 번만 올립니다
+    const fonts = extractFontBase64();
+    for(let i=0;i<FONT_FILES.length && i<fonts.length;i++){
+      if(!(await ghGetSha(FONT_FILES[i]))){
+        await ghPutFile(FONT_FILES[i], fonts[i], "Add web font " + FONT_FILES[i]);
+      }
     }
 
     await ghPutFile("sitemap.xml", utf8ToBase64(buildSitemap()), "Update sitemap");
