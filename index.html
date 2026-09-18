@@ -385,14 +385,32 @@
   }
 
   /* ---------- lightbox ---------- */
-  #photoLightbox{background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;}
-  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
-  #photoLightbox .lb-stage{
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    max-width:min(92vw,1100px); max-height:88vh;
+  #photoLightbox{
+    background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;
+    flex-direction:column;
   }
-  #photoLightbox img{max-width:100%; max-height:80vh; object-fit:contain; display:block; box-shadow:0 20px 60px rgba(0,0,0,.5);}
-  .lb-caption{color:#f2f2f2; font-size:13px; margin-top:16px; text-align:center; max-width:640px;}
+  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
+  .lb-viewport{
+    width:100%; flex:1 1 auto; overflow:hidden; display:flex; align-items:center; min-height:0;
+  }
+  .lb-track{
+    display:flex; width:300%; height:100%; will-change:transform;
+    transform:translate3d(-33.3333%,0,0);
+  }
+  .lb-track.animate{transition:transform .28s cubic-bezier(.22,.61,.36,1);}
+  .lb-slide{
+    width:33.3333%; flex:0 0 33.3333%; height:100%;
+    display:flex; align-items:center; justify-content:center; padding:0 3vw;
+  }
+  .lb-slide img{
+    max-width:100%; max-height:78vh; object-fit:contain; display:block;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .lb-slide img[src=""]{display:none;}
+  .lb-meta{
+    flex:0 0 auto; padding:14px 20px 26px; text-align:center; width:100%;
+  }
+  .lb-caption{color:#f2f2f2; font-size:13px; text-align:center; max-width:640px; margin:0 auto;}
   .lb-counter{color:rgba(255,255,255,.45); font-size:11px; letter-spacing:.08em; margin-top:8px; font-family:var(--active-font-family);}
   .lb-close{
     position:absolute; top:20px; right:24px; background:none; border:none; color:#fff; font-size:22px; z-index:2; opacity:.75;
@@ -668,8 +686,14 @@
   <div class="overlay" id="photoLightbox">
     <button class="lb-close" data-close="photoLightbox">✕</button>
     <button class="lb-nav lb-prev" id="lightboxPrev">‹</button>
-    <div class="lb-stage">
-      <img id="lightboxImg" alt="">
+    <div class="lb-viewport" id="lightboxViewport">
+      <div class="lb-track" id="lightboxTrack">
+        <div class="lb-slide"><img id="lightboxImgPrev" alt=""></div>
+        <div class="lb-slide"><img id="lightboxImg" alt=""></div>
+        <div class="lb-slide"><img id="lightboxImgNext" alt=""></div>
+      </div>
+    </div>
+    <div class="lb-meta">
       <div class="lb-caption" id="lightboxCaption"></div>
       <div class="lb-counter" id="lightboxCounter"></div>
     </div>
@@ -2116,61 +2140,129 @@
     return out;
   }
 
+  function currentFlatPhotos(){
+    const item = state.data[lightboxState.key] && state.data[lightboxState.key].find(x=>x.id===lightboxState.itemId);
+    return item ? getFlatPhotos(item) : [];
+  }
+
   function openPhotoLightbox(key,itemId,index){
     lightboxState = { key, itemId, index };
     renderLightbox();
     openModal("photoLightbox");
   }
 
+  // The track holds prev/current/next side by side so a drag can move real
+  // pixels under the finger; after each settle we recentre it silently.
   function renderLightbox(){
-    const item = state.data[lightboxState.key] && state.data[lightboxState.key].find(x=>x.id===lightboxState.itemId);
-    const flat = item ? getFlatPhotos(item) : [];
-    if(!item || !flat.length){ closeModal("photoLightbox"); return; }
+    const flat = currentFlatPhotos();
+    if(!flat.length){ closeModal("photoLightbox"); return; }
     if(lightboxState.index < 0) lightboxState.index = flat.length-1;
     if(lightboxState.index >= flat.length) lightboxState.index = 0;
-    const photo = flat[lightboxState.index];
+
+    const n = flat.length;
+    const i = lightboxState.index;
+    const photo = flat[i];
+
     $("lightboxImg").src = photo.image;
+    $("lightboxImg").alt = photo.caption || "";
+    $("lightboxImgPrev").src = n > 1 ? flat[(i - 1 + n) % n].image : "";
+    $("lightboxImgNext").src = n > 1 ? flat[(i + 1) % n].image : "";
+
     $("lightboxCaption").textContent = photo.caption || "";
     $("lightboxCaption").style.display = photo.caption ? "" : "none";
-    const multi = flat.length > 1;
-    $("lightboxCounter").textContent = multi ? (lightboxState.index+1) + " / " + flat.length : "";
+    const multi = n > 1;
+    $("lightboxCounter").textContent = multi ? (i+1) + " / " + n : "";
     $("lightboxPrev").style.display = multi ? "flex" : "none";
     $("lightboxNext").style.display = multi ? "flex" : "none";
+
+    setTrackOffset(0, false);
+  }
+
+  function setTrackOffset(px, animate){
+    const track = $("lightboxTrack");
+    if(!track) return;
+    track.classList.toggle("animate", !!animate);
+    track.style.transform = "translate3d(calc(-33.3333% + " + px + "px),0,0)";
   }
 
   function lightboxNav(delta){
-    lightboxState.index += delta;
-    renderLightbox();
+    const flat = currentFlatPhotos();
+    if(flat.length < 2) return;
+    const width = $("lightboxViewport") ? $("lightboxViewport").clientWidth : window.innerWidth;
+    // Slide out in the direction of travel, then swap content and recentre.
+    setTrackOffset(delta > 0 ? -width : width, true);
+    setTimeout(()=>{
+      lightboxState.index += delta;
+      renderLightbox();
+    }, 280);
   }
 
   // ---------------- lightbox swipe (touch) ----------------
-  // Horizontal drag flips photos; a mostly-vertical drag is left alone so the
-  // page can still scroll, and a short flick counts as long as it was quick.
+  // The image tracks the finger in real time; releasing either completes the
+  // flip (past the threshold) or springs back to where it was.
   function bindLightboxSwipe(){
     const box = $("photoLightbox");
-    if(!box) return;
-    let startX = 0, startY = 0, startT = 0, tracking = false;
+    const viewport = $("lightboxViewport");
+    if(!box || !viewport) return;
 
-    box.addEventListener("touchstart",(e)=>{
-      if(e.touches.length !== 1){ tracking = false; return; }
+    let startX = 0, startY = 0, startT = 0;
+    let dragging = false, decided = false, horizontal = false;
+
+    viewport.addEventListener("touchstart",(e)=>{
+      if(e.touches.length !== 1) { dragging = false; return; }
+      if(currentFlatPhotos().length < 2) { dragging = false; return; }
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       startT = Date.now();
-      tracking = true;
+      dragging = true; decided = false; horizontal = false;
+      setTrackOffset(0, false);
     }, {passive:true});
 
-    box.addEventListener("touchend",(e)=>{
-      if(!tracking) return;
-      tracking = false;
+    viewport.addEventListener("touchmove",(e)=>{
+      if(!dragging) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+
+      // Lock the gesture axis once past a small deadzone, so a vertical
+      // scroll never gets hijacked into a photo flip.
+      if(!decided){
+        if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        decided = true;
+        horizontal = Math.abs(dx) > Math.abs(dy);
+        if(!horizontal){ dragging = false; return; }
+      }
+      if(!horizontal) return;
+
+      if(e.cancelable) e.preventDefault();
+      setTrackOffset(dx, false);
+    }, {passive:false});
+
+    function endDrag(e){
+      if(!dragging) return;
+      dragging = false;
+      if(!horizontal) return;
+
       const t = e.changedTouches[0];
       const dx = t.clientX - startX;
-      const dy = t.clientY - startY;
       const dt = Date.now() - startT;
-      if(Math.abs(dx) < 45) return;              // too small to be intentional
-      if(Math.abs(dx) < Math.abs(dy) * 1.2) return; // mostly vertical
-      if(dt > 800) return;                        // too slow to read as a flick
-      lightboxNav(dx < 0 ? 1 : -1);
-    }, {passive:true});
+      const width = viewport.clientWidth || window.innerWidth;
+      const far = Math.abs(dx) > width * 0.22;
+      const flick = Math.abs(dx) > 40 && dt < 300;
+
+      if(far || flick){
+        const dir = dx < 0 ? 1 : -1;
+        setTrackOffset(dir > 0 ? -width : width, true);
+        setTimeout(()=>{
+          lightboxState.index += dir;
+          renderLightbox();
+        }, 280);
+      } else {
+        setTrackOffset(0, true);
+      }
+    }
+
+    viewport.addEventListener("touchend", endDrag, {passive:true});
+    viewport.addEventListener("touchcancel", endDrag, {passive:true});
   }
 
   // ---------------- contact ----------------
