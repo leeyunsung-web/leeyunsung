@@ -393,6 +393,8 @@
   .lb-viewport{
     width:100%; flex:1 1 auto; overflow:hidden; display:flex; align-items:center; min-height:0;
   }
+  /* Three slides sit side by side, each exactly one viewport wide, so only the
+     current photo is visible until a drag pulls the neighbour into frame. */
   .lb-track{
     display:flex; width:300%; height:100%; will-change:transform;
     transform:translate3d(-33.3333%,0,0);
@@ -400,13 +402,14 @@
   .lb-track.animate{transition:transform .28s cubic-bezier(.22,.61,.36,1);}
   .lb-slide{
     width:33.3333%; flex:0 0 33.3333%; height:100%;
-    display:flex; align-items:center; justify-content:center; padding:0 3vw;
+    display:flex; align-items:center; justify-content:center;
+    box-sizing:border-box; padding:0 16px; overflow:hidden;
   }
   .lb-slide img{
     max-width:100%; max-height:78vh; object-fit:contain; display:block;
     box-shadow:0 20px 60px rgba(0,0,0,.5);
   }
-  .lb-slide img[src=""]{display:none;}
+  .lb-slide img:not([src]), .lb-slide img[src=""]{display:none;}
   .lb-meta{
     flex:0 0 auto; padding:14px 20px 26px; text-align:center; width:100%;
   }
@@ -2181,7 +2184,14 @@
   function setTrackOffset(px, animate){
     const track = $("lightboxTrack");
     if(!track) return;
-    track.classList.toggle("animate", !!animate);
+    if(!animate){
+      // Kill any in-flight transition before the silent recentre, otherwise
+      // the track visibly slides back after a completed flip.
+      track.classList.remove("animate");
+      void track.offsetWidth;
+    } else {
+      track.classList.add("animate");
+    }
     track.style.transform = "translate3d(calc(-33.3333% + " + px + "px),0,0)";
   }
 
