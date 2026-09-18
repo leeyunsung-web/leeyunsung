@@ -1,9 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEE YUNSUNG</title>
+
+<!-- ===== 보안: 콘텐츠 보안 정책 =====
+     외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
+     연결 허용 대상은 이 사이트 자신과 api.github.com 뿐입니다.
+     혹시 기능이 깨지면 아래 한 줄만 지우면 원래대로 돌아갑니다. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'">
+
+<!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
+<title>이윤성 Yunsung Lee — 회화 아카이브</title>
+<meta name="description" id="metaDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 Torso, Medusa, Laocoon, Zodiac, Danae, The Annunciation 연작과 비평 텍스트.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="author" content="이윤성 Yunsung Lee">
+<link rel="canonical" id="linkCanonical" href="https://leeyunsung.com/">
+
+<meta property="og:type" content="website" id="ogType">
+<meta property="og:site_name" content="LEE YUNSUNG">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" id="ogTitle" content="이윤성 Yunsung Lee — 회화 아카이브">
+<meta property="og:description" id="ogDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브.">
+<meta property="og:url" id="ogUrl" content="https://leeyunsung.com/">
+<meta property="og:image" id="ogImage" content="https://leeyunsung.com/images/w6-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="이윤성 Yunsung Lee — 회화 아카이브">
+<meta name="twitter:description" id="twDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브.">
+<meta name="twitter:image" id="twImage" content="https://leeyunsung.com/images/w6-cover.jpg">
+
+<script type="application/ld+json" id="ldJson">{"@context":"https://schema.org","@type":"WebSite","name":"LEE YUNSUNG","url":"https://leeyunsung.com/"}</script>
 <style>
   @font-face{
     font-family:"LYS Sans";
@@ -438,6 +464,18 @@
 
   <main class="shell">
     <div id="app"></div>
+    <noscript>
+      <div style="padding:48px 0; line-height:1.8;">
+        <h1 style="font-size:20px; margin-bottom:16px;">이윤성 Yunsung Lee</h1>
+        <p>화가 이윤성(b.1985)의 회화 아카이브입니다. 고전 회화와 조각의 도상을
+        만화·애니메이션의 시각 언어로 재해석한 연작을 소개합니다.</p>
+        <p style="margin-top:12px;">주요 연작: The Annunciation, Torso, Danae, Zodiac,
+        Medusa, Laocoon, Frames of Torso</p>
+        <p style="margin-top:12px;">작품 이미지와 비평 텍스트를 보시려면
+        자바스크립트를 켜 주세요.</p>
+        <p style="margin-top:12px;">문의: reyunsung@gmail.com</p>
+      </div>
+    </noscript>
   </main>
 
   <footer>
@@ -457,6 +495,7 @@
     <button class="icon" id="btnExport" title="Export JSON">⬇</button>
     <button class="icon" id="btnImport" title="Import JSON">⬆</button>
     <div class="sep"></div>
+    <button class="icon" id="btnChangePw" title="비밀번호 변경용 해시 만들기">🔑</button>
     <button class="icon" id="btnExitMaster" title="Exit master mode">✕</button>
   </div>
   <input type="file" id="importFile" accept="application/json" style="display:none;">
@@ -466,7 +505,7 @@
     <div class="modal">
       <div class="modal-head"><h2>Master Mode</h2><button class="modal-close" data-close="pwModal">✕</button></div>
       <div class="modal-body">
-        <div class="field"><label>Password</label><input type="password" id="pwInput" maxlength="12" inputmode="numeric" autocomplete="off" placeholder="••••"></div>
+        <div class="field"><label>Password</label><input type="password" id="pwInput" maxlength="64" autocomplete="off" placeholder="••••"></div>
         <div class="btnrow"><button class="btn primary" id="pwSubmit" style="flex:1;">확인</button></div>
       </div>
     </div>
@@ -510,6 +549,7 @@
         </div>
         <div class="field"><label>Title</label><input type="text" id="itemTitle" placeholder="시리즈 제목"></div>
         <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
+        <div class="field"><label>주소(slug) <span style="color:#999;font-weight:400;">— leeyunsung.com/works/<b id="itemSlugKind">works</b>/…</span></label><input type="text" id="itemSlug" placeholder="비워두면 제목에서 자동 생성" autocomplete="off"></div>
         <div class="btnrow">
           <button class="btn primary" id="itemSaveBtn" style="flex:1;">저장</button>
           <button class="btn danger" id="itemDeleteBtn" style="display:none;">삭제</button>
@@ -604,7 +644,7 @@
           <input type="password" id="ghToken" placeholder="repo 쓰기 권한이 있는 fine-grained PAT" autocomplete="off">
           <div class="field-hint">이 저장소에만 Contents 쓰기 권한을 준 fine-grained PAT 사용을 권장해요. 토큰은 이 브라우저의 localStorage에만 저장됩니다.</div>
         </div>
-        <div class="btnrow"><button class="btn primary" id="ghSaveBtn" style="flex:1;">저장</button></div>
+        <div class="btnrow"><button class="btn primary" id="ghSaveBtn" style="flex:1;">저장</button><button class="btn ghost" id="ghClearTokenBtn">토큰 지우기</button></div>
         <div class="status-msg" id="ghStatus"></div>
       </div>
     </div>
@@ -758,10 +798,240 @@
 (function(){
   "use strict";
 
-  const MASTER_PASSWORD = "091712";
+  /* ===================== 보안 =====================
+     비밀번호를 평문으로 두지 않습니다. PBKDF2-SHA256(310,000회) 해시만 보관합니다.
+     비밀번호를 바꾸려면 마스터 모드의 🔑 버튼을 눌러 새 해시를 만든 뒤,
+     아래 두 줄을 그 값으로 바꾸고 index.html을 다시 올리세요.
+
+     주의: 정적 사이트이므로 이 방식은 "잠금"이지 완전한 보안이 아닙니다.
+     짧은 숫자 비밀번호는 오프라인에서 뚫릴 수 있으니 12자 이상 문장형을 쓰세요.
+     ============================================== */
+  const MASTER_PW_SALT = "4BbvJaFbWQZNAkaoRE62ig==";
+  const MASTER_PW_HASH = "zYFeih86afMkS/ClTgQp0/6rksqz5Ov6RSzU5XXbPCY=";
+  const MASTER_PW_ITER = 310000;
+
   const LS_DATA = "leeArchiveDraft_v2";
   const LS_GH = "leeArchiveGhConfig_v2";
   const LS_MASTER_TS = "leeArchiveDraftTs_v2";
+  const SS_GH_TOKEN = "leeArchiveGhToken_v2";   // 토큰은 세션에만 (브라우저 닫으면 사라짐)
+
+  /* ===================== SEO ===================== */
+  const SITE_URL  = "https://leeyunsung.com";
+  const ARTIST    = "이윤성";
+  const ARTIST_EN = "Yunsung Lee";
+  const SITE_DESC = "화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 연작과 비평 텍스트.";
+
+  // 제목에 섞여 있는 zero-width 문자 등을 털어냅니다
+  function cleanText(s){
+    return String(s||"").replace(/[\u200b-\u200f\ufeff]/g,"").replace(/\s+/g," ").trim();
+  }
+  function excerpt(s, n){
+    const t = cleanText(String(s||"").replace(/\n+/g," "));
+    if(t.length <= n) return t;
+    return t.slice(0, n-1).replace(/[\s,.·]+$/,"") + "…";
+  }
+  function absUrl(p){
+    if(!p) return "";
+    if(/^https?:/i.test(p)) return p;
+    return SITE_URL + "/" + String(p).replace(/^\.?\//,"");
+  }
+  function setMeta(id, value){
+    const e = document.getElementById(id);
+    if(e && value) e.setAttribute("content", value);
+  }
+  // 캡션 "Torso, 2016, Oil on canvas, 194 × 130 cm" → {year, medium, size}
+  function parseCaption(cap){
+    const out = {};
+    const t = cleanText(cap);
+    const y = t.match(/(19|20)\d{2}/);
+    if(y) out.year = y[0];
+    const m = t.match(/(oil on canvas|acrylic on canvas|oil and acrylic[^,]*|watercolou?r[^,]*|pencil[^,]*|mixed media[^,]*|digital[^,]*)/i);
+    if(m) out.medium = m[0];
+    const s = t.match(/[\d.]+\s*[×x]\s*[\d.]+\s*cm/i);
+    if(s) out.size = s[0];
+    return out;
+  }
+  /* ---------- slug ---------- */
+  // 한글 제목인 TEXT 항목의 기본 영문 주소. 마스터 모드에서 언제든 바꿀 수 있습니다.
+  const SLUG_SEED = {
+    "t-1788551948408-tj3mq":"critical-notes-lim-geunjun",
+    "t-1788706544711-rs78w":"sections-of-structure-jung-hyun",
+    "t-1788707450006-me10g":"hybrid-of-reference-jang-seungyeon",
+    "t-1788707501163-fintg":"painting-of-the-cut-konno-yuki",
+    "t-1788707568039-mi6sd":"taxidermy-of-joy-jo-saemi",
+    "t-1788707622726-8ev94":"exploding-bishojo-baek-jihong"
+  };
+  function slugify(s){
+    return cleanText(s).toLowerCase()
+      .replace(/[\u2018\u2019\u201c\u201d'"()\[\]<>:,.·]/g,"")
+      .replace(/&/g,"-and-")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"")
+      .slice(0,60);
+  }
+  // 모든 항목에 유일한 slug를 보장합니다
+  function ensureSlugs(){
+    const d = state.data; let changed = false;
+    [["works", d.works||[]], ["text", d.text||[]]].forEach(([kind, arr])=>{
+      const used = new Set();
+      arr.forEach((it, i)=>{
+        let s = slugify(it.slug || "");
+        if(!s) s = SLUG_SEED[it.id] || slugify(it.title);
+        if(!s) s = kind + "-" + (i+1);
+        let base = s, n = 2;
+        while(used.has(s)){ s = base + "-" + (n++); }
+        used.add(s);
+        if(it.slug !== s){ it.slug = s; changed = true; }
+      });
+    });
+    return changed;
+  }
+  function pagePath(kind, item){ return kind + "/" + (item.slug || item.id) + "/"; }
+
+  /* 링크는 진짜 주소(/works/medusa/)로 내보내되, 클릭은 가로채서
+     기존처럼 화면 전환 없이 움직입니다. 검색엔진은 진짜 주소를 따라가고
+     사람은 지금까지와 똑같은 사용감을 유지합니다. */
+  function setItemLink(a, kind, item){
+    if(item.slug){
+      a.setAttribute("href", "/" + pagePath(kind, item));
+      a.dataset.spa = kind + "/" + item.id;
+    } else {
+      a.setAttribute("href", "#" + kind + "/" + item.id);
+    }
+  }
+  function bindSpaLinks(){
+    document.addEventListener("click", (e)=>{
+      const a = e.target.closest ? e.target.closest("a[data-spa]") : null;
+      if(!a) return;
+      if(e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;  // 새 탭으로 열기는 그대로
+      e.preventDefault();
+      location.hash = "#" + a.dataset.spa;
+    });
+  }
+  function pageUrl(kind, item){ return SITE_URL + "/" + pagePath(kind, item); }
+
+  function setJsonLd(obj){
+    const e = document.getElementById("ldJson");
+    if(e) e.textContent = JSON.stringify(obj);
+  }
+
+  const PERSON_LD = {
+    "@type":"Person",
+    "name": ARTIST_EN,
+    "alternateName": ARTIST,
+    "url": SITE_URL + "/",
+    "jobTitle":"Painter",
+    "nationality":"KR",
+    "email":"mailto:reyunsung@gmail.com",
+    "sameAs":["https://instagram.com/reyunsung"]
+  };
+
+  function updateSeo(route){
+    const d = state.data;
+    const page = route.page, id = route.id;
+    let title, desc, image = SITE_URL + "/images/w6-cover.jpg", type = "website", ld = null;
+    // 정적 페이지가 있으면 그쪽을 정본(canonical)으로 삼아 중복을 합칩니다
+    let canonicalOverride = null;
+    // #works 목록은 곧 홈페이지이므로 루트를 정본으로 씁니다
+    let canonical = (page === "works" && !id)
+      ? SITE_URL + "/"
+      : SITE_URL + "/#" + page + (id ? "/" + id : "");
+
+    if(page === "works" && id){
+      const it = (d.works||[]).find(x=>x.id===id);
+      if(it){
+        const name = cleanText(it.title) || "Untitled";
+        title = name + " — " + ARTIST + " Yunsung Lee";
+        desc  = excerpt(it.description, 155) || SITE_DESC;
+        if(it.cover) image = absUrl(it.cover);
+        type  = "article";
+        if(it.slug) canonicalOverride = pageUrl("works", it);
+        const photos = [];
+        (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) photos.push(absUrl(p.image)); }));
+        // 재료/연도/크기가 적힌 캡션을 하나 골라 구조화 데이터에 씁니다
+        let bestCap = "";
+        (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{
+          const c = cleanText(p.caption);
+          if(!c) return;
+          if(!bestCap) bestCap = c;
+          if(/canvas|paper|panel|oil|acrylic/i.test(c) && !/canvas|paper|panel|oil|acrylic/i.test(bestCap)) bestCap = c;
+        }));
+        const meta = parseCaption(bestCap);
+        ld = {
+          "@context":"https://schema.org",
+          "@type":"VisualArtwork",
+          "name": name,
+          "description": excerpt(it.description, 500),
+          "image": photos.slice(0, 12),
+          "creator": PERSON_LD,
+          "artform":"Painting",
+          "url": canonicalOverride || canonical,
+          "inLanguage":"ko"
+        };
+        if(meta.medium) ld.artMedium = meta.medium;
+        if(meta.year)   ld.dateCreated = meta.year;
+        if(meta.size)   ld.size = meta.size;
+      }
+    } else if(page === "text" && id){
+      const it = (d.text||[]).find(x=>x.id===id);
+      if(it){
+        const name = cleanText(it.title) || "Text";
+        title = name + " — " + ARTIST + " Yunsung Lee";
+        desc  = excerpt(it.description, 155) || SITE_DESC;
+        type  = "article";
+        if(it.slug) canonicalOverride = pageUrl("text", it);
+        // 본문 첫 줄이 필자 이름인 경우가 많아 author로 씁니다
+        const firstLine = cleanText((String(it.description||"").split("\n").find(l=>cleanText(l))||""));
+        ld = {
+          "@context":"https://schema.org",
+          "@type":"Article",
+          "headline": name,
+          "description": excerpt(it.description, 300),
+          "about": PERSON_LD,
+          "url": canonicalOverride || canonical,
+          "inLanguage":"ko"
+        };
+        const authorName = firstLine.replace(/[(（<][^)）>]*[)）>]/g,"").trim();
+        if(authorName && authorName.length <= 40) ld.author = {"@type":"Person","name":authorName};
+      }
+    } else if(page === "cv"){
+      title = "CV — " + ARTIST + " Yunsung Lee";
+      desc  = "이윤성(Yunsung Lee, b.1985) 약력. " + excerpt(d.cv && d.cv.text, 120);
+      ld = Object.assign({"@context":"https://schema.org"}, PERSON_LD, {"description": excerpt(d.cv && d.cv.text, 400)});
+    } else if(page === "text"){
+      title = "TEXT — " + ARTIST + " Yunsung Lee";
+      desc  = "이윤성의 작업에 관한 비평과 텍스트 모음. " + (d.text||[]).slice(0,4).map(x=>cleanText(x.title)).join(", ");
+    } else if(page === "contact"){
+      title = "CONTACT — " + ARTIST + " Yunsung Lee";
+      desc  = "이윤성(Yunsung Lee) 작업 문의 및 연락처.";
+    } else {
+      title = ARTIST + " Yunsung Lee — 회화 아카이브";
+      desc  = SITE_DESC;
+      ld = {
+        "@context":"https://schema.org",
+        "@type":"WebSite",
+        "name":"LEE YUNSUNG",
+        "url": SITE_URL + "/",
+        "description": SITE_DESC,
+        "author": PERSON_LD
+      };
+    }
+
+    if(canonicalOverride) canonical = canonicalOverride;
+    document.title = title;
+    setMeta("metaDesc", desc);
+    setMeta("ogTitle", title);   setMeta("twTitle", title);
+    setMeta("ogDesc", desc);     setMeta("twDesc", desc);
+    setMeta("ogImage", image);   setMeta("twImage", image);
+    setMeta("ogUrl", canonical);
+    setMeta("ogType", type);
+    const c = document.getElementById("linkCanonical");
+    if(c) c.setAttribute("href", canonical);
+    if(!ld){
+      ld = {"@context":"https://schema.org","@type":"CollectionPage","name":title,"description":desc,"url":canonical,"about":PERSON_LD};
+    }
+    setJsonLd(ld);
+  }
 
   const DEFAULT_DESIGN = {
     fontSize:15, letterSpacing:0, bold:false, align:"left",
@@ -826,6 +1096,7 @@
 
     window.addEventListener("hashchange", renderRoute);
     bindGlobalEvents();
+    bindSpaLinks();
     if(!location.hash) location.hash = "#works";
     renderRoute();
   }
@@ -840,6 +1111,7 @@
     if(!d.contact.links) d.contact.links = [];
     if(!d.design) d.design = Object.assign({}, DEFAULT_DESIGN);
     else d.design = Object.assign({}, DEFAULT_DESIGN, d.design);
+    if(!Array.isArray(d.publishedPages)) d.publishedPages = [];
     [d.works, d.text].forEach(arr=>{
       arr.forEach(item=>{
         if(!item.photoRows){
@@ -849,6 +1121,7 @@
         delete item.photos;
       });
     });
+    ensureSlugs();   // 모든 항목에 /works/<slug>/ 주소를 보장
   }
 
   function loadDraft(){ try{ const r=localStorage.getItem(LS_DATA); return r?JSON.parse(r):null; }catch(e){ return null; } }
@@ -866,8 +1139,41 @@
   const LS_MASTER = "leeArchiveMasterOn_v2";
   function loadMasterFlag(){ try{ return sessionStorage.getItem(LS_MASTER)==="1"; }catch(e){ return false; } }
   function saveMasterFlag(on){ try{ if(on) sessionStorage.setItem(LS_MASTER,"1"); else sessionStorage.removeItem(LS_MASTER); }catch(e){} }
-  function loadGhConfig(){ try{ const r=localStorage.getItem(LS_GH); return r?JSON.parse(r):null; }catch(e){ return null; } }
-  function saveGhConfig(cfg){ ghConfig = cfg; localStorage.setItem(LS_GH, JSON.stringify(cfg)); }
+  /* 토큰은 localStorage(영구)가 아니라 sessionStorage(탭을 닫으면 소멸)에 둡니다.
+     나머지 설정(owner/repo/branch/경로)만 localStorage에 남습니다. */
+  function loadGhConfig(){
+    let cfg = null;
+    try{ const r = localStorage.getItem(LS_GH); cfg = r ? JSON.parse(r) : null; }catch(e){ cfg = null; }
+    if(!cfg) cfg = null;
+    if(cfg && cfg.token){
+      // 예전 버전이 localStorage에 남겨둔 토큰이 있으면 세션으로 옮기고 지웁니다
+      try{ sessionStorage.setItem(SS_GH_TOKEN, cfg.token); }catch(e){}
+      delete cfg.token;
+      try{ localStorage.setItem(LS_GH, JSON.stringify(cfg)); }catch(e){}
+    }
+    if(cfg){
+      try{ cfg.token = sessionStorage.getItem(SS_GH_TOKEN) || ""; }catch(e){ cfg.token = ""; }
+    }
+    return cfg;
+  }
+  function saveGhConfig(cfg){
+    ghConfig = cfg;
+    const persist = Object.assign({}, cfg);
+    delete persist.token;
+    try{ localStorage.setItem(LS_GH, JSON.stringify(persist)); }catch(e){}
+    try{
+      if(cfg.token) sessionStorage.setItem(SS_GH_TOKEN, cfg.token);
+      else sessionStorage.removeItem(SS_GH_TOKEN);
+    }catch(e){}
+  }
+  function clearGhToken(){
+    try{ sessionStorage.removeItem(SS_GH_TOKEN); }catch(e){}
+    if(ghConfig) ghConfig.token = "";
+    try{
+      const r = localStorage.getItem(LS_GH);
+      if(r){ const c = JSON.parse(r); delete c.token; localStorage.setItem(LS_GH, JSON.stringify(c)); }
+    }catch(e){}
+  }
 
   // ---------------- router ----------------
   function parseHash(){
@@ -882,7 +1188,6 @@
       a.classList.toggle("active", a.dataset.page===r.page);
     });
     $("siteNameLink").textContent = state.data.siteTitle;
-    document.title = state.data.siteTitle;
 
     const app = $("app");
     app.innerHTML = "";
@@ -894,6 +1199,7 @@
     else if(r.page==="contact") renderContact(app);
     else renderCollectionGrid(app,"works","WORKS");
 
+    updateSeo(r);
     updateHeaderHeightVar();
   }
 
@@ -932,11 +1238,15 @@
     const items = state.data[key];
     const grid = el("div","col-grid");
 
-    items.forEach(item=>{
+    items.forEach((item, itemIdx)=>{
       const frame = el("a","frame"+(!item.cover && !item.title ? " empty":""));
-      frame.href = "#"+key+"/"+item.id;
+      setItemLink(frame, key, item);
       if(item.cover){
-        const img = el("img"); img.src = item.cover; img.alt = item.title||"";
+        const img = el("img");
+        img.alt = (cleanText(item.title) ? cleanText(item.title)+" — "+ARTIST+" 회화 연작" : ARTIST+" 작품");
+        img.loading = itemIdx < 4 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.src = item.cover;
         frame.appendChild(img);
       } else {
         const ph = el("div","placeholder-label"); ph.textContent = "";
@@ -982,7 +1292,7 @@
 
     items.forEach(item=>{
       const row = el("a","text-list-item");
-      row.href = "#text/"+item.id;
+      setItemLink(row, "text", item);
 
       const title = el("span","text-list-title");
       title.textContent = item.title || "(제목 없음)";
@@ -1044,6 +1354,7 @@
       $("itemModalTitle").textContent = key==="text" ? "Edit Essay" : "Edit Series";
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
+      $("itemSlug").value = item.slug || "";
       if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
       else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
       $("itemDeleteBtn").style.display = "inline-block";
@@ -1051,26 +1362,33 @@
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : "Add Series";
       $("itemTitle").value = "";
       $("itemDesc").value = "";
+      $("itemSlug").value = "";
       clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop");
       $("itemDeleteBtn").style.display = "none";
     }
+    $("itemSlugKind").textContent = key;
     openModal("itemModal");
   }
 
   function saveItem(){
     const key = $("itemCollection").value;
     const id = $("itemId").value || uid(key[0]);
-    const payload = {
+    const arr = state.data[key];
+    const idx = arr.findIndex(x=>x.id===id);
+    const prev = idx>=0 ? arr[idx] : null;
+
+    // 기존 항목의 나머지 속성(titleStyle/descStyle 등)을 지우지 않고 덮어씁니다
+    const payload = Object.assign({}, prev || {}, {
       id,
       title: $("itemTitle").value.trim(),
       cover: pendingItemImage || "",
       description: $("itemDesc").value.trim(),
-      photoRows: []
-    };
-    const arr = state.data[key];
-    const idx = arr.findIndex(x=>x.id===id);
-    if(idx>=0){ payload.photoRows = arr[idx].photoRows || []; arr[idx] = payload; }
-    else arr.push(payload);
+      slug: slugify($("itemSlug").value),
+      photoRows: prev ? (prev.photoRows || []) : []
+    });
+
+    if(idx>=0) arr[idx] = payload; else arr.push(payload);
+    ensureSlugs();
 
     saveDraft();
     closeModal("itemModal");
@@ -1206,7 +1524,10 @@
       row.photos.forEach(photo=>{
         const myIdx = flatIdx++;
         const cell = el("div","photo-cell");
-        const img = el("img"); img.alt = photo.caption||"";
+        const img = el("img");
+        img.alt = cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST);
+        img.loading = myIdx < 2 ? "eager" : "lazy";
+        img.decoding = "async";
         img.addEventListener("load", scheduleJustifyLayout);
         img.src = photo.image;
         cell.appendChild(img);
@@ -1251,6 +1572,11 @@
     observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
 
+    if(!flatIdx && !state.master){
+      const empty = el("div","empty-collection"); empty.textContent = "등록된 사진이 없습니다.";
+      app.appendChild(empty);
+    }
+
     renderNextWorks(app, key, id);
   }
 
@@ -1276,7 +1602,7 @@
     const grid = el("div","next-works-grid");
     next.forEach(item=>{
       const frame = el("a","frame");
-      frame.href = "#works/"+item.id;
+      setItemLink(frame, "works", item);
       if(item.cover){
         const img = el("img"); img.src = item.cover; img.alt = item.title||"";
         frame.appendChild(img);
@@ -1939,19 +2265,71 @@
   }
 
   // ---------------- master mode ----------------
-  function tryMasterUnlock(pw){
-    if(pw===MASTER_PASSWORD){
+  function b64ToBytes(b64){
+    const bin = atob(b64); const out = new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function bytesToB64(buf){
+    const b = new Uint8Array(buf); let s = "";
+    for(let i=0;i<b.length;i++) s += String.fromCharCode(b[i]);
+    return btoa(s);
+  }
+  async function derivePw(pw, saltB64){
+    const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits(
+      {name:"PBKDF2", salt:b64ToBytes(saltB64), iterations:MASTER_PW_ITER, hash:"SHA-256"}, key, 256);
+    return bytesToB64(bits);
+  }
+  // 길이 정보가 새지 않도록 상수 시간 비교
+  function safeEqual(a,b){
+    if(a.length !== b.length) return false;
+    let diff = 0;
+    for(let i=0;i<a.length;i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diff === 0;
+  }
+
+  let pwBusy = false;
+  async function tryMasterUnlock(pw){
+    if(pwBusy || !pw) return;
+    pwBusy = true;
+    const btn = $("pwSubmit"); const prev = btn.textContent; btn.textContent = "확인 중…";
+    let ok = false;
+    try{
+      ok = safeEqual(await derivePw(pw, MASTER_PW_SALT), MASTER_PW_HASH);
+    }catch(e){
+      alert("이 브라우저에서는 암호 확인을 할 수 없어요. https:// 주소로 접속했는지 확인해 주세요.");
+    }
+    btn.textContent = prev; pwBusy = false;
+    if(ok){
       state.master = true;
       saveMasterFlag(true);
       $("masterbar").classList.add("show");
       document.body.classList.add("master-on");
       closeModal("pwModal");
+      $("pwInput").value = "";
       renderRoute();
     } else {
       const modal = document.querySelector("#pwModal .modal");
       modal.classList.remove("shake"); void modal.offsetWidth; modal.classList.add("shake");
       $("pwInput").value = "";
+      // 무차별 대입을 늦추기 위한 짧은 지연
+      await new Promise(r=>setTimeout(r, 600));
     }
+  }
+
+  // 🔑 새 비밀번호의 해시를 만들어 줍니다 (index.html에 붙여넣을 두 줄을 출력)
+  async function changeMasterPassword(){
+    const pw = prompt("새 마스터 비밀번호를 입력하세요.\n(12자 이상 문장형을 권합니다. 예: 노랑고양이가창문을연다)");
+    if(!pw) return;
+    if(pw.length < 8 && !confirm("8자 미만은 쉽게 뚫릴 수 있어요. 그래도 진행할까요?")) return;
+    const salt = bytesToB64(crypto.getRandomValues(new Uint8Array(16)));
+    const hash = await derivePw(pw, salt);
+    const lines =
+      '  const MASTER_PW_SALT = "' + salt + '";\n' +
+      '  const MASTER_PW_HASH = "' + hash + '";';
+    try{ await navigator.clipboard.writeText(lines); }catch(e){}
+    prompt("index.html 안의 MASTER_PW_SALT / MASTER_PW_HASH 두 줄을\n아래 내용으로 바꾼 뒤 파일을 다시 올리세요.\n(클립보드에도 복사해 두었습니다)", lines);
   }
   function exitMaster(){
     state.master = false;
@@ -1986,7 +2364,12 @@
     if(!res.ok){ const t = await res.text(); throw new Error(`${path} 업로드 실패 (${res.status}): ${t.slice(0,180)}`); }
     return res.json();
   }
-  function utf8ToBase64(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function utf8ToBase64(str){
+    const bytes = new TextEncoder().encode(str);
+    let bin = "";
+    for(let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
   function extFromDataUrl(dataUrl){
     const m = /^data:image\/([a-zA-Z0-9+.-]+);base64,/.exec(dataUrl);
     if(!m) return "png";
@@ -1997,6 +2380,7 @@
 
   let autoPublishTimer = null;
   let isPublishing = false;
+  let pagesStale = false;   // 자동 저장만 된 상태 = 정적 페이지가 아직 옛 내용
 
   function scheduleAutoPublish(){
     if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token) return;
@@ -2037,14 +2421,25 @@
           }
         }
       }
+      let pageCount = 0;
+      if(!silent){
+        // 수동 게시(⇪)일 때만 정적 페이지 + 사이트맵까지 전부 갱신합니다.
+        // 자동 저장은 호출이 많아 data.json/이미지만 올립니다.
+        ensureSlugs();
+        pageCount = await publishStaticPages((i,n)=>{ glyph.textContent = String(i)+"/"+String(n); });
+        pagesStale = false;
+      } else {
+        pagesStale = true;
+      }
+
       const jsonStr = JSON.stringify(state.data, null, 2);
       await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
       state.publishedRaw = jsonStr;
       saveDraft(false);
-      showDraftNotice(false);
+      showDraftNotice(pagesStale);
       glyph.textContent = "✓";
       setTimeout(()=>{ glyph.textContent = "⇪"; }, 1200);
-      if(!silent) alert("게시 완료! GitHub Pages 반영까지 1분 정도 걸릴 수 있어요.");
+      if(!silent) alert("게시 완료!\n작품·텍스트 페이지 "+pageCount+"개와 사이트맵까지 올렸어요.\nGitHub Pages 반영까지 1분 정도 걸릴 수 있어요.");
       renderRoute();
     }catch(err){
       glyph.textContent = "⇪";
@@ -2055,11 +2450,225 @@
     }
   }
 
+
+  /* ================= 정적 페이지 생성 =================
+     구글은 해시(#) 주소를 별개 페이지로 세지 않습니다. 그래서 게시할 때
+     작품마다 /works/<slug>/index.html 을 진짜 파일로 만들어 올립니다.
+     리다이렉트가 아니라 제목·본문·이미지가 HTML에 그대로 들어 있는 페이지입니다. */
+
+  function esc(s){
+    return String(s==null?"":s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+  function rootPath(p){ return "/" + String(p||"").replace(/^\.?\//,""); }
+  function paragraphs(text){
+    return String(text||"").split(/\n\s*\n/).map(p=>cleanText(p)).filter(Boolean)
+      .map(p=>"    <p>"+esc(p)+"</p>").join("\n");
+  }
+
+  const PAGE_CSS = [
+    ":root{--ink:#111;--soft:#555;--faint:#999;--line:#e2e2e2;--bg:#fff}",
+    "*{box-sizing:border-box;margin:0;padding:0}",
+    "body{background:var(--bg);color:var(--ink);line-height:1.7;",
+    "font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;",
+    "-webkit-font-smoothing:antialiased}",
+    "a{color:inherit}",
+    "img{max-width:100%;height:auto;display:block}",
+    ".shell{max-width:940px;margin:0 auto;padding:0 24px}",
+    "header{border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:56px}",
+    "header .shell{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}",
+    ".brand{font-size:15px;letter-spacing:.14em;text-decoration:none}",
+    "nav a{font-size:12px;letter-spacing:.12em;margin-left:18px;text-decoration:none;color:var(--soft)}",
+    ".back{font-size:12px;letter-spacing:.1em;color:var(--faint);text-decoration:none;display:inline-block;margin-bottom:28px}",
+    "h1{font-size:26px;font-weight:400;letter-spacing:.01em;margin-bottom:8px}",
+    ".meta{font-size:12px;color:var(--faint);letter-spacing:.06em;margin-bottom:34px}",
+    ".body{max-width:640px;margin-bottom:64px}",
+    ".body p{margin-bottom:16px;font-size:15px}",
+    "figure{margin-bottom:44px}",
+    "figcaption{font-size:12px;color:var(--soft);margin-top:10px;line-height:1.5}",
+    ".more{border-top:1px solid var(--line);padding-top:28px;margin-top:64px}",
+    ".more h2{font-size:12px;letter-spacing:.14em;color:var(--faint);font-weight:400;margin-bottom:14px}",
+    ".more ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px}",
+    ".more a{font-size:14px;text-decoration:none;border-bottom:1px solid var(--line)}",
+    "footer{border-top:1px solid var(--line);margin-top:64px;padding:26px 0 48px;font-size:11px;color:var(--faint);letter-spacing:.08em}",
+    "@media(max-width:600px){h1{font-size:21px}header{margin-bottom:36px}}"
+  ].join("");
+
+  function buildStaticPage(kind, item, siblings){
+    const title   = cleanText(item.title) || "Untitled";
+    const url     = pageUrl(kind, item);
+    const desc    = excerpt(item.description, 155) || SITE_DESC;
+    const photos  = [];
+    (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) photos.push(p); }));
+    const cover   = item.cover ? absUrl(item.cover) : (photos[0] ? absUrl(photos[0].image) : SITE_URL+"/images/w6-cover.jpg");
+
+    // 구조화 데이터
+    let ld;
+    if(kind === "works"){
+      let bestCap = "";
+      photos.forEach(p=>{
+        const c = cleanText(p.caption); if(!c) return;
+        if(!bestCap) bestCap = c;
+        if(/canvas|paper|panel|oil|acrylic/i.test(c) && !/canvas|paper|panel|oil|acrylic/i.test(bestCap)) bestCap = c;
+      });
+      const m = parseCaption(bestCap);
+      ld = {"@context":"https://schema.org","@type":"VisualArtwork","name":title,
+            "description":excerpt(item.description,500),
+            "image":photos.slice(0,20).map(p=>absUrl(p.image)),
+            "creator":PERSON_LD,"artform":"Painting","url":url,"inLanguage":"ko"};
+      if(m.medium) ld.artMedium = m.medium;
+      if(m.year)   ld.dateCreated = m.year;
+      if(m.size)   ld.size = m.size;
+    } else {
+      const firstLine = cleanText((String(item.description||"").split("\n").find(l=>cleanText(l))||""));
+      const author = firstLine.replace(/[(\uff08<][^)\uff09>]*[)\uff09>]/g,"").trim();
+      ld = {"@context":"https://schema.org","@type":"Article","headline":title,
+            "description":excerpt(item.description,300),"about":PERSON_LD,
+            "url":url,"inLanguage":"ko"};
+      if(author && author.length <= 40) ld.author = {"@type":"Person","name":author};
+    }
+
+    const figures = photos.map((p,i)=>{
+      const cap = cleanText(p.caption);
+      const alt = cap || (title + " — " + ARTIST);
+      return '    <figure>\n' +
+             '      <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
+             (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
+             (cap ? '      <figcaption>'+esc(cap)+'</figcaption>\n' : '') +
+             '    </figure>';
+    }).join("\n");
+
+    const others = siblings.filter(x=>x.id!==item.id).slice(0,8)
+      .map(x=>'      <li><a href="/'+esc(pagePath(kind,x))+'">'+esc(cleanText(x.title)||"Untitled")+'</a></li>').join("\n");
+
+    const backLabel = kind === "works" ? "WORKS" : "TEXT";
+    const backHref  = kind === "works" ? "/" : "/#text";
+    const moreLabel = kind === "works" ? "다른 작업" : "다른 글";
+
+    return [
+'<!DOCTYPE html>',
+'<html lang="ko">',
+'<head>',
+'<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>'+esc(title)+' — '+ARTIST+' Yunsung Lee</title>',
+'<meta name="description" content="'+esc(desc)+'">',
+'<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">',
+'<meta name="author" content="'+ARTIST+' Yunsung Lee">',
+'<link rel="canonical" href="'+esc(url)+'">',
+'<meta property="og:type" content="article">',
+'<meta property="og:site_name" content="LEE YUNSUNG">',
+'<meta property="og:locale" content="ko_KR">',
+'<meta property="og:title" content="'+esc(title)+' — '+ARTIST+' Yunsung Lee">',
+'<meta property="og:description" content="'+esc(desc)+'">',
+'<meta property="og:url" content="'+esc(url)+'">',
+'<meta property="og:image" content="'+esc(cover)+'">',
+'<meta name="twitter:card" content="summary_large_image">',
+'<meta name="twitter:title" content="'+esc(title)+'">',
+'<meta name="twitter:description" content="'+esc(desc)+'">',
+'<meta name="twitter:image" content="'+esc(cover)+'">',
+'<script type="application/ld+json">'+JSON.stringify(ld)+'<\/script>',
+'<style>'+PAGE_CSS+'</style>',
+'</head>',
+'<body>',
+'  <header><div class="shell">',
+'    <a class="brand" href="/">LEE YUNSUNG</a>',
+'    <nav><a href="/#cv">CV</a><a href="/">WORKS</a><a href="/#text">TEXT</a><a href="/#contact">CONTACT</a></nav>',
+'  </div></header>',
+'  <main class="shell">',
+'    <a class="back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
+'    <h1>'+esc(title)+'</h1>',
+'    <div class="meta">'+ARTIST+' Yunsung Lee</div>',
+'    <div class="body">',
+paragraphs(item.description),
+'    </div>',
+figures,
+(others ? '    <div class="more">\n      <h2>'+moreLabel+'</h2>\n      <ul>\n'+others+'\n      </ul>\n    </div>' : ''),
+'  </main>',
+'  <footer><div class="shell">&copy; '+new Date().getFullYear()+' LEE YUNSUNG</div></footer>',
+'</body>',
+'</html>',
+''].join("\n");
+  }
+
+  function buildSitemap(){
+    const today = new Date().toISOString().slice(0,10);
+    const rows = ['<?xml version="1.0" encoding="UTF-8"?>',
+      '<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
+        .replace("www.sitemap.org","www.sitemaps.org"),
+      '  <url><loc>'+SITE_URL+'/</loc><lastmod>'+today+'</lastmod><priority>1.0</priority></url>'];
+    (state.data.works||[]).forEach(it=>{
+      const imgs = [];
+      (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) imgs.push(p); }));
+      rows.push('  <url>');
+      rows.push('    <loc>'+pageUrl("works",it)+'</loc>');
+      rows.push('    <lastmod>'+today+'</lastmod><priority>0.9</priority>');
+      imgs.slice(0,200).forEach(p=>{
+        rows.push('    <image:image><image:loc>'+esc(absUrl(p.image))+'</image:loc>'+
+                  (cleanText(p.caption) ? '<image:title>'+esc(cleanText(p.caption))+'</image:title>' : '')+
+                  '</image:image>');
+      });
+      rows.push('  </url>');
+    });
+    (state.data.text||[]).forEach(it=>{
+      rows.push('  <url><loc>'+pageUrl("text",it)+'</loc><lastmod>'+today+'</lastmod><priority>0.7</priority></url>');
+    });
+    rows.push('</urlset>');
+    return rows.join("\n");
+  }
+
+  function buildRobots(){
+    return ["User-agent: *","Allow: /","","Sitemap: "+SITE_URL+"/sitemap.xml",""].join("\n");
+  }
+
+  // 슬러그가 바뀌거나 항목이 지워졌을 때 남는 옛 페이지를 정리합니다
+  const PAGE_PATH_GUARD = /^(works|text)\/[A-Za-z0-9._-]+\/index\.html$/;
+  async function ghDeleteFile(path){
+    if(!PAGE_PATH_GUARD.test(path)) return;           // 안전장치: 생성한 페이지만 삭제
+    const sha = await ghGetSha(path);
+    if(!sha) return;
+    await fetch(ghApiUrl(path), {
+      method:"DELETE",
+      headers:Object.assign({"Content-Type":"application/json"}, ghHeaders()),
+      body:JSON.stringify({message:"Remove stale page "+path, sha, branch:ghConfig.branch})
+    });
+  }
+
+  async function publishStaticPages(onProgress){
+    const d = state.data;
+    const written = [];
+    const jobs = [];
+    (d.works||[]).forEach(it=>jobs.push(["works", it, d.works]));
+    (d.text||[]).forEach(it=>jobs.push(["text", it, d.text]));
+
+    let i = 0;
+    for(const [kind, item, sibs] of jobs){
+      const path = pagePath(kind, item) + "index.html";
+      const html = buildStaticPage(kind, item, sibs);
+      await ghPutFile(path, utf8ToBase64(html), "Update page: " + (cleanText(item.title)||item.id));
+      written.push(path);
+      if(onProgress) onProgress(++i, jobs.length);
+    }
+
+    await ghPutFile("sitemap.xml", utf8ToBase64(buildSitemap()), "Update sitemap");
+    await ghPutFile("robots.txt",  utf8ToBase64(buildRobots()),  "Update robots.txt");
+    if(!(await ghGetSha(".nojekyll"))){
+      await ghPutFile(".nojekyll", "", "Add .nojekyll");
+    }
+
+    // 지난번에 만들었지만 이번엔 없는 페이지 삭제
+    const stale = (d.publishedPages||[]).filter(p => written.indexOf(p) === -1);
+    for(const p of stale){ try{ await ghDeleteFile(p); }catch(e){ console.warn("stale delete failed", p, e); } }
+    d.publishedPages = written;
+    return written.length;
+  }
+
   function openGhModal(){
     const c = ghConfig || {};
     $("ghOwner").value=c.owner||""; $("ghRepo").value=c.repo||""; $("ghBranch").value=c.branch||"main";
     $("ghDataPath").value=c.dataPath||"data.json"; $("ghImgPath").value=c.imgPath||"images"; $("ghToken").value=c.token||"";
-    setStatus("ghStatus","","");
+    setStatus("ghStatus", c.token ? "토큰이 이 세션에 저장돼 있어요. 브라우저를 닫으면 지워집니다." : "", c.token ? "ok" : "");
     openModal("ghModal");
   }
   function saveGhSettings(){
@@ -2069,7 +2678,7 @@
     };
     if(!cfg.owner||!cfg.repo||!cfg.token){ setStatus("ghStatus","owner / repo / token은 필수예요.","err"); return; }
     saveGhConfig(cfg);
-    setStatus("ghStatus","저장했어요. 이제 ⇪ 게시 버튼을 눌러보세요.","ok");
+    setStatus("ghStatus","저장했어요. 토큰은 이 세션에만 보관됩니다. 이제 ⇪ 게시 버튼을 눌러보세요.","ok");
   }
 
   // ---------------- export/import ----------------
@@ -2174,6 +2783,12 @@
     $("btnImport").addEventListener("click", ()=>$("importFile").click());
     $("importFile").addEventListener("change",(e)=>{ if(e.target.files[0]) importJson(e.target.files[0]); e.target.value=""; });
     $("btnExitMaster").addEventListener("click", exitMaster);
+    $("btnChangePw").addEventListener("click", changeMasterPassword);
+    $("ghClearTokenBtn").addEventListener("click", ()=>{
+      clearGhToken();
+      $("ghToken").value = "";
+      setStatus("ghStatus","토큰을 지웠어요. 게시하려면 다시 입력해야 합니다.","ok");
+    });
 
 
   }
