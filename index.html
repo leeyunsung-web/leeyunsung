@@ -385,7 +385,8 @@
   }
 
   /* ---------- lightbox ---------- */
-  #photoLightbox{background:rgba(10,10,10,.96); padding:0;}
+  #photoLightbox{background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;}
+  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
   #photoLightbox .lb-stage{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     max-width:min(92vw,1100px); max-height:88vh;
@@ -995,10 +996,13 @@
   const PERSON_LD = {
     "@type":"Person",
     "name": ARTIST_EN,
-    "alternateName": ARTIST,
+    // Every spelling people actually search with, so 이윤성 / Yunsung Lee /
+    // leeyunsung all resolve to the same artist entity.
+    "alternateName": [ARTIST, "Lee Yunsung", "LEE YUNSUNG", "leeyunsung", "Yunsung Lee", "이윤성 작가"],
     "url": SITE_URL + "/",
     "jobTitle":"Painter",
     "nationality":"KR",
+    "knowsAbout":["Painting","Contemporary Art","Manga","Classical Art"],
     "email":"mailto:reyunsung@gmail.com",
     "sameAs":["https://instagram.com/reyunsung"]
   };
@@ -2139,6 +2143,36 @@
     renderLightbox();
   }
 
+  // ---------------- lightbox swipe (touch) ----------------
+  // Horizontal drag flips photos; a mostly-vertical drag is left alone so the
+  // page can still scroll, and a short flick counts as long as it was quick.
+  function bindLightboxSwipe(){
+    const box = $("photoLightbox");
+    if(!box) return;
+    let startX = 0, startY = 0, startT = 0, tracking = false;
+
+    box.addEventListener("touchstart",(e)=>{
+      if(e.touches.length !== 1){ tracking = false; return; }
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startT = Date.now();
+      tracking = true;
+    }, {passive:true});
+
+    box.addEventListener("touchend",(e)=>{
+      if(!tracking) return;
+      tracking = false;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      const dt = Date.now() - startT;
+      if(Math.abs(dx) < 45) return;              // too small to be intentional
+      if(Math.abs(dx) < Math.abs(dy) * 1.2) return; // mostly vertical
+      if(dt > 800) return;                        // too slow to read as a flick
+      lightboxNav(dx < 0 ? 1 : -1);
+    }, {passive:true});
+  }
+
   // ---------------- contact ----------------
   function renderContact(app){
     const editBtn = el("button","edit-fab"); editBtn.textContent = "✎ Edit Contact";
@@ -2919,7 +2953,12 @@
   function buildStaticPage(kind, item, siblings){
     const title   = cleanText(item.title) || "Untitled";
     const url     = pageUrl(kind, item);
-    const desc    = excerpt(item.description, 155) || SITE_DESC;
+    // Always anchor the snippet to the artist's name so searches for
+    // "이윤성" / "Yunsung Lee" surface individual works, not just the home page.
+    const rawDesc = excerpt(item.description, 120);
+    const desc    = rawDesc
+      ? (ARTIST + " " + ARTIST_EN + " — " + title + ". " + rawDesc)
+      : (ARTIST + " " + ARTIST_EN + "의 작품 《" + title + "》. " + SITE_DESC);
     const photos  = [];
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) photos.push(p); }));
     const cover   = item.cover ? absUrl(item.cover) : (photos[0] ? absUrl(photos[0].image) : SITE_URL+"/images/w6-cover.jpg");
@@ -2959,7 +2998,9 @@
       const cells = (row.photos||[]).map(p=>{
         const i = flat++;
         const cap = cleanText(p.caption);
-        const alt = cap || (title + " — " + ARTIST);
+        const alt = cap
+          ? (cap + " — " + title + ", " + ARTIST + " " + ARTIST_EN)
+          : (title + " — " + ARTIST + " " + ARTIST_EN);
         return '        <a class="photo-cell" href="'+esc(rootPath(p.image))+'">\n' +
                '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
@@ -3220,6 +3261,7 @@ shopBlock,
 
     $("lightboxPrev").addEventListener("click", ()=>lightboxNav(-1));
     $("lightboxNext").addEventListener("click", ()=>lightboxNav(1));
+    bindLightboxSwipe();
 
     $("pwSubmit").addEventListener("click", ()=>tryMasterUnlock($("pwInput").value.trim()));
     $("pwInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") tryMasterUnlock($("pwInput").value.trim()); });
