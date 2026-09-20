@@ -390,7 +390,14 @@
   #photoLightbox.overlay, #photoLightbox.overlay.show{
     background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;
     flex-direction:column; align-items:stretch; justify-content:center;
+    /* Mobile browsers change viewport height as the address bar hides, so a
+       plain `inset:0` can open short and leave the page showing through.
+       --vh is measured in JS; dvh covers browsers that support it. */
+    top:0; left:0; right:0;
+    height:calc(var(--vh, 1vh) * 100);
+    height:100dvh;
   }
+  body.lightbox-open{overflow:hidden;}
   #photoLightbox img{-webkit-user-drag:none; user-select:none;}
   .lb-viewport{
     width:100%; flex:1 1 auto; overflow:hidden; display:block; min-height:0; position:relative;
@@ -410,7 +417,7 @@
     box-sizing:border-box; padding:0 6px; overflow:hidden;
   }
   .lb-slide img{
-    max-width:100%; max-height:78vh; object-fit:contain; display:block;
+    max-width:100%; max-height:calc(var(--vh, 1vh) * 78); object-fit:contain; display:block;
     box-shadow:0 20px 60px rgba(0,0,0,.5);
   }
   .lb-slide img:not([src]), .lb-slide img[src=""]{display:none;}
@@ -2154,8 +2161,15 @@
 
   function openPhotoLightbox(key,itemId,index){
     lightboxState = { key, itemId, index };
+    updateViewportUnit();
     renderLightbox();
     openModal("photoLightbox");
+    // Re-settle once the overlay has actually been laid out, so the first
+    // frame is already correct instead of needing a nudge to fix itself.
+    requestAnimationFrame(()=>{
+      updateViewportUnit();
+      setTrackOffset(0, false);
+    });
   }
 
   // The track holds prev/current/next side by side so a drag can move real
@@ -2919,8 +2933,14 @@
   }
 
   // ---------------- modal helpers ----------------
-  function openModal(id){ $(id).classList.add("show"); }
-  function closeModal(id){ $(id).classList.remove("show"); }
+  function openModal(id){
+    $(id).classList.add("show");
+    if(id === "photoLightbox") document.body.classList.add("lightbox-open");
+  }
+  function closeModal(id){
+    $(id).classList.remove("show");
+    if(id === "photoLightbox") document.body.classList.remove("lightbox-open");
+  }
   function setStatus(id,msg,type){ const e=$(id); e.textContent=msg; e.className="status-msg"+(msg?" show":"")+(type?(" "+type):""); }
   function showDraftNotice(show){ $("unpubDot").classList.toggle("show", !!show); }
 
@@ -3403,7 +3423,22 @@ shopBlock,
     if(header) document.documentElement.style.setProperty("--header-height", header.offsetHeight + "px");
   }
 
+  // Measures 1% of the real visible height. Mobile browsers report a stale
+  // value for `vh` while the address bar is animating, which made the
+  // lightbox open too short until the user nudged the page.
+  function updateViewportUnit(){
+    const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    document.documentElement.style.setProperty("--vh", (h * 0.01) + "px");
+  }
+
   function bindGlobalEvents(){
+    updateViewportUnit();
+    window.addEventListener("resize", updateViewportUnit);
+    window.addEventListener("orientationchange", ()=> setTimeout(updateViewportUnit, 120));
+    if(window.visualViewport){
+      window.visualViewport.addEventListener("resize", updateViewportUnit);
+    }
+
     window.addEventListener("resize", scheduleJustifyLayout);
     window.addEventListener("resize", updateHeaderHeightVar);
 
@@ -3415,7 +3450,7 @@ shopBlock,
         openModal("pwModal");
         setTimeout(()=>$("pwInput").focus(),50);
       }
-      if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>o.classList.remove("show")); activeStyleTarget = null; }
+      if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>closeModal(o.id)); activeStyleTarget = null; }
       if($("photoLightbox").classList.contains("show")){
         if(e.key==="ArrowLeft") lightboxNav(-1);
         if(e.key==="ArrowRight") lightboxNav(1);
@@ -3435,7 +3470,7 @@ shopBlock,
     }) );
     document.querySelectorAll(".overlay").forEach(o=> o.addEventListener("click",(e)=>{
       if(e.target===o){
-        o.classList.remove("show");
+        closeModal(o.id);
         if(o.id==="designModal") activeStyleTarget = null;
       }
     }) );
