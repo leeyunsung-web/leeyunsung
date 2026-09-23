@@ -353,15 +353,47 @@
   }
 
   /* ---------- lightbox ---------- */
-  #photoLightbox{background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;}
-  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
-  #photoLightbox .lb-stage{
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    max-width:min(92vw,1100px); max-height:88vh;
+  /* Raised specificity: plain `.overlay.show` re-declares display/flow and
+     would otherwise cancel the column layout this slider depends on. */
+  #photoLightbox.overlay, #photoLightbox.overlay.show{
+    background:rgba(10,10,10,.96); padding:0; touch-action:pan-y; overscroll-behavior:contain;
+    flex-direction:column; align-items:stretch; justify-content:center;
+    /* Mobile browsers change viewport height as the address bar hides, so a
+       plain `inset:0` can open short and leave the page showing through.
+       --vh is measured in JS; dvh covers browsers that support it. */
+    top:0; left:0; right:0;
+    height:calc(var(--vh, 1vh) * 100);
+    height:100dvh;
   }
-  #photoLightbox img{max-width:100%; max-height:80vh; object-fit:contain; display:block; box-shadow:0 20px 60px rgba(0,0,0,.5);}
-  .lb-caption{color:#f2f2f2; font-size:13px; margin-top:16px; text-align:center; max-width:640px;}
-  .lb-counter{color:rgba(255,255,255,.45); font-size:11px; letter-spacing:.08em; margin-top:8px; font-family:var(--active-font-family);}
+  body.lightbox-open{overflow:hidden;}
+  #photoLightbox img{-webkit-user-drag:none; user-select:none;}
+  .lb-viewport{
+    width:100%; flex:1 1 auto; overflow:hidden; display:block; min-height:0; position:relative;
+    cursor:grab;
+  }
+  .lb-viewport.dragging{cursor:grabbing;}
+  /* Three slides sit side by side, each exactly one viewport wide, so only the
+     current photo is visible until a drag pulls the neighbour into frame. */
+  .lb-track{
+    display:flex; height:100%; will-change:transform;
+    transform:translate3d(-100%,0,0);
+  }
+  .lb-track.animate{transition:transform .42s cubic-bezier(.25,.9,.3,1);}
+  .lb-slide{
+    width:100%; flex:0 0 100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    box-sizing:border-box; padding:0 6px; overflow:hidden;
+  }
+  .lb-slide img{
+    max-width:100%; max-height:calc(var(--vh, 1vh) * 78); object-fit:contain; display:block;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .lb-slide img:not([src]), .lb-slide img[src=""]{display:none;}
+  .lb-meta{
+    flex:0 0 auto; padding:6px 20px 22px; text-align:center; width:100%;
+  }
+  .lb-caption{color:#f2f2f2; font-size:13px; text-align:center; max-width:640px; margin:0 auto;}
+  .lb-counter{color:rgba(255,255,255,.45); font-size:11px; letter-spacing:.08em; margin-top:6px; font-family:var(--active-font-family);}
   .lb-close{
     position:absolute; top:20px; right:24px; background:none; border:none; color:#fff; font-size:22px; z-index:2; opacity:.75;
   }
@@ -455,5 +487,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: var(--sans); --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --header-height: 83px;}
+:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: var(--sans); --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 11.473333740234375px; --header-height: 83px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
