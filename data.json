@@ -2219,6 +2219,7 @@
     "textWidth": 640,
     "uiItalic": false
   },
+  "shop": [],
   "publishedPages": [
     "works/the-annunciation/index.html",
     "works/torso/index.html",
@@ -2233,6 +2234,5 @@
     "text/painting-of-the-cut-konno-yuki/index.html",
     "text/taxidermy-of-joy-jo-saemi/index.html",
     "text/exploding-bishojo-baek-jihong/index.html"
-  ],
-  "shop": []
+  ]
 }
