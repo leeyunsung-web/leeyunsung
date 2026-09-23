@@ -8,7 +8,7 @@
      외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
      연결 허용 대상은 이 사이트 자신과 api.github.com 뿐입니다.
      혹시 기능이 깨지면 아래 한 줄만 지우면 원래대로 돌아갑니다. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
 <title>이윤성 작가 Yunsung Lee — 회화 아카이브</title>
@@ -526,7 +526,9 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-TBFPJKSNZ7');
+  // page_view is sent by renderRoute() on every in-app navigation (including
+  // first load), so the automatic one is turned off to avoid double counting.
+  gtag('config', 'G-TBFPJKSNZ7', { send_page_view: false });
 </script>
 </head>
 <body>
