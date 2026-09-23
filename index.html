@@ -11,7 +11,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
-<title>이윤성 Yunsung Lee — 회화 아카이브</title>
+<title>이윤성 작가 Yunsung Lee — 회화 아카이브</title>
 <meta name="description" id="metaDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 Torso, Medusa, Laocoon, Zodiac, Danae, The Annunciation 연작과 비평 텍스트.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta name="author" content="이윤성 Yunsung Lee">
@@ -3140,8 +3140,8 @@
     // "이윤성" / "Yunsung Lee" surface individual works, not just the home page.
     const rawDesc = excerpt(item.description, 120);
     const desc    = rawDesc
-      ? (ARTIST + " " + ARTIST_EN + " — " + title + ". " + rawDesc)
-      : (ARTIST + " " + ARTIST_EN + "의 작품 《" + title + "》. " + SITE_DESC);
+      ? (ARTIST + " 작가 (" + ARTIST_EN + ") — " + title + ". " + rawDesc)
+      : (ARTIST + " 작가 (" + ARTIST_EN + ")의 작품 《" + title + "》. " + SITE_DESC);
     const photos  = [];
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) photos.push(p); }));
     const cover   = item.cover ? absUrl(item.cover) : (photos[0] ? absUrl(photos[0].image) : SITE_URL+"/images/w6-cover.jpg");
@@ -3158,9 +3158,25 @@
         if(/canvas|paper|panel|oil|acrylic/i.test(c) && !/canvas|paper|panel|oil|acrylic/i.test(bestCap)) bestCap = c;
       });
       const m = parseCaption(bestCap);
+      // Each image becomes a full ImageObject with its own creator/caption,
+      // which is what Google Images actually reads to attribute a picture.
+      const imageObjects = photos.slice(0,20).map(p=>{
+        const cap = cleanText(p.caption);
+        return {
+          "@type":"ImageObject",
+          "contentUrl": absUrl(p.image),
+          "url": absUrl(p.image),
+          "name": (cap && cap !== title ? cap + ", " + title : title),
+          "caption": title + " — " + ARTIST + " (" + ARTIST_EN + ")",
+          "creator": PERSON_LD,
+          "creditText": ARTIST + " " + ARTIST_EN,
+          "copyrightNotice": "© " + ARTIST_EN
+        };
+      });
       ld = {"@context":"https://schema.org","@type":"VisualArtwork","name":title,
+            "alternateName": title + " — " + ARTIST,
             "description":excerpt(item.description,500),
-            "image":photos.slice(0,20).map(p=>absUrl(p.image)),
+            "image":imageObjects,
             "creator":PERSON_LD,"artform":"Painting","url":url,"inLanguage":"ko"};
       if(m.medium) ld.artMedium = m.medium;
       if(m.year)   ld.dateCreated = m.year;
@@ -3300,14 +3316,26 @@ shopBlock,
         .replace("www.sitemap.org","www.sitemaps.org"),
       '  <url><loc>'+SITE_URL+'/</loc><lastmod>'+today+'</lastmod><priority>1.0</priority></url>'];
     (state.data.works||[]).forEach(it=>{
+      const title = cleanText(it.title) || "Untitled";
+      // Every image entry carries the artist's name in both languages so image
+      // search ties the pictures to 이윤성 / Yunsung Lee, not just to a caption.
+      const byline = " — " + ARTIST + " (" + ARTIST_EN + ")";
       const imgs = [];
+      if(it.cover) imgs.push({image:it.cover, caption:title});
       (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) imgs.push(p); }));
       rows.push('  <url>');
       rows.push('    <loc>'+pageUrl("works",it)+'</loc>');
       rows.push('    <lastmod>'+today+'</lastmod><priority>0.9</priority>');
+      const seen = new Set();
       imgs.slice(0,200).forEach(p=>{
-        rows.push('    <image:image><image:loc>'+esc(absUrl(p.image))+'</image:loc>'+
-                  (cleanText(p.caption) ? '<image:title>'+esc(cleanText(p.caption))+'</image:title>' : '')+
+        const loc = absUrl(p.image);
+        if(seen.has(loc)) return;
+        seen.add(loc);
+        const cap = cleanText(p.caption);
+        const imgTitle = (cap && cap !== title ? cap + ", " + title : title) + byline;
+        rows.push('    <image:image><image:loc>'+esc(loc)+'</image:loc>'+
+                  '<image:title>'+esc(imgTitle)+'</image:title>'+
+                  '<image:caption>'+esc(title + byline)+'</image:caption>'+
                   '</image:image>');
       });
       rows.push('  </url>');
@@ -3319,7 +3347,8 @@ shopBlock,
       rows.push('  <url>');
       rows.push('    <loc>'+pageUrl("shop",it)+'</loc>');
       rows.push('    <lastmod>'+today+'</lastmod><priority>0.8</priority>');
-      if(it.cover) rows.push('    <image:image><image:loc>'+esc(absUrl(it.cover))+'</image:loc></image:image>');
+      if(it.cover) rows.push('    <image:image><image:loc>'+esc(absUrl(it.cover))+'</image:loc>'+
+        '<image:title>'+esc((cleanText(it.title)||"Untitled") + " — " + ARTIST + " (" + ARTIST_EN + ")")+'</image:title></image:image>');
       rows.push('  </url>');
     });
     rows.push('</urlset>');
