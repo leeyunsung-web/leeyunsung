@@ -176,6 +176,14 @@
   }
   @media (max-width:640px){ .shop-grid{grid-template-columns:repeat(2,1fr);} }
   .shop-card{position:relative; display:block; color:inherit;}
+  .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
+  .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
+  .shop-coming-sub{font-size:13px; letter-spacing:.06em; color:var(--ink-faint);}
+  .shop-release-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding:12px 16px; margin-bottom:28px; border:1px dashed #d08a2e; background:#fff8ec; color:#8a5a14; font-size:12.5px; border-radius:6px;}
+  .shop-release-bar.is-public{border-color:#5a9a5a; background:#f1f8f0; color:#2f6a2f;}
+  .shop-release-bar button{font:inherit; font-size:12px; padding:7px 14px; border-radius:5px; border:1px solid currentColor; background:#fff; color:inherit; cursor:pointer; white-space:nowrap;}
+  .shop-release-bar:not(.is-public) button{background:#111; color:#fff; border-color:#111;}
   .shop-thumb{
     position:relative; background:#fafafa; border:1px solid var(--line); overflow:hidden; aspect-ratio:1/1;
   }
@@ -541,7 +549,7 @@
         <button class="site-name-edit" id="btnEditSiteName" title="이름 수정">✎</button>
       </div>
       <nav class="site-nav">
-        <a href="#cv" data-page="cv">CV</a>
+        <a href="/cv/" data-page="cv" data-spa="cv">CV</a>
         <a href="#works" data-page="works">WORKS</a>
         <a href="#text" data-page="text">TEXT</a>
         <a href="#shop" data-page="shop">SHOP</a>
@@ -1078,7 +1086,10 @@
   function updateSeo(route){
     const d = state.data;
     const page = route.page, id = route.id;
-    let title, desc, image = SITE_URL + "/images/w6-cover.jpg", type = "website", ld = null;
+    // Defaults cover routes whose item no longer exists (old/deleted links),
+    // which previously left the tab title reading "undefined".
+    let title = ARTIST + " 작가 Yunsung Lee — 회화 아카이브", desc = SITE_DESC,
+        image = SITE_URL + "/images/w6-cover.jpg", type = "website", ld = null;
     // 정적 페이지가 있으면 그쪽을 정본(canonical)으로 삼아 중복을 합칩니다
     let canonicalOverride = null;
     // #works 목록은 곧 홈페이지이므로 루트를 정본으로 씁니다
@@ -1143,6 +1154,9 @@
         const authorName = firstLine.replace(/[(（<][^)）>]*[)）>]/g,"").trim();
         if(authorName && authorName.length <= 40) ld.author = {"@type":"Person","name":authorName};
       }
+    } else if(page === "shop" && !isShopPublic()){
+      title = "SHOP — " + ARTIST + " Yunsung Lee";
+      desc  = "이윤성(Yunsung Lee) SHOP — 준비중입니다.";
     } else if(page === "shop" && id){
       const it = (d.shop||[]).find(x=>x.id===id);
       if(it){
@@ -1171,7 +1185,7 @@
       title = "CONTACT — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee) 작업 문의 및 연락처.";
     } else {
-      title = ARTIST + " Yunsung Lee — 회화 아카이브";
+      title = ARTIST + " 작가 Yunsung Lee — 회화 아카이브";
       desc  = SITE_DESC;
       ld = {
         "@context":"https://schema.org",
@@ -1215,6 +1229,7 @@
     works:[],
     text:[],
     shop:[],
+    shopPublic:false,
     contact:{email:"",links:[]},
     design: Object.assign({}, DEFAULT_DESIGN)
   };
@@ -1375,6 +1390,7 @@
     else if(r.page==="works" && r.id) renderCollectionDetail(app,"works",r.id);
     else if(r.page==="text" && !r.id) renderTextList(app);
     else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
+    else if(r.page==="shop" && !isShopVisible()) renderShopComingSoon(app);
     else if(r.page==="shop" && !r.id) renderShopGrid(app);
     else if(r.page==="shop" && r.id) renderShopDetail(app, r.id);
     else if(r.page==="contact") renderContact(app);
@@ -1481,7 +1497,49 @@
     return p.join(" / ") || "문의";
   }
 
+  // ---------------- shop release gate ----------------
+  // The shop stays private until the owner presses the release button in
+  // master mode: visitors only see "coming soon", and no product page,
+  // sitemap entry or product metadata is published before that.
+  function isShopPublic(){ return !!(state.data && state.data.shopPublic); }
+  function isShopVisible(){ return isShopPublic() || state.master; }
+
+  function renderShopComingSoon(app){
+    const wrap = el("div","shop-coming-soon");
+    const t = el("div","shop-coming-title"); t.textContent = "SHOP";
+    const s = el("div","shop-coming-sub"); s.textContent = "준비중입니다 · Coming soon";
+    wrap.appendChild(t); wrap.appendChild(s);
+    app.appendChild(wrap);
+  }
+
+  function renderShopReleaseBar(app){
+    if(!state.master) return;
+    const bar = el("div","shop-release-bar" + (isShopPublic() ? " is-public" : ""));
+    const msg = el("span");
+    msg.textContent = isShopPublic()
+      ? "SHOP 공개 중 — 모든 방문자에게 보여요"
+      : "SHOP 비공개 — 방문자에겐 '준비중'으로 보여요. 마스터 모드에서만 이 화면이 보여요.";
+    const btn = el("button");
+    btn.textContent = isShopPublic() ? "비공개로 되돌리기" : "SHOP 공개하기";
+    btn.addEventListener("click", ()=> setShopPublic(!isShopPublic()));
+    bar.appendChild(msg); bar.appendChild(btn);
+    app.appendChild(bar);
+  }
+
+  function setShopPublic(on){
+    const ask = on
+      ? "SHOP을 공개할까요?\n\n누르면 바로 GitHub에 게시되고, 모든 방문자와 구글 검색에 상품이 보이기 시작해요."
+      : "SHOP을 다시 비공개로 돌릴까요?\n\n방문자에겐 '준비중'만 보이고, 게시된 상품 페이지는 지워져요.";
+    if(!confirm(ask)) return;
+    state.data.shopPublic = !!on;
+    saveDraft(false);
+    renderRoute();
+    // Full publish so product pages + sitemap are created (or removed) now.
+    publishToGithub(false);
+  }
+
   function renderShopGrid(app){
+    renderShopReleaseBar(app);
     const items = state.data.shop || [];
     const grid = el("div","shop-grid");
 
@@ -1591,6 +1649,7 @@
   }
 
   function renderShopDetail(app, id){
+    renderShopReleaseBar(app);
     const item = (state.data.shop||[]).find(x=>x.id===id);
     if(!item){
       const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
@@ -3135,6 +3194,73 @@
     return p.length ? ' style="'+esc(p.join(";"))+'"' : "";
   }
 
+  // CV lives only inside the SPA (#cv), which search engines treat as the
+  // home page — so biography, exhibitions and awards were never indexed.
+  // A standalone /cv/ page gives Google a crawlable profile of the artist.
+  function buildCvPage(){
+    const d = state.data;
+    const text = cleanText0((d.cv && d.cv.text) || "");
+    const url = SITE_URL + "/cv/";
+    const desc = ARTIST + " 작가 (" + ARTIST_EN + ", b.1985) 약력 — " + (excerpt(text, 120) || SITE_DESC);
+    const cover = SITE_URL + "/images/w6-cover.jpg";
+    const ld = {
+      "@context":"https://schema.org",
+      "@type":"ProfilePage",
+      "url": url,
+      "name": "CV — " + ARTIST + " " + ARTIST_EN,
+      "inLanguage":"ko",
+      "mainEntity": Object.assign({}, PERSON_LD, {"description": excerpt(text, 500)})
+    };
+    const title = "CV — " + ARTIST + " 작가 Yunsung Lee";
+    return [
+'<!DOCTYPE html>',
+'<html lang="ko">',
+'<head>',
+'<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>'+esc(title)+'</title>',
+'<meta name="description" content="'+esc(desc)+'">',
+'<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">',
+'<meta name="author" content="'+ARTIST+' Yunsung Lee">',
+'<link rel="canonical" href="'+url+'">',
+'<meta property="og:type" content="profile">',
+'<meta property="og:site_name" content="LEE YUNSUNG">',
+'<meta property="og:locale" content="ko_KR">',
+'<meta property="og:title" content="'+esc(title)+'">',
+'<meta property="og:description" content="'+esc(desc)+'">',
+'<meta property="og:url" content="'+url+'">',
+'<meta property="og:image" content="'+cover+'">',
+'<meta name="twitter:card" content="summary_large_image">',
+'<link rel="preload" href="/'+FONT_FILES[0]+'" as="font" type="font/woff2" crossorigin>',
+'<link rel="stylesheet" href="/page.css">',
+'<script type="application/ld+json">'+JSON.stringify(ld).replace(/<\//g,"<\\/")+'<\/script>',
+'<script async src="https://www.googletagmanager.com/gtag/js?id=G-TBFPJKSNZ7"><\/script>',
+'<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-TBFPJKSNZ7");<\/script>',
+'</head>',
+'<body class="static-page">',
+'  <header class="site-head">',
+'    <div class="shell head-grid">',
+'      <div class="head-spacer"></div>',
+'      <div class="head-center"><a href="/" class="site-name">'+esc(d.siteTitle||"LEE YUNSUNG")+'</a></div>',
+'      <nav class="site-nav">',
+'        <a href="/cv/" class="active">CV</a>',
+'        <a href="/">WORKS</a>',
+'        <a href="/#text">TEXT</a>',
+'        <a href="/#shop">SHOP</a>',
+'        <a href="/#contact">CONTACT</a>',
+'      </nav>',
+'    </div>',
+'  </header>',
+'  <main class="shell">',
+'    <h1 class="detail-title" style="text-align:left">CV</h1>',
+'    <div class="detail-desc" style="padding:0">'+esc(text)+'</div>',
+'  </main>',
+'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span></div></footer>',
+'</body>',
+'</html>'
+    ].join("\n");
+  }
+
   function buildStaticPage(kind, item, siblings){
     const title   = cleanText(item.title) || "Untitled";
     const url     = pageUrl(kind, item);
@@ -3283,7 +3409,7 @@
 '      <div class="head-spacer"></div>',
 '      <div class="head-center"><a href="/" class="site-name">'+esc(state.data.siteTitle||"LEE YUNSUNG")+'</a></div>',
 '      <nav class="site-nav">',
-'        <a href="/#cv">CV</a>',
+'        <a href="/cv/">CV</a>',
 '        <a href="/"'+(navActive==="works"?' class="active"':'')+'>WORKS</a>',
 '        <a href="/#text"'+(navActive==="text"?' class="active"':'')+'>TEXT</a>',
 '        <a href="/#shop"'+(navActive==="shop"?' class="active"':'')+'>SHOP</a>',
@@ -3317,6 +3443,9 @@ shopBlock,
       '<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
         .replace("www.sitemap.org","www.sitemaps.org"),
       '  <url><loc>'+SITE_URL+'/</loc><lastmod>'+today+'</lastmod><priority>1.0</priority></url>'];
+    if(cleanText((state.data.cv && state.data.cv.text) || "")){
+      rows.push('  <url><loc>'+SITE_URL+'/cv/</loc><lastmod>'+today+'</lastmod><priority>0.8</priority></url>');
+    }
     (state.data.works||[]).forEach(it=>{
       const title = cleanText(it.title) || "Untitled";
       // Every image entry carries the artist's name in both languages so image
@@ -3345,7 +3474,7 @@ shopBlock,
     (state.data.text||[]).forEach(it=>{
       rows.push('  <url><loc>'+pageUrl("text",it)+'</loc><lastmod>'+today+'</lastmod><priority>0.7</priority></url>');
     });
-    (state.data.shop||[]).forEach(it=>{
+    (isShopPublic() ? (state.data.shop||[]) : []).forEach(it=>{
       rows.push('  <url>');
       rows.push('    <loc>'+pageUrl("shop",it)+'</loc>');
       rows.push('    <lastmod>'+today+'</lastmod><priority>0.8</priority>');
@@ -3380,7 +3509,7 @@ shopBlock,
     const jobs = [];
     (d.works||[]).forEach(it=>jobs.push(["works", it, d.works]));
     (d.text||[]).forEach(it=>jobs.push(["text", it, d.text]));
-    (d.shop||[]).forEach(it=>jobs.push(["shop", it, d.shop]));
+    if(isShopPublic()) (d.shop||[]).forEach(it=>jobs.push(["shop", it, d.shop]));
 
     let i = 0;
     for(const [kind, item, sibs] of jobs){
@@ -3389,6 +3518,11 @@ shopBlock,
       await ghPutFile(path, utf8ToBase64(html), "Update page: " + (cleanText(item.title)||item.id));
       written.push(path);
       if(onProgress) onProgress(++i, jobs.length);
+    }
+
+    // CV as its own crawlable page (see buildCvPage)
+    if(cleanText((d.cv && d.cv.text) || "")){
+      await ghPutFile("cv/index.html", utf8ToBase64(buildCvPage()), "Update CV page");
     }
 
     // 공유 스타일시트 (Design 패널 값 포함)
