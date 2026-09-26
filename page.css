@@ -144,14 +144,6 @@
   }
   @media (max-width:640px){ .shop-grid{grid-template-columns:repeat(2,1fr);} }
   .shop-card{position:relative; display:block; color:inherit;}
-  .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
-  .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
-  .shop-coming-sub{font-size:13px; letter-spacing:.06em; color:var(--ink-faint);}
-  .shop-release-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-    padding:12px 16px; margin-bottom:28px; border:1px dashed #d08a2e; background:#fff8ec; color:#8a5a14; font-size:12.5px; border-radius:6px;}
-  .shop-release-bar.is-public{border-color:#5a9a5a; background:#f1f8f0; color:#2f6a2f;}
-  .shop-release-bar button{font:inherit; font-size:12px; padding:7px 14px; border-radius:5px; border:1px solid currentColor; background:#fff; color:inherit; cursor:pointer; white-space:nowrap;}
-  .shop-release-bar:not(.is-public) button{background:#111; color:#fff; border-color:#111;}
   .shop-thumb{
     position:relative; background:#fafafa; border:1px solid var(--line); overflow:hidden; aspect-ratio:1/1;
   }
@@ -495,5 +487,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: var(--sans); --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 11.700000000000001px; --header-height: 83px;}
+:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: var(--sans); --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 11.55px; --header-height: 83px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
