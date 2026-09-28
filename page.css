@@ -161,6 +161,13 @@
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
   .shop-card{position:relative; display:block; color:inherit;}
+  /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
+  body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
+  body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  .shop-card.dragging{opacity:.35;}
+  .shop-drag-ghost{position:fixed; z-index:400; pointer-events:none; opacity:.92; box-shadow:0 14px 34px rgba(0,0,0,.22); transform:rotate(1.2deg); background:#fff; cursor:grabbing;}
+  body.shop-dragging, body.shop-dragging *{cursor:grabbing !important; user-select:none !important;}
+  .shop-reorder-hint{text-align:center; font-size:11.5px; color:var(--ink-faint); margin:-22px 0 22px; letter-spacing:.02em;}
   .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
   .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
   .shop-coming-sub{font-size:13px; letter-spacing:.06em; color:var(--ink-faint);}
@@ -261,7 +268,7 @@
   .sync-pill.warn{border-color:#ffa94d; color:#ffd2a1;} .sync-pill.warn .d{background:#ff922b;}
   @keyframes syncBlink{50%{opacity:.35}}
   @media (max-width:600px){ .sync-pill .t{display:none;} .sync-pill{padding:0 8px;} }
-  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:950; width:min(760px, calc(100vw - 24px));
+  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:190; width:min(760px, calc(100vw - 24px));
     display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 14px; border-radius:8px; background:#fff3f2; border:1px solid #f1a39c; color:#8c1d15; font-size:13px; line-height:1.55; box-shadow:0 6px 24px rgba(0,0,0,.08);}
   #syncBanner[hidden]{display:none;}
   #syncBanner .m{flex:1 1 280px;}
@@ -557,6 +564,23 @@
   .overlay.show{display:flex;}
   .modal{background:#fff; border:1px solid var(--line-strong); border-radius:8px; width:100%; max-width:460px; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.2);}
   .modal.wide{max-width:640px;}
+  .pick-site-img{display:block; width:100%; margin-top:8px; padding:9px 10px; font:inherit; font-size:12px; color:var(--ink-soft,#555); background:#faf9f7; border:1px solid var(--line-strong); border-radius:6px; cursor:pointer;}
+  .pick-site-img:hover{color:var(--ink); border-color:var(--ink);}
+  #imgPickModal{z-index:240;}
+  #imgPickModal .modal.imgpick{max-width:820px;}
+  .imgpick-bar{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px;}
+  .imgpick-tabs{display:flex; gap:4px; flex-wrap:wrap;}
+  .imgpick-tabs button{font:inherit; font-size:11.5px; letter-spacing:.04em; padding:6px 11px; border:1px solid var(--line-strong); background:#fff; border-radius:20px; cursor:pointer; color:var(--ink-faint);}
+  .imgpick-tabs button.on{background:var(--ink,#111); border-color:var(--ink,#111); color:#fff;}
+  #imgPickSearch{flex:1 1 160px; max-width:240px; font:inherit; font-size:12.5px; padding:7px 10px; border:1px solid var(--line-strong); border-radius:6px;}
+  .imgpick-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(118px, 1fr)); gap:10px;}
+  .imgpick-grid button{all:unset; cursor:pointer; display:flex; flex-direction:column; gap:5px; min-width:0;}
+  .imgpick-grid .ph{aspect-ratio:1/1; background:#f1efeb; border-radius:4px; overflow:hidden; outline:2px solid transparent; outline-offset:2px; transition:outline-color .12s;}
+  .imgpick-grid .ph img{width:100%; height:100%; object-fit:contain; display:block;}
+  .imgpick-grid button:hover .ph, .imgpick-grid button:focus-visible .ph{outline-color:var(--ink,#111);}
+  .imgpick-grid .cap{font-size:11px; line-height:1.35; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .imgpick-grid .cap b{font-weight:600; color:var(--ink);}
+  .imgpick-empty{grid-column:1/-1; padding:40px 0; text-align:center; color:var(--ink-faint); font-size:12.5px;}
 
   /* ---------- design panel: fixed to the left so edits stay visible ---------- */
   #designModal{
