@@ -1151,8 +1151,8 @@
      주의: 정적 사이트이므로 이 방식은 "잠금"이지 완전한 보안이 아닙니다.
      짧은 숫자 비밀번호는 오프라인에서 뚫릴 수 있으니 12자 이상 문장형을 쓰세요.
      ============================================== */
-  const MASTER_PW_SALT = "4BbvJaFbWQZNAkaoRE62ig==";
-  const MASTER_PW_HASH = "zYFeih86afMkS/ClTgQp0/6rksqz5Ov6RSzU5XXbPCY=";
+  const MASTER_PW_SALT = "DJtNrdTzgu0DLrzZZ1hPkA==";
+  const MASTER_PW_HASH = "R0cXryURjQMfLbcGYokR7p6fHUEn11nfoJBgFiJU3aU=";
   const MASTER_PW_ITER = 310000;
 
   const LS_DATA = "leeArchiveDraft_v2";
@@ -2540,7 +2540,7 @@
       ]},
       { title:"WORKS · 작품 상세", items:[
         ["design","frameCols","seg","WORKS 한 줄 개수", {options:[[1,"1"],[2,"2"],[3,"3"],[4,"4"]]}],
-        ["design","pagePadding","range","페이지 여백 (px)", {min:0,max:100,step:2}],
+        ["design","pagePadding","range","머리글·바닥글·글 페이지 좌우 여백 (px)", {min:0,max:100,step:2}],
         ["design","frameGap","range","네모칸 간격 (px)", {min:0,max:80,step:2}],
         ["design","frameTitleSize","range","네모칸 제목 글씨 (px)", {min:12,max:28,step:1}],
         ["design","detailMargin","range","상세 사진 좌우 여백 (px)", {min:0,max:120,step:4}],
@@ -2621,8 +2621,47 @@
     return "";
   }
 
+  // 바꾸는 설정이 지금 화면에 없으면, 그 설정이 보이는 페이지로 홈페이지 창을 옮김
+  let studioAutoNav = true;
+  function studioPreviewTarget(group, key){
+    const firstWork = (state.data.works || []).find(w=>(w.photoRows||[]).some(r=>(r.photos||[]).length)) || (state.data.works || [])[0];
+    const firstShop = (state.data.shop || [])[0];
+    const r = parseHash();
+    const on = (page, idKind)=>{
+      if(r.page !== page) return false;
+      if(idKind === "list") return !r.id || (page === "shop" && isShopTab(r.id));
+      if(idKind === "item") return !!r.id && !(page === "shop" && isShopTab(r.id));
+      return true;
+    };
+    const go = (hash, ok)=> ok ? null : hash;
+    if(group === "design"){
+      if(key === "fontFamily") return null;
+      if(["fontSize","letterSpacing","bold","align"].includes(key)) return (on("cv") || on("works","item") || on("text","item")) ? null : "#cv";
+      if(key === "textWidth") return go("#cv", on("cv"));
+      if(["frameCols","frameGap","frameTitleSize","pagePadding"].includes(key)) return go("#works", on("works","list") || on("text","list") && key!=="frameCols");
+      if(["detailMargin","photoGap","captionSize"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
+      if(/^textList/.test(key)) return go("#text", on("text","list"));
+      if(/^contact/.test(key)) return go("#contact", on("contact"));
+    }
+    if(group === "shopDesign"){
+      if(/^grid/.test(key)) return go("#shop/editions", on("shop","list"));
+      return firstShop ? go("#shop/" + firstShop.id, on("shop","item")) : null;
+    }
+    if(group === "shopTexts"){
+      if(key === "myOrderTab") return go("#shop/editions", r.page === "shop");
+      return firstShop ? go("#shop/" + firstShop.id, on("shop","item")) : null;
+    }
+    if(group === "biz" || group === "shop") return go("#shop/editions", r.page === "shop");
+    if(group === "privacy") return go("#privacy", on("privacy"));
+    return null;
+  }
+
   let studioSaveTimer = null, studioRerenderTimer = null;
   function studioSet(group, key, value){
+    if(studioAutoNav){
+      const target = studioPreviewTarget(group, key);
+      if(target && location.hash !== target) location.hash = target;
+    }
     const d = state.data;
     let rerender = false;
     if(group === "design"){
@@ -2702,7 +2741,9 @@
       state.data.shopTexts = {};
       applyDesignVars(); applyShopDesign(); saveDraft(); renderRoute();
     },
-    publish(){ publishToGithub(false); }
+    publish(){ publishToGithub(false); },
+    setAutoNav(v){ studioAutoNav = !!v; },
+    getAutoNav(){ return studioAutoNav; }
   };
 
   function openStudio(section){
@@ -2732,6 +2773,7 @@
   '*{box-sizing:border-box}body{margin:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#111;background:#f6f6f4}' +
   'header{position:sticky;top:0;z-index:5;background:#111;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}' +
   'header h1{font-size:12px;letter-spacing:.24em;margin:0;font-weight:600;flex:1}' +
+  'header .auto{font-size:11px;color:#ddd;display:flex;align-items:center;gap:4px;cursor:pointer}' +
   '#st{font-size:11px;color:#9f9;min-width:70px;text-align:right}#st.dirty{color:#fc6}' +
   'nav{position:sticky;top:44px;z-index:4;background:#fff;border-bottom:1px solid #e3e3e3;padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap}' +
   'nav a{font-size:11px;color:#555;text-decoration:none;padding:4px 8px;border:1px solid #ddd;border-radius:99px;white-space:nowrap}nav a:hover{border-color:#111;color:#111}' +
@@ -2749,7 +2791,7 @@
   'footer button{flex:1;min-width:120px;padding:10px;border:1px solid #ccc;background:#fff;border-radius:6px;font:inherit;font-size:12px;cursor:pointer}footer button.primary{background:#111;color:#fff;border-color:#111}' +
   '.gone{padding:40px 20px;text-align:center;color:#666}' +
   '</style></head><body>' +
-  '<header><h1>DESIGN STUDIO</h1><span id="st">저장됨</span></header><nav id="nav"></nav><main id="main"></main>' +
+  '<header><h1>DESIGN STUDIO</h1><label class="auto"><input type="checkbox" id="autoNav" checked> 바꾸는 부분으로 화면 이동</label><span id="st">저장됨</span></header><nav id="nav"></nav><main id="main"></main>' +
   '<footer><button id="bRevert">이번에 바꾼 것 되돌리기</button><button id="bReset">디자인 기본값</button><button class="primary" id="bPub">⇪ 홈페이지에 게시</button></footer>' +
   '<script>(function(){' +
   'var start=__SECTION__;var O=window.opener;' +
@@ -2774,6 +2816,8 @@
   '$("bRevert").onclick=function(){var A=api();if(!A)return gone();if(confirm("이 창을 연 뒤에 바꾼 것을 모두 되돌릴까요?")){A.revert();render();}};' +
   '$("bReset").onclick=function(){var A=api();if(!A)return gone();if(confirm("디자인 값과 SHOP 문구를 모두 기본값으로 되돌릴까요? (운영 정보는 그대로예요)")){A.resetDesign();render();}};' +
   '$("bPub").onclick=function(){var A=api();if(!A)return gone();A.publish();try{O.focus();}catch(e){}};' +
+  '$("autoNav").onchange=function(){var A=api();if(A)A.setAutoNav($("autoNav").checked);};' +
+  '(function(){var A=api();if(A)$("autoNav").checked=A.getAutoNav();})();' +
   'render(start);' +
   '})();<\/script></body></html>';
 
