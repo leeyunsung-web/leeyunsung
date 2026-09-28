@@ -2313,19 +2313,7 @@
       "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
       "description": "",
       "slug": "shop-5",
-      "photoRows": [
-        {
-          "id": "row-1790623860380-7h9gh",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790623860380-a3vcr",
-              "image": "./images/s-1790623636184-2mg2s-p-1790623860380-a3vcr.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
+      "photoRows": [],
       "spec1": "",
       "spec2": "",
       "edition": "",
