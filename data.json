@@ -2241,7 +2241,19 @@
       "cover": "./images/s-1790622121911-1dl7b-cover.jpg",
       "description": "At the Last Judgment 2010 Art Poster, 2020 65 &times; 50 cm Signed, Limited Edition of 300\nEdit Info\nDelete\n65 &times; 50 cm &middot; Digital Print on Paper\n2010년작 《At the Last Judgment》의 포스터 버전입니다. 2020년 한정 에디션으로 제작&middot;판매되었으며, 남은 수량을 웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster version of At the Last Judgment (2010), originally produced and released as a limited edition in 2020. The remaining prints are now available again to commemorate the renewal of Lee Yunsung's website.",
       "slug": "at-the-last-judgment-2010-art-poster-2020-65-50-cm-signed-li",
-      "photoRows": [],
+      "photoRows": [
+        {
+          "id": "rowc-s-1790622121911-1dl7b-943a5c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790622121911-1dl7b-943a5c",
+              "image": "./images/s-1790622121911-1dl7b-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
       "spec1": "",
       "spec2": "Digital Print on Paper",
       "edition": "",
@@ -2251,7 +2263,8 @@
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
-      "shipProfile": "tube"
+      "shipProfile": "tube",
+      "coverInRows": true
     },
     {
       "id": "s-1790622337229-hzfwn",
@@ -2259,7 +2272,19 @@
       "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
       "description": "",
       "slug": "shop-2",
-      "photoRows": [],
+      "photoRows": [
+        {
+          "id": "rowc-s-1790622337229-hzfwn-680ff6",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790622337229-hzfwn-680ff6",
+              "image": "./images/s-1790622337229-hzfwn-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
       "spec1": "",
       "spec2": "",
       "edition": "",
@@ -2269,25 +2294,8 @@
       "buyUs": "",
       "soldOut": false,
       "category": "book",
-      "shipProfile": "book"
-    },
-    {
-      "id": "s-1790623028311-pavmn",
-      "title": "",
-      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
-      "description": "",
-      "slug": "shop-3",
-      "photoRows": [],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube"
+      "shipProfile": "book",
+      "coverInRows": true
     },
     {
       "id": "s-1790623313493-6o5cs",
@@ -2295,7 +2303,19 @@
       "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
       "description": "",
       "slug": "shop-4",
-      "photoRows": [],
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623313493-6o5cs-305ea5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623313493-6o5cs-305ea5",
+              "image": "./images/s-1790623313493-6o5cs-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
       "spec1": "",
       "spec2": "",
       "edition": "",
@@ -2305,7 +2325,39 @@
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
-      "shipProfile": "tube"
+      "shipProfile": "tube",
+      "coverInRows": true
+    },
+    {
+      "id": "s-1790623028311-pavmn",
+      "title": "",
+      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
+      "description": "",
+      "slug": "shop-3",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623028311-pavmn-774362",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623028311-pavmn-774362",
+              "image": "./images/s-1790623028311-pavmn-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true
     },
     {
       "id": "s-1790623636184-2mg2s",
@@ -2314,6 +2366,17 @@
       "description": "",
       "slug": "shop-5",
       "photoRows": [
+        {
+          "id": "rowc-s-1790623636184-2mg2s-5234cd",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623636184-2mg2s-5234cd",
+              "image": "./images/s-1790623636184-2mg2s-cover.jpg",
+              "caption": ""
+            }
+          ]
+        },
         {
           "id": "row-1790623906918-oxlu1",
           "cols": 1,
@@ -2335,7 +2398,8 @@
       "buyUs": "",
       "soldOut": false,
       "category": "book",
-      "shipProfile": "book"
+      "shipProfile": "book",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
