@@ -8,7 +8,7 @@
      외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
      연결 허용 대상은 이 사이트 자신과 api.github.com 뿐입니다.
      혹시 기능이 깨지면 아래 한 줄만 지우면 원래대로 돌아갑니다. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://www.paypal.com https://*.paypal.com https://*.paypalobjects.com; frame-src https://*.paypal.com https://www.paypal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.paypalobjects.com https://*.paypal.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev https://*.paypal.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://www.paypal.com https://*.paypal.com https://*.paypalobjects.com; frame-src https://*.paypal.com https://www.paypal.com https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://*.paypalobjects.com https://*.paypal.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev https://*.paypal.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
 <title>이윤성 작가 Yunsung Lee — 회화 아카이브</title>
@@ -551,6 +551,35 @@
     display:flex; align-items:center; justify-content:center;
   }
   .photo-editctl button:hover{background:var(--ink); color:#fff;}
+  /* ---------- YouTube 영상 칸 ---------- */
+  .photo-cell.is-video{background:transparent; border:0; cursor:default;}
+  .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
+  .photo-grid.multi .photo-cell .yt-wrap{width:100%; height:100%; aspect-ratio:auto;}
+  .photo-cell .yt-wrap img.yt-poster, .yt-wrap img.yt-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .yt-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; opacity:0; transition:opacity .45s ease;}
+  .yt-wrap.ready iframe{opacity:1;}
+  .yt-sound{position:absolute; left:10px; bottom:10px; z-index:3; width:34px; height:34px; border-radius:50%; border:0; padding:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.55); color:#fff; cursor:pointer; opacity:0; transition:opacity .25s ease, background .15s ease;}
+  .yt-wrap.ready .yt-sound{opacity:.85;}
+  .yt-sound:hover{opacity:1 !important; background:rgba(0,0,0,.8);}
+  .yt-sound svg{width:17px; height:17px; display:block;}
+  .photo-cell.is-video .photo-caption{pointer-events:none;}
+  .photo-editctl{z-index:4;}
+  .pd-vbox{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .pd-vbox .yt-wrap{margin:0;}
+  .pd-vbox .yt-wrap.fit-h{height:100%; width:auto;}
+  .pd-vbox .yt-wrap.fit-w{width:100%; height:auto;}
+  .pd-main.is-video{cursor:default;}
+  .pd-thumb .yt-badge, .imgdrop .yt-badge{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:26px; height:26px; border-radius:50%; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; pointer-events:none;}
+  .pd-thumb .yt-badge::after, .imgdrop .yt-badge::after{content:""; border-left:8px solid #fff; border-top:5px solid transparent; border-bottom:5px solid transparent; margin-left:2px;}
+  .pd-thumb.is-video img{inset:0; width:100%; height:100%; object-fit:cover;}
+  .yt-field{margin-top:10px;}
+  .yt-field .yt-row{display:flex; gap:6px;}
+  .yt-field input{flex:1; min-width:0;}
+  .yt-field select{flex:0 0 auto; width:auto; font:inherit; font-size:12.5px; padding:0 8px; border:1px solid var(--line-strong); border-radius:6px; background:#fff;}
+  .yt-field .yt-msg{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .yt-field .yt-msg.err{color:#b3261e;}
+  .imgdrop.is-video{padding:0;}
   .photo-cell.add-tile{
     aspect-ratio:3/2; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--line-strong);
   }
@@ -986,6 +1015,20 @@
           </div>
           <input type="file" id="photoImageFile" accept="image/*" style="display:none;">
           <button type="button" class="pick-site-img" data-pick="photo">▦ 홈페이지에 있는 이미지에서 고르기</button>
+          <div class="yt-field">
+            <label style="margin-top:4px;">또는 YouTube 영상 · 쇼츠 주소</label>
+            <div class="yt-row">
+              <input type="url" id="photoYtUrl" placeholder="https://youtube.com/shorts/…  또는  https://youtu.be/…" autocomplete="off" spellcheck="false">
+              <select id="photoYtRatio" title="영상 비율">
+                <option value="16:9">가로 16:9</option>
+                <option value="9:16">세로 9:16</option>
+                <option value="1:1">정사각 1:1</option>
+                <option value="4:5">세로 4:5</option>
+                <option value="4:3">가로 4:3</option>
+              </select>
+            </div>
+            <div class="yt-msg" id="photoYtMsg">소리 없이 자동으로 반복 재생돼요. 보는 사람이 멈추거나 소리를 켤 수 있어요.</div>
+          </div>
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
         <div class="btnrow">
@@ -2505,7 +2548,7 @@
     ["priceSize",    "상세: 가격 글씨 (px)",         12, 32, 1],
     ["gridCols",     "목록: 한 줄 개수 (데스크톱)",   3, 6, 1],
     ["gridTitleSize","목록: 제목 글씨 (px)",         10, 20, 1],
-    ["gridPriceSize","목록: 가격 글씨 (px)",         10, 18, 1],
+    ["gridPriceSize","목록: Sold out 글씨 (px)",         10, 18, 1],
     ["btnHeight",    "구매 버튼: 높이 (px)",         40, 90, 1],
     ["btnWidth",     "구매 버튼: 가로 길이 (%)",      30, 100, 1],
     ["btnFont",      "구매 버튼: 큰 글씨 (px)",       11, 22, 1],
@@ -2654,7 +2697,7 @@
       { id:"shop", title:"SHOP 목록", items:[
         ["shopDesign","gridCols","range","한 줄 개수 (데스크톱)", {min:3,max:6,step:1}],
         ["shopDesign","gridTitleSize","range","상품 이름 글씨 (px)", {min:10,max:20,step:1}],
-        ["shopDesign","gridPriceSize","range","가격 글씨 (px)", {min:10,max:18,step:1}]
+        ["shopDesign","gridPriceSize","range","Sold out 글씨 (px)", {min:10,max:18,step:1}]
       ]},
       { title:"SHOP 상품 상세", items:[
         ["shopDesign","mainPct","range","대표 이미지 너비 (%)", {min:40,max:70,step:1}],
@@ -2967,6 +3010,7 @@
       "· Cloudflare, Inc. (미국 등) — 주문·메시지 저장과 결제 서버 운영 / 1번의 해외 주문·메시지 항목 / 3번의 보유 기간",
       "· GitHub, Inc. (미국) — 주문 기록 백업(비공개 저장소) / 1번의 해외 주문·메시지 항목 / 3번의 보유 기간",
       "· Google LLC (미국) — 방문 통계(Google Analytics) / 쿠키, 접속 정보 / Google Analytics 설정 기간",
+      "· Google LLC (미국) — 작품 영상 재생(YouTube, 개인정보 보호 강화 모드 youtube-nocookie.com) / 영상을 볼 때의 접속 정보 / YouTube 방침에 따른 기간",
       "",
       "6. 개인정보의 파기 절차와 방법",
       "보유 기간이 끝나거나 처리 목적이 달성되면 지체 없이 파기합니다. 전자 파일은 복구할 수 없는 방법으로 삭제하고, 출력물(송장 등)은 분쇄하거나 소각합니다.",
@@ -2981,6 +3025,7 @@
       "· MY ORDER 화면에는 이름·주소·전화번호를 표시하지 않습니다.",
       "",
       "9. 쿠키와 브라우저 저장",
+      "· 작품 영상은 YouTube의 개인정보 보호 강화 모드로 재생되며, 영상을 재생하면 YouTube가 자체 방침에 따라 정보를 처리할 수 있습니다.",
       "· 방문 통계(Google Analytics)를 위해 쿠키를 사용합니다. 브라우저 설정에서 쿠키를 거부하거나 삭제할 수 있으며, 이 경우에도 사이트 이용과 구매에는 지장이 없습니다.",
       "· 장바구니와 배송 정보는 다음 구매 편의를 위해 이용자 브라우저에만 저장되며, 브라우저의 사이트 데이터 삭제로 지울 수 있습니다.",
       "",
@@ -3015,7 +3060,7 @@
       "To deliver your order we share your name, address, phone number, tax ID (if required) and item details with Korea Post and the postal operator and customs authority of the destination country.",
       "",
       "5. Service providers and international transfers",
-      "Your information is processed by the following providers, whose servers are located outside Korea: PayPal (payments), Cloudflare, Inc. (order storage and checkout server, USA), GitHub, Inc. (private order backups, USA), Google LLC (analytics, USA).",
+      "Your information is processed by the following providers, whose servers are located outside Korea: PayPal (payments), Cloudflare, Inc. (order storage and checkout server, USA), GitHub, Inc. (private order backups, USA), Google LLC (analytics, USA), YouTube (embedded videos in privacy-enhanced mode via youtube-nocookie.com, USA).",
       "",
       "6. Your rights",
       "You may request access, correction, deletion or restriction of your personal information at any time by emailing " + v.email + ". Records we must keep by law are retained for the legal period. You can delete your own MY ORDER messages yourself.",
@@ -3262,8 +3307,8 @@
       info.appendChild(nm);
       const spec = [cleanText(item.spec1), cleanText(item.spec2)].filter(Boolean).join(" · ");
       if(spec){ const d = el("div","shop-spec"); d.textContent = spec; info.appendChild(d); }
-      const pr = el("div","shop-price"+(soldNow?" sold":"")); pr.textContent = priceLabel(item);
-      info.appendChild(pr);
+      // 목록에서는 가격을 숨기고 상세페이지에서만 보여줌 (품절만 표시)
+      if(soldNow){ const pr = el("div","shop-price sold"); pr.textContent = "Sold out"; info.appendChild(pr); }
       card.appendChild(info);
 
       const ctl = el("div","frame-editctl");
@@ -3458,7 +3503,7 @@
     // ---- 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 상품 정보
     const gallery = [];
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) gallery.push(p); }));
-    const imgs = gallery.length ? gallery.map(p=>({src:p.image, cap:cleanText(p.caption)})) : (item.cover ? [{src:item.cover, cap:""}] : []);
+    const imgs = gallery.length ? gallery.map(p=>({src:p.image, cap:cleanText(p.caption), video: isVideoPhoto(p) ? p.video : null})) : (item.cover ? [{src:item.cover, cap:""}] : []);
     const sd = shopDesign();
 
     const pd = el("div","pd");
@@ -3466,11 +3511,34 @@
     const main = el("div","pd-main");
     let current = 0;
     const mainImg = el("img");
+    const altOf = im=>im.cap || (cleanText(item.title) + " — " + ARTIST);
+    // 대표 영역: 사진이면 이미지, 영상이면 소리 없이 자동 재생되는 플레이어
+    const showMain = i=>{
+      const im = imgs[i];
+      const oldBox = main.querySelector(".pd-vbox"); if(oldBox) oldBox.remove();
+      main.classList.toggle("is-video", !!im.video);
+      if(im.video){
+        mainImg.style.display = "none";
+        const box = el("div","pd-vbox");
+        const pl = makeYtPlayer(im.video, altOf(im));
+        pl.classList.add(ytRatio(im.video) <= 0.8 ? "fit-h" : "fit-w");
+        box.appendChild(pl);
+        main.appendChild(box);
+      } else {
+        mainImg.style.display = "";
+        mainImg.src = im.src; mainImg.alt = altOf(im);
+      }
+    };
     if(imgs.length){
-      mainImg.src = imgs[0].src; mainImg.alt = imgs[0].cap || (cleanText(item.title) + " — " + ARTIST);
       mainImg.decoding = "async";
       main.appendChild(mainImg);
-      if(gallery.length) main.addEventListener("click", ()=>openPhotoLightbox("shop", item.id, current));
+      showMain(0);
+      if(gallery.length) main.addEventListener("click", ()=>{
+        if(imgs[current] && imgs[current].video) return;
+        // 크게 보기는 사진만 넘겨 봄 (영상 제외한 순서로 변환)
+        const lbIdx = imgs.slice(0, current).filter(x=>!x.video).length;
+        openPhotoLightbox("shop", item.id, lbIdx);
+      });
     } else {
       const ph = el("div","placeholder-label"); ph.textContent = state.master ? "아래에 이미지를 추가하면 여기에 보여요" : ""; main.appendChild(ph);
     }
@@ -3478,11 +3546,13 @@
     if(imgs.length > 1 && sd.thumbCount > 0){
       const strip = el("div","pd-thumbs");
       imgs.slice(0, sd.thumbCount).forEach((im, i)=>{
-        const b = el("button","pd-thumb" + (i===0 ? " on" : "")); b.type = "button";
-        b.setAttribute("aria-label", "Image " + (i+1));
+        const b = el("button","pd-thumb" + (i===0 ? " on" : "") + (im.video ? " is-video" : "")); b.type = "button";
+        b.setAttribute("aria-label", (im.video ? "Video " : "Image ") + (i+1));
         const t = el("img"); t.src = im.src; t.alt = ""; t.loading = "lazy"; b.appendChild(t);
+        if(im.video) b.appendChild(el("span","yt-badge"));
         b.addEventListener("click", ()=>{
-          current = i; mainImg.src = im.src; mainImg.alt = im.cap || (cleanText(item.title) + " — " + ARTIST);
+          if(current === i) return;
+          current = i; showMain(i);
           strip.querySelectorAll(".pd-thumb").forEach(x=>x.classList.toggle("on", x===b));
         });
         strip.appendChild(b);
@@ -3531,20 +3601,14 @@
       const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
       row.photos.forEach(photo=>{
-        const myIdx = flatIdx++;
         const cell = el("div","photo-cell");
-        const img = el("img");
-        img.alt = cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST);
-        img.loading = myIdx < 2 ? "eager" : "lazy";
-        img.decoding = "async";
-        img.addEventListener("load", scheduleJustifyLayout);
-        img.src = photo.image;
-        cell.appendChild(img);
+        const isVid = fillPhotoCell(cell, photo, cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST), flatIdx < 2);
+        const myIdx = isVid ? -1 : flatIdx++;
         if(photo.caption){
           const cap = el("div","photo-caption"); cap.textContent = photo.caption;
           cell.appendChild(cap);
         }
-        cell.addEventListener("click", ()=>openPhotoLightbox("shop",item.id,myIdx));
+        if(!isVid) cell.addEventListener("click", ()=>openPhotoLightbox("shop",item.id,myIdx));
         const ctl = el("div","photo-editctl");
         const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",(e)=>{ e.stopPropagation(); openPhotoModal("shop",item.id,row.id,photo.id); });
         const db = el("button"); db.textContent="✕"; db.addEventListener("click",(e)=>{ e.stopPropagation(); deletePhoto("shop",item.id,row.id,photo.id); });
@@ -3784,6 +3848,7 @@
       if(!cells.length) return;
       const ratios = [];
       for(const cell of cells){
+        if(cell.dataset.ar){ ratios.push(parseFloat(cell.dataset.ar) || 16/9); continue; }
         const img = cell.querySelector("img");
         if(!img || !img.naturalWidth || !img.naturalHeight) return; // wait for load event to retry
         ratios.push(img.naturalWidth / img.naturalHeight);
@@ -3873,20 +3938,14 @@
       const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
       row.photos.forEach(photo=>{
-        const myIdx = flatIdx++;
         const cell = el("div","photo-cell");
-        const img = el("img");
-        img.alt = cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST);
-        img.loading = myIdx < 2 ? "eager" : "lazy";
-        img.decoding = "async";
-        img.addEventListener("load", scheduleJustifyLayout);
-        img.src = photo.image;
-        cell.appendChild(img);
+        const isVid = fillPhotoCell(cell, photo, cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST), flatIdx < 2);
+        const myIdx = isVid ? -1 : flatIdx++;
         if(photo.caption){
           const cap = el("div","photo-caption"); cap.textContent = photo.caption;
           cell.appendChild(cap);
         }
-        cell.addEventListener("click", ()=>openPhotoLightbox(key,item.id,myIdx));
+        if(!isVid) cell.addEventListener("click", ()=>openPhotoLightbox(key,item.id,myIdx));
         const ctl = el("div","photo-editctl");
         const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",(e)=>{ e.stopPropagation(); openPhotoModal(key,item.id,row.id,photo.id); });
         const db = el("button"); db.textContent="✕"; db.addEventListener("click",(e)=>{ e.stopPropagation(); deletePhoto(key,item.id,row.id,photo.id); });
@@ -3981,6 +4040,34 @@
     openModal("rowColsModal");
   }
 
+  let pendingPhotoVideo = null;
+  function setPhotoVideoUi(video){
+    pendingPhotoVideo = video || null;
+    $("photoYtUrl").value = video ? ytWatchUrl(video) : "";
+    if(video) $("photoYtRatio").value = video.ratio || "16:9";
+    $("photoImgDrop").classList.toggle("is-video", !!video);
+    const old = $("photoImgDrop").querySelector(".yt-badge"); if(old) old.remove();
+    if(video){ const b = el("span","yt-badge"); $("photoImgDrop").appendChild(b); }
+    const msg = $("photoYtMsg"); msg.classList.remove("err");
+    if(!video) $("photoYtRatio").value = "16:9";
+    if(!video) $("photoYtRatio").value = "16:9";
+    msg.textContent = video ? "영상으로 들어가요 · 소리 없이 자동 반복 재생 (보는 사람이 멈추거나 소리를 켤 수 있어요)" : "소리 없이 자동으로 반복 재생돼요. 보는 사람이 멈추거나 소리를 켤 수 있어요.";
+  }
+  function onPhotoYtInput(){
+    const raw = $("photoYtUrl").value.trim();
+    if(!raw){
+      if(pendingPhotoVideo){ pendingPhotoVideo = null; pendingPhotoImage = null; clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop"); setPhotoVideoUi(null); }
+      return;
+    }
+    const v = parseYouTube(raw);
+    if(!v){ const msg = $("photoYtMsg"); msg.textContent = "YouTube 주소를 확인해 주세요. (youtube.com/watch?v=…, youtu.be/…, youtube.com/shorts/…)"; msg.classList.add("err"); return; }
+    const sameVideo = pendingPhotoVideo && pendingPhotoVideo.id === v.id;
+    const ratio = sameVideo ? $("photoYtRatio").value : (v.short ? "9:16" : "16:9");
+    const video = { id: v.id, ratio };
+    pendingPhotoImage = ytPoster(v.id);
+    showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", pendingPhotoImage);
+    setPhotoVideoUi(video);
+  }
   function openPhotoModal(key,itemId,rowId,photoId){
     $("photoCollection").value = key;
     $("photoItemId").value = itemId;
@@ -3989,6 +4076,7 @@
     $("photoInsertIndex").value = "";
     $("photoId").value = photoId || "";
     pendingPhotoImage = null;
+    setPhotoVideoUi(null);
 
     if(photoId){
       const item = state.data[key].find(x=>x.id===itemId);
@@ -3998,6 +4086,7 @@
       $("photoCaption").value = photo.caption || "";
       showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", photo.image);
       pendingPhotoImage = photo.image;
+      if(isVideoPhoto(photo)) setPhotoVideoUi(Object.assign({}, photo.video));
       $("photoDeleteBtn").style.display = "inline-block";
     } else {
       $("photoModalTitle").textContent = "Add Photo";
@@ -4016,6 +4105,7 @@
     $("photoInsertIndex").value = (insertIndex==null ? "" : String(insertIndex));
     $("photoId").value = "";
     pendingPhotoImage = null;
+    setPhotoVideoUi(null);
     $("photoModalTitle").textContent = "Add Photo";
     $("photoCaption").value = "";
     clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
@@ -4028,7 +4118,7 @@
     const itemId = $("photoItemId").value;
     const item = state.data[key].find(x=>x.id===itemId);
     if(!item) return;
-    if(!pendingPhotoImage){ alert("이미지를 업로드해주세요."); return; }
+    if(!pendingPhotoImage){ alert("이미지를 올리거나 YouTube 주소를 넣어주세요."); return; }
     if(!item.photoRows) item.photoRows = [];
 
     let rowId = $("photoRowId").value;
@@ -4050,6 +4140,7 @@
 
     const id = $("photoId").value || uid("p");
     const payload = { id, image: pendingPhotoImage, caption: $("photoCaption").value.trim() };
+    if(pendingPhotoVideo) payload.video = { id: pendingPhotoVideo.id, ratio: $("photoYtRatio").value || pendingPhotoVideo.ratio || "16:9" };
     const idx = row.photos.findIndex(p=>p.id===id);
     if(idx>=0) row.photos[idx] = payload;
     else if(row.photos.length < (row.cols||1)) row.photos.push(payload);
@@ -4079,7 +4170,7 @@
 
   function getFlatPhotos(item){
     const out = [];
-    (item.photoRows||[]).forEach(row=> row.photos.forEach(p=> out.push(p)) );
+    (item.photoRows||[]).forEach(row=> row.photos.forEach(p=>{ if(!isVideoPhoto(p)) out.push(p); }) );
     return out;
   }
 
@@ -4358,6 +4449,139 @@
     renderRoute();
   }
 
+  /* ================= YouTube 영상 (작업 상세·샵 상세 공통) =================
+     사진 칸 대신 YouTube 영상을 넣을 수 있어요. photo = { image: 포스터 썸네일, video: { id, ratio } }
+     · 소리 없이 자동 재생 + 반복, 보는 사람이 멈추거나 소리를 켤 수 있음
+     · 화면에 들어올 때만 플레이어를 불러오고, 화면 밖으로 나가면 잠시 멈췄다가 돌아오면 이어서 재생
+     · 쿠키를 덜 남기는 youtube-nocookie.com 사용 */
+  const YT_RATIOS = { "16:9":16/9, "9:16":9/16, "1:1":1, "4:5":4/5, "4:3":4/3 };
+  function isVideoPhoto(p){ return !!(p && p.video && p.video.id); }
+  function parseYouTube(url){
+    const u = String(url || "").trim();
+    if(!u) return null;
+    let m = u.match(/^([A-Za-z0-9_-]{11})$/);
+    if(m) return { id:m[1], short:false };
+    m = u.match(/(?:youtube(?:-nocookie)?\.com\/(?:shorts|embed|live|v)\/|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
+    if(m) return { id:m[1], short:/\/shorts\//i.test(u) };
+    m = u.match(/youtube\.com\/.*[?&]v=([A-Za-z0-9_-]{11})/i);
+    if(m) return { id:m[1], short:false };
+    return null;
+  }
+  function ytPoster(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+  function ytRatio(v){ return YT_RATIOS[v && v.ratio] || 16/9; }
+  function ytWatchUrl(v){ return "https://www.youtube.com/watch?v=" + v.id; }
+  function ytEmbedSrc(id){
+    const q = new URLSearchParams({ autoplay:"1", mute:"1", loop:"1", playlist:id, playsinline:"1", controls:"1",
+      rel:"0", modestbranding:"1", iv_load_policy:"3", enablejsapi:"1" });
+    if(/^https?:$/.test(location.protocol)) q.set("origin", location.origin);
+    return "https://www.youtube-nocookie.com/embed/" + id + "?" + q.toString();
+  }
+  const YT_ICON_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+  const YT_ICON_ON  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  const ytRecs = new Set();
+  let ytObserver = null;
+  function ytCmd(rec, func, args){
+    try{ rec.iframe.contentWindow.postMessage(JSON.stringify({ event:"command", func, args: args || [] }), "*"); }catch(e){}
+  }
+  function ytSoundUi(rec){
+    if(!rec.sound) return;
+    rec.sound.innerHTML = rec.muted ? YT_ICON_OFF : YT_ICON_ON;
+    rec.sound.setAttribute("aria-label", rec.muted ? "Sound on" : "Mute");
+    rec.sound.title = rec.muted ? "소리 켜기 · Sound on" : "소리 끄기 · Mute";
+  }
+  function ytLoad(rec){
+    if(rec.iframe) return;
+    const f = document.createElement("iframe");
+    f.src = ytEmbedSrc(rec.id);
+    f.title = rec.title || "Video";
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    f.allowFullscreen = true;
+    f.referrerPolicy = "strict-origin-when-cross-origin";
+    f.addEventListener("load", ()=>{
+      // 상태 알림 받기 (멈춤/재생/음소거 여부)
+      try{ f.contentWindow.postMessage(JSON.stringify({ event:"listening", id: rec.id, channel:"widget" }), "*"); }catch(e){}
+      setTimeout(()=>rec.el.classList.add("ready"), 350);
+    });
+    rec.el.insertBefore(f, rec.sound);
+    rec.iframe = f;
+  }
+  function ytCleanup(){
+    ytRecs.forEach(rec=>{ if(!document.body.contains(rec.el)){ if(ytObserver) ytObserver.unobserve(rec.el); ytRecs.delete(rec); } });
+  }
+  function ytObs(){
+    if(ytObserver || !("IntersectionObserver" in window)) return ytObserver;
+    ytObserver = new IntersectionObserver(entries=>{
+      entries.forEach(en=>{
+        const rec = en.target.__yt; if(!rec) return;
+        if(en.isIntersecting){
+          ytLoad(rec);
+          if(rec.autoPaused){ ytCmd(rec, "playVideo"); rec.autoPaused = false; }
+        } else if(rec.iframe && rec.state !== 2 && rec.state !== 0){
+          ytCmd(rec, "pauseVideo"); rec.autoPaused = true;       // 화면 밖이면 잠시 멈춤 (보는 사람이 멈춘 건 그대로 둠)
+        }
+      });
+    }, { rootMargin:"250px 0px", threshold:0 });
+    return ytObserver;
+  }
+  window.addEventListener("message", e=>{
+    if(!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(e.origin)) return;
+    let d; try{ d = typeof e.data === "string" ? JSON.parse(e.data) : e.data; }catch(_){ return; }
+    if(!d || typeof d !== "object") return;
+    let rec = null;
+    ytRecs.forEach(r=>{ if(r.iframe && r.iframe.contentWindow === e.source) rec = r; });
+    if(!rec) return;
+    if(d.event === "onStateChange" && typeof d.info === "number") rec.state = d.info;
+    if(d.event === "infoDelivery" && d.info){
+      if(typeof d.info.playerState === "number") rec.state = d.info.playerState;
+      if(typeof d.info.muted === "boolean" && d.info.muted !== rec.muted){ rec.muted = d.info.muted; ytSoundUi(rec); }
+    }
+  });
+  // 영상 플레이어 한 칸 만들기
+  let ytCleanupTimer = null;
+  function makeYtPlayer(video, title){
+    // 화면에서 사라진 옛 플레이어 정리는 이번 화면이 다 그려진 뒤에
+    clearTimeout(ytCleanupTimer); ytCleanupTimer = setTimeout(ytCleanup, 1000);
+    const wrap = el("div","yt-wrap");
+    const ar = ytRatio(video);
+    wrap.style.setProperty("--ar", String(ar));
+    const poster = el("img","yt-poster");
+    poster.src = ytPoster(video.id); poster.alt = title || ""; poster.decoding = "async"; poster.loading = "lazy";
+    wrap.appendChild(poster);
+    const rec = { el:wrap, id:video.id, title, iframe:null, sound:null, state:undefined, muted:true, autoPaused:false };
+    const snd = el("button","yt-sound"); snd.type = "button";
+    snd.addEventListener("click", e=>{
+      e.preventDefault(); e.stopPropagation();
+      if(!rec.iframe) return;
+      rec.muted = !rec.muted;
+      if(rec.muted) ytCmd(rec, "mute"); else { ytCmd(rec, "unMute"); ytCmd(rec, "setVolume", [80]); if(rec.state === 2) ytCmd(rec, "playVideo"); }
+      ytSoundUi(rec);
+    });
+    rec.sound = snd; ytSoundUi(rec);
+    wrap.appendChild(snd);
+    wrap.__yt = rec;
+    ytRecs.add(rec);
+    const ob = ytObs();
+    if(ob) ob.observe(wrap); else ytLoad(rec);
+    return wrap;
+  }
+  // 상세페이지 사진 줄의 한 칸 (사진 또는 영상)
+  function fillPhotoCell(cell, photo, alt, eager){
+    if(isVideoPhoto(photo)){
+      cell.classList.add("is-video");
+      cell.dataset.ar = String(ytRatio(photo.video));
+      cell.appendChild(makeYtPlayer(photo.video, alt));
+      return true;
+    }
+    const img = el("img");
+    img.alt = alt;
+    img.loading = eager ? "eager" : "lazy";
+    img.decoding = "async";
+    img.addEventListener("load", scheduleJustifyLayout);
+    img.src = photo.image;
+    cell.appendChild(img);
+    return false;
+  }
+
   // ---------------- 홈페이지에 이미 있는 이미지에서 고르기 ----------------
   function collectSiteImages(){
     const out = [], seen = new Set();
@@ -4369,7 +4593,7 @@
     ["works","text","shop"].forEach(key=>{
       (state.data[key] || []).forEach(item=>{
         add(item.cover, key, item, "커버");
-        (item.photoRows || []).forEach(r=>(r.photos || []).forEach(ph=>add(ph.image, key, item, ph.caption || "")));
+        (item.photoRows || []).forEach(r=>(r.photos || []).forEach(ph=>{ if(!isVideoPhoto(ph)) add(ph.image, key, item, ph.caption || ""); }));
       });
     });
     return out;
@@ -5319,7 +5543,7 @@
     "function L(){document.querySelectorAll('.photo-grid.multi').forEach(function(g){",
     "var c=Array.prototype.slice.call(g.querySelectorAll('.photo-cell')),r=[];",
     "if(!c.length)return;",
-    "for(var i=0;i<c.length;i++){var m=c[i].querySelector('img');",
+    "for(var i=0;i<c.length;i++){var a=c[i].getAttribute('data-ar');if(a){r.push(parseFloat(a)||1.7778);continue;}var m=c[i].querySelector('img');",
     "if(!m||!m.naturalWidth||!m.naturalHeight)return;r.push(m.naturalWidth/m.naturalHeight);}",
     "var cs=getComputedStyle(g),gp=parseFloat(cs.columnGap||cs.gap)||0,B=380;",
     "var raw=r.reduce(function(a,x){return a+x*B;},0),w=g.clientWidth;",
@@ -5484,6 +5708,17 @@
         const alt = cap
           ? (cap + " — " + title + ", " + ARTIST + " " + ARTIST_EN)
           : (title + " — " + ARTIST + " " + ARTIST_EN);
+        if(isVideoPhoto(p)){
+          const ar = ytRatio(p.video);
+          const src = ytEmbedSrc(p.video.id).replace(/([?&]origin=)[^&]*/, "$1" + encodeURIComponent(SITE_URL));
+          return '        <div class="photo-cell is-video" data-ar="'+ar+'">\n' +
+                 '          <div class="yt-wrap ready" style="--ar:'+ar+'">\n' +
+                 '            <img class="yt-poster" src="'+esc(ytPoster(p.video.id))+'" alt="'+esc(alt)+'" loading="lazy" decoding="async">\n' +
+                 '            <iframe src="'+esc(src)+'" title="'+esc(alt)+'" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>\n' +
+                 '          </div>\n' +
+                 (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
+                 '        </div>';
+        }
         return '        <a class="photo-cell" href="'+esc(rootPath(p.image))+'">\n' +
                '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
@@ -5836,10 +6071,13 @@ shopBlock,
     const itemDrop = $("itemImgDrop");
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
+    $("photoYtUrl").addEventListener("input", onPhotoYtInput);
+    $("photoYtUrl").addEventListener("paste", ()=>setTimeout(onPhotoYtInput, 0));
+    $("photoYtRatio").addEventListener("change", ()=>{ if(pendingPhotoVideo) pendingPhotoVideo.ratio = $("photoYtRatio").value; });
     document.querySelectorAll("#itemVisSeg button").forEach(b=>b.addEventListener("click", ()=>setItemVisUi(b.dataset.v === "hidden")));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
-      else openImgPicker(src=>{ pendingPhotoImage = src; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
+      else openImgPicker(src=>{ pendingPhotoImage = src; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
     }));
     $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
     itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
@@ -5859,10 +6097,10 @@ shopBlock,
     });
     const photoDrop = $("photoImgDrop");
     photoDrop.addEventListener("click", ()=>$("photoImageFile").click());
-    $("photoImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingPhotoImage=d; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+    $("photoImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingPhotoImage=d; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
     photoDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); photoDrop.style.borderColor="#111"; });
     photoDrop.addEventListener("dragleave",()=>{ photoDrop.style.borderColor=""; });
-    photoDrop.addEventListener("drop",(e)=>{ e.preventDefault(); photoDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingPhotoImage=d; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+    photoDrop.addEventListener("drop",(e)=>{ e.preventDefault(); photoDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingPhotoImage=d; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
 
     $("addLinkRowBtn").addEventListener("click", ()=>addLinkRow("",""));
     $("contactSaveBtn").addEventListener("click", saveContact);
