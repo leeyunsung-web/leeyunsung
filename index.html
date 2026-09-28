@@ -193,6 +193,15 @@
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
   .shop-card{position:relative; display:block; color:inherit;}
+  .vis-seg{display:flex; border:1px solid var(--line-strong); border-radius:6px; overflow:hidden;}
+  .vis-seg button{flex:1; font:inherit; font-size:12.5px; padding:9px 10px; border:0; background:#fff; color:var(--ink-faint); cursor:pointer;}
+  .vis-seg button + button{border-left:1px solid var(--line-strong);}
+  .vis-seg button.on[data-v="public"]{background:#1d6b3a; color:#fff;}
+  .vis-seg button.on[data-v="hidden"]{background:#555; color:#fff;}
+  .vis-note{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .shop-card.is-hidden .shop-thumb, .shop-card.is-hidden .shop-info{opacity:.38;}
+  .shop-hidden-badge{position:absolute; top:8px; left:8px; z-index:5; font-size:10.5px; letter-spacing:.06em; padding:3px 7px; border-radius:3px; background:#555; color:#fff;}
+  .pd-hidden-note{margin:0 0 18px; padding:10px 14px; background:#f3f3f3; border-left:3px solid #555; font-size:12.5px; color:#444;}
   /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
   body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
   body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
@@ -921,6 +930,14 @@
         <div class="field"><label>Title</label><input type="text" id="itemTitle" placeholder="시리즈 제목"></div>
         <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
         <div id="shopFields" style="display:none;">
+          <div class="field">
+            <label>공개 여부</label>
+            <div class="vis-seg" id="itemVisSeg">
+              <button type="button" data-v="public">● 공개</button>
+              <button type="button" data-v="hidden">○ 비공개</button>
+            </div>
+            <div class="vis-note" id="itemVisNote"></div>
+          </div>
           <div class="field"><label>사양 1 <span style="color:#999;font-weight:400;">— 예: 162 × 130 cm</span></label><input type="text" id="itemSpec1" placeholder="크기"></div>
           <div class="field"><label>사양 2 <span style="color:#999;font-weight:400;">— 예: Oil on canvas</span></label><input type="text" id="itemSpec2" placeholder="재료 / 인쇄 방식"></div>
           <div class="field"><label>에디션 표기 <span style="color:#999;font-weight:400;">— 예: Edition of 300 · Signed &amp; numbered (없으면 비워두세요)</span></label><input type="text" id="itemEdition" placeholder=""></div>
@@ -1453,7 +1470,7 @@
       title = "SHOP — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee) SHOP — 준비중입니다.";
     } else if(page === "shop" && id && !isShopTab(id)){
-      const it = (d.shop||[]).find(x=>x.id===id);
+      const it = publicShopItems().find(x=>x.id===id);
       if(it){
         const name = cleanText(it.title) || "Untitled";
         const spec = [cleanText(it.spec1), cleanText(it.spec2)].filter(Boolean).join(", ");
@@ -1467,7 +1484,7 @@
     } else if(page === "shop"){
       title = "SHOP — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee)의 원화, 프린트, 굿즈를 구매할 수 있습니다. 국내 원화 결제와 해외 USD 결제를 모두 지원합니다.";
-      const first = (d.shop||[]).find(x=>x.cover);
+      const first = publicShopItems().find(x=>x.cover);
       if(first) image = absUrl(first.cover);
     } else if(page === "cv"){
       title = "CV — " + ARTIST + " Yunsung Lee";
@@ -1945,7 +1962,7 @@
   function saveCart(){ try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){} }
 
   function cartLines(){
-    const shop = (state.data && state.data.shop) || [];
+    const shop = publicShopItems();
     return cart.items.map(l=>{
       const item = shop.find(x=>x.id===l.id);
       return item ? { item, qty: shopCategory(item) === "original" ? 1 : l.qty } : null;
@@ -3125,6 +3142,23 @@
   // master mode: visitors only see "coming soon", and no product page,
   // sitemap entry or product metadata is published before that.
   function isShopPublic(){ return !!(state.data && state.data.shopPublic); }
+  // 상품별 공개/비공개 — 비공개 상품은 방문자 화면·정적 페이지·사이트맵·장바구니에서 빠짐 (마스터에게만 보임)
+  function isItemHidden(it){ return !!(it && it.hidden); }
+  function publicShopItems(){ return ((state.data && state.data.shop) || []).filter(it=>!isItemHidden(it)); }
+  function toggleItemHidden(item){
+    item.hidden = !item.hidden;
+    saveDraft();
+    const r = parseHash();
+    if(r.page === "shop") rerenderShopView(); else renderRoute();
+  }
+  let pendingItemHidden = false;
+  function setItemVisUi(hidden){
+    pendingItemHidden = !!hidden;
+    document.querySelectorAll("#itemVisSeg button").forEach(b=>b.classList.toggle("on", (b.dataset.v === "hidden") === pendingItemHidden));
+    $("itemVisNote").textContent = pendingItemHidden
+      ? "방문자에게 보이지 않아요. 상품 페이지·검색·장바구니에서도 빠져요. (마스터 모드에서는 흐리게 보여요)"
+      : "샵에 공개돼요.";
+  }
   function isShopVisible(){ return isShopPublic() || state.master; }
 
   function renderShopComingSoon(app){
@@ -3189,7 +3223,7 @@
       return;
     }
 
-    const items = (state.data.shop || []).filter(it=>shopCategory(it) === tab.cat);
+    const items = (state.master ? (state.data.shop || []) : publicShopItems()).filter(it=>shopCategory(it) === tab.cat);
     if(!items.length && !state.master){
       const cs = el("div","shop-tab-empty");
       const t1 = el("div","t"); t1.textContent = "Coming soon";
@@ -3204,6 +3238,10 @@
       setItemLink(card, "shop", item);
       card.dataset.id = item.id;
       if(state.master) enableShopDrag(card, grid, tab);
+      if(state.master && isItemHidden(item)){
+        card.classList.add("is-hidden");
+        const hb = el("span","shop-hidden-badge"); hb.textContent = "비공개"; card.appendChild(hb);
+      }
 
       const thumb = el("div","shop-thumb");
       if(item.cover){
@@ -3229,11 +3267,13 @@
       card.appendChild(info);
 
       const ctl = el("div","frame-editctl");
+      const vb = el("button"); vb.textContent = isItemHidden(item) ? "○" : "●"; vb.title = isItemHidden(item) ? "비공개 → 누르면 공개" : "공개 중 → 누르면 비공개";
+      vb.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); toggleItemHidden(item); });
       const eb = el("button"); eb.textContent="✎"; eb.title="수정";
       eb.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); openItemModal("shop",item.id); });
       const db = el("button"); db.textContent="✕"; db.title="삭제";
       db.addEventListener("click",(e)=>{ e.preventDefault(); e.stopPropagation(); deleteItem("shop",item.id); });
-      ctl.appendChild(eb); ctl.appendChild(db);
+      ctl.appendChild(vb); ctl.appendChild(eb); ctl.appendChild(db);
       card.appendChild(ctl);
 
       grid.appendChild(card);
@@ -3401,7 +3441,8 @@
   function renderShopDetail(app, id){
     renderShopReleaseBar(app);
     loadShopInventory();
-    const item = (state.data.shop||[]).find(x=>x.id===id);
+    const found = (state.data.shop||[]).find(x=>x.id===id);
+    const item = (found && (state.master || !isItemHidden(found))) ? found : null;
     if(!item){
       const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
       app.appendChild(p); return;
@@ -3409,6 +3450,10 @@
     const tabSlug = tabForCategory(shopCategory(item));
     const back = el("a","detail-back"); back.href = "#shop/" + tabSlug; back.textContent = "← Back to " + (SHOP_TABS.find(t=>t.slug===tabSlug)||{}).label;
     app.appendChild(back);
+    if(isItemHidden(item)){
+      const hn = el("div","pd-hidden-note"); hn.textContent = "비공개 상품 — 방문자에게는 보이지 않아요. (마스터 모드에서만 보임)";
+      app.appendChild(hn);
+    }
 
     // ---- 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 상품 정보
     const gallery = [];
@@ -3611,6 +3656,7 @@
       $("itemBuyKr").value = item.buyKr || "";
       $("itemBuyUs").value = item.buyUs || "";
       $("itemSoldOut").checked = !!item.soldOut;
+      setItemVisUi(!!item.hidden);
       $("itemCategory").value = shopCategory(item);
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
@@ -3623,6 +3669,7 @@
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
+      setItemVisUi(false);
       $("itemCategory").value = pendingShopCategory || "edition";
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
@@ -3664,6 +3711,7 @@
       payload.buyKr    = $("itemBuyKr").value.trim();
       payload.buyUs    = $("itemBuyUs").value.trim();
       payload.soldOut  = $("itemSoldOut").checked;
+      if(pendingItemHidden) payload.hidden = true; else delete payload.hidden;
       payload.category = ["original","edition","book"].includes($("itemCategory").value) ? $("itemCategory").value : "edition";
       payload.shipProfile = ["flat","tube","book"].includes($("itemShipProfile").value) ? $("itemShipProfile").value : defaultProfileFor(payload.category);
       delete payload.saleType; delete payload.editionTotal; delete payload.editionStart;
@@ -5605,7 +5653,7 @@ shopBlock,
     (state.data.text||[]).forEach(it=>{
       rows.push('  <url><loc>'+pageUrl("text",it)+'</loc><lastmod>'+today+'</lastmod><priority>0.7</priority></url>');
     });
-    (isShopPublic() ? (state.data.shop||[]) : []).forEach(it=>{
+    (isShopPublic() ? publicShopItems() : []).forEach(it=>{
       rows.push('  <url>');
       rows.push('    <loc>'+pageUrl("shop",it)+'</loc>');
       rows.push('    <lastmod>'+today+'</lastmod><priority>0.8</priority>');
@@ -5640,7 +5688,7 @@ shopBlock,
     const jobs = [];
     (d.works||[]).forEach(it=>jobs.push(["works", it, d.works]));
     (d.text||[]).forEach(it=>jobs.push(["text", it, d.text]));
-    if(isShopPublic()) (d.shop||[]).forEach(it=>jobs.push(["shop", it, d.shop]));
+    if(isShopPublic()){ const vis = publicShopItems(); vis.forEach(it=>jobs.push(["shop", it, vis])); }
 
     let i = 0;
     for(const [kind, item, sibs] of jobs){
@@ -5788,6 +5836,7 @@ shopBlock,
     const itemDrop = $("itemImgDrop");
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
+    document.querySelectorAll("#itemVisSeg button").forEach(b=>b.addEventListener("click", ()=>setItemVisUi(b.dataset.v === "hidden")));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
       else openImgPicker(src=>{ pendingPhotoImage = src; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
