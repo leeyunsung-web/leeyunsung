@@ -186,12 +186,15 @@
   .shop-tab-empty .t{font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink);}
   .shop-tab-empty .s{font-size:12px; letter-spacing:.06em; color:var(--ink-faint);}
   /* 상품 수가 적어도 항상 가운데로 모이게 (마지막 줄도 가운데) */
+  /* WORKS 커버처럼 창 폭을 꽉 채움 — 한 줄 개수는 유지하고 카드가 창 크기만큼 커짐 */
   .shop-grid{--cols-now:var(--shop-cols,5); --gx:clamp(14px,1.6vw,26px);
+    --sgw:calc(var(--vwpx, 100vw) - 2 * var(--shop-side, 32px));
+    width:var(--sgw); max-width:none; margin-left:calc(50% - var(--sgw) / 2);
     display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); font-family:var(--shop-font,inherit);}
   .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
-  @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,4);} }
+  @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,5);} }
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
-  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
+  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
   .shop-card{position:relative; display:block; color:inherit;}
   .vis-seg{display:flex; border:1px solid var(--line-strong); border-radius:6px; overflow:hidden;}
   .vis-seg button{flex:1; font:inherit; font-size:12.5px; padding:9px 10px; border:0; background:#fff; color:var(--ink-faint); cursor:pointer;}
@@ -2545,7 +2548,7 @@
   }
 
   /* ---------- SHOP 디자인 (썸네일 크기·글씨) ---------- */
-  const SHOP_DESIGN_DEFAULT = { mainPct:56, thumbCount:5, thumbGap:8, titleSize:26, bodySize:14, priceSize:17, gridCols:5, gridTitleSize:13, gridPriceSize:12,
+  const SHOP_DESIGN_DEFAULT = { mainPct:56, thumbCount:5, thumbGap:8, titleSize:26, bodySize:14, priceSize:17, gridCols:5, gridSide:32, gridTitleSize:13, gridPriceSize:12,
     btnHeight:58, btnWidth:100, btnFont:14, btnSubFont:10, btnRadius:0, btnGap:10, font:"pretendard" };
   const SHOP_TEXT_DEFAULT = {
     naverLabel:"네이버페이로 구매", naverSub:"국내 · Korea",
@@ -2573,6 +2576,7 @@
     ["bodySize",     "상세: 설명 글씨 (px)",         11, 20, 1],
     ["priceSize",    "상세: 가격 글씨 (px)",         12, 32, 1],
     ["gridCols",     "목록: 한 줄 개수 (데스크톱)",   3, 6, 1],
+    ["gridSide",     "목록: 좌우 여백 (px)",         0, 200, 4],
     ["gridTitleSize","목록: 제목 글씨 (px)",         10, 20, 1],
     ["gridPriceSize","목록: Sold out 글씨 (px)",         10, 18, 1],
     ["btnHeight",    "구매 버튼: 높이 (px)",         40, 90, 1],
@@ -2607,7 +2611,8 @@
     r.setProperty("--shop-body", d.bodySize + "px");
     r.setProperty("--shop-price", d.priceSize + "px");
     r.setProperty("--shop-cols", d.gridCols);
-    r.setProperty("--shop-cols-md", Math.min(d.gridCols, 4));
+    r.setProperty("--shop-cols-md", d.gridCols);
+    r.setProperty("--shop-side", (d.gridSide != null ? d.gridSide : 32) + "px");
     r.setProperty("--shop-cols-sm", Math.min(d.gridCols, 3));
     r.setProperty("--shop-grid-title", d.gridTitleSize + "px");
     r.setProperty("--shop-grid-price", d.gridPriceSize + "px");
@@ -2722,7 +2727,8 @@
         ["design","contactAlign","seg","위치", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"]]}]
       ]},
       { id:"shop", title:"SHOP 목록", items:[
-        ["shopDesign","gridCols","range","한 줄 개수 (데스크톱)", {min:3,max:6,step:1}],
+        ["shopDesign","gridCols","range","한 줄 개수", {min:3,max:6,step:1}],
+        ["shopDesign","gridSide","range","목록 좌우 여백 (px) — 작을수록 크게", {min:0,max:200,step:4}],
         ["shopDesign","gridTitleSize","range","상품 이름 글씨 (px)", {min:10,max:20,step:1}],
         ["shopDesign","gridPriceSize","range","Sold out 글씨 (px)", {min:10,max:18,step:1}]
       ]},
