@@ -518,6 +518,19 @@
   .photo-grid{
     display:grid; grid-template-columns:repeat(var(--row-cols,1),1fr); align-items:start; gap:var(--photo-gap);
   }
+  /* WORKS 상세: 작품 사진은 사이트 폭 제한을 풀고 창 크기를 따라 커지고 작아짐
+     가로 작품은 창 너비에, 세로 작품은 창 높이에 맞춰 한 화면에 통째로 */
+  .photo-rows-wrap.wide{
+    --wide-gutter:clamp(12px, 2.5vw, 48px);
+    width:calc(var(--vwpx, 100vw) - 2 * var(--wide-gutter)); max-width:none;
+    margin-left:calc(50% - var(--vwpx, 100vw) / 2 + var(--wide-gutter));
+    padding-left:0; padding-right:0;
+  }
+  .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell:not(.add-tile):not(.is-video){
+    width:min(100%, calc((100vh - var(--header-height, 90px) - 40px) * var(--r, 1.5))); margin:0 auto;
+  }
+  .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell.add-tile{width:min(100%, 720px); margin:0 auto;}
+  body{overflow-x:clip;}
   .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line); width:100%; cursor:pointer;}
   .photo-cell img{width:100%; height:auto; object-fit:cover; display:block;}
 
@@ -1633,6 +1646,8 @@
       document.body.classList.add("master-on");
     }
 
+    const setVw = ()=>document.body.style.setProperty("--vwpx", document.documentElement.clientWidth + "px");
+    setVw(); window.addEventListener("resize", setVw);
     window.addEventListener("hashchange", renderRoute);
     bindGlobalEvents();
     bindSpaLinks();
@@ -3922,7 +3937,7 @@
       desc.addEventListener("click", ()=>openDesignModal(descTarget,"작품 설명"));
     }
 
-    const rowsWrap = el("div","photo-rows-wrap");
+    const rowsWrap = el("div","photo-rows-wrap" + (key === "works" ? " wide" : ""));
     let flatIdx = 0;
     const rows = item.photoRows || [];
 
@@ -4576,7 +4591,10 @@
     img.alt = alt;
     img.loading = eager ? "eager" : "lazy";
     img.decoding = "async";
-    img.addEventListener("load", scheduleJustifyLayout);
+    img.addEventListener("load", ()=>{
+      if(img.naturalWidth && img.naturalHeight) cell.style.setProperty("--r", String(img.naturalWidth / img.naturalHeight));
+      scheduleJustifyLayout();
+    });
     img.src = photo.image;
     cell.appendChild(img);
     return false;
@@ -5550,6 +5568,10 @@
     "if(!w||!raw)return;",
     "var sc=(w-gp*(c.length-1))/raw,h=Math.min(Math.max(500,window.innerHeight*0.85),B*sc);",
     "c.forEach(function(el,i){el.style.height=h+'px';el.style.width=(r[i]*h)+'px';});});}",
+    "function V(){document.body.style.setProperty('--vwpx',document.documentElement.clientWidth+'px');}",
+    "function R(m){if(m.naturalWidth&&m.naturalHeight&&m.parentNode)m.parentNode.style.setProperty('--r',m.naturalWidth/m.naturalHeight);}",
+    "document.querySelectorAll('.photo-grid:not(.multi) .photo-cell img').forEach(function(m){if(m.complete)R(m);else m.addEventListener('load',function(){R(m);});});",
+    "V();window.addEventListener('resize',V);",
     "window.addEventListener('resize',L);window.addEventListener('load',L);",
     "document.addEventListener('DOMContentLoaded',L);",
     "document.querySelectorAll('.photo-grid.multi img').forEach(function(m){m.addEventListener('load',L);});",
@@ -5836,7 +5858,7 @@
 '    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>'),
 (kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+esc(cleanText0(item.description))+'</div>' : ''),
 shopBlock,
-(rowsHtml ? '    <div class="photo-rows-wrap">\n'+rowsHtml+'\n    </div>' : ''),
+(rowsHtml ? '    <div class="photo-rows-wrap'+(kind==="works" ? ' wide' : '')+'">\n'+rowsHtml+'\n    </div>' : ''),
 (others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
