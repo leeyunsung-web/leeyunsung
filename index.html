@@ -239,7 +239,8 @@
   .pd-desc{margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:var(--shop-body,14px); line-height:1.85; color:var(--ink); white-space:pre-line;}
   .pd-info .buy-box{margin:26px 0 0; padding:0; max-width:none;}
   .pd-info .buy-row{flex-direction:column;}
-  .pd-info .buy-btn{flex:0 0 auto; width:100%;}
+  .pd-info .buy-btn{flex:0 0 auto; width:var(--btn-w,100%);}
+  .pd-info .buy-note{max-width:max(var(--btn-w,100%), 280px);}
   @media (max-width:820px){
     .pd{grid-template-columns:1fr;}
     .pd-media{position:static;}
@@ -2386,7 +2387,7 @@
 
   /* ---------- SHOP 디자인 (썸네일 크기·글씨) ---------- */
   const SHOP_DESIGN_DEFAULT = { mainPct:56, thumbCount:5, thumbGap:8, titleSize:26, bodySize:14, priceSize:17, gridCols:5, gridTitleSize:13, gridPriceSize:12,
-    btnHeight:58, btnFont:14, btnSubFont:10, btnRadius:0, btnGap:10, font:"pretendard" };
+    btnHeight:58, btnWidth:100, btnFont:14, btnSubFont:10, btnRadius:0, btnGap:10, font:"pretendard" };
   const SHOP_TEXT_DEFAULT = {
     naverLabel:"네이버페이로 구매", naverSub:"국내 · Korea",
     paypalLabel:"PayPal로 구매", paypalSub:"International · Card OK",
@@ -2416,6 +2417,7 @@
     ["gridTitleSize","목록: 제목 글씨 (px)",         10, 20, 1],
     ["gridPriceSize","목록: 가격 글씨 (px)",         10, 18, 1],
     ["btnHeight",    "구매 버튼: 높이 (px)",         40, 90, 1],
+    ["btnWidth",     "구매 버튼: 가로 길이 (%)",      30, 100, 1],
     ["btnFont",      "구매 버튼: 큰 글씨 (px)",       11, 22, 1],
     ["btnSubFont",   "구매 버튼: 작은 글씨 (px)",      8, 16, 1],
     ["btnRadius",    "구매 버튼: 모서리 둥글기 (px)",  0, 30, 1],
@@ -2452,6 +2454,7 @@
     r.setProperty("--shop-grid-price", d.gridPriceSize + "px");
     r.setProperty("--shop-font", "inherit");   // 글꼴은 사이트 전체 설정(DESIGN STUDIO)을 따름
     r.setProperty("--btn-h", d.btnHeight + "px");
+    r.setProperty("--btn-w", d.btnWidth + "%");
     r.setProperty("--btn-font", d.btnFont + "px");
     r.setProperty("--btn-sub", d.btnSubFont + "px");
     r.setProperty("--btn-radius", d.btnRadius + "px");
@@ -2573,6 +2576,7 @@
       ]},
       { title:"구매 버튼", items:[
         ["shopDesign","btnHeight","range","버튼 높이 (px)", {min:40,max:90,step:1}],
+        ["shopDesign","btnWidth","range","버튼 가로 길이 (% · 오른쪽 정보 칸 기준)", {min:30,max:100,step:1}],
         ["shopDesign","btnFont","range","큰 글씨 (px)", {min:11,max:22,step:1}],
         ["shopDesign","btnSubFont","range","작은 글씨 (px)", {min:8,max:16,step:1}],
         ["shopDesign","btnRadius","range","모서리 둥글기 (px)", {min:0,max:30,step:1}],
@@ -3192,8 +3196,7 @@
       const a = el("a","buy-btn naver"); a.href = kr; a.target="_blank"; a.rel="noopener";
       const t = el("span","lbl"); t.textContent = txt.naverLabel;
       const sub = el("span","sub"); sub.textContent = txt.naverSub;
-      const c = el("span","cur"); c.textContent = fmtKrw(item.priceKrw) || "₩";
-      a.appendChild(t); a.appendChild(sub); a.appendChild(c);
+      a.appendChild(t); a.appendChild(sub);
       row.appendChild(a);
     }
     if(onSite){
@@ -3201,16 +3204,14 @@
       const b = el("button","buy-btn paypal"); b.type = "button";
       const t = el("span","lbl"); t.textContent = avail ? txt.paypalLabel : txt.paypalSoldOut;
       const sub = el("span","sub"); sub.textContent = txt.paypalSub;
-      const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd);
-      b.appendChild(t); b.appendChild(sub); b.appendChild(c);
+      b.appendChild(t); b.appendChild(sub);
       b.disabled = !avail;
       b.addEventListener("click", ()=> addToCart(item));
       row.appendChild(b);
     } else if(us){
       const a = el("a","buy-btn paypal"); a.href = us; a.target="_blank"; a.rel="noopener";
       const t = el("span","lbl"); t.textContent = "International";
-      const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd) || "$";
-      a.appendChild(t); a.appendChild(c);
+      a.appendChild(t);
       row.appendChild(a);
     }
     if(!kr && !onSite && !us){
@@ -5027,8 +5028,8 @@
       } else {
         const btns = [];
         const stx = shopTexts();
-        if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(stx.naverLabel)+'</span><span class="sub">'+esc(stx.naverSub)+'</span><span class="cur">'+esc(fmtKrw(item.priceKrw)||"₩")+'</span></a>');
-        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+esc(onSite?stx.paypalLabel:'International')+'</span><span class="sub">'+esc(stx.paypalSub)+'</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
+        if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(stx.naverLabel)+'</span><span class="sub">'+esc(stx.naverSub)+'</span></a>');
+        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+esc(onSite?stx.paypalLabel:'International')+'</span><span class="sub">'+esc(stx.paypalSub)+'</span></a>');
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
               (stx.buyNote ? '      <div class="buy-note">'+esc(stx.buyNote)+'</div>' : '');
       }
