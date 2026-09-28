@@ -2146,7 +2146,19 @@
       "cover": "./images/w-1790628203345-iya5b-cover.jpg",
       "description": "",
       "slug": "works-8",
-      "photoRows": []
+      "photoRows": [
+        {
+          "id": "row-1790628224633-rwv0p",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790628224633-a6x1w",
+              "image": "./images/w-1790628203345-iya5b-p-1790628224633-a6x1w.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ]
     }
   ],
   "text": [
