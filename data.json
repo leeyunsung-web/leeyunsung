@@ -2234,5 +2234,24 @@
     "text/taxidermy-of-joy-jo-saemi/index.html",
     "text/exploding-bishojo-baek-jihong/index.html"
   ],
-  "shop": []
+  "shop": [
+    {
+      "id": "s-1790622121911-1dl7b",
+      "title": "At the Last Judgment 2010 Art Poster, 2020 65 × 50 cm Signed, Limited Edition of 300",
+      "cover": "./images/s-1790622121911-1dl7b-cover.jpg",
+      "description": "At the Last Judgment 2010 Art Poster, 2020 65 &times; 50 cm Signed, Limited Edition of 300\nEdit Info\nDelete\n65 &times; 50 cm &middot; Digital Print on Paper\n2010년작 《At the Last Judgment》의 포스터 버전입니다. 2020년 한정 에디션으로 제작&middot;판매되었으며, 남은 수량을 웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster version of At the Last Judgment (2010), originally produced and released as a limited edition in 2020. The remaining prints are now available again to commemorate the renewal of Lee Yunsung's website.",
+      "slug": "at-the-last-judgment-2010-art-poster-2020-65-50-cm-signed-li",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "Digital Print on Paper",
+      "edition": "",
+      "priceKrw": "40000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13778974146",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube"
+    }
+  ]
 }
