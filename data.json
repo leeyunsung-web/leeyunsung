@@ -2272,5 +2272,8 @@
       "shipProfile": "book"
     }
   ],
-  "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev"
+  "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
+  "business": {
+    "name": "nu-type"
+  }
 }
