@@ -2271,5 +2271,6 @@
       "category": "book",
       "shipProfile": "book"
     }
-  ]
+  ],
+  "shopApi": "https://leeyunsung-shop.xn--11haa.workers.dev"
 }
