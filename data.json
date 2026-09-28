@@ -2310,7 +2310,7 @@
     "textListItemGap": 16,
     "contactFontSize": 17,
     "contactTopSpace": 120,
-    "fontFamily": "system",
+    "fontFamily": "pretendard",
     "textWidth": 600,
     "uiItalic": false
   },
