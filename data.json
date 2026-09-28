@@ -2270,6 +2270,24 @@
       "soldOut": false,
       "category": "book",
       "shipProfile": "book"
+    },
+    {
+      "id": "s-1790623028311-pavmn",
+      "title": "",
+      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
+      "description": "",
+      "slug": "shop-3",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube"
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
