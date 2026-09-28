@@ -161,6 +161,15 @@
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
   .shop-card{position:relative; display:block; color:inherit;}
+  .vis-seg{display:flex; border:1px solid var(--line-strong); border-radius:6px; overflow:hidden;}
+  .vis-seg button{flex:1; font:inherit; font-size:12.5px; padding:9px 10px; border:0; background:#fff; color:var(--ink-faint); cursor:pointer;}
+  .vis-seg button + button{border-left:1px solid var(--line-strong);}
+  .vis-seg button.on[data-v="public"]{background:#1d6b3a; color:#fff;}
+  .vis-seg button.on[data-v="hidden"]{background:#555; color:#fff;}
+  .vis-note{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .shop-card.is-hidden .shop-thumb, .shop-card.is-hidden .shop-info{opacity:.38;}
+  .shop-hidden-badge{position:absolute; top:8px; left:8px; z-index:5; font-size:10.5px; letter-spacing:.06em; padding:3px 7px; border-radius:3px; background:#555; color:#fff;}
+  .pd-hidden-note{margin:0 0 18px; padding:10px 14px; background:#f3f3f3; border-left:3px solid #555; font-size:12.5px; color:#444;}
   /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
   body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
   body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
