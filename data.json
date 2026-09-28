@@ -2252,6 +2252,24 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube"
+    },
+    {
+      "id": "s-1790622337229-hzfwn",
+      "title": "",
+      "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
+      "description": "",
+      "slug": "shop-2",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "book",
+      "shipProfile": "book"
     }
   ]
 }
