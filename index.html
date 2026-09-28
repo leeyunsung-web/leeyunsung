@@ -509,7 +509,10 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px auto 48px; padding:0 var(--detail-margin); max-width:calc(var(--content-max-width) + 2 * var(--detail-margin));}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);
+    /* 폭은 DESIGN STUDIO → 작품·글 설명 폭. 사이트 폭보다 넓게도 되고, 항상 화면 가운데 */
+    --dw:min(var(--desc-max-width, 704px), var(--vwpx, 100vw) - 2 * var(--page-padding));
+    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -1591,7 +1594,7 @@
 
   const DEFAULT_DESIGN = {
     fontSize:15, letterSpacing:0, bold:false, align:"left",
-    pagePadding:32, frameGap:28, frameCols:2, detailMargin:32,
+    pagePadding:32, frameGap:28, frameCols:2, detailMargin:32, descWidth:704,
     captionSize:12, frameTitleSize:14, photoGap:16,
     textListTitleSize:21, textListAlign:"left", contactAlign:"center",
     textListTopSpace:40, textListItemGap:22,
@@ -2702,6 +2705,7 @@
         ["design","pagePadding","range","머리글·바닥글·글 페이지 좌우 여백 (px)", {min:0,max:100,step:2}],
         ["design","frameGap","range","네모칸 간격 (px)", {min:0,max:80,step:2}],
         ["design","frameTitleSize","range","네모칸 제목 글씨 (px)", {min:12,max:28,step:1}],
+        ["design","descWidth","range","작품 설명 · TEXT 비평글 폭 (px)", {min:400,max:1800,step:20}],
         ["design","detailMargin","range","상세 사진 좌우 여백 (px)", {min:0,max:120,step:4}],
         ["design","photoGap","range","사진 사이 간격 (px)", {min:0,max:60,step:2}],
         ["design","captionSize","range","사진 캡션 글씨 (px)", {min:10,max:24,step:1}]
@@ -2799,7 +2803,7 @@
       if(["fontSize","letterSpacing","bold","align"].includes(key)) return (on("cv") || on("works","item") || on("text","item")) ? null : "#cv";
       if(key === "textWidth") return go("#cv", on("cv"));
       if(["frameCols","frameGap","frameTitleSize","pagePadding"].includes(key)) return go("#works", on("works","list") || on("text","list") && key!=="frameCols");
-      if(["detailMargin","photoGap","captionSize"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
+      if(["descWidth","detailMargin","photoGap","captionSize"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
       if(/^textList/.test(key)) return go("#text", on("text","list"));
       if(/^contact/.test(key)) return go("#contact", on("contact"));
     }
@@ -4671,15 +4675,22 @@
     $(textId).style.display="block";
     $(dropId).classList.remove("hasimg");
   }
-  function handleFileToDataUrl(file, cb){
+  /* 사진 크기·용량 기준
+     · 상세 사진: 긴 변 3000px, 한 장 약 1MB 목표 (화질 0.92에서 시작해 1.2MB를 넘으면 조금씩 낮춤, 최저 0.84)
+     · 커버(목록 네모칸): 긴 변 2000px — 목록에서는 화면 절반 크기라 이 정도면 선명하고 목록 페이지가 가벼움 */
+  const IMG_PHOTO = { maxDim:3000, minDim:2200, q:0.92, minQ:0.84, target:1.2 * 1024 * 1024, hardMax:1.6 * 1024 * 1024, keepMax:1.5 * 1024 * 1024 };
+  const IMG_COVER = { maxDim:2000, minDim:1400, q:0.9,  minQ:0.82, target:0.6 * 1024 * 1024, hardMax:0.9 * 1024 * 1024, keepMax:0.8 * 1024 * 1024 };
+  function handleFileToDataUrl(file, cb, kind){
     if(!file || !file.type.startsWith("image/")) return;
-    resizeImageFile(file, 2400, 0.9, cb);
+    resizeImageFile(file, kind === "cover" ? IMG_COVER : IMG_PHOTO, cb);
   }
+  function dataUrlBytes(u){ const i = u.indexOf(","); return Math.round((u.length - i - 1) * 0.75); }
 
   // 큰 사진을 줄여서 올립니다. 한 번에 확 줄이면 가는 선(펜 드로잉 등)이
   // 계단처럼 튀어서, 절반씩 여러 번 부드럽게 줄이고(고품질 보간) 마지막에 맞춥니다.
   // 브라우저가 지원하면 createImageBitmap 의 고품질 리사이즈를 먼저 씁니다.
-  function resizeImageFile(file, maxDim, quality, cb){
+  function resizeImageFile(file, opt, cb){
+    const maxDim = opt.maxDim;
     const reader = new FileReader();
     reader.onload = (e)=>{
       const original = e.target.result;
@@ -4692,7 +4703,7 @@
           else { w = Math.round(w * (maxDim / h)); h = maxDim; }
         }
         // 줄일 필요 없고 JPEG 면 원본 그대로 (재압축 화질 손실 방지)
-        if(w === sw && h === sh && /jpe?g/i.test(file.type) && file.size < 3.5*1024*1024){ cb(original); return; }
+        if(w === sw && h === sh && /jpe?g/i.test(file.type) && file.size <= opt.keepMax){ cb(original); return; }
         const isPng = /png|gif|webp/i.test(file.type);
         try{
           let source = null;
@@ -4721,12 +4732,28 @@
           ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
           ctx.drawImage(source, 0, 0, w, h);
           if(source.close) try{ source.close(); }catch(err){}
-          // 선 그림 PNG 는 PNG 로 두면 더 선명하지만 용량이 커져서, 약 0.9MB 이하일 때만 PNG 유지
+          // 선 그림 PNG 는 PNG 로 두면 더 선명해서, 목표 용량 이하일 때만 PNG 유지
           if(isPng){
             const png = canvas.toDataURL("image/png");
-            if(png.length < 1.2 * 1024 * 1024){ cb(png); return; }
+            if(dataUrlBytes(png) <= opt.keepMax){ cb(png); return; }
           }
-          cb(canvas.toDataURL("image/jpeg", quality));
+          // 목표 용량(약 1MB)에 맞을 때까지 화질을 조금씩만 낮춤
+          let q = opt.q, out = canvas.toDataURL("image/jpeg", q);
+          while(dataUrlBytes(out) > opt.target && q > opt.minQ + 1e-6){
+            q = Math.round((q - 0.02) * 100) / 100;
+            out = canvas.toDataURL("image/jpeg", q);
+          }
+          // 질감이 아주 거친 사진이라 그래도 너무 크면, 화질 대신 크기를 10%씩 줄임 (최소 minDim)
+          let cur = canvas;
+          while(dataUrlBytes(out) > opt.hardMax && Math.max(cur.width, cur.height) * 0.9 >= opt.minDim){
+            const nc = document.createElement("canvas");
+            nc.width = Math.round(cur.width * 0.9); nc.height = Math.round(cur.height * 0.9);
+            const nx = nc.getContext("2d"); nx.imageSmoothingEnabled = true; nx.imageSmoothingQuality = "high";
+            nx.drawImage(cur, 0, 0, nc.width, nc.height);
+            cur = nc;
+            out = cur.toDataURL("image/jpeg", q);
+          }
+          cb(out);
         }catch(err){
           cb(original);
         }
@@ -4764,6 +4791,7 @@
     root.setProperty("--detail-margin", (d.detailMargin!=null ? d.detailMargin : 32) + "px");
     root.setProperty("--active-font-family", SITE_FONTS[siteFontKey(d.fontFamily)][1]);
     root.setProperty("--content-max-width", (d.textWidth!=null ? d.textWidth : 640) + "px");
+    root.setProperty("--desc-max-width", (d.descWidth!=null ? d.descWidth : 704) + "px");
     root.setProperty("--ui-font-style", d.uiItalic ? "italic" : "normal");
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
     root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
@@ -5663,7 +5691,7 @@
 '  </header>',
 '  <main class="shell">',
 '    <h1 class="detail-title" style="text-align:left">CV</h1>',
-'    <div class="detail-desc" style="padding:0">'+esc(text)+'</div>',
+'    <div class="detail-desc" style="padding:0; --desc-max-width:var(--content-max-width)">'+esc(text)+'</div>',
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
 '</body>',
@@ -6121,10 +6149,10 @@ shopBlock,
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
       else openImgPicker(src=>{ pendingPhotoImage = src; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
     }));
-    $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
+    $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
     itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
     itemDrop.addEventListener("dragleave",()=>{ itemDrop.style.borderColor=""; });
-    itemDrop.addEventListener("drop",(e)=>{ e.preventDefault(); itemDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
+    itemDrop.addEventListener("drop",(e)=>{ e.preventDefault(); itemDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
 
     $("photoSaveBtn").addEventListener("click", savePhoto);
     $("photoDeleteBtn").addEventListener("click", ()=>deletePhoto($("photoCollection").value,$("photoItemId").value,$("photoRowId").value,$("photoId").value));
