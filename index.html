@@ -61,12 +61,12 @@
     --line:#e2e2e2;
     --line-strong:#cfcfcf;
     --accent:#111111;
-    --sans:"LYS Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    --sans-helvetica:"LYS Sans","Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    --active-font-family:var(--sans);
+    --sans:"LYS Sans","Pretendard",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    --sans-helvetica:"LYS Sans","Pretendard","Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    --active-font-family:"Pretendard","LYS Sans",sans-serif;
     --content-max-width:640px;
     --ui-font-style:normal;
-    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --mono:"IBM Plex Mono","Pretendard","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
     --content-font-size:15px;
     --content-letter-spacing:0em;
     --content-font-weight:400;
@@ -244,6 +244,44 @@
     .pd{grid-template-columns:1fr;}
     .pd-media{position:static;}
   }
+  .me{max-width:720px; margin:0 auto; font-family:var(--shop-font,inherit);}
+  .me-login{max-width:460px; margin:6vh auto 0; text-align:center;}
+  .me-title{font-size:15px; letter-spacing:.12em; text-transform:uppercase;}
+  .me-sub{font-size:12px; color:var(--ink-faint); margin:8px 0 16px; line-height:1.6;}
+  .me-row{display:flex; gap:8px;}
+  .me-input{flex:1; width:100%; border:1px solid var(--line-strong); border-radius:5px; padding:11px 12px; font:inherit; font-size:14px; background:#fff; color:var(--ink);}
+  .me-btn{border:1px solid var(--ink); background:var(--ink); color:#fff; padding:0 20px; border-radius:5px; font:inherit; font-size:13px; letter-spacing:.06em; cursor:pointer; min-height:42px;}
+  .me-btn:disabled{opacity:.5;}
+  .me-msg{font-size:12px; margin-top:10px; color:var(--ink-soft); min-height:16px;}
+  .me-msg.err{color:#b3261e;}
+  .me-loading{text-align:center; color:var(--ink-faint); padding:40px 0;}
+  .me-top{display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--line);}
+  .me-who{font-size:13px; color:var(--ink-soft);}
+  .me-out{border:0; background:none; font:inherit; font-size:12px; text-decoration:underline; color:var(--ink-faint); cursor:pointer;}
+  .me-h{font-size:11px; letter-spacing:.2em; text-transform:uppercase; margin:30px 0 10px;}
+  .me-order{border:1px solid var(--line); padding:16px 18px; margin-bottom:12px;}
+  .me-ohead{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft);}
+  .me-no{font-family:var(--mono); color:var(--ink);}
+  .me-steps{display:flex; gap:6px; margin:14px 0 12px;}
+  .me-step{flex:1; font-size:11px; color:var(--ink-faint); line-height:1.4;}
+  .me-step i{display:block; height:3px; background:var(--line); margin-bottom:6px;}
+  .me-step.on{color:var(--ink);} .me-step.on i{background:var(--ink);}
+  .me-status{font-size:13px; margin:12px 0; color:var(--ink-soft);}
+  .me-lines{font-size:13px; line-height:1.9;}
+  .me-lines div{display:flex; justify-content:space-between; gap:12px;}
+  .me-total{font-size:12px; color:var(--ink-soft); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
+  .me-track{font-size:13px; margin-top:10px;}
+  .me-track a{text-decoration:underline;}
+  .me-msgs{display:flex; flex-direction:column; gap:10px; margin:10px 0 14px;}
+  .me-empty{font-size:12px; color:var(--ink-faint);}
+  .me-bubble{max-width:80%; padding:10px 13px; border-radius:10px; font-size:13px; line-height:1.6; white-space:pre-wrap;}
+  .me-bubble.mine{align-self:flex-end; background:#f1f1ef;}
+  .me-bubble.artist{align-self:flex-start; background:#111; color:#fff;}
+  .me-bubble .meta{font-size:10.5px; opacity:.6; margin-top:4px;}
+  .me-del{border:0; background:none; color:inherit; font:inherit; font-size:10.5px; text-decoration:underline; margin-left:8px; cursor:pointer;}
+  .me-send{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end;}
+  .me-send .me-msg{grid-column:1 / -1;}
+  .shop-tabs a.tab-myorder{position:relative;}
   .ss-design{margin:6px 0 16px; padding:14px; border:1px solid var(--line); border-radius:6px; background:#fafafa;}
   .ss-design-title{font-size:11px; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:10px;}
   .ss-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 18px;}
@@ -726,7 +764,7 @@
   <!-- master toolbar -->
   <div id="masterbar">
     <span class="tag">Master</span>
-    <button class="icon" id="btnDesign" title="Design settings">Aa</button>
+    <button class="icon" id="btnDesign" title="DESIGN STUDIO — 디자인·글꼴·SHOP 설정 (새 창)">Aa</button>
     <div class="sep"></div>
     <button class="icon" id="btnPublish" title="Publish to GitHub"><span id="publishGlyph">⇪</span><span class="unpub-dot" id="unpubDot"></span></button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
@@ -1403,7 +1441,7 @@
     textListTitleSize:21, textListAlign:"left", contactAlign:"center",
     textListTopSpace:40, textListItemGap:22,
     contactFontSize:23, contactTopSpace:24,
-    fontFamily:"helvetica", textWidth:640, uiItalic:false
+    fontFamily:"pretendard", textWidth:640, uiItalic:false
   };
 
   const DEFAULT_DATA = {
@@ -1690,7 +1728,8 @@
   const SHOP_TABS = [
     { slug:"originals", cat:"original", label:"ORIGINALS" },
     { slug:"editions",  cat:"edition",  label:"EDITIONS"  },
-    { slug:"books",     cat:"book",     label:"BOOKS"     }
+    { slug:"books",     cat:"book",     label:"BOOKS"     },
+    { slug:"my-order",  cat:null,       label:"MY ORDER", special:true }
   ];
   const SHOP_DEFAULT_TAB = "editions";
   const CART_MAX_QTY = 10;
@@ -1704,6 +1743,7 @@
   function shopProfile(item){ return ["flat","tube","book"].includes(item.shipProfile) ? item.shipProfile : defaultProfileFor(shopCategory(item)); }
   function tabForCategory(cat){ return (SHOP_TABS.find(t=>t.cat===cat) || SHOP_TABS[1]).slug; }
   function isShopTab(id){ return SHOP_TABS.some(t=>t.slug===id); }
+  function tabLabel(t){ return t.special ? (shopTexts().myOrderTab || "MY ORDER") : t.label; }
 
   function shopApiBase(){
     const u = String((state.data && state.data.shopApi) || "").trim().replace(/\/+$/,"");
@@ -2184,6 +2224,150 @@
     });
   }
 
+  /* ---------- MY ORDER: 주문한 이메일로 주문현황·메시지 ---------- */
+  const ME_KEY = "lysMe_v1";
+  function meToken(){ try{ return sessionStorage.getItem(ME_KEY) || ""; }catch(e){ return ""; } }
+  function setMeToken(t){ try{ if(t) sessionStorage.setItem(ME_KEY, t); else sessionStorage.removeItem(ME_KEY); }catch(e){} }
+  const ME_STATUS = {
+    paid:      ["Payment received", "결제 완료"],
+    preparing: ["Preparing", "발송 준비"],
+    shipped:   ["Shipped", "발송 완료"],
+    pending:   ["Payment pending", "결제 확인 중"],
+    refunded:  ["Refunded", "환불됨"],
+    canceled:  ["Canceled", "취소됨"]
+  };
+  function meFetch(method, path, body){
+    const api = shopApiBase();
+    const h = {"Content-Type":"application/json"};
+    const t = meToken(); if(t) h.Authorization = "Bearer " + t;
+    return fetch(api + path, { method, headers:h, body: body ? JSON.stringify(body) : undefined })
+      .then(r=>r.json().catch(()=>({})).then(j=>({ok:r.ok, status:r.status, j})));
+  }
+  function fmtDay(ms){ const d = new Date(ms); return d.getFullYear() + "." + String(d.getMonth()+1).padStart(2,"0") + "." + String(d.getDate()).padStart(2,"0"); }
+
+  function renderMyOrder(wrap){
+    const box = el("div","me");
+    wrap.appendChild(box);
+    if(meToken()){
+      box.appendChild(el("div","me-loading")).textContent = "Loading…";
+      meFetch("GET","/api/me").then(({ok, j})=>{
+        if(!ok){ setMeToken(""); box.innerHTML = ""; meLoginForm(box, j && j.message); return; }
+        box.innerHTML = ""; meDashboard(box, j);
+      }).catch(()=>{ box.innerHTML = ""; meLoginForm(box, "Network error. Please try again."); });
+    } else meLoginForm(box);
+  }
+  function meLoginForm(box, msg){
+    const f = el("form","me-login");
+    const t = el("div","me-title"); t.textContent = "Order status & messages";
+    const s = el("div","me-sub"); s.textContent = "Enter the email you used at checkout. · 주문할 때 적은 이메일을 입력하세요.";
+    const row = el("div","me-row");
+    const inp = el("input","me-input"); inp.type = "email"; inp.placeholder = "you@example.com"; inp.autocomplete = "email"; inp.required = true;
+    const btn = el("button","me-btn"); btn.type = "submit"; btn.textContent = "View";
+    row.appendChild(inp); row.appendChild(btn);
+    const m = el("div","me-msg"); if(msg){ m.textContent = msg; m.classList.add("err"); }
+    [t,s,row,m].forEach(x=>f.appendChild(x));
+    f.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const email = inp.value.trim(); if(!email) return;
+      btn.disabled = true; m.textContent = "…"; m.classList.remove("err");
+      meFetch("POST","/api/me",{email}).then(({ok, j})=>{
+        btn.disabled = false;
+        if(!ok || !j.token){ m.textContent = (j && j.message) || "Not found."; m.classList.add("err"); return; }
+        setMeToken(j.token); box.innerHTML = ""; meDashboard(box, j);
+      }).catch(()=>{ btn.disabled = false; m.textContent = "Network error. Please try again."; m.classList.add("err"); });
+    });
+    box.appendChild(f);
+    setTimeout(()=>inp.focus(), 50);
+  }
+  function meDashboard(box, data){
+    const top = el("div","me-top");
+    const who = el("div","me-who"); who.textContent = data.email || "";
+    const out = el("button","me-out"); out.type = "button"; out.textContent = "Sign out";
+    out.addEventListener("click", ()=>{ setMeToken(""); box.innerHTML = ""; meLoginForm(box); });
+    top.appendChild(who); top.appendChild(out);
+    box.appendChild(top);
+
+    // 주문현황
+    const oh = el("div","me-h"); oh.textContent = "Orders"; box.appendChild(oh);
+    (data.orders||[]).forEach(o=>{
+      const c = el("div","me-order");
+      const hd = el("div","me-ohead");
+      const no = el("span","me-no"); no.textContent = o.no;
+      const dt = el("span","me-date"); dt.textContent = fmtDay(o.createdAt);
+      hd.appendChild(no); hd.appendChild(dt); c.appendChild(hd);
+      const st = ME_STATUS[o.status] || [o.status, o.status];
+      if(["paid","preparing","shipped"].includes(o.status)){
+        const steps = el("div","me-steps");
+        const order = ["paid","preparing","shipped"]; const cur = order.indexOf(o.status);
+        order.forEach((k,i)=>{ const sp = el("div","me-step" + (i <= cur ? " on" : "")); const dot = el("i"); const lb = el("span"); lb.textContent = ME_STATUS[k][0] + " · " + ME_STATUS[k][1]; sp.appendChild(dot); sp.appendChild(lb); steps.appendChild(sp); });
+        c.appendChild(steps);
+      } else {
+        const sd = el("div","me-status"); sd.textContent = st[0] + " · " + st[1]; c.appendChild(sd);
+      }
+      const ul = el("div","me-lines");
+      (o.lines||[]).forEach(l=>{ const r = el("div"); const a = el("span"); a.textContent = l.title + (l.qty > 1 ? " × " + l.qty : ""); const b = el("span"); b.textContent = "$" + (Number(l.price)*l.qty).toFixed(2); r.appendChild(a); r.appendChild(b); ul.appendChild(r); });
+      c.appendChild(ul);
+      const tot = el("div","me-total");
+      tot.textContent = "Total $" + o.total + " (shipping $" + o.ship + (Number(o.duty) > 0 ? ", US duty $" + o.duty : "") + ")" + (o.shipTo ? " · Ship to " + o.shipTo : "");
+      c.appendChild(tot);
+      if(o.tracking){
+        const tr = el("div","me-track");
+        const lb = el("span"); lb.textContent = (o.carrier || "Korea Post") + " · " + o.tracking + "  ";
+        tr.appendChild(lb);
+        if(o.trackUrl){ const a = el("a"); a.href = o.trackUrl; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Track package →"; tr.appendChild(a); }
+        c.appendChild(tr);
+      }
+      box.appendChild(c);
+    });
+
+    // 메시지
+    const mh = el("div","me-h"); mh.textContent = "Messages"; box.appendChild(mh);
+    const note = el("div","me-sub"); note.textContent = "Only you and the artist can see these messages. · 이 메시지는 본인과 작가만 볼 수 있어요.";
+    box.appendChild(note);
+    const list = el("div","me-msgs"); box.appendChild(list);
+    const drawMsgs = (msgs)=>{
+      list.innerHTML = "";
+      if(!msgs.length){ const e = el("div","me-empty"); e.textContent = "No messages yet."; list.appendChild(e); }
+      msgs.forEach(m=>{
+        const b = el("div","me-bubble " + (m.from === "artist" ? "artist" : "mine"));
+        const tx = el("div"); tx.textContent = m.text; b.appendChild(tx);
+        const meta = el("div","meta"); meta.textContent = (m.from === "artist" ? "LEE YUNSUNG · " : "You · ") + fmtDay(m.at);
+        if(m.from !== "artist"){
+          const del = el("button","me-del"); del.type = "button"; del.textContent = "Delete";
+          del.addEventListener("click", ()=>{
+            if(!confirm("Delete this message? · 이 메시지를 지울까요?")) return;
+            meFetch("DELETE","/api/me/messages/" + encodeURIComponent(m.id)).then(({ok, j})=>{
+              if(ok){ data.messages = data.messages.filter(x=>x.id!==m.id); drawMsgs(data.messages); }
+              else alert((j && j.message) || "Could not delete.");
+            });
+          });
+          meta.appendChild(del);
+        }
+        b.appendChild(meta);
+        list.appendChild(b);
+      });
+    };
+    data.messages = data.messages || [];
+    drawMsgs(data.messages);
+    const form = el("form","me-send");
+    const ta = el("textarea","me-input"); ta.maxLength = 1000; ta.rows = 3; ta.placeholder = "Write a message to the artist… · 작가에게 메시지 남기기";
+    const sb = el("button","me-btn"); sb.type = "submit"; sb.textContent = "Send";
+    const sm = el("div","me-msg");
+    form.appendChild(ta); form.appendChild(sb); form.appendChild(sm);
+    form.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const text = ta.value.trim(); if(!text) return;
+      sb.disabled = true;
+      meFetch("POST","/api/me/messages",{text}).then(({ok, status, j})=>{
+        sb.disabled = false;
+        if(ok){ ta.value = ""; sm.textContent = ""; data.messages.push(j.message); drawMsgs(data.messages); return; }
+        if(status === 401){ setMeToken(""); box.innerHTML = ""; meLoginForm(box, "Session expired. Please enter your email again."); return; }
+        sm.textContent = (j && j.message) || "Could not send."; sm.classList.add("err");
+      }).catch(()=>{ sb.disabled = false; sm.textContent = "Network error."; sm.classList.add("err"); });
+    });
+    box.appendChild(form);
+  }
+
   /* ---------- SHOP 디자인 (썸네일 크기·글씨) ---------- */
   const SHOP_DESIGN_DEFAULT = { mainPct:56, thumbCount:5, thumbGap:8, titleSize:26, bodySize:14, priceSize:17, gridCols:5, gridTitleSize:13, gridPriceSize:12,
     btnHeight:58, btnFont:14, btnSubFont:10, btnRadius:0, btnGap:10, font:"pretendard" };
@@ -2191,12 +2375,13 @@
     naverLabel:"네이버페이로 구매", naverSub:"국내 · Korea",
     paypalLabel:"PayPal로 구매", paypalSub:"International · Card OK",
     paypalSoldOut:"International — Sold out",
+    myOrderTab:"MY ORDER",
     buyNote:"국내 구매는 네이버 스마트스토어(네이버페이)로 이동해요. · International orders: add to cart and pay with PayPal or card (USD, shipping from Korea)."
   };
   const SHOP_TEXT_FIELDS = [
     ["naverLabel","네이버 버튼 — 큰 글씨"], ["naverSub","네이버 버튼 — 작은 글씨"],
     ["paypalLabel","PayPal 버튼 — 큰 글씨"], ["paypalSub","PayPal 버튼 — 작은 글씨"],
-    ["paypalSoldOut","PayPal 버튼 — 해외 품절일 때"], ["buyNote","버튼 아래 안내문"]
+    ["paypalSoldOut","PayPal 버튼 — 해외 품절일 때"], ["myOrderTab","주문조회 탭 이름"], ["buyNote","버튼 아래 안내문"]
   ];
   function shopTexts(){
     const t = Object.assign({}, SHOP_TEXT_DEFAULT);
@@ -2249,7 +2434,7 @@
     r.setProperty("--shop-cols-sm", Math.min(d.gridCols, 3));
     r.setProperty("--shop-grid-title", d.gridTitleSize + "px");
     r.setProperty("--shop-grid-price", d.gridPriceSize + "px");
-    r.setProperty("--shop-font", SHOP_FONTS[d.font][1]);
+    r.setProperty("--shop-font", "inherit");   // 글꼴은 사이트 전체 설정(DESIGN STUDIO)을 따름
     r.setProperty("--btn-h", d.btnHeight + "px");
     r.setProperty("--btn-font", d.btnFont + "px");
     r.setProperty("--btn-sub", d.btnSubFont + "px");
@@ -2306,6 +2491,258 @@
     });
   }
 
+  /* =====================================================================
+     DESIGN STUDIO — 사이트 전체 디자인 + SHOP 설정을 한 창에서 (새 창)
+     새 창의 조절값은 이 창(window.opener)의 __lysStudio 로 바로 전달돼
+     화면에 실시간 반영되고, 잠시 뒤 자동 저장됩니다.
+     ===================================================================== */
+  const SITE_FONTS = {
+    pretendard: ["Pretendard — 한글·영문 (추천)", "'Pretendard', 'LYS Sans', sans-serif"],
+    lys:        ["LYS Sans (영문) + Pretendard (한글)", "'LYS Sans', 'Pretendard', sans-serif"],
+    garamond:   ["EB Garamond (영문 세리프) + Pretendard (한글)", "'EB Garamond', 'Pretendard', serif"],
+    mono:       ["IBM Plex Mono (영문 모노) + Pretendard (한글)", "'IBM Plex Mono', 'Pretendard', monospace"]
+  };
+  function siteFontKey(v){
+    if(SITE_FONTS[v]) return v;
+    if(v === "helvetica" || v === "system") return "lys";     // 예전 설정 이어받기
+    return "pretendard";
+  }
+
+  // 창에 그릴 항목들 — [그룹, 키, 종류, 이름, 옵션]
+  function studioSchema(){
+    const fontOpts = Object.keys(SITE_FONTS).map(k=>[k, SITE_FONTS[k][0]]);
+    return [
+      { title:"글꼴", note:"홈페이지·SHOP·장바구니 전체가 이 글꼴 하나로 보여요. 모두 사이트에 넣어둔 무료 글꼴이라 어느 기기에서나 같은 모양이에요.", items:[
+        ["design","fontFamily","select","사이트 글꼴", {options:fontOpts}]
+      ]},
+      { title:"본문 글씨 (CV · 작품 설명)", items:[
+        ["design","fontSize","range","글씨 크기 (px)", {min:12,max:22,step:1}],
+        ["design","letterSpacing","range","자간 (1/100 em)", {min:-2,max:20,step:1}],
+        ["design","bold","seg","굵기", {options:[[false,"보통"],[true,"굵게"]]}],
+        ["design","align","seg","정렬", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"],["justify","양끝"]]}],
+        ["design","textWidth","range","CV 한 줄 최대 너비 (px)", {min:400,max:1000,step:20}]
+      ]},
+      { title:"WORKS · 작품 상세", items:[
+        ["design","frameCols","seg","WORKS 한 줄 개수", {options:[[1,"1"],[2,"2"],[3,"3"],[4,"4"]]}],
+        ["design","pagePadding","range","페이지 여백 (px)", {min:0,max:100,step:2}],
+        ["design","frameGap","range","네모칸 간격 (px)", {min:0,max:80,step:2}],
+        ["design","frameTitleSize","range","네모칸 제목 글씨 (px)", {min:12,max:28,step:1}],
+        ["design","detailMargin","range","상세 사진 좌우 여백 (px)", {min:0,max:120,step:4}],
+        ["design","photoGap","range","사진 사이 간격 (px)", {min:0,max:60,step:2}],
+        ["design","captionSize","range","사진 캡션 글씨 (px)", {min:10,max:24,step:1}]
+      ]},
+      { title:"TEXT 목록", items:[
+        ["design","textListTitleSize","range","글 제목 크기 (px)", {min:14,max:40,step:1}],
+        ["design","textListTopSpace","range","위쪽 여백 (px)", {min:0,max:150,step:4}],
+        ["design","textListItemGap","range","제목 사이 간격 (px)", {min:6,max:60,step:2}],
+        ["design","textListAlign","seg","위치", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"]]}]
+      ]},
+      { title:"CONTACT", items:[
+        ["design","contactFontSize","range","글씨 크기 (px)", {min:14,max:40,step:1}],
+        ["design","contactTopSpace","range","위쪽 여백 (px)", {min:0,max:200,step:4}],
+        ["design","contactAlign","seg","위치", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"]]}]
+      ]},
+      { id:"shop", title:"SHOP 목록", items:[
+        ["shopDesign","gridCols","range","한 줄 개수 (데스크톱)", {min:3,max:6,step:1}],
+        ["shopDesign","gridTitleSize","range","상품 이름 글씨 (px)", {min:10,max:20,step:1}],
+        ["shopDesign","gridPriceSize","range","가격 글씨 (px)", {min:10,max:18,step:1}]
+      ]},
+      { title:"SHOP 상품 상세", items:[
+        ["shopDesign","mainPct","range","대표 이미지 너비 (%)", {min:40,max:70,step:1}],
+        ["shopDesign","thumbCount","range","작은 썸네일 개수 (한 줄에 꽉 차게)", {min:0,max:8,step:1}],
+        ["shopDesign","thumbGap","range","작은 썸네일 간격 (px)", {min:0,max:24,step:1}],
+        ["shopDesign","titleSize","range","제목 글씨 (px)", {min:16,max:48,step:1}],
+        ["shopDesign","bodySize","range","설명 글씨 (px)", {min:11,max:20,step:1}],
+        ["shopDesign","priceSize","range","가격 글씨 (px)", {min:12,max:32,step:1}]
+      ]},
+      { title:"구매 버튼", items:[
+        ["shopDesign","btnHeight","range","버튼 높이 (px)", {min:40,max:90,step:1}],
+        ["shopDesign","btnFont","range","큰 글씨 (px)", {min:11,max:22,step:1}],
+        ["shopDesign","btnSubFont","range","작은 글씨 (px)", {min:8,max:16,step:1}],
+        ["shopDesign","btnRadius","range","모서리 둥글기 (px)", {min:0,max:30,step:1}],
+        ["shopDesign","btnGap","range","버튼 사이 간격 (px)", {min:0,max:30,step:1}]
+      ]},
+      { title:"SHOP 문구", note:"비우면 기본 문구로 돌아가요.", items:
+        SHOP_TEXT_FIELDS.map(([k,label])=>["shopTexts",k, k==="buyNote" ? "textarea" : "text", label, {placeholder:SHOP_TEXT_DEFAULT[k]}])
+      },
+      { title:"SHOP 운영 정보", note:"결제 서버 주소는 비밀 정보가 아니에요. 사업자 정보는 SHOP 맨 아래에 표시돼요.", items:[
+        ["shop","shopApi","text","결제 서버 주소 (Cloudflare Worker)", {placeholder:"https://leeyunsung-shop.○○○.workers.dev"}],
+        ["biz","name","text","상호", {}],
+        ["biz","owner","text","대표자", {}],
+        ["biz","regNo","text","사업자등록번호", {placeholder:"000-00-00000"}],
+        ["biz","mailOrderNo","text","통신판매업 신고번호 (면제면 비워두기)", {}],
+        ["biz","address","text","사업장 주소", {}],
+        ["biz","phone","text","연락처", {}],
+        ["biz","email","text","이메일", {}],
+        ["shop","shopPolicy","textarea","교환·환불 / 배송 안내", {placeholder:SHOP_POLICY_DEFAULT, rows:8}]
+      ]}
+    ];
+  }
+
+  function studioGet(group, key){
+    const d = state.data;
+    if(group === "design"){
+      const v = (d.design || {})[key];
+      if(key === "fontFamily") return siteFontKey(v);
+      return v != null ? v : DEFAULT_DESIGN[key];
+    }
+    if(group === "shopDesign") return shopDesign()[key];
+    if(group === "shopTexts") return shopTexts()[key];
+    if(group === "biz") return (d.business || {})[key] || "";
+    if(group === "shop"){
+      if(key === "shopPolicy") return d.shopPolicy || SHOP_POLICY_DEFAULT;
+      return d[key] || "";
+    }
+    return "";
+  }
+
+  let studioSaveTimer = null, studioRerenderTimer = null;
+  function studioSet(group, key, value){
+    const d = state.data;
+    let rerender = false;
+    if(group === "design"){
+      d.design = d.design || Object.assign({}, DEFAULT_DESIGN);
+      d.design[key] = value;
+      applyDesignVars();
+      if(["textListAlign","contactAlign","frameCols"].includes(key)) rerender = true;
+      if(["detailMargin","photoGap"].includes(key)) scheduleJustifyLayout();
+    } else if(group === "shopDesign"){
+      d.shopDesign = Object.assign({}, shopDesign(), { [key]: Number(value) });
+      applyShopDesign();
+      if(key === "thumbCount") rerender = true;
+    } else if(group === "shopTexts"){
+      const cur = Object.assign({}, d.shopTexts || {});
+      const v = String(value || "").trim();
+      if(!v || v === SHOP_TEXT_DEFAULT[key]) delete cur[key]; else cur[key] = v.slice(0,300);
+      d.shopTexts = cur; rerender = true;
+    } else if(group === "biz"){
+      d.business = Object.assign({}, d.business || {}, { [key]: String(value || "").trim() });
+      rerender = true;
+    } else if(group === "shop"){
+      if(key === "shopPolicy"){
+        const v = String(value || "").trim();
+        d.shopPolicy = v === SHOP_POLICY_DEFAULT.trim() ? "" : v;
+      } else if(key === "shopApi"){
+        let raw = String(value || "").trim().replace(/\s+/g,"");
+        let api = "";
+        if(raw){
+          if(!/^https?:\/\//i.test(raw)) raw = "https://" + raw;
+          try{ api = "https://" + new URL(raw).host; }catch(e){ api = ""; }
+          if(!/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(api)) return { ok:false, message:"주소를 확인해 주세요. 예: https://leeyunsung-shop.아무개.workers.dev" };
+        }
+        d.shopApi = api;
+        ppState.config = null; ppState.rendered = false; shopInv.at = 0; shopInv.items = null; shopInv.sig = "";
+      }
+      rerender = true;
+    }
+    if(rerender){
+      clearTimeout(studioRerenderTimer);
+      studioRerenderTimer = setTimeout(()=>{
+        const r = parseHash();
+        if(r.page === "shop") rerenderShopView(); else renderRoute();
+        renderCart();
+      }, 200);
+    }
+    clearTimeout(studioSaveTimer);
+    studioSaveTimer = setTimeout(()=>{ saveDraft(); studioNotify("saved"); }, 700);
+    studioNotify("dirty");
+    return { ok:true };
+  }
+
+  let studioSnapshot = null, studioWin = null;
+  function studioNotify(kind){
+    try{ if(studioWin && !studioWin.closed && studioWin.__studioStatus) studioWin.__studioStatus(kind); }catch(e){}
+  }
+  window.__lysStudio = {
+    schema: studioSchema,
+    get: studioGet,
+    set: studioSet,
+    revert(){
+      if(!studioSnapshot) return;
+      const s = JSON.parse(studioSnapshot);
+      ["design","shopDesign","shopTexts","business","shopApi","shopPolicy"].forEach(k=>{ if(s[k] === undefined) delete state.data[k]; else state.data[k] = s[k]; });
+      applyDesignVars(); applyShopDesign(); saveDraft(); renderRoute();
+    },
+    resetDesign(){
+      state.data.design = Object.assign({}, DEFAULT_DESIGN);
+      state.data.shopDesign = Object.assign({}, SHOP_DESIGN_DEFAULT);
+      state.data.shopTexts = {};
+      applyDesignVars(); applyShopDesign(); saveDraft(); renderRoute();
+    },
+    publish(){ publishToGithub(false); }
+  };
+
+  function openStudio(section){
+    if(!state.master) return;
+    if(studioWin && !studioWin.closed){
+      studioWin.focus();
+      try{ studioWin.__studioRender && studioWin.__studioRender(section); }catch(e){}
+      return;
+    }
+    const w = window.open("", "lysStudio", "width=480,height=920,left=40,top=40");
+    if(!w){ alert("팝업이 막혔어요. 브라우저 주소창 오른쪽의 팝업 차단을 풀고 다시 눌러주세요."); return; }
+    studioWin = w;
+    // 새 창을 연 시점 상태를 기억 → "이번에 바꾼 것 되돌리기"
+    studioSnapshot = JSON.stringify({
+      design: state.data.design, shopDesign: state.data.shopDesign, shopTexts: state.data.shopTexts,
+      business: state.data.business, shopApi: state.data.shopApi, shopPolicy: state.data.shopPolicy
+    });
+    w.document.open();
+    w.document.write(STUDIO_HTML.replace("__SECTION__", JSON.stringify(section || "")));
+    w.document.close();
+  }
+  window.addEventListener("beforeunload", ()=>{ try{ if(studioWin && !studioWin.closed) studioWin.__studioOpenerGone && studioWin.__studioOpenerGone(); }catch(e){} });
+
+  const STUDIO_HTML = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DESIGN STUDIO — LEE YUNSUNG</title>' +
+  '<style>' +
+  '*{box-sizing:border-box}body{margin:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#111;background:#f6f6f4}' +
+  'header{position:sticky;top:0;z-index:5;background:#111;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}' +
+  'header h1{font-size:12px;letter-spacing:.24em;margin:0;font-weight:600;flex:1}' +
+  '#st{font-size:11px;color:#9f9;min-width:70px;text-align:right}#st.dirty{color:#fc6}' +
+  'nav{position:sticky;top:44px;z-index:4;background:#fff;border-bottom:1px solid #e3e3e3;padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap}' +
+  'nav a{font-size:11px;color:#555;text-decoration:none;padding:4px 8px;border:1px solid #ddd;border-radius:99px;white-space:nowrap}nav a:hover{border-color:#111;color:#111}' +
+  'main{padding:12px 14px 120px}' +
+  'section{background:#fff;border:1px solid #e3e3e3;border-radius:8px;padding:14px;margin-bottom:12px}' +
+  'section h2{font-size:12px;letter-spacing:.08em;margin:0 0 4px;font-weight:600}' +
+  '.note{font-size:11px;color:#888;margin:0 0 10px;line-height:1.6}' +
+  '.row{margin:10px 0}.lab{display:flex;justify-content:space-between;font-size:12px;color:#444;margin-bottom:4px}.lab b{font-variant-numeric:tabular-nums;color:#111}' +
+  'input[type=range]{width:100%;accent-color:#111}' +
+  'select,input[type=text],textarea{width:100%;border:1px solid #ccc;border-radius:5px;padding:7px 9px;font:inherit;font-size:13px;background:#fff}' +
+  'textarea{resize:vertical;min-height:60px}' +
+  '.seg{display:flex;gap:4px;flex-wrap:wrap}.seg button{flex:1;min-width:48px;padding:6px 8px;border:1px solid #ccc;background:#fff;border-radius:5px;font:inherit;font-size:12px;cursor:pointer}.seg button.on{background:#111;color:#fff;border-color:#111}' +
+  '.err{color:#b3261e;font-size:11px;margin-top:3px}' +
+  'footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ddd;padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap}' +
+  'footer button{flex:1;min-width:120px;padding:10px;border:1px solid #ccc;background:#fff;border-radius:6px;font:inherit;font-size:12px;cursor:pointer}footer button.primary{background:#111;color:#fff;border-color:#111}' +
+  '.gone{padding:40px 20px;text-align:center;color:#666}' +
+  '</style></head><body>' +
+  '<header><h1>DESIGN STUDIO</h1><span id="st">저장됨</span></header><nav id="nav"></nav><main id="main"></main>' +
+  '<footer><button id="bRevert">이번에 바꾼 것 되돌리기</button><button id="bReset">디자인 기본값</button><button class="primary" id="bPub">⇪ 홈페이지에 게시</button></footer>' +
+  '<script>(function(){' +
+  'var start=__SECTION__;var O=window.opener;' +
+  'function api(){try{return O&&!O.closed&&O.__lysStudio?O.__lysStudio:null;}catch(e){return null;}}' +
+  'function $(i){return document.getElementById(i);}' +
+  'function mk(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}' +
+  'window.__studioStatus=function(k){var s=$("st");if(k==="dirty"){s.textContent="저장 중…";s.className="dirty";}else{s.textContent="저장됨";s.className="";}};' +
+  'window.__studioOpenerGone=function(){setTimeout(function(){if(!api())gone();},800);};' +
+  'function gone(){$("main").innerHTML="";$("nav").innerHTML="";var g=mk("div","gone","홈페이지 창이 닫혔거나 새로고침됐어요. 홈페이지 마스터 모드에서 Aa 를 다시 눌러주세요.");$("main").appendChild(g);}' +
+  'function render(sec){var A=api();if(!A){gone();return;}var S=A.schema();var main=$("main"),nav=$("nav");main.innerHTML="";nav.innerHTML="";' +
+  'S.forEach(function(g,gi){var id="s"+gi;var a=mk("a",null,g.title);a.href="#"+id;nav.appendChild(a);' +
+  'var sc=mk("section");sc.id=id;if(g.id)sc.dataset.key=g.id;sc.appendChild(mk("h2",null,g.title));if(g.note)sc.appendChild(mk("p","note",g.note));' +
+  'g.items.forEach(function(it){var grp=it[0],key=it[1],type=it[2],label=it[3],o=it[4]||{};var row=mk("div","row");var lab=mk("div","lab");lab.appendChild(mk("span",null,label));var val=mk("b");lab.appendChild(val);row.appendChild(lab);var err=mk("div","err");var cur=A.get(grp,key);' +
+  'function set(v){var r=A.set(grp,key,v);err.textContent=r&&r.ok===false?r.message:"";}' +
+  'if(type==="range"){var r=mk("input");r.type="range";r.min=o.min;r.max=o.max;r.step=o.step||1;r.value=cur;val.textContent=cur;r.oninput=function(){val.textContent=r.value;set(Number(r.value));};row.appendChild(r);}' +
+  'else if(type==="select"){var s=mk("select");o.options.forEach(function(p){var op=mk("option",null,p[1]);op.value=p[0];s.appendChild(op);});s.value=cur;s.onchange=function(){set(s.value);};row.appendChild(s);}' +
+  'else if(type==="seg"){var w=mk("div","seg");o.options.forEach(function(p){var b=mk("button",null,p[1]);b.type="button";if(String(p[0])===String(cur))b.className="on";b.onclick=function(){Array.prototype.forEach.call(w.children,function(x){x.className="";});b.className="on";set(p[0]);};w.appendChild(b);});row.appendChild(w);}' +
+  'else{var f=mk(type==="textarea"?"textarea":"input");if(type!=="textarea")f.type="text";if(o.rows)f.rows=o.rows;f.value=cur||"";if(o.placeholder)f.placeholder=o.placeholder;var t=null;f.oninput=function(){clearTimeout(t);t=setTimeout(function(){set(f.value);},350);};row.appendChild(f);}' +
+  'row.appendChild(err);sc.appendChild(row);});main.appendChild(sc);});' +
+  'if(sec){var target=main.querySelector("[data-key=\\""+sec+"\\"]");if(target)setTimeout(function(){target.scrollIntoView();},30);}}' +
+  'window.__studioRender=render;' +
+  '$("bRevert").onclick=function(){var A=api();if(!A)return gone();if(confirm("이 창을 연 뒤에 바꾼 것을 모두 되돌릴까요?")){A.revert();render();}};' +
+  '$("bReset").onclick=function(){var A=api();if(!A)return gone();if(confirm("디자인 값과 SHOP 문구를 모두 기본값으로 되돌릴까요? (운영 정보는 그대로예요)")){A.resetDesign();render();}};' +
+  '$("bPub").onclick=function(){var A=api();if(!A)return gone();A.publish();try{O.focus();}catch(e){}};' +
+  'render(start);' +
+  '})();<\/script></body></html>';
+
   function renderShopBiz(app){
     const b = state.data.business || {};
     const box = el("div","shop-biz");
@@ -2325,7 +2762,8 @@
     app.appendChild(box);
   }
 
-  function openShopSettings(){
+  function openShopSettings(){ openStudio("shop"); }
+  function openShopSettingsLegacy(){
     const b = state.data.business || {};
     $("ssApi").value = state.data.shopApi || "";
     $("ssName").value = b.name || ""; $("ssOwner").value = b.owner || ""; $("ssRegNo").value = b.regNo || "";
@@ -2406,7 +2844,7 @@
     btn.textContent = isShopPublic() ? "비공개로 되돌리기" : "SHOP 공개하기";
     btn.addEventListener("click", ()=> setShopPublic(!isShopPublic()));
     const btns = el("span"); btns.style.cssText = "display:flex; gap:8px; flex-wrap:wrap;";
-    const setBtn = el("button"); setBtn.textContent = "SHOP 설정";
+    const setBtn = el("button"); setBtn.textContent = "디자인 · SHOP 설정 ↗";
     setBtn.addEventListener("click", openShopSettings);
     const ordBtn = el("button"); ordBtn.textContent = "주문관리 ↗";
     ordBtn.addEventListener("click", openOrdersWindow);
@@ -2435,11 +2873,19 @@
 
     const nav = el("nav","shop-tabs");
     SHOP_TABS.forEach(t=>{
-      const a = el("a"); a.href = "#shop/" + t.slug; a.textContent = t.label;
+      if(t.special && !shopApiBase()) return;
+      const a = el("a"); a.href = "#shop/" + t.slug; a.textContent = tabLabel(t);
+      if(t.special) a.classList.add("tab-myorder");
       if(t.slug === tab.slug) a.classList.add("active");
       nav.appendChild(a);
     });
     wrap.appendChild(nav);
+    if(tab.special){
+      renderMyOrder(wrap);
+      app.appendChild(wrap);
+      renderShopBiz(app);
+      return;
+    }
 
     const items = (state.data.shop || []).filter(it=>shopCategory(it) === tab.cat);
     if(!items.length && !state.master){
@@ -3516,7 +3962,7 @@
     root.setProperty("--frame-gap", d.frameGap + "px");
     root.setProperty("--frame-cols", d.frameCols || 2);
     root.setProperty("--detail-margin", (d.detailMargin!=null ? d.detailMargin : 32) + "px");
-    root.setProperty("--active-font-family", d.fontFamily==="helvetica" ? "var(--sans-helvetica)" : "var(--sans)");
+    root.setProperty("--active-font-family", SITE_FONTS[siteFontKey(d.fontFamily)][1]);
     root.setProperty("--content-max-width", (d.textWidth!=null ? d.textWidth : 640) + "px");
     root.setProperty("--ui-font-style", d.uiItalic ? "italic" : "normal");
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
@@ -3572,6 +4018,7 @@
   let activeStyleTarget = null;
 
   function openDesignModal(target, label){
+    if(!target){ openStudio(); return; }      // 전체 디자인은 DESIGN STUDIO 새 창에서
     activeStyleTarget = target || null;
     const isGlobal = !target;
     $("designModalTitle").textContent = isGlobal ? "Design" : "Style — " + label;
@@ -4620,7 +5067,7 @@ shopBlock,
     }) );
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
-    $("btnDesign").addEventListener("click", ()=>openDesignModal());
+    $("btnDesign").addEventListener("click", ()=>openStudio());
     bindDesignEvents();
     $("siteNameSaveBtn").addEventListener("click", saveSiteName);
 
