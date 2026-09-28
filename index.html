@@ -138,7 +138,7 @@
   .page-title{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:36px;}
 
   /* ---------- CV ---------- */
-  .cv-wrap{max-width:var(--content-max-width); position:relative;}
+  .cv-wrap{max-width:var(--content-max-width); position:relative; margin-left:auto; margin-right:auto;}
   .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
@@ -149,8 +149,8 @@
   .edit-fab:hover{background:#000;}
 
   .grid-bleed{
-    width:100vw; position:relative; left:50%; right:50%;
-    margin-left:-50vw; margin-right:-50vw;
+    width:var(--vwpx, 100vw); position:relative; left:50%;
+    margin-left:calc(var(--vwpx, 100vw) / -2);
   }
   /* ---------- WORKS / TEXT grid ---------- */
   .col-grid{
@@ -464,7 +464,7 @@
   .empty-collection{color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
   /* ---------- text list (essays / reviews) ---------- */
-  .text-list-wrap{max-width:760px; padding-top:var(--text-list-top-space);}
+  .text-list-wrap{max-width:760px; padding-top:var(--text-list-top-space); margin-left:auto; margin-right:auto;}
   .text-list-item{
     display:flex; align-items:baseline; justify-content:space-between; gap:20px;
     padding:var(--text-list-item-gap) 0;
@@ -509,7 +509,7 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px auto 48px; padding:0 var(--detail-margin); max-width:calc(var(--content-max-width) + 2 * var(--detail-margin));}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -520,14 +520,11 @@
   }
   /* WORKS 상세: 작품 사진은 사이트 폭 제한을 풀고 창 크기를 따라 커지고 작아짐
      가로 작품은 창 너비에, 세로 작품은 창 높이에 맞춰 한 화면에 통째로 */
+  /* WORKS 목록 커버와 똑같이: 화면 전체 폭을 쓰고, 창을 키우면 그만큼 꽉 차게 */
   .photo-rows-wrap.wide{
-    --wide-gutter:clamp(12px, 2.5vw, 48px);
-    width:calc(var(--vwpx, 100vw) - 2 * var(--wide-gutter)); max-width:none;
-    margin-left:calc(50% - var(--vwpx, 100vw) / 2 + var(--wide-gutter));
+    width:var(--vwpx, 100vw); max-width:none; position:relative; left:50%;
+    margin-left:calc(var(--vwpx, 100vw) / -2);
     padding-left:0; padding-right:0;
-  }
-  .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell:not(.add-tile):not(.is-video){
-    width:min(100%, calc((100vh - var(--header-height, 90px) - 40px) * var(--r, 1.5))); margin:0 auto;
   }
   .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell.add-tile{width:min(100%, 720px); margin:0 auto;}
   body{overflow-x:clip;}
@@ -586,11 +583,16 @@
   .pd-thumb .yt-badge, .imgdrop .yt-badge{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:26px; height:26px; border-radius:50%; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; pointer-events:none;}
   .pd-thumb .yt-badge::after, .imgdrop .yt-badge::after{content:""; border-left:8px solid #fff; border-top:5px solid transparent; border-bottom:5px solid transparent; margin-left:2px;}
   .pd-thumb.is-video img{inset:0; width:100%; height:100%; object-fit:cover;}
-  .yt-field{margin-top:10px;}
-  .yt-field .yt-row{display:flex; gap:6px;}
-  .yt-field input{flex:1; min-width:0;}
-  .yt-field select{flex:0 0 auto; width:auto; font:inherit; font-size:12.5px; padding:0 8px; border:1px solid var(--line-strong); border-radius:6px; background:#fff;}
-  .yt-field .yt-msg{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .or-sep{display:flex; align-items:center; gap:10px; margin:4px 0 14px; color:var(--ink-faint); font-size:11px; letter-spacing:.08em;}
+  .or-sep::before, .or-sep::after{content:""; flex:1; height:1px; background:var(--line);}
+  .yt-field .yt-row{display:flex; gap:6px; align-items:stretch;}
+  .field.yt-field .yt-row input[type=text]{flex:1 1 auto; width:auto; min-width:0; font-size:14px; padding:12px;}
+  .yt-paste{flex:0 0 auto; font:inherit; font-size:12.5px; padding:0 14px; border:1px solid var(--ink); border-radius:5px; background:var(--ink); color:#fff; cursor:pointer; white-space:nowrap;}
+  .yt-paste:hover{opacity:.85;}
+  .yt-ratio-label{font-size:10.5px; letter-spacing:.08em; color:var(--ink-faint); margin:12px 0 6px;}
+  .yt-ratio button{font-size:12px; padding:7px 10px;}
+  .yt-field .yt-msg{font-size:11.5px; line-height:1.55; color:var(--ink-faint); margin-top:8px;}
+  .yt-field .yt-msg.ok{color:#1d6b3a;}
   .yt-field .yt-msg.err{color:#b3261e;}
   .imgdrop.is-video{padding:0;}
   .photo-cell.add-tile{
@@ -637,6 +639,8 @@
   .align-left{margin-left:0; margin-right:auto; text-align:left;}
   .align-center{margin-left:auto; margin-right:auto; text-align:center;}
   .align-right{margin-left:auto; margin-right:0; text-align:right;}
+  /* 목록 블록 자체는 항상 페이지 가운데, 글자 정렬만 왼쪽/가운데/오른쪽 */
+  .text-list-wrap.align-left, .text-list-wrap.align-right{margin-left:auto; margin-right:auto;}
 
   /* ---------- footer ---------- */
   footer{border-top:1px solid var(--line); padding:22px 0; font-size:11px; color:var(--ink-faint); letter-spacing:.03em;}
@@ -1028,20 +1032,24 @@
           </div>
           <input type="file" id="photoImageFile" accept="image/*" style="display:none;">
           <button type="button" class="pick-site-img" data-pick="photo">▦ 홈페이지에 있는 이미지에서 고르기</button>
-          <div class="yt-field">
-            <label style="margin-top:4px;">또는 YouTube 영상 · 쇼츠 주소</label>
-            <div class="yt-row">
-              <input type="url" id="photoYtUrl" placeholder="https://youtube.com/shorts/…  또는  https://youtu.be/…" autocomplete="off" spellcheck="false">
-              <select id="photoYtRatio" title="영상 비율">
-                <option value="16:9">가로 16:9</option>
-                <option value="9:16">세로 9:16</option>
-                <option value="1:1">정사각 1:1</option>
-                <option value="4:5">세로 4:5</option>
-                <option value="4:3">가로 4:3</option>
-              </select>
-            </div>
-            <div class="yt-msg" id="photoYtMsg">소리 없이 자동으로 반복 재생돼요. 보는 사람이 멈추거나 소리를 켤 수 있어요.</div>
+        </div>
+        <div class="or-sep"><span>또는</span></div>
+        <div class="field yt-field">
+          <label for="photoYtUrl">YouTube 영상 · 쇼츠 주소</label>
+          <div class="yt-row">
+            <input type="text" id="photoYtUrl" inputmode="url" placeholder="YouTube 주소를 여기에 붙여넣기" autocomplete="off" spellcheck="false">
+            <button type="button" class="yt-paste" id="photoYtPaste">붙여넣기</button>
           </div>
+          <div class="yt-ratio-label">영상 비율</div>
+          <div class="segbtns yt-ratio" id="photoYtRatioSeg">
+            <button type="button" data-v="16:9">가로 16:9</button>
+            <button type="button" data-v="9:16">세로 9:16</button>
+            <button type="button" data-v="1:1">1:1</button>
+            <button type="button" data-v="4:5">4:5</button>
+            <button type="button" data-v="4:3">4:3</button>
+          </div>
+          <input type="hidden" id="photoYtRatio" value="16:9">
+          <div class="yt-msg" id="photoYtMsg">주소를 넣으면 이미지 대신 영상이 들어가요. 소리 없이 자동 반복 재생되고, 보는 사람이 멈추거나 소리를 켤 수 있어요.</div>
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
         <div class="btnrow">
@@ -3881,8 +3889,7 @@
       if(!availableWidth || !totalRaw) return;
 
       const scale = (availableWidth - totalGaps) / totalRaw;
-      const maxHeight = Math.max(500, window.innerHeight * 0.85);
-      const finalHeight = Math.min(maxHeight, baseHeight * scale);
+      const finalHeight = baseHeight * scale;   // 줄 폭을 꽉 채움 (창을 키우면 그만큼 커짐)
 
       cells.forEach((cell,i)=>{
         cell.style.height = finalHeight + "px";
@@ -4056,9 +4063,13 @@
   }
 
   let pendingPhotoVideo = null;
-  function setPhotoVideoUi(video){
+  function syncYtRatioSeg(){
+    const v = $("photoYtRatio").value;
+    document.querySelectorAll("#photoYtRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === v));
+  }
+  function setPhotoVideoUi(video, keepInput){
     pendingPhotoVideo = video || null;
-    $("photoYtUrl").value = video ? ytWatchUrl(video) : "";
+    if(!keepInput) $("photoYtUrl").value = video ? (video.url || ytWatchUrl(video)) : "";
     if(video) $("photoYtRatio").value = video.ratio || "16:9";
     $("photoImgDrop").classList.toggle("is-video", !!video);
     const old = $("photoImgDrop").querySelector(".yt-badge"); if(old) old.remove();
@@ -4066,12 +4077,14 @@
     const msg = $("photoYtMsg"); msg.classList.remove("err");
     if(!video) $("photoYtRatio").value = "16:9";
     if(!video) $("photoYtRatio").value = "16:9";
-    msg.textContent = video ? "영상으로 들어가요 · 소리 없이 자동 반복 재생 (보는 사람이 멈추거나 소리를 켤 수 있어요)" : "소리 없이 자동으로 반복 재생돼요. 보는 사람이 멈추거나 소리를 켤 수 있어요.";
+    syncYtRatioSeg();
+    msg.classList.toggle("ok", !!video);
+    msg.textContent = video ? "✓ 영상이 연결됐어요. 저장하면 이 자리에 소리 없이 자동 반복 재생돼요." : "주소를 넣으면 이미지 대신 영상이 들어가요. 소리 없이 자동 반복 재생되고, 보는 사람이 멈추거나 소리를 켤 수 있어요.";
   }
   function onPhotoYtInput(){
     const raw = $("photoYtUrl").value.trim();
     if(!raw){
-      if(pendingPhotoVideo){ pendingPhotoVideo = null; pendingPhotoImage = null; clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop"); setPhotoVideoUi(null); }
+      if(pendingPhotoVideo){ pendingPhotoVideo = null; pendingPhotoImage = null; clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop"); setPhotoVideoUi(null, true); }
       return;
     }
     const v = parseYouTube(raw);
@@ -4081,7 +4094,7 @@
     const video = { id: v.id, ratio };
     pendingPhotoImage = ytPoster(v.id);
     showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", pendingPhotoImage);
-    setPhotoVideoUi(video);
+    setPhotoVideoUi(video, true);
   }
   function openPhotoModal(key,itemId,rowId,photoId){
     $("photoCollection").value = key;
@@ -4591,10 +4604,7 @@
     img.alt = alt;
     img.loading = eager ? "eager" : "lazy";
     img.decoding = "async";
-    img.addEventListener("load", ()=>{
-      if(img.naturalWidth && img.naturalHeight) cell.style.setProperty("--r", String(img.naturalWidth / img.naturalHeight));
-      scheduleJustifyLayout();
-    });
+    img.addEventListener("load", scheduleJustifyLayout);
     img.src = photo.image;
     cell.appendChild(img);
     return false;
@@ -5566,12 +5576,10 @@
     "var cs=getComputedStyle(g),gp=parseFloat(cs.columnGap||cs.gap)||0,B=380;",
     "var raw=r.reduce(function(a,x){return a+x*B;},0),w=g.clientWidth;",
     "if(!w||!raw)return;",
-    "var sc=(w-gp*(c.length-1))/raw,h=Math.min(Math.max(500,window.innerHeight*0.85),B*sc);",
+    "var sc=(w-gp*(c.length-1))/raw,h=B*sc;",
     "c.forEach(function(el,i){el.style.height=h+'px';el.style.width=(r[i]*h)+'px';});});}",
     "function V(){document.body.style.setProperty('--vwpx',document.documentElement.clientWidth+'px');}",
-    "function R(m){if(m.naturalWidth&&m.naturalHeight&&m.parentNode)m.parentNode.style.setProperty('--r',m.naturalWidth/m.naturalHeight);}",
-    "document.querySelectorAll('.photo-grid:not(.multi) .photo-cell img').forEach(function(m){if(m.complete)R(m);else m.addEventListener('load',function(){R(m);});});",
-    "V();window.addEventListener('resize',V);",
+        "V();window.addEventListener('resize',V);",
     "window.addEventListener('resize',L);window.addEventListener('load',L);",
     "document.addEventListener('DOMContentLoaded',L);",
     "document.querySelectorAll('.photo-grid.multi img').forEach(function(m){m.addEventListener('load',L);});",
@@ -6095,7 +6103,19 @@ shopBlock,
     $("imgPickSearch").addEventListener("input", renderImgPicker);
     $("photoYtUrl").addEventListener("input", onPhotoYtInput);
     $("photoYtUrl").addEventListener("paste", ()=>setTimeout(onPhotoYtInput, 0));
-    $("photoYtRatio").addEventListener("change", ()=>{ if(pendingPhotoVideo) pendingPhotoVideo.ratio = $("photoYtRatio").value; });
+    document.querySelectorAll("#photoYtRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{
+      $("photoYtRatio").value = b.dataset.v; syncYtRatioSeg();
+      if(pendingPhotoVideo) pendingPhotoVideo.ratio = b.dataset.v;
+    }));
+    $("photoYtPaste").addEventListener("click", async ()=>{
+      try{
+        const t = await navigator.clipboard.readText();
+        if(t){ $("photoYtUrl").value = t.trim(); onPhotoYtInput(); return; }
+      }catch(e){}
+      $("photoYtUrl").focus();
+      const msg = $("photoYtMsg"); msg.classList.remove("ok");
+      msg.textContent = "칸을 누르고 Ctrl+V (Mac은 ⌘+V, 휴대폰은 길게 눌러 붙여넣기) 해 주세요.";
+    });
     document.querySelectorAll("#itemVisSeg button").forEach(b=>b.addEventListener("click", ()=>setItemVisUi(b.dataset.v === "hidden")));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
