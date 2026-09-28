@@ -254,6 +254,20 @@
   .me-send{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end;}
   .me-send .me-msg{grid-column:1 / -1;}
   .shop-tabs a.tab-myorder{position:relative;}
+  .sync-pill{display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 10px; margin:0 4px; border-radius:99px; border:1px solid rgba(255,255,255,.25); background:transparent; color:#fff; font-size:11px; letter-spacing:.02em; cursor:pointer; white-space:nowrap;}
+  .sync-pill .d{width:8px; height:8px; border-radius:50%; background:#4caf50; flex:0 0 8px;}
+  .sync-pill.busy .d{background:#f5c542; animation:syncBlink 1s infinite;}
+  .sync-pill.bad{border-color:#ff6b61; color:#ffb3ad;} .sync-pill.bad .d{background:#ff4d42;}
+  .sync-pill.warn{border-color:#ffa94d; color:#ffd2a1;} .sync-pill.warn .d{background:#ff922b;}
+  @keyframes syncBlink{50%{opacity:.35}}
+  @media (max-width:600px){ .sync-pill .t{display:none;} .sync-pill{padding:0 8px;} }
+  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:950; width:min(760px, calc(100vw - 24px));
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 14px; border-radius:8px; background:#fff3f2; border:1px solid #f1a39c; color:#8c1d15; font-size:13px; line-height:1.55; box-shadow:0 6px 24px rgba(0,0,0,.08);}
+  #syncBanner[hidden]{display:none;}
+  #syncBanner .m{flex:1 1 280px;}
+  #syncBanner .b{display:flex; gap:6px; flex-wrap:wrap;}
+  #syncBanner button{font:inherit; font-size:12px; padding:7px 12px; border-radius:5px; border:1px solid #c9544a; background:#fff; color:#8c1d15; cursor:pointer;}
+  #syncBanner button.primary{background:#b3261e; border-color:#b3261e; color:#fff;}
   .ss-design{margin:6px 0 16px; padding:14px; border:1px solid var(--line); border-radius:6px; background:#fafafa;}
   .ss-design-title{font-size:11px; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:10px;}
   .ss-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 18px;}
