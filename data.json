@@ -2907,6 +2907,37 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true
+    },
+    {
+      "id": "s-1790625368565-3m6dk",
+      "title": "",
+      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
+      "description": "",
+      "slug": "shop-22",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790625368565-3m6dk-95aaa9",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790625368565-3m6dk-95aaa9",
+              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
