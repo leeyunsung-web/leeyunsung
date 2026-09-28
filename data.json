@@ -2411,6 +2411,37 @@
       "category": "book",
       "shipProfile": "book",
       "coverInRows": true
+    },
+    {
+      "id": "s-1790624929547-vad9p",
+      "title": "",
+      "cover": "./images/w3-p-1787464242838-rtg3t.jpg",
+      "description": "",
+      "slug": "shop-6",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624929547-vad9p-c0d5ec",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624929547-vad9p-c0d5ec",
+              "image": "./images/w3-p-1787464242838-rtg3t.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
