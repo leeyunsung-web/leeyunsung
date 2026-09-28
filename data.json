@@ -2275,6 +2275,7 @@
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
   "business": {
     "name": "nutype",
-    "owner": "leeyunsung"
+    "owner": "leeyunsung",
+    "regNo": "316-05-0"
   }
 }
