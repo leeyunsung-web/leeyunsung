@@ -2306,6 +2306,24 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube"
+    },
+    {
+      "id": "s-1790623636184-2mg2s",
+      "title": "",
+      "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
+      "description": "",
+      "slug": "shop-5",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "book",
+      "shipProfile": "book"
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
