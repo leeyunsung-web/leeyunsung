@@ -477,7 +477,10 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px auto 48px; padding:0 var(--detail-margin); max-width:calc(var(--content-max-width) + 2 * var(--detail-margin));}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);
+    /* 폭은 DESIGN STUDIO → 작품·글 설명 폭. 사이트 폭보다 넓게도 되고, 항상 화면 가운데 */
+    --dw:min(var(--desc-max-width, 704px), var(--vwpx, 100vw) - 2 * var(--page-padding));
+    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -784,5 +787,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'LYS Sans', 'Pretendard', sans-serif; --content-max-width: 600px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.46px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 4; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-max-width: 1000px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.51px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 4; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
