@@ -193,6 +193,13 @@
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
   .shop-card{position:relative; display:block; color:inherit;}
+  /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
+  body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
+  body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  .shop-card.dragging{opacity:.35;}
+  .shop-drag-ghost{position:fixed; z-index:400; pointer-events:none; opacity:.92; box-shadow:0 14px 34px rgba(0,0,0,.22); transform:rotate(1.2deg); background:#fff; cursor:grabbing;}
+  body.shop-dragging, body.shop-dragging *{cursor:grabbing !important; user-select:none !important;}
+  .shop-reorder-hint{text-align:center; font-size:11.5px; color:var(--ink-faint); margin:-22px 0 22px; letter-spacing:.02em;}
   .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
   .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
   .shop-coming-sub{font-size:13px; letter-spacing:.06em; color:var(--ink-faint);}
@@ -293,7 +300,7 @@
   .sync-pill.warn{border-color:#ffa94d; color:#ffd2a1;} .sync-pill.warn .d{background:#ff922b;}
   @keyframes syncBlink{50%{opacity:.35}}
   @media (max-width:600px){ .sync-pill .t{display:none;} .sync-pill{padding:0 8px;} }
-  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:950; width:min(760px, calc(100vw - 24px));
+  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:190; width:min(760px, calc(100vw - 24px));
     display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 14px; border-radius:8px; background:#fff3f2; border:1px solid #f1a39c; color:#8c1d15; font-size:13px; line-height:1.55; box-shadow:0 6px 24px rgba(0,0,0,.08);}
   #syncBanner[hidden]{display:none;}
   #syncBanner .m{flex:1 1 280px;}
@@ -589,6 +596,23 @@
   .overlay.show{display:flex;}
   .modal{background:#fff; border:1px solid var(--line-strong); border-radius:8px; width:100%; max-width:460px; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.2);}
   .modal.wide{max-width:640px;}
+  .pick-site-img{display:block; width:100%; margin-top:8px; padding:9px 10px; font:inherit; font-size:12px; color:var(--ink-soft,#555); background:#faf9f7; border:1px solid var(--line-strong); border-radius:6px; cursor:pointer;}
+  .pick-site-img:hover{color:var(--ink); border-color:var(--ink);}
+  #imgPickModal{z-index:240;}
+  #imgPickModal .modal.imgpick{max-width:820px;}
+  .imgpick-bar{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px;}
+  .imgpick-tabs{display:flex; gap:4px; flex-wrap:wrap;}
+  .imgpick-tabs button{font:inherit; font-size:11.5px; letter-spacing:.04em; padding:6px 11px; border:1px solid var(--line-strong); background:#fff; border-radius:20px; cursor:pointer; color:var(--ink-faint);}
+  .imgpick-tabs button.on{background:var(--ink,#111); border-color:var(--ink,#111); color:#fff;}
+  #imgPickSearch{flex:1 1 160px; max-width:240px; font:inherit; font-size:12.5px; padding:7px 10px; border:1px solid var(--line-strong); border-radius:6px;}
+  .imgpick-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(118px, 1fr)); gap:10px;}
+  .imgpick-grid button{all:unset; cursor:pointer; display:flex; flex-direction:column; gap:5px; min-width:0;}
+  .imgpick-grid .ph{aspect-ratio:1/1; background:#f1efeb; border-radius:4px; overflow:hidden; outline:2px solid transparent; outline-offset:2px; transition:outline-color .12s;}
+  .imgpick-grid .ph img{width:100%; height:100%; object-fit:contain; display:block;}
+  .imgpick-grid button:hover .ph, .imgpick-grid button:focus-visible .ph{outline-color:var(--ink,#111);}
+  .imgpick-grid .cap{font-size:11px; line-height:1.35; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .imgpick-grid .cap b{font-weight:600; color:var(--ink);}
+  .imgpick-empty{grid-column:1/-1; padding:40px 0; text-align:center; color:var(--ink-faint); font-size:12.5px;}
 
   /* ---------- design panel: fixed to the left so edits stay visible ---------- */
   #designModal{
@@ -868,6 +892,18 @@
   </div>
 
   <!-- series (works/text item) add/edit modal -->
+  <div class="overlay" id="imgPickModal">
+    <div class="modal wide imgpick">
+      <div class="modal-head"><h2>홈페이지 이미지에서 고르기</h2><button class="modal-close" type="button" data-close="imgPickModal">✕</button></div>
+      <div class="modal-body">
+        <div class="imgpick-bar">
+          <div class="imgpick-tabs"></div>
+          <input type="search" id="imgPickSearch" placeholder="제목으로 찾기">
+        </div>
+        <div class="imgpick-grid" id="imgPickGrid"></div>
+      </div>
+    </div>
+  </div>
   <div class="overlay" id="itemModal">
     <div class="modal wide">
       <div class="modal-head"><h2 id="itemModalTitle">Add Series</h2><button class="modal-close" data-close="itemModal">✕</button></div>
@@ -880,6 +916,7 @@
             <img id="itemImgPreview" style="display:none;">
           </div>
           <input type="file" id="itemImageFile" accept="image/*" style="display:none;">
+          <button type="button" class="pick-site-img" data-pick="item">▦ 홈페이지에 있는 이미지에서 고르기</button>
         </div>
         <div class="field"><label>Title</label><input type="text" id="itemTitle" placeholder="시리즈 제목"></div>
         <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
@@ -931,6 +968,7 @@
             <img id="photoImgPreview" style="display:none;">
           </div>
           <input type="file" id="photoImageFile" accept="image/*" style="display:none;">
+          <button type="button" class="pick-site-img" data-pick="photo">▦ 홈페이지에 있는 이미지에서 고르기</button>
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
         <div class="btnrow">
@@ -1570,6 +1608,7 @@
         delete item.photos;
       });
     });
+    d.shop.forEach(item=>{ if(item.cover && !item.coverInRows) syncCoverIntoRows(item, null); });   // 예전 상품도 커버를 상세 사진 첫 줄에
     ensureSlugs();   // 모든 항목에 /works/<slug>/ 주소를 보장
   }
 
@@ -3163,6 +3202,8 @@
     items.forEach((item, idx)=>{
       const card = el("a","shop-card");
       setItemLink(card, "shop", item);
+      card.dataset.id = item.id;
+      if(state.master) enableShopDrag(card, grid, tab);
 
       const thumb = el("div","shop-thumb");
       if(item.cover){
@@ -3208,10 +3249,107 @@
       addTile.addEventListener("click", ()=>{ pendingShopCategory = tab.cat; openItemModal("shop",null); pendingShopCategory = null; });
       grid.appendChild(addTile);
     }
+    if(state.master && items.length > 1){
+      const hint = el("div","shop-reorder-hint");
+      hint.textContent = "상품을 끌어서 순서를 바꿀 수 있어요 (휴대폰은 길게 누른 뒤 끌기)";
+      wrap.appendChild(hint);
+    }
     if(items.length || state.master) wrap.appendChild(grid);
     app.appendChild(wrap);
     renderShopBiz(app);
   }
+
+  /* ---------- 마스터 모드: 상품 순서 바꾸기 (마우스는 끌기, 터치는 길게 누른 뒤 끌기) ---------- */
+  let shopDrag = null;
+  function enableShopDrag(card, grid){
+    card.addEventListener("dragstart", e=>e.preventDefault());
+    card.addEventListener("pointerdown", e=>{
+      if(!state.master || e.button !== 0) return;
+      if(e.target.closest(".frame-editctl")) return;
+      const d = { card, grid, id: card.dataset.id, x0: e.clientX, y0: e.clientY, pid: e.pointerId, touch: e.pointerType !== "mouse", started:false, timer:null, ghost:null, dx:0, dy:0, moved:false };
+      shopDrag = d;
+      if(d.touch){
+        d.timer = setTimeout(()=>{ if(shopDrag === d) startShopDrag(d, d.x0, d.y0); }, 380);
+      }
+    });
+  }
+  function startShopDrag(d, x, y){
+    d.started = true;
+    const r = d.card.getBoundingClientRect();
+    d.dx = x - r.left; d.dy = y - r.top;
+    const g = d.card.cloneNode(true);
+    g.classList.add("shop-drag-ghost"); g.removeAttribute("href");
+    g.querySelectorAll(".frame-editctl").forEach(n=>n.remove());
+    g.style.width = r.width + "px"; g.style.left = r.left + "px"; g.style.top = r.top + "px";
+    document.body.appendChild(g);
+    d.ghost = g;
+    d.card.classList.add("dragging");
+    document.body.classList.add("shop-dragging");
+    if(navigator.vibrate && d.touch) try{ navigator.vibrate(12); }catch(e){}
+  }
+  function moveShopDrag(d, x, y){
+    d.ghost.style.left = (x - d.dx) + "px";
+    d.ghost.style.top = (y - d.dy) + "px";
+    // 화면 끝에 가까우면 자동 스크롤
+    const edge = 60;
+    if(y < edge) window.scrollBy(0, -12); else if(y > window.innerHeight - edge) window.scrollBy(0, 12);
+    const under = document.elementFromPoint(x, y);
+    const target = under && under.closest(".shop-grid > .shop-card[data-id]");
+    if(!target || target === d.card || target.parentNode !== d.grid) return;
+    const kids = [...d.grid.children];
+    const from = kids.indexOf(d.card), to = kids.indexOf(target);
+    // 앞에서 뒤로 가면 대상 뒤에, 뒤에서 앞으로 가면 대상 앞에 넣기
+    d.grid.insertBefore(d.card, from < to ? target.nextSibling : target);
+    d.moved = true;
+  }
+  function endShopDrag(d, cancel){
+    clearTimeout(d.timer);
+    if(d.ghost) d.ghost.remove();
+    d.card.classList.remove("dragging");
+    document.body.classList.remove("shop-dragging");
+    shopDrag = null;
+    if(!d.started) return;
+    // 클릭(상세 페이지 이동)으로 이어지지 않게 한 번 막기
+    const block = ev=>{ ev.preventDefault(); ev.stopPropagation(); };
+    d.card.addEventListener("click", block, { capture:true, once:true });
+    setTimeout(()=>d.card.removeEventListener("click", block, { capture:true }), 400);
+    if(cancel || !d.moved){ if(cancel) renderRoute(); return; }
+    const order = [...d.grid.querySelectorAll(".shop-card[data-id]")].map(c=>c.dataset.id);
+    const all = state.data.shop || [];
+    const set = new Set(order);
+    const byId = new Map(all.map(it=>[it.id, it]));
+    // 이 탭 상품들이 있던 자리만 새 순서로 채우고, 다른 탭 상품 위치는 그대로
+    let k = 0;
+    state.data.shop = all.map(it=>set.has(it.id) ? byId.get(order[k++]) : it);
+    saveDraft();
+    renderRoute();
+  }
+  window.addEventListener("pointermove", e=>{
+    const d = shopDrag; if(!d || e.pointerId !== d.pid) return;
+    if(!d.started){
+      const dist = Math.hypot(e.clientX - d.x0, e.clientY - d.y0);
+      if(d.touch){ if(dist > 10){ clearTimeout(d.timer); shopDrag = null; } return; }   // 길게 누르기 전에 움직이면 그냥 스크롤
+      if(dist < 6) return;
+      startShopDrag(d, e.clientX, e.clientY);
+    }
+    e.preventDefault();
+    moveShopDrag(d, e.clientX, e.clientY);
+  }, { passive:false });
+  window.addEventListener("pointerup", e=>{ const d = shopDrag; if(d && e.pointerId === d.pid) endShopDrag(d, false); });
+  window.addEventListener("pointercancel", e=>{
+    const d = shopDrag; if(!d || e.pointerId !== d.pid) return;
+    if(d.touch && d.started) return;          // 터치 드래그는 아래 touch 이벤트로 이어서 처리
+    endShopDrag(d, true);
+  });
+  // 터치: 길게 누른 뒤에는 페이지 스크롤 대신 카드 이동
+  window.addEventListener("touchmove", e=>{
+    const d = shopDrag; if(!d || !d.started || !d.touch) return;
+    e.preventDefault();
+    const t = e.touches[0]; if(t) moveShopDrag(d, t.clientX, t.clientY);
+  }, { passive:false });
+  window.addEventListener("touchend", ()=>{ const d = shopDrag; if(d && d.touch){ if(d.started) endShopDrag(d, false); else { clearTimeout(d.timer); shopDrag = null; } } });
+  window.addEventListener("touchcancel", ()=>{ const d = shopDrag; if(d && d.touch) endShopDrag(d, !d.started); });
+  document.addEventListener("contextmenu", e=>{ if(shopDrag && shopDrag.touch) e.preventDefault(); });
 
   function buyRow(item){
     const box = el("div","buy-box");
@@ -3531,12 +3669,32 @@
       delete payload.saleType; delete payload.editionTotal; delete payload.editionStart;
     }
 
+    if(key === "shop") syncCoverIntoRows(payload, prev ? prev.cover : null);
     if(idx>=0) arr[idx] = payload; else arr.push(payload);
     ensureSlugs();
 
     saveDraft();
     closeModal("itemModal");
     renderRoute();
+  }
+
+  // 상품 커버는 상세페이지 사진 줄(첫 줄)에도 자동으로 들어가게
+  function syncCoverIntoRows(item, oldCover){
+    if(!item || !item.cover) return false;
+    if(!item.photoRows) item.photoRows = [];
+    const photos = [];
+    item.photoRows.forEach(r=>(r.photos||[]).forEach(ph=>photos.push(ph)));
+    if(photos.some(ph=>ph.image === item.cover)){ item.coverInRows = true; return false; }
+    if(oldCover && oldCover !== item.cover){
+      const old = photos.find(ph=>ph.image === oldCover);
+      if(old){ old.image = item.cover; item.coverInRows = true; return true; }   // 커버를 바꾸면 사진 줄의 커버도 교체
+    } else if(item.coverInRows){
+      return false;                                                               // 일부러 지운 경우 다시 넣지 않기
+    }
+    const tag = item.id + "-" + rawHash(item.cover).split(":")[0].slice(0, 6);
+    item.photoRows.unshift({ id: "rowc-" + tag, cols: 1, photos: [{ id: "pc-" + tag, image: item.cover, caption: "" }] });
+    item.coverInRows = true;
+    return true;
   }
 
   function deleteItem(key,id){
@@ -4150,6 +4308,56 @@
     saveDraft();
     closeModal("contactModal");
     renderRoute();
+  }
+
+  // ---------------- 홈페이지에 이미 있는 이미지에서 고르기 ----------------
+  function collectSiteImages(){
+    const out = [], seen = new Set();
+    const label = { works:"WORKS", text:"TEXT", shop:"SHOP" };
+    const add = (src, key, item, sub)=>{
+      if(!src || seen.has(src)) return; seen.add(src);
+      out.push({ src, key, group: label[key], title: item.title || "(제목 없음)", sub: sub || "" });
+    };
+    ["works","text","shop"].forEach(key=>{
+      (state.data[key] || []).forEach(item=>{
+        add(item.cover, key, item, "커버");
+        (item.photoRows || []).forEach(r=>(r.photos || []).forEach(ph=>add(ph.image, key, item, ph.caption || "")));
+      });
+    });
+    return out;
+  }
+  let imgPickCb = null, imgPickTab = "all";
+  function openImgPicker(cb){
+    imgPickCb = cb;
+    $("imgPickSearch").value = "";
+    renderImgPicker();
+    openModal("imgPickModal");
+    setTimeout(()=>{ try{ $("imgPickSearch").focus(); }catch(e){} }, 30);
+  }
+  function renderImgPicker(){
+    const all = collectSiteImages();
+    const tabs = [["all","전체"],["works","WORKS"],["text","TEXT"],["shop","SHOP"]];
+    const tb = document.querySelector("#imgPickModal .imgpick-tabs"); tb.innerHTML = "";
+    tabs.forEach(([k,l])=>{
+      const n = k === "all" ? all.length : all.filter(x=>x.key === k).length;
+      if(k !== "all" && !n) return;
+      const b = el("button", imgPickTab === k ? "on" : ""); b.type = "button"; b.textContent = l + " " + n;
+      b.addEventListener("click", ()=>{ imgPickTab = k; renderImgPicker(); });
+      tb.appendChild(b);
+    });
+    const q = $("imgPickSearch").value.trim().toLowerCase();
+    const list = all.filter(x=>(imgPickTab === "all" || x.key === imgPickTab) && (!q || (x.title + " " + x.sub).toLowerCase().includes(q)));
+    const g = $("imgPickGrid"); g.innerHTML = "";
+    if(!list.length){ const e = el("div","imgpick-empty"); e.textContent = all.length ? "찾는 이미지가 없어요." : "아직 홈페이지에 올린 이미지가 없어요."; g.appendChild(e); return; }
+    list.forEach(x=>{
+      const b = el("button"); b.type = "button"; b.title = x.group + " · " + x.title + (x.sub ? " · " + x.sub : "");
+      const ph = el("div","ph"); const im = document.createElement("img"); im.loading = "lazy"; im.decoding = "async"; im.alt = ""; im.src = x.src; ph.appendChild(im);
+      const cap = el("div","cap"); const t = document.createElement("b"); t.textContent = x.title; cap.appendChild(t);
+      if(x.sub) cap.appendChild(document.createTextNode(" · " + x.sub));
+      b.appendChild(ph); b.appendChild(cap);
+      b.addEventListener("click", ()=>{ const cb = imgPickCb; imgPickCb = null; closeModal("imgPickModal"); if(cb) cb(x.src); });
+      g.appendChild(b);
+    });
   }
 
   // ---------------- image helpers ----------------
@@ -4951,8 +5159,11 @@
             const ext = extFromDataUrl(item.cover);
             const base64 = item.cover.split(",")[1];
             const fname = `${ghConfig.imgPath}/${item.id}-cover.${ext}`;
+            const dataUrl = item.cover;
             await ghPutFile(fname, base64, `Add cover for "${item.title||item.id}"`);
             item.cover = "./"+fname;
+            // 상세 사진 줄에 같은 커버가 들어 있으면 같은 파일을 쓰게 (두 번 올리지 않기)
+            (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(ph=>{ if(ph.image === dataUrl) ph.image = item.cover; }));
           }
           for(const row of (item.photoRows||[])){
             for(const photo of row.photos){
@@ -5539,6 +5750,7 @@ shopBlock,
         openModal("pwModal");
         setTimeout(()=>$("pwInput").focus(),50);
       }
+      if(e.key==="Escape" && $("imgPickModal").classList.contains("show")){ closeModal("imgPickModal"); return; }
       if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>closeModal(o.id)); activeStyleTarget = null; }
       if($("photoLightbox").classList.contains("show")){
         if(e.key==="ArrowLeft") lightboxNav(-1);
@@ -5575,6 +5787,11 @@ shopBlock,
     $("itemDeleteBtn").addEventListener("click", ()=>deleteItem($("itemCollection").value, $("itemId").value));
     const itemDrop = $("itemImgDrop");
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
+    $("imgPickSearch").addEventListener("input", renderImgPicker);
+    document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
+      if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
+      else openImgPicker(src=>{ pendingPhotoImage = src; showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
+    }));
     $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }); });
     itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
     itemDrop.addEventListener("dragleave",()=>{ itemDrop.style.borderColor=""; });
