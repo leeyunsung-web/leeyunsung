@@ -106,7 +106,7 @@
   .page-title{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:36px;}
 
   /* ---------- CV ---------- */
-  .cv-wrap{max-width:var(--content-max-width); position:relative;}
+  .cv-wrap{max-width:var(--content-max-width); position:relative; margin-left:auto; margin-right:auto;}
   .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
@@ -117,8 +117,8 @@
   .edit-fab:hover{background:#000;}
 
   .grid-bleed{
-    width:100vw; position:relative; left:50%; right:50%;
-    margin-left:-50vw; margin-right:-50vw;
+    width:var(--vwpx, 100vw); position:relative; left:50%;
+    margin-left:calc(var(--vwpx, 100vw) / -2);
   }
   /* ---------- WORKS / TEXT grid ---------- */
   .col-grid{
@@ -432,7 +432,7 @@
   .empty-collection{color:var(--ink-faint); font-size:13px; padding:20px 0;}
 
   /* ---------- text list (essays / reviews) ---------- */
-  .text-list-wrap{max-width:760px; padding-top:var(--text-list-top-space);}
+  .text-list-wrap{max-width:760px; padding-top:var(--text-list-top-space); margin-left:auto; margin-right:auto;}
   .text-list-item{
     display:flex; align-items:baseline; justify-content:space-between; gap:20px;
     padding:var(--text-list-item-gap) 0;
@@ -477,7 +477,7 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px auto 48px; padding:0 var(--detail-margin); max-width:calc(var(--content-max-width) + 2 * var(--detail-margin));}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -488,14 +488,11 @@
   }
   /* WORKS 상세: 작품 사진은 사이트 폭 제한을 풀고 창 크기를 따라 커지고 작아짐
      가로 작품은 창 너비에, 세로 작품은 창 높이에 맞춰 한 화면에 통째로 */
+  /* WORKS 목록 커버와 똑같이: 화면 전체 폭을 쓰고, 창을 키우면 그만큼 꽉 차게 */
   .photo-rows-wrap.wide{
-    --wide-gutter:clamp(12px, 2.5vw, 48px);
-    width:calc(var(--vwpx, 100vw) - 2 * var(--wide-gutter)); max-width:none;
-    margin-left:calc(50% - var(--vwpx, 100vw) / 2 + var(--wide-gutter));
+    width:var(--vwpx, 100vw); max-width:none; position:relative; left:50%;
+    margin-left:calc(var(--vwpx, 100vw) / -2);
     padding-left:0; padding-right:0;
-  }
-  .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell:not(.add-tile):not(.is-video){
-    width:min(100%, calc((100vh - var(--header-height, 90px) - 40px) * var(--r, 1.5))); margin:0 auto;
   }
   .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell.add-tile{width:min(100%, 720px); margin:0 auto;}
   body{overflow-x:clip;}
@@ -554,11 +551,16 @@
   .pd-thumb .yt-badge, .imgdrop .yt-badge{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:26px; height:26px; border-radius:50%; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; pointer-events:none;}
   .pd-thumb .yt-badge::after, .imgdrop .yt-badge::after{content:""; border-left:8px solid #fff; border-top:5px solid transparent; border-bottom:5px solid transparent; margin-left:2px;}
   .pd-thumb.is-video img{inset:0; width:100%; height:100%; object-fit:cover;}
-  .yt-field{margin-top:10px;}
-  .yt-field .yt-row{display:flex; gap:6px;}
-  .yt-field input{flex:1; min-width:0;}
-  .yt-field select{flex:0 0 auto; width:auto; font:inherit; font-size:12.5px; padding:0 8px; border:1px solid var(--line-strong); border-radius:6px; background:#fff;}
-  .yt-field .yt-msg{font-size:11.5px; color:var(--ink-faint); margin-top:6px;}
+  .or-sep{display:flex; align-items:center; gap:10px; margin:4px 0 14px; color:var(--ink-faint); font-size:11px; letter-spacing:.08em;}
+  .or-sep::before, .or-sep::after{content:""; flex:1; height:1px; background:var(--line);}
+  .yt-field .yt-row{display:flex; gap:6px; align-items:stretch;}
+  .field.yt-field .yt-row input[type=text]{flex:1 1 auto; width:auto; min-width:0; font-size:14px; padding:12px;}
+  .yt-paste{flex:0 0 auto; font:inherit; font-size:12.5px; padding:0 14px; border:1px solid var(--ink); border-radius:5px; background:var(--ink); color:#fff; cursor:pointer; white-space:nowrap;}
+  .yt-paste:hover{opacity:.85;}
+  .yt-ratio-label{font-size:10.5px; letter-spacing:.08em; color:var(--ink-faint); margin:12px 0 6px;}
+  .yt-ratio button{font-size:12px; padding:7px 10px;}
+  .yt-field .yt-msg{font-size:11.5px; line-height:1.55; color:var(--ink-faint); margin-top:8px;}
+  .yt-field .yt-msg.ok{color:#1d6b3a;}
   .yt-field .yt-msg.err{color:#b3261e;}
   .imgdrop.is-video{padding:0;}
   .photo-cell.add-tile{
@@ -605,6 +607,8 @@
   .align-left{margin-left:0; margin-right:auto; text-align:left;}
   .align-center{margin-left:auto; margin-right:auto; text-align:center;}
   .align-right{margin-left:auto; margin-right:0; text-align:right;}
+  /* 목록 블록 자체는 항상 페이지 가운데, 글자 정렬만 왼쪽/가운데/오른쪽 */
+  .text-list-wrap.align-left, .text-list-wrap.align-right{margin-left:auto; margin-right:auto;}
 
   /* ---------- footer ---------- */
   footer{border-top:1px solid var(--line); padding:22px 0; font-size:11px; color:var(--ink-faint); letter-spacing:.03em;}
@@ -780,5 +784,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'LYS Sans', 'Pretendard', sans-serif; --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.34px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 4; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 12px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'LYS Sans', 'Pretendard', sans-serif; --content-max-width: 640px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.46px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 4; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
