@@ -185,10 +185,13 @@
   .shop-tab-empty{min-height:34vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center;}
   .shop-tab-empty .t{font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink);}
   .shop-tab-empty .s{font-size:12px; letter-spacing:.06em; color:var(--ink-faint);}
-  .shop-grid{display:grid; grid-template-columns:repeat(var(--shop-cols,5),1fr); gap:44px clamp(14px,1.6vw,26px); font-family:var(--shop-font,inherit);}
-  @media (max-width:1180px){ .shop-grid{grid-template-columns:repeat(var(--shop-cols-md,4),1fr);} }
-  @media (max-width:900px){ .shop-grid{grid-template-columns:repeat(var(--shop-cols-sm,3),1fr);} }
-  @media (max-width:600px){ .shop-grid{grid-template-columns:repeat(2,1fr); gap:30px 12px;} }
+  /* 상품 수가 적어도 항상 가운데로 모이게 (마지막 줄도 가운데) */
+  .shop-grid{--cols-now:var(--shop-cols,5); --gx:clamp(14px,1.6vw,26px);
+    display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); font-family:var(--shop-font,inherit);}
+  .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
+  @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,4);} }
+  @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
+  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
   .shop-card{position:relative; display:block; color:inherit;}
   .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
   .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
@@ -4671,19 +4674,28 @@
   function ghApiUrl(path){ return `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`; }
 
   async function ghGetSha(path){
-    const res = await fetch(ghApiUrl(path)+`?ref=${encodeURIComponent(ghConfig.branch)}`, {headers: ghHeaders()});
+    // GitHub API 응답이 브라우저/중간 캐시에 남아 옛 sha 가 오는 걸 막기 위해 매번 새로 받음
+    const res = await fetch(ghApiUrl(path)+`?ref=${encodeURIComponent(ghConfig.branch)}&_=${Date.now()}`, {headers: ghHeaders(), cache:"no-store"});
     if(res.status===404) return null;
     if(!res.ok) throw new Error("조회 실패 ("+res.status+")");
     const json = await res.json();
     return json.sha || null;
   }
   async function ghPutFile(path, base64Content, message){
-    const sha = await ghGetSha(path);
-    const body = {message, content: base64Content, branch: ghConfig.branch};
-    if(sha) body.sha = sha;
-    const res = await fetch(ghApiUrl(path), {method:"PUT", headers:Object.assign({"Content-Type":"application/json"},ghHeaders()), body:JSON.stringify(body)});
-    if(!res.ok){ const t = await res.text(); throw new Error(`${path} 업로드 실패 (${res.status}): ${t.slice(0,180)}`); }
-    return res.json();
+    // 409(sha 불일치)·422 는 방금 다른 저장과 겹친 경우라, sha 를 새로 받아 최대 4번 다시 시도
+    let lastErr = "";
+    for(let attempt = 0; attempt < 4; attempt++){
+      const sha = await ghGetSha(path);
+      const body = {message, content: base64Content, branch: ghConfig.branch};
+      if(sha) body.sha = sha;
+      const res = await fetch(ghApiUrl(path), {method:"PUT", headers:Object.assign({"Content-Type":"application/json"},ghHeaders()), body:JSON.stringify(body), cache:"no-store"});
+      if(res.ok) return res.json();
+      const t = await res.text();
+      lastErr = `${path} 업로드 실패 (${res.status}): ${t.slice(0,180)}`;
+      if(res.status === 409 || res.status === 422){ await new Promise(r=>setTimeout(r, 700 * (attempt + 1))); continue; }
+      throw new Error(lastErr);
+    }
+    throw new Error(lastErr);
   }
   function utf8ToBase64(str){
     const bytes = new TextEncoder().encode(str);
@@ -4720,8 +4732,8 @@
     const glyph = $("publishGlyph");
     glyph.textContent = "…";
     try{
-      for(const key of ["works","text"]){
-        for(const item of state.data[key]){
+      for(const key of ["works","text","shop"]){
+        for(const item of (state.data[key] || [])){
           if(item.cover && item.cover.startsWith("data:")){
             const ext = extFromDataUrl(item.cover);
             const base64 = item.cover.split(",")[1];
