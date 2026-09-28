@@ -2299,6 +2299,7 @@
     "frameGap": 4,
     "frameCols": 2,
     "detailMargin": 32,
+    "descWidth": 704,
     "captionSize": 15,
     "frameTitleSize": 20,
     "photoGap": 4,
