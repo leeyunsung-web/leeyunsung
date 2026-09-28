@@ -2288,6 +2288,24 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube"
+    },
+    {
+      "id": "s-1790623313493-6o5cs",
+      "title": "",
+      "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
+      "description": "",
+      "slug": "shop-4",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube"
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
