@@ -286,6 +286,20 @@
   .me-send{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end;}
   .me-send .me-msg{grid-column:1 / -1;}
   .shop-tabs a.tab-myorder{position:relative;}
+  .sync-pill{display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 10px; margin:0 4px; border-radius:99px; border:1px solid rgba(255,255,255,.25); background:transparent; color:#fff; font-size:11px; letter-spacing:.02em; cursor:pointer; white-space:nowrap;}
+  .sync-pill .d{width:8px; height:8px; border-radius:50%; background:#4caf50; flex:0 0 8px;}
+  .sync-pill.busy .d{background:#f5c542; animation:syncBlink 1s infinite;}
+  .sync-pill.bad{border-color:#ff6b61; color:#ffb3ad;} .sync-pill.bad .d{background:#ff4d42;}
+  .sync-pill.warn{border-color:#ffa94d; color:#ffd2a1;} .sync-pill.warn .d{background:#ff922b;}
+  @keyframes syncBlink{50%{opacity:.35}}
+  @media (max-width:600px){ .sync-pill .t{display:none;} .sync-pill{padding:0 8px;} }
+  #syncBanner{position:fixed; left:50%; transform:translateX(-50%); top:calc(var(--header-height,90px) + 8px); z-index:950; width:min(760px, calc(100vw - 24px));
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 14px; border-radius:8px; background:#fff3f2; border:1px solid #f1a39c; color:#8c1d15; font-size:13px; line-height:1.55; box-shadow:0 6px 24px rgba(0,0,0,.08);}
+  #syncBanner[hidden]{display:none;}
+  #syncBanner .m{flex:1 1 280px;}
+  #syncBanner .b{display:flex; gap:6px; flex-wrap:wrap;}
+  #syncBanner button{font:inherit; font-size:12px; padding:7px 12px; border-radius:5px; border:1px solid #c9544a; background:#fff; color:#8c1d15; cursor:pointer;}
+  #syncBanner button.primary{background:#b3261e; border-color:#b3261e; color:#fff;}
   .ss-design{margin:6px 0 16px; padding:14px; border:1px solid var(--line); border-radius:6px; background:#fafafa;}
   .ss-design-title{font-size:11px; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:10px;}
   .ss-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 18px;}
@@ -784,6 +798,7 @@
     <div class="sep"></div>
     <button class="icon" id="btnPublish" title="Publish to GitHub"><span id="publishGlyph">⇪</span><span class="unpub-dot" id="unpubDot"></span></button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
+    <button type="button" class="sync-pill ok" id="syncPill" title="업로드 상태"><span class="d"></span><span class="t">저장됨</span></button>
     <div class="sep"></div>
     <button class="icon" id="btnExport" title="Export JSON">⬇</button>
     <button class="icon" id="btnImport" title="Import JSON">⬆</button>
@@ -792,6 +807,7 @@
     <button class="icon" id="btnExitMaster" title="Exit master mode">✕</button>
   </div>
   <input type="file" id="importFile" accept="application/json" style="display:none;">
+  <div id="syncBanner" hidden><span class="m"></span><span class="b"></span></div>
 
   <!-- password modal -->
   <div class="overlay" id="pwModal">
@@ -991,7 +1007,8 @@
         <div class="field">
           <label>Personal Access Token</label>
           <input type="password" id="ghToken" placeholder="repo 쓰기 권한이 있는 fine-grained PAT" autocomplete="off">
-          <div class="field-hint">이 저장소에만 Contents 쓰기 권한을 준 fine-grained PAT 사용을 권장해요. 토큰은 이 브라우저의 localStorage에만 저장됩니다.</div>
+          <div class="field-hint">이 저장소에만 Contents 쓰기 권한을 준 fine-grained PAT 사용을 권장해요.</div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;text-transform:none;letter-spacing:0;color:var(--ink-soft);"><input type="checkbox" id="ghKeep" style="width:auto;"> 이 컴퓨터에서 토큰 기억하기 (내 개인 컴퓨터에서만 켜세요 — 브라우저를 껐다 켜도 자동 업로드가 계속돼요)</label>
         </div>
         <div class="btnrow"><button class="btn primary" id="ghSaveBtn" style="flex:1;">저장</button><button class="btn ghost" id="ghClearTokenBtn">토큰 지우기</button></div>
         <div class="status-msg" id="ghStatus"></div>
@@ -1495,6 +1512,8 @@
     state.publishedRaw = published ? JSON.stringify(published) : null;
     const draft = loadDraft();
 
+    state.hadLocalDraftChanges = !!(draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw);
+    if(!state.hadLocalDraftChanges && state.publishedRaw && !localStorage.getItem("leeArchiveDraftDirty_v2")) setBaseRaw(state.publishedRaw);   // 고친 게 없으면 지금 게시본이 기준
     if(draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw){
       state.data = draft;
       showDraftNotice(true);
@@ -1521,6 +1540,13 @@
     bindSpaLinks();
     if(!location.hash) location.hash = "#works";
     renderRoute();
+    $("syncPill").addEventListener("click", ()=>{
+      if(sync.status === "notoken") openGhModal();
+      else if(sync.status === "failed") publishToGithub(true);
+      else if(sync.status === "conflict") renderSyncUi();
+      else if(sync.status === "synced") publishToGithub(false);
+    });
+    if(state.master) initSyncState();
   }
 
   function normalizeData(){
@@ -1553,7 +1579,7 @@
       localStorage.setItem(LS_DATA, JSON.stringify(state.data));
       localStorage.setItem(LS_MASTER_TS, String(Date.now()));
       showDraftNotice(true);
-      if(scheduleAuto !== false) scheduleAutoPublish();
+      if(scheduleAuto !== false){ state.localDirty = true; setDirtyFlag(true); state.editSeq = (state.editSeq||0) + 1; markDirty(); scheduleAutoPublish(); }
     }catch(e){
       console.warn("draft save failed", e);
       alert("브라우저 임시저장 공간이 부족해요. 화면에는 반영되었으니, 지금 바로 ⇪ 게시로 GitHub에 저장하는 걸 추천해요.");
@@ -1575,12 +1601,16 @@
       try{ localStorage.setItem(LS_GH, JSON.stringify(cfg)); }catch(e){}
     }
     if(cfg){
-      try{ cfg.token = sessionStorage.getItem(SS_GH_TOKEN) || ""; }catch(e){ cfg.token = ""; }
+      try{ cfg.token = sessionStorage.getItem(SS_GH_TOKEN) || localStorage.getItem(LS_GH_TOKEN_KEEP) || ""; }catch(e){ cfg.token = ""; }
     }
     return cfg;
   }
-  function saveGhConfig(cfg){
+  function saveGhConfig(cfg, keep){
     ghConfig = cfg;
+    try{
+      if(keep && cfg.token) localStorage.setItem(LS_GH_TOKEN_KEEP, cfg.token);
+      else localStorage.removeItem(LS_GH_TOKEN_KEEP);
+    }catch(e){}
     const persist = Object.assign({}, cfg);
     delete persist.token;
     try{ localStorage.setItem(LS_GH, JSON.stringify(persist)); }catch(e){}
@@ -1591,6 +1621,7 @@
   }
   function clearGhToken(){
     try{ sessionStorage.removeItem(SS_GH_TOKEN); }catch(e){}
+    try{ localStorage.removeItem(LS_GH_TOKEN_KEEP); }catch(e){}
     if(ghConfig) ghConfig.token = "";
     try{
       const r = localStorage.getItem(LS_GH);
@@ -4627,6 +4658,7 @@
       closeModal("pwModal");
       $("pwInput").value = "";
       renderRoute();
+      initSyncState();
     } else {
       const modal = document.querySelector("#pwModal .modal");
       modal.classList.remove("shake"); void modal.offsetWidth; modal.classList.add("shake");
@@ -4711,27 +4743,208 @@
     return ext;
   }
 
+  /* =====================================================================
+     SYNC — "이 기기에만 저장되고 GitHub 에 안 올라가는" 일을 막는 장치
+     · 마스터 바에 업로드 상태를 항상 표시 (🟢 저장됨 / 🟡 올리는 중 / 🔴 실패·토큰 없음 / 🟠 다른 기기 충돌)
+     · 실패하면 10초 → 30초 → 1분 → 2분 간격으로 자동 재시도
+     · 올라가지 않은 변경이 있으면 창 닫기 전에 경고
+     · 마스터 모드에서는 GitHub 에서 최신 data.json 을 직접 받아 옛 임시저장과 비교
+     · 다른 기기가 먼저 게시했으면 덮어쓰기 전에 확인
+     ===================================================================== */
+  const LS_BASE = "leeArchiveDraftBase_v2";          // 이 기기의 내용이 기반으로 한 GitHub data.json 버전(sha)
+  const LS_DRAFT_BACKUP = "leeArchiveDraftBackup_v2";
+  const LS_GH_TOKEN_KEEP = "leeArchiveGhTokenKeep_v2";
+  const sync = { status:"synced", message:"", retries:0, retryTimer:null, baseSha:null, checked:false };
+
+  // 이 기기 내용이 어떤 게시본을 기준으로 고쳐졌는지(내용 지문) 기억
+  function rawHash(str){ let h = 0x811c9dc5; for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16) + ":" + str.length; }
+  function setBaseRaw(raw){ try{ localStorage.setItem("leeArchiveDraftBaseHash_v2", rawHash(raw)); }catch(e){} }
+  function getBaseRaw(){ try{ return localStorage.getItem("leeArchiveDraftBaseHash_v2"); }catch(e){ return null; } }
+  function setDirtyFlag(on){ try{ if(on) localStorage.setItem("leeArchiveDraftDirty_v2","1"); else localStorage.removeItem("leeArchiveDraftDirty_v2"); }catch(e){} }
+  function hasLocalChanges(){
+    let flag = false; try{ flag = localStorage.getItem("leeArchiveDraftDirty_v2") === "1"; }catch(e){}
+    return !!(state.localDirty || flag || (getBaseRaw() === null && state.hadLocalDraftChanges));
+  }
+  function hasGhAccess(){ return !!(ghConfig && ghConfig.owner && ghConfig.repo && ghConfig.token); }
+  function setSync(status, message){
+    sync.status = status; sync.message = message || "";
+    renderSyncUi();
+  }
+  function renderSyncUi(){
+    const pill = $("syncPill"), ban = $("syncBanner");
+    if(!pill || !ban) return;
+    const map = {
+      synced:    ["ok",   "저장됨"],
+      dirty:     ["busy", "올리는 중…"],
+      uploading: ["busy", "올리는 중…"],
+      failed:    ["bad",  "업로드 실패 · 다시 시도"],
+      notoken:   ["bad",  "이 기기에만 저장됨"],
+      conflict:  ["warn", "다른 기기와 충돌"]
+    };
+    const [cls, label] = map[sync.status] || map.synced;
+    pill.className = "sync-pill " + cls;
+    pill.querySelector(".t").textContent = label;
+    pill.title = sync.message || label;
+    const show = state.master && ["failed","notoken","conflict"].includes(sync.status);
+    ban.hidden = !show;
+    if(show){
+      const msg = ban.querySelector(".m"), btns = ban.querySelector(".b");
+      btns.innerHTML = "";
+      const mk = (t, fn, primary)=>{ const b = el("button", primary ? "primary" : ""); b.type = "button"; b.textContent = t; b.addEventListener("click", fn); btns.appendChild(b); };
+      if(sync.status === "notoken"){
+        msg.textContent = "GitHub 토큰이 없어서 수정한 내용이 이 컴퓨터에만 저장되고 있어요. 다른 기기와 방문자에게는 보이지 않아요.";
+        mk("토큰 넣기", openGhModal, true);
+      } else if(sync.status === "failed"){
+        msg.textContent = "GitHub 업로드에 실패했어요. 자동으로 다시 시도하고 있어요. " + (sync.message ? "(" + sync.message.slice(0, 120) + ")" : "");
+        mk("지금 다시 시도", ()=>publishToGithub(true), true);
+      } else if(sync.status === "conflict"){
+        msg.textContent = "다른 기기에서 더 최근에 게시한 내용이 있어요. 어떻게 할까요?";
+        mk("최신 버전 불러오기 (추천)", ()=>resolveConflict("remote"), true);
+        mk("이 기기 내용으로 덮어쓰기", ()=>resolveConflict("local"));
+      }
+    }
+  }
+  function initSyncState(){
+    if(!state.master) return;
+    if(!hasGhAccess()){
+      setSync("notoken");
+      return;
+    }
+    setSync(hasLocalChanges() ? "dirty" : "synced");
+    checkFreshness();
+  }
+  function markDirty(){
+    if(!state.master) return;
+    if(!hasGhAccess()){ setSync("notoken"); return; }
+    if(sync.status === "conflict") return;        // 충돌은 사람이 고를 때까지 유지
+    setSync("dirty");
+  }
+  function scheduleRetry(){
+    clearTimeout(sync.retryTimer);
+    const waits = [10000, 30000, 60000, 120000, 300000];
+    const w = waits[Math.min(sync.retries, waits.length - 1)];
+    sync.retries++;
+    sync.retryTimer = setTimeout(()=>{ if(sync.status === "failed") publishToGithub(true); }, w);
+  }
+
+  // GitHub 에서 data.json 최신본(sha + 내용)을 캐시 없이 직접 받기
+  async function fetchRemoteData(){
+    const base = ghApiUrl(ghConfig.dataPath) + "?ref=" + encodeURIComponent(ghConfig.branch) + "&_=" + Date.now();
+    const meta = await fetch(base, { headers: ghHeaders(), cache:"no-store" });
+    if(meta.status === 404) return { sha:null, data:null };
+    if(!meta.ok) throw new Error("data.json 조회 실패 (" + meta.status + ")");
+    const mj = await meta.json();
+    const raw = await fetch(base, { headers: Object.assign({}, ghHeaders(), { "Accept":"application/vnd.github.raw" }), cache:"no-store" });
+    if(!raw.ok) throw new Error("data.json 내용 받기 실패 (" + raw.status + ")");
+    return { sha: mj.sha, data: await raw.json() };
+  }
+
+  // 마스터 모드에 들어오거나 토큰을 넣었을 때: 이 기기 내용이 최신인지 확인
+  async function checkFreshness(){
+    if(!state.master || !hasGhAccess()) return;
+    let remote;
+    try{ remote = await fetchRemoteData(); }catch(e){ console.warn(e); return; }
+    sync.checked = true;
+    if(!remote.sha){ sync.baseSha = null; return; }
+    const remoteRaw = JSON.stringify(remote.data);
+    const localRaw = JSON.stringify(state.data);
+    let myBase = null; try{ myBase = localStorage.getItem(LS_BASE); }catch(e){}
+    const localChanged = hasLocalChanges();          // 이 기기에서 고친 게 있나
+    if(remote.sha === myBase || remoteRaw === localRaw || rawHash(remoteRaw) === getBaseRaw()){
+      sync.baseSha = remote.sha;
+      if(localChanged && remoteRaw !== localRaw) publishToGithub(true);            // 못 올린 변경 → 지금 올리기
+      else setSync("synced");
+      return;
+    }
+    // GitHub 쪽이 이 기기가 알던 버전과 다름 (다른 기기에서 게시함)
+    if(!localChanged){
+      // 이 기기에 고친 게 없으면 조용히 최신본으로 교체
+      applyRemote(remote);
+      return;
+    }
+    sync.remote = remote;
+    setSync("conflict");
+  }
+  function applyRemote(remote){
+    state.data = remote.data;
+    state.publishedRaw = JSON.stringify(remote.data);
+    setBaseRaw(state.publishedRaw);
+    state.localDirty = false; state.hadLocalDraftChanges = false; setDirtyFlag(false);
+    normalizeData(); applyDesignVars(); applyShopDesign();
+    sync.baseSha = remote.sha;
+    try{ localStorage.setItem(LS_DATA, JSON.stringify(state.data)); localStorage.setItem(LS_BASE, remote.sha); }catch(e){}
+    showDraftNotice(false);
+    setSync("synced");
+    renderRoute();
+  }
+  async function resolveConflict(which){
+    if(which === "remote"){
+      try{ localStorage.setItem(LS_DRAFT_BACKUP, JSON.stringify({ at: Date.now(), data: state.data })); }catch(e){}
+      const remote = sync.remote || await fetchRemoteData().catch(()=>null);
+      if(remote && remote.data) applyRemote(remote);
+      alert("최신 버전을 불러왔어요.\n이 기기에 있던 내용은 따로 백업해 뒀어요 (필요하면 말씀하세요).");
+    } else {
+      if(!confirm("다른 기기에서 게시한 내용을 이 기기 내용으로 덮어쓸까요?\n다른 기기에서 바꾼 것은 사라져요.")) return;
+      const remote = sync.remote || await fetchRemoteData().catch(()=>null);
+      sync.baseSha = remote ? remote.sha : null;
+      setSync("dirty");
+      publishToGithub(false);
+    }
+    sync.remote = null;
+  }
+
+  // 게시 직전: 다른 기기가 그 사이에 올렸는지 확인
+  async function guardRemoteBeforeWrite(silent){
+    if(!sync.baseSha) return true;                 // 기준이 없으면(첫 게시 등) 그대로 진행
+    let remoteSha = null;
+    try{ remoteSha = await ghGetSha(ghConfig.dataPath); }catch(e){ return true; }
+    if(!remoteSha || remoteSha === sync.baseSha) return true;
+    if(silent){
+      sync.remote = null;
+      setSync("conflict");
+      return false;
+    }
+    return confirm("다른 기기에서 방금 먼저 게시한 내용이 있어요.\n이 기기 내용으로 덮어쓸까요?\n(취소하면 게시하지 않아요 — 위쪽 안내에서 최신 버전을 불러올 수 있어요)");
+  }
+
+  window.addEventListener("beforeunload", (e)=>{
+    if(!state.master) return;
+    if(["dirty","uploading","failed","notoken","conflict"].includes(sync.status)){
+      e.preventDefault(); e.returnValue = "";
+    }
+  });
+
   let autoPublishTimer = null;
   let isPublishing = false;
   let pagesStale = false;   // 자동 저장만 된 상태 = 정적 페이지가 아직 옛 내용
 
   function scheduleAutoPublish(){
-    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token) return;
+    if(!hasGhAccess()){ markDirty(); return; }
     clearTimeout(autoPublishTimer);
     autoPublishTimer = setTimeout(()=>{ publishToGithub(true); }, 2500);
   }
 
   async function publishToGithub(silent){
-    if(!ghConfig || !ghConfig.owner || !ghConfig.repo || !ghConfig.token){
+    if(!hasGhAccess()){
+      setSync("notoken");
       if(!silent) openGhModal();
       return;
     }
     if(isPublishing){ scheduleAutoPublish(); return; }
     clearTimeout(autoPublishTimer);
+    clearTimeout(sync.retryTimer);
     isPublishing = true;
+    const seqAtStart = state.editSeq || 0;
     const glyph = $("publishGlyph");
     glyph.textContent = "…";
+    setSync("uploading");
     try{
+      // 다른 기기가 그 사이에 먼저 게시했으면 덮어쓰지 않음
+      if(!(await guardRemoteBeforeWrite(silent))){
+        glyph.textContent = "⇪";
+        sync.remote = null; setSync("conflict");
+        return;
+      }
       for(const key of ["works","text","shop"]){
         for(const item of (state.data[key] || [])){
           if(item.cover && item.cover.startsWith("data:")){
@@ -4766,9 +4979,18 @@
       }
 
       const jsonStr = JSON.stringify(state.data, null, 2);
-      await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
-      state.publishedRaw = jsonStr;
+      const putRes = await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
+      state.publishedRaw = JSON.stringify(state.data);
+      setBaseRaw(state.publishedRaw);
+      if(putRes && putRes.content && putRes.content.sha){
+        sync.baseSha = putRes.content.sha;
+        try{ localStorage.setItem(LS_BASE, sync.baseSha); }catch(e){}
+      }
       saveDraft(false);
+      state.hadLocalDraftChanges = false;
+      sync.retries = 0;
+      if((state.editSeq || 0) === seqAtStart){ state.localDirty = false; setDirtyFlag(false); setSync("synced"); }
+      else { setSync("dirty"); scheduleAutoPublish(); }   // 올리는 동안 또 고친 게 있으면 이어서 올리기
       showDraftNotice(pagesStale);
       glyph.textContent = "✓";
       setTimeout(()=>{ glyph.textContent = "⇪"; }, 1200);
@@ -4776,7 +4998,9 @@
       renderRoute();
     }catch(err){
       glyph.textContent = "⇪";
-      if(!silent) alert("게시 중 오류가 발생했어요:\n"+err.message);
+      setSync("failed", err.message);
+      scheduleRetry();
+      if(!silent) alert("게시 중 오류가 발생했어요:\n"+err.message+"\n\n자동으로 다시 시도할게요. 마스터 바의 빨간 표시가 초록색 '저장됨'으로 바뀌면 올라간 거예요.");
       else console.warn("auto-publish failed", err);
     }finally{
       isPublishing = false;
@@ -5249,7 +5473,9 @@ shopBlock,
     const c = ghConfig || {};
     $("ghOwner").value=c.owner||""; $("ghRepo").value=c.repo||""; $("ghBranch").value=c.branch||"main";
     $("ghDataPath").value=c.dataPath||"data.json"; $("ghImgPath").value=c.imgPath||"images"; $("ghToken").value=c.token||"";
-    setStatus("ghStatus", c.token ? "토큰이 이 세션에 저장돼 있어요. 브라우저를 닫으면 지워집니다." : "", c.token ? "ok" : "");
+    let kept = false; try{ kept = !!localStorage.getItem(LS_GH_TOKEN_KEEP); }catch(e){}
+    if($("ghKeep")) $("ghKeep").checked = kept || !c.token;
+    setStatus("ghStatus", c.token ? (kept ? "이 컴퓨터가 토큰을 기억하고 있어요." : "토큰이 이 세션에 저장돼 있어요. 브라우저를 닫으면 지워집니다.") : "토큰을 넣어야 수정한 내용이 인터넷(GitHub)에 올라가요.", c.token ? "ok" : "err");
     openModal("ghModal");
   }
   function saveGhSettings(){
@@ -5258,8 +5484,10 @@ shopBlock,
       dataPath:$("ghDataPath").value.trim()||"data.json", imgPath:$("ghImgPath").value.trim()||"images", token:$("ghToken").value.trim()
     };
     if(!cfg.owner||!cfg.repo||!cfg.token){ setStatus("ghStatus","owner / repo / token은 필수예요.","err"); return; }
-    saveGhConfig(cfg);
-    setStatus("ghStatus","저장했어요. 토큰은 이 세션에만 보관됩니다. 이제 ⇪ 게시 버튼을 눌러보세요.","ok");
+    saveGhConfig(cfg, $("ghKeep") ? $("ghKeep").checked : false);
+    setStatus("ghStatus", ($("ghKeep") && $("ghKeep").checked ? "저장했어요. 이 컴퓨터가 토큰을 기억해요." : "저장했어요. 브라우저를 닫으면 토큰이 지워져요.") + " 밀린 변경이 있으면 바로 올려요.","ok");
+    setTimeout(()=>{ closeModal("ghModal"); }, 900);
+    (async ()=>{ await checkFreshness(); if(sync.status === "conflict") return; if(hasLocalChanges() || sync.status === "notoken" || sync.status === "failed") publishToGithub(true); })();
   }
 
   // ---------------- export/import ----------------
