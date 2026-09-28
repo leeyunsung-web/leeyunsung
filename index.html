@@ -8,7 +8,7 @@
      외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
      연결 허용 대상은 이 사이트 자신과 api.github.com 뿐입니다.
      혹시 기능이 깨지면 아래 한 줄만 지우면 원래대로 돌아갑니다. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://www.paypal.com https://*.paypal.com https://*.paypalobjects.com; frame-src https://*.paypal.com https://www.paypal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.paypalobjects.com https://*.paypal.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev https://*.paypal.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
 <title>이윤성 작가 Yunsung Lee — 회화 아카이브</title>
@@ -183,7 +183,7 @@
     padding:12px 16px; margin-bottom:28px; border:1px dashed #d08a2e; background:#fff8ec; color:#8a5a14; font-size:12.5px; border-radius:6px;}
   .shop-release-bar.is-public{border-color:#5a9a5a; background:#f1f8f0; color:#2f6a2f;}
   .shop-release-bar button{font:inherit; font-size:12px; padding:7px 14px; border-radius:5px; border:1px solid currentColor; background:#fff; color:inherit; cursor:pointer; white-space:nowrap;}
-  .shop-release-bar:not(.is-public) button{background:#111; color:#fff; border-color:#111;}
+  .shop-release-bar:not(.is-public) button:last-child{background:#111; color:#fff; border-color:#111;}
   .shop-thumb{
     position:relative; background:#fafafa; border:1px solid var(--line); overflow:hidden; aspect-ratio:1/1;
   }
@@ -219,6 +219,22 @@
     padding:15px 18px; border:1px solid var(--line); color:var(--ink-faint);
     font-size:13px; letter-spacing:.12em; text-align:center;
   }
+  .pp-box{margin-top:14px; border:1px solid var(--line); padding:18px; }
+  .pp-head{font-size:12px; letter-spacing:.12em; color:var(--ink); margin-bottom:12px;}
+  .pp-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  .pp-row label{font-size:12px; color:var(--ink-soft); min-width:120px;}
+  .pp-row select{flex:1 1 220px; padding:10px 11px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; color:var(--ink); font:inherit; font-size:14px;}
+  .pp-sum{font-size:13px; line-height:1.9; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:10px; margin-bottom:14px; font-variant-numeric:tabular-nums;}
+  .pp-sum div{display:flex; justify-content:space-between;}
+  .pp-sum .tot{color:var(--ink); font-size:15px;}
+  .pp-msg{font-size:12px; line-height:1.7; margin-top:10px; color:var(--ink-soft);}
+  .pp-msg.err{color:#b3261e;}
+  .pp-done{border:1px solid #5a9a5a; background:#f3faf2; padding:22px; text-align:center; line-height:1.9; font-size:13px; color:#2f5a2f;}
+  .pp-done .big{font-size:16px; letter-spacing:.14em; color:#1f4a1f; margin-bottom:6px;}
+  .pp-done .ord{font-family:var(--mono); font-size:13px;}
+  .shop-biz{max-width:var(--content-max-width); margin:70px auto 0; padding:18px var(--detail-margin) 0; border-top:1px solid var(--line); font-size:11px; line-height:1.9; color:var(--ink-faint);}
+  .shop-biz .policy{white-space:pre-line; margin-top:10px;}
+  .shop-remaining{font-size:var(--caption-font-size); color:var(--ink-faint); margin-top:2px;}
   .shop-specs-line{text-align:center; color:var(--ink-soft); font-size:var(--caption-font-size); margin-bottom:8px; line-height:1.7;}
 
   .frame-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px; z-index:5;}
@@ -459,7 +475,7 @@
   .modal-body{padding:18px 22px 22px;}
   .field{margin-bottom:14px;}
   .field label{display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:7px;}
-  .field input[type=text], .field input[type=password], .field input[type=email], .field textarea{
+  .field input[type=text], .field input[type=password], .field input[type=email], .field textarea, .field select{
     width:100%; background:#fff; border:1px solid var(--line-strong); border-radius:5px;
     color:var(--ink); padding:10px 11px; font-family:var(--active-font-family); font-size:14px; outline:none;
   }
@@ -629,6 +645,26 @@
     </div>
   </div>
 
+  <!-- SHOP settings modal -->
+  <div class="overlay" id="shopSettingsModal">
+    <div class="modal wide">
+      <div class="modal-head"><h2>SHOP 설정</h2><button class="modal-close" data-close="shopSettingsModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field"><label>결제 서버 주소 (Cloudflare Worker)</label><input type="text" id="ssApi" placeholder="https://leeyunsung-shop.○○○.workers.dev" autocomplete="off">
+          <div class="field-hint">비밀 정보가 아니에요. 넣으면 해외 구매가 홈페이지 안에서 PayPal 로 결제돼요. 비워두면 해외 구매 링크를 써요.</div></div>
+        <div class="field"><label>상호</label><input type="text" id="ssName" placeholder="LEE YUNSUNG STUDIO"></div>
+        <div class="field"><label>대표자</label><input type="text" id="ssOwner" placeholder="이윤성"></div>
+        <div class="field"><label>사업자등록번호</label><input type="text" id="ssRegNo" placeholder="000-00-00000"></div>
+        <div class="field"><label>통신판매업 신고번호 <span style="color:#999;font-weight:400;">— 면제 대상이면 비워두세요</span></label><input type="text" id="ssMailOrder" placeholder="제0000-경기○○-0000호"></div>
+        <div class="field"><label>사업장 주소</label><input type="text" id="ssAddr"></div>
+        <div class="field"><label>연락처</label><input type="text" id="ssPhone"></div>
+        <div class="field"><label>이메일</label><input type="text" id="ssEmail" placeholder="reyunsung@gmail.com"></div>
+        <div class="field"><label>교환·환불 / 배송 안내 (SHOP 아래에 표시)</label><textarea id="ssPolicy" style="min-height:140px;"></textarea></div>
+        <div class="btnrow"><button class="btn primary" id="ssSave" style="flex:1;">저장</button></div>
+      </div>
+    </div>
+  </div>
+
   <!-- series (works/text item) add/edit modal -->
   <div class="overlay" id="itemModal">
     <div class="modal wide">
@@ -651,8 +687,24 @@
           <div class="field"><label>에디션 <span style="color:#999;font-weight:400;">— 예: 12/50 (없으면 비워두세요)</span></label><input type="text" id="itemEdition" placeholder=""></div>
           <div class="field"><label>가격 ₩ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceKrw" inputmode="numeric" placeholder="120000"></div>
           <div class="field"><label>가격 $ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceUsd" inputmode="decimal" placeholder="95"></div>
-          <div class="field"><label>구매 링크 — 국내 (아임웹 등)</label><input type="text" id="itemBuyKr" placeholder="https://… (비워두면 버튼이 안 나옵니다)"></div>
-          <div class="field"><label>구매 링크 — 해외 (Big Cartel 등)</label><input type="text" id="itemBuyUs" placeholder="https://…"></div>
+          <div class="field"><label>판매 방식</label>
+            <select id="itemSaleType" style="width:100%;">
+              <option value="unique">원화 · 한 점뿐 (결제되면 바로 판매완료)</option>
+              <option value="edition">에디션 · 수량 한정 (번호 자동 부여)</option>
+            </select>
+          </div>
+          <div id="itemEditionFields" style="display:none;">
+            <div class="field"><label>에디션 총 수량 <span style="color:#999;font-weight:400;">— 예: 300</span></label><input type="text" id="itemEditionTotal" inputmode="numeric" placeholder="300"></div>
+            <div class="field"><label>홈페이지 첫 판매 번호 <span style="color:#999;font-weight:400;">— 이미 11번까지 팔았으면 12 (이후엔 주문관리 → 재고에서 조정)</span></label><input type="text" id="itemEditionStart" inputmode="numeric" placeholder="1"></div>
+          </div>
+          <div class="field"><label>해외 배송 포장</label>
+            <select id="itemShipProfile" style="width:100%;">
+              <option value="flat">평판 (원화·드로잉 A4/A3)</option>
+              <option value="tube">지관통 (포스터)</option>
+            </select>
+          </div>
+          <div class="field"><label>구매 링크 — 국내 (네이버 스마트스토어)</label><input type="text" id="itemBuyKr" placeholder="https://smartstore.naver.com/… (비워두면 버튼이 안 나옵니다)"></div>
+          <div class="field"><label>구매 링크 — 해외 <span style="color:#999;font-weight:400;">— 비워두세요. 결제 서버가 연결돼 있으면 홈페이지에서 바로 PayPal 결제돼요</span></label><input type="text" id="itemBuyUs" placeholder="(선택) 결제 서버를 안 쓸 때만"></div>
           <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (SOLD OUT 표시)</label></div>
         </div>
         <div class="field"><label>주소(slug) <span style="color:#999;font-weight:400;">— leeyunsung.com/works/<b id="itemSlugKind">works</b>/…</span></label><input type="text" id="itemSlug" placeholder="비워두면 제목에서 자동 생성" autocomplete="off"></div>
@@ -1367,6 +1419,7 @@
 
   function renderRoute(){
     const r = parseHash();
+    ppState.active = false;
 
     // Pages swap via the hash here, so GA's automatic page_view only fires on
     // first load — send one per in-app navigation too.
@@ -1492,10 +1545,281 @@
     return isFinite(n) && n>0 ? "$" + n.toLocaleString("en-US",{minimumFractionDigits:0, maximumFractionDigits:2}) : "";
   }
   function priceLabel(item){
-    if(item.soldOut) return "SOLD";
+    if(isSoldOut(item)) return "SOLD";
     const p = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean);
     return p.join(" / ") || "문의";
   }
+
+  // ---------------- on-site checkout (PayPal via Cloudflare Worker) ----------------
+  // 가격·배송비는 결제 서버가 data.json 을 직접 읽어 계산합니다. 여기 브라우저 쪽
+  // 숫자는 보여주기용일 뿐이고, 결제 금액은 서버가 PayPal 에 직접 요청합니다.
+  const SHOP_POLICY_DEFAULT =
+    "· 해외 주문은 결제 후 영업일 3~5일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다.\n" +
+    "· 수입 관세·세금은 구매자 부담입니다.\n" +
+    "· 작품 수령 후 7일 이내 반품을 요청하실 수 있습니다. 단순 변심 반품은 왕복 배송비를 구매자가 부담하며, 배송 중 파손은 사진과 함께 연락 주시면 전액 환불해 드립니다.\n" +
+    "· International orders ship from Korea via EMS with tracking within 3–5 business days. Import duties and taxes are the buyer's responsibility. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
+
+  function shopApiBase(){
+    const u = String((state.data && state.data.shopApi) || "").trim().replace(/\/+$/,"");
+    return /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(u) ? u : "";
+  }
+  function numVal(v){ const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
+  function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0); }
+
+  const shopInv = { items:null, at:0, sig:"", loading:null };
+  const ppState = { active:false, sdk:null, sdkId:"", config:null, configAt:0 };
+
+  function invOf(item){ return (shopInv.items && shopInv.items[item.id]) || null; }
+  function isSoldOut(item){
+    if(item.soldOut) return true;
+    const v = invOf(item);
+    return v ? !v.available : false;
+  }
+  function remainingLabel(item){
+    if(item.saleType !== "edition" || isSoldOut(item)) return "";
+    const v = invOf(item);
+    if(!v || !v.total) return "";
+    return "Edition of " + v.total + " · " + v.remaining + " left";
+  }
+
+  function loadShopInventory(){
+    const api = shopApiBase();
+    if(!api) return;
+    if(shopInv.loading || (Date.now() - shopInv.at < 30000)) return;
+    shopInv.loading = fetch(api + "/api/inventory", {cache:"no-store"})
+      .then(r => r.ok ? r.json() : null)
+      .then(j => {
+        shopInv.at = Date.now();
+        if(!j || !j.items) return;
+        const sig = JSON.stringify(j.items);
+        const changed = sig !== shopInv.sig;
+        shopInv.items = j.items; shopInv.sig = sig;
+        if(changed) rerenderShopView();
+      })
+      .catch(()=>{ shopInv.at = Date.now(); })
+      .finally(()=>{ shopInv.loading = null; });
+  }
+
+  // 같은 SHOP 화면을 다시 그리기 (GA page_view 는 다시 보내지 않음)
+  function rerenderShopView(){
+    const r = parseHash();
+    if(r.page !== "shop" || !isShopVisible() || ppState.active) return;
+    const app = $("app"); const y = window.scrollY;
+    app.innerHTML = "";
+    if(r.id) renderShopDetail(app, r.id); else renderShopGrid(app);
+    window.scrollTo(0, y);
+  }
+
+  function loadShopConfig(){
+    const api = shopApiBase();
+    if(!api) return Promise.reject(new Error("no api"));
+    if(ppState.config && Date.now() - ppState.configAt < 5*60000) return Promise.resolve(ppState.config);
+    return fetch(api + "/api/config", {cache:"no-store"}).then(r=>{
+      if(!r.ok) throw new Error("config " + r.status);
+      return r.json();
+    }).then(c=>{ ppState.config = c; ppState.configAt = Date.now(); return c; });
+  }
+
+  function loadPayPalSdk(clientId){
+    if(!clientId) return Promise.reject(new Error("PayPal client id missing"));
+    if(ppState.sdk && ppState.sdkId === clientId) return ppState.sdk;
+    ppState.sdkId = clientId;
+    ppState.sdk = new Promise((resolve, reject)=>{
+      const s = document.createElement("script");
+      s.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(clientId) +
+              "&currency=USD&intent=capture&components=buttons&enable-funding=card&disable-funding=paylater,venmo";
+      s.async = true;
+      s.onload = ()=> window.paypal ? resolve(window.paypal) : reject(new Error("PayPal SDK not available"));
+      s.onerror = ()=>{ ppState.sdk = null; reject(new Error("PayPal SDK load failed")); };
+      document.head.appendChild(s);
+    });
+    return ppState.sdk;
+  }
+
+  function buildPayPanel(item){
+    const api = shopApiBase();
+    const wrap = el("div","pp-box");
+    const head = el("div","pp-head"); head.textContent = "INTERNATIONAL ORDER — PayPal · Credit / Debit card";
+    wrap.appendChild(head);
+
+    const row = el("div","pp-row");
+    const lab = el("label"); lab.textContent = "Ship to (country)";
+    const sel = el("select");
+    const ph = el("option"); ph.value = ""; ph.textContent = "Loading…"; sel.appendChild(ph);
+    lab.htmlFor = sel.id = "ppCountry_" + item.id;
+    row.appendChild(lab); row.appendChild(sel);
+    wrap.appendChild(row);
+
+    const price = numVal(item.priceUsd);
+    const sum = el("div","pp-sum");
+    const line = (k, v, cls)=>{ const d = el("div", cls||""); const a = el("span"); a.textContent = k; const b = el("span"); b.textContent = v; d.appendChild(a); d.appendChild(b); return d; };
+    const renderSum = (ship)=>{
+      sum.innerHTML = "";
+      sum.appendChild(line("Item", "$" + price.toFixed(2)));
+      sum.appendChild(line("Shipping (EMS, tracked)", ship == null ? "—" : "$" + ship.toFixed(2)));
+      sum.appendChild(line("Total (USD)", ship == null ? "—" : "$" + (price + ship).toFixed(2), "tot"));
+    };
+    renderSum(null);
+    wrap.appendChild(sum);
+
+    const btnHost = el("div"); btnHost.id = "ppButtons_" + item.id;
+    wrap.appendChild(btnHost);
+    const msg = el("div","pp-msg");
+    msg.textContent = "Ships from Korea. Import duties/taxes, if any, are paid by the buyer. · 한국 배송은 위 '국내 구매'를 이용해 주세요.";
+    wrap.appendChild(msg);
+    const setMsg = (t, err)=>{ msg.textContent = t; msg.classList.toggle("err", !!err); };
+
+    let cfg = null, rendered = false;
+    const zoneOf = (code)=>{ const c = cfg && cfg.countries.find(x=>x.code===code); return c ? c.zone : ""; };
+    const shipFor = (code)=>{ const z = zoneOf(code); if(!z || !cfg.zones[z]) return null; return numVal(cfg.zones[z][item.shipProfile === "tube" ? "tube" : "flat"]); };
+
+    const showDone = (o)=>{
+      ppState.active = false;
+      const done = el("div","pp-done");
+      const big = el("div","big"); big.textContent = "PAYMENT COMPLETE · 결제 완료";
+      const t1 = el("div"); t1.textContent = "Thank you! Your order has been placed.";
+      const t2 = el("div","ord"); t2.textContent = "Order " + o.no;
+      const t3 = el("div"); t3.textContent = o.title + (o.editionNo ? " — Edition " + o.editionNo + (o.editionTotal ? "/" + o.editionTotal : "") : "") + " · $" + o.total;
+      const t4 = el("div"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". I'll ship within a few days and send you the tracking number.";
+      [big,t1,t2,t3,t4].forEach(x=>done.appendChild(x));
+      wrap.replaceWith(done);
+      if(item.saleType !== "edition"){
+        shopInv.items = shopInv.items || {};
+        shopInv.items[item.id] = Object.assign({}, shopInv.items[item.id]||{}, {available:false, remaining:0});
+      }
+      shopInv.at = 0;
+      if(typeof gtag === "function"){
+        gtag("event","purchase",{transaction_id:o.no, value:Number(o.total)||0, currency:"USD", shipping:Number(o.ship)||0,
+          items:[{item_id:item.id, item_name:o.title, price:Number(o.price)||0, quantity:1}]});
+      }
+    };
+
+    const renderButtons = (paypal)=>{
+      if(rendered) return; rendered = true;
+      ppState.active = true;
+      paypal.Buttons({
+        style:{ layout:"vertical", color:"black", shape:"rect", label:"pay", height:45 },
+        onClick: (data, actions)=>{
+          if(!sel.value){ setMsg("Please select the shipping country first. · 배송 국가를 먼저 선택해 주세요.", true); return actions.reject(); }
+          setMsg("");
+          return actions.resolve();
+        },
+        createOrder: ()=> fetch(api + "/api/orders", {
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({ itemId: item.id, country: sel.value })
+          }).then(r=>r.json().then(j=>({ok:r.ok, j}))).then(({ok, j})=>{
+            if(!ok || !j.id){
+              setMsg(j && j.message ? j.message : "Could not start checkout.", true);
+              if(j && j.error === "SOLD_OUT"){ shopInv.at = 0; loadShopInventory(); }
+              throw new Error(j && j.error || "create failed");
+            }
+            return j.id;
+          }),
+        onShippingAddressChange: (data, actions)=>{
+          const code = data && data.shippingAddress && data.shippingAddress.countryCode;
+          if(code && zoneOf(code) !== zoneOf(sel.value)){
+            setMsg("The PayPal shipping address country is different from the country you selected. Please choose that country above and try again.", true);
+            return actions.reject(data.errors && data.errors.COUNTRY_ERROR);
+          }
+        },
+        onApprove: (data, actions)=>{
+          setMsg("Completing payment… · 결제 확인 중…");
+          return fetch(api + "/api/orders/" + encodeURIComponent(data.orderID) + "/capture", {method:"POST"})
+            .then(r=>r.json().then(j=>({ok:r.ok, j})))
+            .then(({ok, j})=>{
+              if(ok && j.ok) return showDone(j.order);
+              if(j && j.restart) return actions.restart();
+              setMsg((j && j.message) || "Payment could not be completed. You have not been charged.", true);
+            })
+            .catch(()=> setMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true));
+        },
+        onCancel: ()=> setMsg("Payment canceled. · 결제를 취소했어요."),
+        onError: (err)=>{ if(!msg.classList.contains("err")) setMsg("Something went wrong with PayPal. Please try again, or email reyunsung@gmail.com.", true); console.warn(err); }
+      }).render(btnHost).catch(e=>{ rendered = false; ppState.active = false; setMsg("PayPal could not be loaded. Please refresh.", true); console.warn(e); });
+    };
+
+    loadShopConfig().then(c=>{
+      cfg = c;
+      sel.innerHTML = "";
+      const o0 = el("option"); o0.value = ""; o0.textContent = "Select country…"; sel.appendChild(o0);
+      c.countries.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
+        const o = el("option"); o.value = x.code; o.textContent = x.name; sel.appendChild(o);
+      });
+      sel.addEventListener("change", ()=>{
+        renderSum(sel.value ? shipFor(sel.value) : null);
+        setMsg(sel.value ? "" : msg.textContent);
+      });
+      return loadPayPalSdk(c.clientId).then(renderButtons);
+    }).catch(e=>{
+      setMsg("International checkout is temporarily unavailable. Please email reyunsung@gmail.com. · 해외 결제를 불러오지 못했어요.", true);
+      console.warn(e);
+    });
+    return wrap;
+  }
+
+  function renderShopBiz(app){
+    const b = state.data.business || {};
+    const box = el("div","shop-biz");
+    const parts = [
+      ["상호", b.name], ["대표", b.owner], ["사업자등록번호", b.regNo], ["통신판매업 신고", b.mailOrderNo],
+      ["주소", b.address], ["연락처", b.phone], ["이메일", b.email]
+    ].filter(x=>cleanText(x[1]));
+    if(parts.length){
+      const d = el("div"); d.textContent = parts.map(x=>x[0] + " " + cleanText(x[1])).join("  ·  ");
+      box.appendChild(d);
+    } else if(state.master){
+      const d = el("div"); d.textContent = "(마스터 모드에서만 보임) SHOP 설정에서 사업자 정보를 입력해 주세요 — 온라인 판매 시 표시 의무가 있어요.";
+      box.appendChild(d);
+    }
+    const pol = el("div","policy"); pol.textContent = cleanText(state.data.shopPolicy) ? state.data.shopPolicy : SHOP_POLICY_DEFAULT;
+    box.appendChild(pol);
+    app.appendChild(box);
+  }
+
+  function openShopSettings(){
+    const b = state.data.business || {};
+    $("ssApi").value = state.data.shopApi || "";
+    $("ssName").value = b.name || ""; $("ssOwner").value = b.owner || ""; $("ssRegNo").value = b.regNo || "";
+    $("ssMailOrder").value = b.mailOrderNo || ""; $("ssAddr").value = b.address || ""; $("ssPhone").value = b.phone || "";
+    $("ssEmail").value = b.email || "";
+    $("ssPolicy").value = state.data.shopPolicy || SHOP_POLICY_DEFAULT;
+    openModal("shopSettingsModal");
+  }
+  function saveShopSettings(){
+    const api = $("ssApi").value.trim().replace(/\/+$/,"");
+    if(api && !/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(api)){
+      alert("결제 서버 주소는 https://…workers.dev 형태로 넣어주세요 (끝에 경로 없이).");
+      return;
+    }
+    if(api && !/\.workers\.dev$/i.test(api)){
+      if(!confirm("workers.dev 주소가 아니에요. 사이트 보안설정(CSP)에 이 주소가 허용돼 있어야 작동해요. 그래도 저장할까요?")) return;
+    }
+    state.data.shopApi = api;
+    state.data.business = {
+      name: $("ssName").value.trim(), owner: $("ssOwner").value.trim(), regNo: $("ssRegNo").value.trim(),
+      mailOrderNo: $("ssMailOrder").value.trim(), address: $("ssAddr").value.trim(), phone: $("ssPhone").value.trim(),
+      email: $("ssEmail").value.trim()
+    };
+    const pol = $("ssPolicy").value.trim();
+    state.data.shopPolicy = pol === SHOP_POLICY_DEFAULT.trim() ? "" : pol;
+    ppState.config = null; shopInv.at = 0; shopInv.items = null; shopInv.sig = "";
+    saveDraft();
+    closeModal("shopSettingsModal");
+    ppState.active = false;
+    rerenderShopView();
+  }
+  function openOrdersWindow(){
+    const api = shopApiBase();
+    if(!api){ alert("SHOP 설정에서 결제 서버 주소를 먼저 넣어주세요."); openShopSettings(); return; }
+    const w = window.open(api + "/admin", "lysOrders", "width=1400,height=900");
+    if(w) try{ w.opener = null; }catch(e){}
+  }
+  (function bindShopUi(){
+    const st = $("itemSaleType");
+    if(st) st.addEventListener("change", ()=>{ $("itemEditionFields").style.display = st.value === "edition" ? "block" : "none"; });
+    const sv = $("ssSave");
+    if(sv) sv.addEventListener("click", saveShopSettings);
+  })();
 
   // ---------------- shop release gate ----------------
   // The shop stays private until the owner presses the release button in
@@ -1522,7 +1846,13 @@
     const btn = el("button");
     btn.textContent = isShopPublic() ? "비공개로 되돌리기" : "SHOP 공개하기";
     btn.addEventListener("click", ()=> setShopPublic(!isShopPublic()));
-    bar.appendChild(msg); bar.appendChild(btn);
+    const btns = el("span"); btns.style.cssText = "display:flex; gap:8px; flex-wrap:wrap;";
+    const setBtn = el("button"); setBtn.textContent = "SHOP 설정";
+    setBtn.addEventListener("click", openShopSettings);
+    const ordBtn = el("button"); ordBtn.textContent = "주문관리 ↗";
+    ordBtn.addEventListener("click", openOrdersWindow);
+    btns.appendChild(setBtn); btns.appendChild(ordBtn); btns.appendChild(btn);
+    bar.appendChild(msg); bar.appendChild(btns);
     app.appendChild(bar);
   }
 
@@ -1540,6 +1870,7 @@
 
   function renderShopGrid(app){
     renderShopReleaseBar(app);
+    loadShopInventory();
     const items = state.data.shop || [];
     const grid = el("div","shop-grid");
 
@@ -1558,7 +1889,8 @@
       } else {
         thumb.appendChild(el("div","placeholder-label"));
       }
-      if(item.soldOut){
+      const soldNow = isSoldOut(item);
+      if(soldNow){
         const b = el("div","shop-sold-badge"); b.textContent = "SOLD OUT";
         thumb.appendChild(b);
       }
@@ -1573,8 +1905,10 @@
       if(cleanText(item.edition)){
         const e = el("div","shop-edition"); e.textContent = cleanText(item.edition); info.appendChild(e);
       }
-      const pr = el("div","shop-price"+(item.soldOut?" sold":"")); pr.textContent = priceLabel(item);
+      const pr = el("div","shop-price"+(soldNow?" sold":"")); pr.textContent = priceLabel(item);
       info.appendChild(pr);
+      const rem = remainingLabel(item);
+      if(rem){ const r = el("div","shop-remaining"); r.textContent = rem; info.appendChild(r); }
       card.appendChild(info);
 
       const ctl = el("div","frame-editctl");
@@ -1606,50 +1940,70 @@
       const empty = el("div","empty-collection"); empty.textContent = "준비 중입니다.";
       app.appendChild(empty);
     }
+    renderShopBiz(app);
   }
 
   function buyRow(item){
     const box = el("div","buy-box");
-    if(item.soldOut){
-      const s = el("div","buy-soldout"); s.textContent = "SOLD OUT";
-      box.appendChild(s);
+    if(isSoldOut(item)){
+      const sd = el("div","buy-soldout"); sd.textContent = "SOLD OUT";
+      box.appendChild(sd);
       return box;
     }
     const row = el("div","buy-row");
     const kr = safeUrl(item.buyKr);
-    const us = safeUrl(item.buyUs);
+    const onSite = canPayOnSite(item);
+    const us = onSite ? "" : safeUrl(item.buyUs);
 
     if(kr){
       const a = el("a","buy-btn"); a.href = kr; a.target="_blank"; a.rel="noopener";
-      a.innerHTML = "";
       const t = document.createElement("span"); t.textContent = "국내 구매";
       const c = el("span","cur"); c.textContent = fmtKrw(item.priceKrw) || "₩";
       a.appendChild(t); a.appendChild(c);
       row.appendChild(a);
     }
-    if(us){
+    let payHost = null;
+    if(onSite){
+      const a = el("button","buy-btn"+(kr?" alt":"")); a.type = "button";
+      const t = document.createElement("span"); t.textContent = "International";
+      const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd);
+      a.appendChild(t); a.appendChild(c);
+      a.style.cursor = "pointer"; a.style.font = "inherit";
+      payHost = el("div");
+      const openPanel = ()=>{
+        if(payHost.firstChild) { payHost.scrollIntoView({behavior:"smooth", block:"nearest"}); return; }
+        payHost.appendChild(buildPayPanel(item));
+        a.classList.add("alt");
+      };
+      a.addEventListener("click", openPanel);
+      row.appendChild(a);
+      if(!kr) setTimeout(openPanel, 0);
+    } else if(us){
       const a = el("a","buy-btn"+(kr?" alt":"")); a.href = us; a.target="_blank"; a.rel="noopener";
       const t = document.createElement("span"); t.textContent = "International";
       const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd) || "$";
       a.appendChild(t); a.appendChild(c);
       row.appendChild(a);
     }
-    if(!kr && !us){
-      const s = el("div","buy-soldout"); s.textContent = "구매 문의: reyunsung@gmail.com";
-      box.appendChild(s);
+    if(!kr && !onSite && !us){
+      const sd = el("div","buy-soldout"); sd.textContent = "구매 문의: reyunsung@gmail.com";
+      box.appendChild(sd);
       return box;
     }
     box.appendChild(row);
+    if(payHost) box.appendChild(payHost);
     const note = el("div","buy-note");
-    note.textContent = kr && us
-      ? "국내 구매는 원화 결제와 국내 배송, International은 USD 결제와 국제 배송입니다."
-      : (kr ? "원화 결제 · 국내 배송" : "USD 결제 · 국제 배송");
+    const intl = onSite ? "International은 USD 결제(PayPal·카드)와 국제 배송입니다." : "International은 USD 결제와 국제 배송입니다.";
+    note.textContent = kr && (us || onSite)
+      ? "국내 구매는 원화 결제와 국내 배송, " + intl
+      : (kr ? "원화 결제 · 국내 배송" : "USD 결제 (PayPal · Credit/Debit card) · 국제 배송");
     box.appendChild(note);
     return box;
   }
 
   function renderShopDetail(app, id){
     renderShopReleaseBar(app);
+    loadShopInventory();
     const item = (state.data.shop||[]).find(x=>x.id===id);
     if(!item){
       const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
@@ -1741,6 +2095,7 @@
     app.appendChild(rowsWrap);
     observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
+    renderShopBiz(app);
   }
 
   // ---------------- text list (essays / reviews) ----------------
@@ -1818,6 +2173,10 @@
       $("itemBuyKr").value = item.buyKr || "";
       $("itemBuyUs").value = item.buyUs || "";
       $("itemSoldOut").checked = !!item.soldOut;
+      $("itemSaleType").value = item.saleType === "edition" ? "edition" : "unique";
+      $("itemEditionTotal").value = item.editionTotal || "";
+      $("itemEditionStart").value = item.editionStart || "";
+      $("itemShipProfile").value = item.shipProfile === "tube" ? "tube" : "flat";
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
       $("itemSlug").value = item.slug || "";
@@ -1828,6 +2187,10 @@
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
+      $("itemSaleType").value = "unique";
+      $("itemEditionTotal").value = "";
+      $("itemEditionStart").value = "";
+      $("itemShipProfile").value = "flat";
       $("itemTitle").value = "";
       $("itemDesc").value = "";
       $("itemSlug").value = "";
@@ -1836,6 +2199,7 @@
     }
     $("itemSlugKind").textContent = key;
     $("shopFields").style.display = key==="shop" ? "block" : "none";
+    $("itemEditionFields").style.display = $("itemSaleType").value === "edition" ? "block" : "none";
     $("itemTitle").placeholder = key==="shop" ? "상품 이름" : "시리즈 제목";
     $("itemDesc").placeholder  = key==="shop" ? "상품 설명 (선택)" : "작품 설명";
     openModal("itemModal");
@@ -1867,6 +2231,10 @@
       payload.buyKr    = $("itemBuyKr").value.trim();
       payload.buyUs    = $("itemBuyUs").value.trim();
       payload.soldOut  = $("itemSoldOut").checked;
+      payload.saleType = $("itemSaleType").value === "edition" ? "edition" : "unique";
+      payload.editionTotal = payload.saleType === "edition" ? $("itemEditionTotal").value.replace(/[^0-9]/g,"") : "";
+      payload.editionStart = payload.saleType === "edition" ? $("itemEditionStart").value.replace(/[^0-9]/g,"") : "";
+      payload.shipProfile = $("itemShipProfile").value === "tube" ? "tube" : "flat";
     }
 
     if(idx>=0) arr[idx] = payload; else arr.push(payload);
@@ -3356,7 +3724,9 @@
     let shopBlock = "";
     if(kind === "shop"){
       const specs = [cleanText(item.spec1), cleanText(item.spec2), cleanText(item.edition)].filter(Boolean);
-      const kr = safeUrl(item.buyKr), us = safeUrl(item.buyUs);
+      const kr = safeUrl(item.buyKr);
+      const onSite = canPayOnSite(item);
+      const us = onSite ? "/#shop/" + encodeURIComponent(item.id) : safeUrl(item.buyUs);
       let buy;
       if(item.soldOut){
         buy = '      <div class="buy-soldout">SOLD OUT</div>';
@@ -3365,7 +3735,7 @@
       } else {
         const btns = [];
         if(kr) btns.push('        <a class="buy-btn" href="'+esc(kr)+'" target="_blank" rel="noopener"><span>국내 구매</span><span class="cur">'+esc(fmtKrw(item.priceKrw)||"₩")+'</span></a>');
-        if(us) btns.push('        <a class="buy-btn'+(kr?' alt':'')+'" href="'+esc(us)+'" target="_blank" rel="noopener"><span>International</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
+        if(us) btns.push('        <a class="buy-btn'+(kr?' alt':'')+'" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span>International</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
               '      <div class="buy-note">'+(kr&&us ? "국내 구매는 원화 결제와 국내 배송, International은 USD 결제와 국제 배송입니다."
                                                     : (kr ? "원화 결제 · 국내 배송" : "USD 결제 · 국제 배송"))+'</div>';
