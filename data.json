@@ -2264,7 +2264,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": false
     },
     {
       "id": "s-1790622337229-hzfwn",
