@@ -171,10 +171,18 @@
   .hover-title span{font-size:var(--frame-title-size); letter-spacing:.04em; font-weight:600; text-shadow:0 1px 4px rgba(255,255,255,.85), 0 0 12px rgba(255,255,255,.6);}
 
   /* ---------- SHOP ---------- */
-  .shop-grid{
-    display:grid; grid-template-columns:repeat(var(--frame-cols),1fr); gap:var(--frame-gap) calc(var(--frame-gap) + 8px);
-  }
-  @media (max-width:640px){ .shop-grid{grid-template-columns:repeat(2,1fr);} }
+  .shop-wrap{max-width:1480px; margin:0 auto; padding:0 clamp(16px,3vw,40px);}
+  .shop-tabs{display:flex; justify-content:center; gap:clamp(22px,4vw,48px); margin:22px 0 44px; flex-wrap:wrap;}
+  .shop-tabs a{font-size:12px; letter-spacing:.24em; color:var(--ink-faint); padding:4px 0 7px; border-bottom:1px solid transparent; transition:color .18s ease, border-color .18s ease;}
+  .shop-tabs a:hover{color:var(--ink);}
+  .shop-tabs a.active{color:var(--ink); border-bottom-color:var(--ink);}
+  .shop-tab-empty{min-height:34vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center;}
+  .shop-tab-empty .t{font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink);}
+  .shop-tab-empty .s{font-size:12px; letter-spacing:.06em; color:var(--ink-faint);}
+  .shop-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:44px clamp(14px,1.6vw,26px);}
+  @media (max-width:1180px){ .shop-grid{grid-template-columns:repeat(4,1fr);} }
+  @media (max-width:900px){ .shop-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:600px){ .shop-grid{grid-template-columns:repeat(2,1fr); gap:30px 12px;} }
   .shop-card{position:relative; display:block; color:inherit;}
   .shop-coming-soon{min-height:50vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;}
   .shop-coming-title{font-size:13px; letter-spacing:.3em; color:var(--ink);}
@@ -185,10 +193,12 @@
   .shop-release-bar button{font:inherit; font-size:12px; padding:7px 14px; border-radius:5px; border:1px solid currentColor; background:#fff; color:inherit; cursor:pointer; white-space:nowrap;}
   .shop-release-bar:not(.is-public) button:last-child{background:#111; color:#fff; border-color:#111;}
   .shop-thumb{
-    position:relative; background:#fafafa; border:1px solid var(--line); overflow:hidden; aspect-ratio:1/1;
+    position:relative; background:#f3f3f1; overflow:hidden; aspect-ratio:4/5;
   }
-  .shop-thumb img{width:100%; height:100%; object-fit:cover; display:block; transition:opacity .25s ease;}
-  .shop-card:hover .shop-thumb img{opacity:.82;}
+  .shop-thumb img{position:absolute; inset:9%; width:82%; height:82%; object-fit:contain; display:block;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.08)); transition:transform .35s ease;}
+  .shop-card:hover .shop-thumb img{transform:scale(1.025);}
+  .master-only-tile .shop-thumb{background:#fff; border:1.5px dashed var(--line-strong);}
   .shop-thumb .placeholder-label{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
@@ -197,11 +207,11 @@
     position:absolute; left:0; bottom:0; padding:5px 10px; background:var(--ink); color:#fff;
     font-size:10px; letter-spacing:.14em;
   }
-  .shop-info{padding:12px 2px 0;}
-  .shop-name{font-size:var(--content-font-size); letter-spacing:.01em; line-height:1.45;}
+  .shop-info{padding:12px 1px 0;}
+  .shop-name{font-size:13px; letter-spacing:.01em; line-height:1.45;}
   .shop-spec{font-size:var(--caption-font-size); color:var(--ink-soft); line-height:1.5; margin-top:4px;}
   .shop-edition{font-size:var(--caption-font-size); color:var(--ink-faint); margin-top:2px; font-family:var(--mono);}
-  .shop-price{font-size:var(--content-font-size); margin-top:8px; letter-spacing:.02em;}
+  .shop-price{font-size:12px; margin-top:6px; letter-spacing:.03em; color:var(--ink);}
   .shop-price.sold{color:var(--ink-faint);}
 
   .buy-box{margin:36px auto 0; max-width:var(--content-max-width); padding:0 var(--detail-margin);}
@@ -211,7 +221,13 @@
     padding:15px 18px; border:1px solid var(--ink); background:var(--ink); color:#fff;
     font-size:14px; letter-spacing:.04em; text-align:center; transition:opacity .18s ease;
   }
-  .buy-btn:hover{opacity:.82;}
+  .buy-btn:hover{opacity:.86;}
+  .buy-btn{flex-wrap:wrap; column-gap:10px; row-gap:2px; font:inherit; cursor:pointer;}
+  .buy-btn .lbl{font-size:14px; letter-spacing:.04em;}
+  .buy-btn .sub{font-size:10.5px; letter-spacing:.08em; opacity:.75; flex-basis:100%; order:3; text-align:center;}
+  .buy-btn.naver{background:#03c75a; border-color:#03c75a; color:#fff;}
+  .buy-btn.paypal{background:#111; border-color:#111; color:#fff;}
+  .buy-btn[disabled]{background:#fff; color:var(--ink-faint); border-color:var(--line); cursor:not-allowed; opacity:1;}
   .buy-btn.alt{background:transparent; color:var(--ink);}
   .buy-btn .cur{font-size:12px; opacity:.72;}
   .buy-note{font-size:11px; color:var(--ink-faint); margin-top:14px; line-height:1.7;}
@@ -219,6 +235,61 @@
     padding:15px 18px; border:1px solid var(--line); color:var(--ink-faint);
     font-size:13px; letter-spacing:.12em; text-align:center;
   }
+  /* ---------- 해외 장바구니 ---------- */
+  .cart-drawer{position:fixed; top:0; right:0; bottom:0; width:min(390px, 92vw); z-index:900; display:flex;
+    transform:translateX(0); transition:transform .35s cubic-bezier(.2,.7,.2,1); pointer-events:none;}
+  .cart-drawer.hidden-cart{display:none;}
+  .cart-drawer.collapsed{transform:translateX(100%);}
+  .cart-drawer.collapsed .cart-panel{box-shadow:none; border-left-color:transparent;}
+  .cart-tab{pointer-events:auto; position:absolute; right:100%; top:50%; transform:translateY(-50%);
+    background:#111; color:#fff; border:0; border-radius:6px 0 0 6px; padding:16px 9px; cursor:pointer;
+    box-shadow:-2px 2px 12px rgba(0,0,0,.12); opacity:0; visibility:hidden; transition:opacity .2s ease;}
+  .cart-drawer.collapsed .cart-tab{opacity:1; visibility:visible;}
+  .cart-tab-label{writing-mode:vertical-rl; font-size:11px; letter-spacing:.18em; white-space:nowrap;}
+  .cart-panel{pointer-events:auto; flex:1; background:#fff; border-left:1px solid var(--line); box-shadow:-10px 0 34px rgba(0,0,0,.08);
+    display:flex; flex-direction:column; min-width:0;}
+  .cart-head{display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--line);}
+  .cart-title{font-size:12px; letter-spacing:.24em;}
+  .cart-sub{display:block; font-size:10px; letter-spacing:.1em; color:var(--ink-faint); margin-top:3px;}
+  .cart-fold{width:32px; height:32px; border:1px solid var(--line-strong); background:#fff; border-radius:50%; font-size:18px; line-height:1; cursor:pointer; color:var(--ink);}
+  .cart-fold:hover{border-color:var(--ink);}
+  .cart-body{flex:1; overflow-y:auto; padding:6px 20px 24px; -webkit-overflow-scrolling:touch;}
+  .cart-line{display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--line);}
+  .cart-thumb{width:58px; flex:0 0 58px; aspect-ratio:4/5; background:#f3f3f1; position:relative; overflow:hidden;}
+  .cart-thumb img{position:absolute; inset:8%; width:84%; height:84%; object-fit:contain;}
+  .cart-info{flex:1; min-width:0;}
+  .cart-name{display:block; font-size:13px; line-height:1.4; color:var(--ink);}
+  .cart-meta{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .cart-soldout{font-size:11px; color:#b3261e; margin-top:3px;}
+  .cart-ctl{display:flex; align-items:center; gap:6px; margin-top:8px;}
+  .cart-ctl .q{width:24px; height:24px; border:1px solid var(--line-strong); background:#fff; border-radius:4px; cursor:pointer; font-size:13px; line-height:1; color:var(--ink);}
+  .cart-ctl .q:disabled{opacity:.35; cursor:default;}
+  .cart-ctl .n{min-width:18px; text-align:center; font-size:12px; font-variant-numeric:tabular-nums;}
+  .cart-ctl .n.one{font-size:11px; color:var(--ink-faint); min-width:0;}
+  .cart-rm{margin-left:auto; border:0; background:none; font-size:11px; color:var(--ink-faint); text-decoration:underline; cursor:pointer;}
+  .cart-form{padding-top:14px;}
+  .cart-label{display:block; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin:12px 0 6px;}
+  .cart-label span{color:#b3261e;} .cart-label .opt{color:var(--ink-faint); text-transform:none; letter-spacing:.02em;}
+  .cart-input{width:100%; border:1px solid var(--line-strong); border-radius:5px; padding:9px 10px; font:inherit; font-size:13px; background:#fff; color:var(--ink);}
+  textarea.cart-input{resize:vertical; min-height:54px;}
+  .cart-kr{font-size:11px; line-height:1.6; color:#8a5a14; background:#fff8ec; border:1px solid #f0d9b0; padding:8px 10px; margin-top:8px; border-radius:4px;}
+  .cart-sum{margin:16px 0 14px; padding-top:12px; border-top:1px solid var(--line); font-size:13px; line-height:2; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
+  .cart-sum div{display:flex; justify-content:space-between;}
+  .cart-sum .tot{color:var(--ink); font-size:15px;}
+  .cart-pay{min-height:44px;}
+  .cart-msg{font-size:12px; line-height:1.6; margin-top:10px; color:var(--ink-soft);}
+  .cart-msg.err{color:#b3261e;}
+  .cart-fine{font-size:10.5px; line-height:1.6; color:var(--ink-faint); margin-top:12px;}
+  .cart-done{padding:36px 22px; text-align:center; line-height:1.9; font-size:13px; color:var(--ink-soft);}
+  .cart-done .big{font-size:15px; letter-spacing:.2em; color:#1f5a1f;}
+  .cart-done .ko{font-size:12px; color:#2f6a2f; margin-bottom:10px;}
+  .cart-done .ord{font-family:var(--mono); color:var(--ink); margin:6px 0;}
+  .cart-done .done-lines{margin:8px 0; color:var(--ink);}
+  .cart-done .fine{font-size:11px; color:var(--ink-faint); margin-top:8px;}
+  .cart-close-done{margin-top:18px; border:1px solid var(--ink); background:#fff; padding:8px 22px; font:inherit; font-size:12px; letter-spacing:.1em; cursor:pointer;}
+  @keyframes cartBump{0%{transform:translateX(12px)}100%{transform:translateX(0)}}
+  .cart-drawer.bump:not(.collapsed) .cart-panel{animation:cartBump .3s ease;}
+  @media (max-width:600px){ .cart-drawer{width:100vw;} .cart-tab{padding:12px 7px;} }
   .pp-box{margin-top:14px; border:1px solid var(--line); padding:18px; }
   .pp-head{font-size:12px; letter-spacing:.12em; color:var(--ink); margin-bottom:12px;}
   .pp-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
@@ -684,28 +755,27 @@
         <div id="shopFields" style="display:none;">
           <div class="field"><label>사양 1 <span style="color:#999;font-weight:400;">— 예: 162 × 130 cm</span></label><input type="text" id="itemSpec1" placeholder="크기"></div>
           <div class="field"><label>사양 2 <span style="color:#999;font-weight:400;">— 예: Oil on canvas</span></label><input type="text" id="itemSpec2" placeholder="재료 / 인쇄 방식"></div>
-          <div class="field"><label>에디션 <span style="color:#999;font-weight:400;">— 예: 12/50 (없으면 비워두세요)</span></label><input type="text" id="itemEdition" placeholder=""></div>
+          <div class="field"><label>에디션 표기 <span style="color:#999;font-weight:400;">— 예: Edition of 300 · Signed &amp; numbered (없으면 비워두세요)</span></label><input type="text" id="itemEdition" placeholder=""></div>
           <div class="field"><label>가격 ₩ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceKrw" inputmode="numeric" placeholder="120000"></div>
-          <div class="field"><label>가격 $ <span style="color:#999;font-weight:400;">— 숫자만</span></label><input type="text" id="itemPriceUsd" inputmode="decimal" placeholder="95"></div>
-          <div class="field"><label>판매 방식</label>
-            <select id="itemSaleType" style="width:100%;">
-              <option value="unique">원화 · 한 점뿐 (결제되면 바로 판매완료)</option>
-              <option value="edition">에디션 · 수량 한정 (번호 자동 부여)</option>
+          <div class="field"><label>가격 $ <span style="color:#999;font-weight:400;">— 숫자만 · 비우면 PayPal 버튼 숨김</span></label><input type="text" id="itemPriceUsd" inputmode="decimal" placeholder="95"></div>
+          <div class="field"><label>분류</label>
+            <select id="itemCategory" style="width:100%;">
+              <option value="edition">EDITIONS — 에디션 (포스터 등)</option>
+              <option value="original">ORIGINALS — 원화 (한 점뿐)</option>
+              <option value="book">BOOKS — 도록</option>
             </select>
-          </div>
-          <div id="itemEditionFields" style="display:none;">
-            <div class="field"><label>에디션 총 수량 <span style="color:#999;font-weight:400;">— 예: 300</span></label><input type="text" id="itemEditionTotal" inputmode="numeric" placeholder="300"></div>
-            <div class="field"><label>홈페이지 첫 판매 번호 <span style="color:#999;font-weight:400;">— 이미 11번까지 팔았으면 12 (이후엔 주문관리 → 재고에서 조정)</span></label><input type="text" id="itemEditionStart" inputmode="numeric" placeholder="1"></div>
+            <div class="field-hint">해외(PayPal) 재고는 주문관리 → 재고 탭에서 넣어요. 원화는 자동으로 1점이에요. 수량은 손님에게 보이지 않아요.</div>
           </div>
           <div class="field"><label>해외 배송 포장</label>
             <select id="itemShipProfile" style="width:100%;">
-              <option value="flat">평판 (원화·드로잉 A4/A3)</option>
               <option value="tube">지관통 (포스터)</option>
+              <option value="flat">평판 (원화·드로잉 A4/A3)</option>
+              <option value="book">도록 박스</option>
             </select>
           </div>
-          <div class="field"><label>구매 링크 — 국내 (네이버 스마트스토어)</label><input type="text" id="itemBuyKr" placeholder="https://smartstore.naver.com/… (비워두면 버튼이 안 나옵니다)"></div>
-          <div class="field"><label>구매 링크 — 해외 <span style="color:#999;font-weight:400;">— 비워두세요. 결제 서버가 연결돼 있으면 홈페이지에서 바로 PayPal 결제돼요</span></label><input type="text" id="itemBuyUs" placeholder="(선택) 결제 서버를 안 쓸 때만"></div>
-          <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (SOLD OUT 표시)</label></div>
+          <div class="field"><label>네이버 스토어 주소 <span style="color:#999;font-weight:400;">— 네이버페이 버튼이 이 상품 페이지로 연결돼요 (비우면 버튼 숨김)</span></label><input type="text" id="itemBuyKr" placeholder="https://smartstore.naver.com/…/products/…"></div>
+          <input type="hidden" id="itemBuyUs">
+          <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (네이버·PayPal 모두 SOLD OUT 표시)</label></div>
         </div>
         <div class="field"><label>주소(slug) <span style="color:#999;font-weight:400;">— leeyunsung.com/works/<b id="itemSlugKind">works</b>/…</span></label><input type="text" id="itemSlug" placeholder="비워두면 제목에서 자동 생성" autocomplete="off"></div>
         <div class="btnrow">
@@ -1209,7 +1279,7 @@
     } else if(page === "shop" && !isShopPublic()){
       title = "SHOP — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee) SHOP — 준비중입니다.";
-    } else if(page === "shop" && id){
+    } else if(page === "shop" && id && !isShopTab(id)){
       const it = (d.shop||[]).find(x=>x.id===id);
       if(it){
         const name = cleanText(it.title) || "Untitled";
@@ -1419,7 +1489,6 @@
 
   function renderRoute(){
     const r = parseHash();
-    ppState.active = false;
 
     // Pages swap via the hash here, so GA's automatic page_view only fires on
     // first load — send one per in-app navigation too.
@@ -1444,13 +1513,14 @@
     else if(r.page==="text" && !r.id) renderTextList(app);
     else if(r.page==="text" && r.id) renderCollectionDetail(app,"text",r.id);
     else if(r.page==="shop" && !isShopVisible()) renderShopComingSoon(app);
-    else if(r.page==="shop" && !r.id) renderShopGrid(app);
+    else if(r.page==="shop" && (!r.id || isShopTab(r.id))) renderShopGrid(app, r.id);
     else if(r.page==="shop" && r.id) renderShopDetail(app, r.id);
     else if(r.page==="contact") renderContact(app);
     else renderCollectionGrid(app,"works","WORKS");
 
     updateSeo(r);
     updateHeaderHeightVar();
+    renderCart();
   }
 
   // ---------------- CV ----------------
@@ -1544,20 +1614,34 @@
     const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,""));
     return isFinite(n) && n>0 ? "$" + n.toLocaleString("en-US",{minimumFractionDigits:0, maximumFractionDigits:2}) : "";
   }
-  function priceLabel(item){
-    if(isSoldOut(item)) return "SOLD";
-    const p = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean);
-    return p.join(" / ") || "문의";
-  }
 
-  // ---------------- on-site checkout (PayPal via Cloudflare Worker) ----------------
-  // 가격·배송비는 결제 서버가 data.json 을 직접 읽어 계산합니다. 여기 브라우저 쪽
-  // 숫자는 보여주기용일 뿐이고, 결제 금액은 서버가 PayPal 에 직접 요청합니다.
+  // ---------------- SHOP: 분류 탭 · 구매 버튼 · 해외 장바구니 (PayPal via Cloudflare Worker) ----------------
+  // 가격·배송비는 결제 서버가 data.json 을 직접 읽어 계산합니다. 브라우저 쪽 숫자는
+  // 보여주기용이고, 실제 결제 금액은 서버가 PayPal 에 직접 요청합니다.
+  // 재고 수량은 서버(/admin)에만 있고, 여기에는 "구매 가능 / Sold out" 만 옵니다.
   const SHOP_POLICY_DEFAULT =
-    "· 해외 주문은 결제 후 영업일 3~5일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다.\n" +
-    "· 수입 관세·세금은 구매자 부담입니다.\n" +
+    "· 국내 주문은 '네이버페이로 구매'를 누르면 네이버 스마트스토어에서 결제·배송됩니다.\n" +
+    "· 해외 주문(PayPal)은 결제 후 영업일 3~5일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다. 수입 관세·세금은 구매자 부담입니다.\n" +
     "· 작품 수령 후 7일 이내 반품을 요청하실 수 있습니다. 단순 변심 반품은 왕복 배송비를 구매자가 부담하며, 배송 중 파손은 사진과 함께 연락 주시면 전액 환불해 드립니다.\n" +
-    "· International orders ship from Korea via EMS with tracking within 3–5 business days. Import duties and taxes are the buyer's responsibility. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
+    "· International orders (PayPal) ship from Korea via EMS with tracking within 3–5 business days. Import duties and taxes are the buyer's responsibility. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
+
+  const SHOP_TABS = [
+    { slug:"originals", cat:"original", label:"ORIGINALS" },
+    { slug:"editions",  cat:"edition",  label:"EDITIONS"  },
+    { slug:"books",     cat:"book",     label:"BOOKS"     }
+  ];
+  const SHOP_DEFAULT_TAB = "editions";
+  const CART_MAX_QTY = 10;
+  let pendingShopCategory = null;
+
+  function shopCategory(item){
+    if(item && ["original","edition","book"].includes(item.category)) return item.category;
+    return item && item.saleType === "unique" ? "original" : "edition";
+  }
+  function defaultProfileFor(cat){ return cat === "original" ? "flat" : (cat === "book" ? "book" : "tube"); }
+  function shopProfile(item){ return ["flat","tube","book"].includes(item.shipProfile) ? item.shipProfile : defaultProfileFor(shopCategory(item)); }
+  function tabForCategory(cat){ return (SHOP_TABS.find(t=>t.cat===cat) || SHOP_TABS[1]).slug; }
+  function isShopTab(id){ return SHOP_TABS.some(t=>t.slug===id); }
 
   function shopApiBase(){
     const u = String((state.data && state.data.shopApi) || "").trim().replace(/\/+$/,"");
@@ -1565,27 +1649,37 @@
   }
   function numVal(v){ const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
   function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0); }
+  function naverUrl(item){ return safeUrl(item.buyKr); }
 
   const shopInv = { items:null, at:0, sig:"", loading:null };
-  const ppState = { active:false, sdk:null, sdkId:"", config:null, configAt:0 };
+  const ppState = { sdk:null, sdkId:"", config:null, configAt:0, rendered:false };
 
   function invOf(item){ return (shopInv.items && shopInv.items[item.id]) || null; }
+  // PayPal(해외)로 지금 살 수 있는지
+  function paypalAvailable(item){
+    if(item.soldOut || !canPayOnSite(item)) return false;
+    const v = invOf(item);
+    return v ? !!v.available : true;   // 재고 정보가 오기 전에는 일단 버튼을 보여주고, 결제 때 서버가 확인
+  }
+  // 목록에 "Sold out" 을 붙일지: 판매완료 체크했거나, 살 수 있는 경로가 하나도 없을 때
   function isSoldOut(item){
     if(item.soldOut) return true;
+    if(naverUrl(item)) return false;
+    if(!canPayOnSite(item)) return false;          // 아무 경로도 없으면 "문의"
     const v = invOf(item);
     return v ? !v.available : false;
   }
-  function remainingLabel(item){
-    if(item.saleType !== "edition" || isSoldOut(item)) return "";
-    const v = invOf(item);
-    if(!v || !v.total) return "";
-    return "Edition of " + v.total + " · " + v.remaining + " left";
+  function priceLabel(item){
+    if(isSoldOut(item)) return "Sold out";
+    const p = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean);
+    return p.join("  ·  ") || "Inquire";
   }
 
-  function loadShopInventory(){
+  function loadShopInventory(force){
     const api = shopApiBase();
-    if(!api) return;
-    if(shopInv.loading || (Date.now() - shopInv.at < 30000)) return;
+    if(!api) return Promise.resolve();
+    if(shopInv.loading) return shopInv.loading;
+    if(!force && Date.now() - shopInv.at < 30000) return Promise.resolve();
     shopInv.loading = fetch(api + "/api/inventory", {cache:"no-store"})
       .then(r => r.ok ? r.json() : null)
       .then(j => {
@@ -1594,19 +1688,20 @@
         const sig = JSON.stringify(j.items);
         const changed = sig !== shopInv.sig;
         shopInv.items = j.items; shopInv.sig = sig;
-        if(changed) rerenderShopView();
+        if(changed){ rerenderShopView(); renderCart(); }
       })
       .catch(()=>{ shopInv.at = Date.now(); })
       .finally(()=>{ shopInv.loading = null; });
+    return shopInv.loading;
   }
 
   // 같은 SHOP 화면을 다시 그리기 (GA page_view 는 다시 보내지 않음)
   function rerenderShopView(){
     const r = parseHash();
-    if(r.page !== "shop" || !isShopVisible() || ppState.active) return;
+    if(r.page !== "shop" || !isShopVisible()) return;
     const app = $("app"); const y = window.scrollY;
     app.innerHTML = "";
-    if(r.id) renderShopDetail(app, r.id); else renderShopGrid(app);
+    if(r.id && !isShopTab(r.id)) renderShopDetail(app, r.id); else renderShopGrid(app, r.id);
     window.scrollTo(0, y);
   }
 
@@ -1636,125 +1731,285 @@
     return ppState.sdk;
   }
 
-  function buildPayPanel(item){
-    const api = shopApiBase();
-    const wrap = el("div","pp-box");
-    const head = el("div","pp-head"); head.textContent = "INTERNATIONAL ORDER — PayPal · Credit / Debit card";
-    wrap.appendChild(head);
+  /* ================= 해외 장바구니 (오른쪽 슬라이드) ================= */
+  const CART_KEY = "lysCart_v1";
+  const cart = (function(){
+    let c = null;
+    try{ c = JSON.parse(localStorage.getItem(CART_KEY) || "null"); }catch(e){}
+    if(!c || typeof c !== "object") c = {};
+    if(!Array.isArray(c.items)) c.items = [];
+    c.items = c.items.filter(l=>l && typeof l.id === "string").map(l=>({ id:l.id, qty: Math.max(1, Math.min(CART_MAX_QTY, Math.floor(Number(l.qty)||1))) }));
+    if(typeof c.country !== "string") c.country = "";
+    if(typeof c.note !== "string") c.note = "";
+    c.collapsed = !!c.collapsed;
+    if(!c.token || !/^[A-Za-z0-9_-]{8,64}$/.test(c.token)) c.token = "c" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    c.done = c.done && typeof c.done === "object" ? c.done : null;
+    return c;
+  })();
+  function saveCart(){ try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){} }
 
-    const row = el("div","pp-row");
-    const lab = el("label"); lab.textContent = "Ship to (country)";
-    const sel = el("select");
-    const ph = el("option"); ph.value = ""; ph.textContent = "Loading…"; sel.appendChild(ph);
-    lab.htmlFor = sel.id = "ppCountry_" + item.id;
-    row.appendChild(lab); row.appendChild(sel);
-    wrap.appendChild(row);
+  function cartLines(){
+    const shop = (state.data && state.data.shop) || [];
+    return cart.items.map(l=>{
+      const item = shop.find(x=>x.id===l.id);
+      return item ? { item, qty: shopCategory(item) === "original" ? 1 : l.qty } : null;
+    }).filter(Boolean);
+  }
+  function cartZone(){
+    const cfg = ppState.config;
+    const c = cfg && cfg.countries.find(x=>x.code===cart.country);
+    return c && cfg.zones[c.zone] ? cfg.zones[c.zone] : null;
+  }
+  // 서버와 같은 규칙: 포장 종류마다 소포 1개 = 기본 + (개수-1)×추가
+  function cartShipping(lines){
+    const z = cartZone(); if(!z) return null;
+    const count = {flat:0, tube:0, book:0};
+    lines.forEach(l=>{ count[shopProfile(l.item)] += l.qty; });
+    let t = 0;
+    Object.keys(count).forEach(p=>{ if(count[p]) t += numVal(z[p]) + numVal(z.add) * (count[p]-1); });
+    return Math.round(t*100)/100;
+  }
 
-    const price = numVal(item.priceUsd);
-    const sum = el("div","pp-sum");
-    const line = (k, v, cls)=>{ const d = el("div", cls||""); const a = el("span"); a.textContent = k; const b = el("span"); b.textContent = v; d.appendChild(a); d.appendChild(b); return d; };
-    const renderSum = (ship)=>{
-      sum.innerHTML = "";
-      sum.appendChild(line("Item", "$" + price.toFixed(2)));
-      sum.appendChild(line("Shipping (EMS, tracked)", ship == null ? "—" : "$" + ship.toFixed(2)));
-      sum.appendChild(line("Total (USD)", ship == null ? "—" : "$" + (price + ship).toFixed(2), "tot"));
-    };
-    renderSum(null);
-    wrap.appendChild(sum);
+  function addToCart(item){
+    if(!paypalAvailable(item)){ alert("Sorry, this item is sold out for international orders."); return; }
+    const cat = shopCategory(item);
+    const line = cart.items.find(l=>l.id===item.id);
+    if(line){
+      if(cat === "original"){ /* 한 점뿐 — 이미 담겨 있음 */ }
+      else if(line.qty >= CART_MAX_QTY){ cartMsg("Maximum " + CART_MAX_QTY + " per item.", true); }
+      else line.qty++;
+    } else {
+      cart.items.push({ id:item.id, qty:1 });
+    }
+    cart.done = null;
+    cart.collapsed = false;
+    saveCart();
+    renderCart();
+    const d = $("cartDrawer"); if(d){ d.classList.remove("bump"); void d.offsetWidth; d.classList.add("bump"); }
+  }
+  function setCartQty(id, q){
+    const line = cart.items.find(l=>l.id===id); if(!line) return;
+    q = Math.floor(q);
+    if(q < 1) return removeFromCart(id);
+    if(q > CART_MAX_QTY){ q = CART_MAX_QTY; cartMsg("Maximum " + CART_MAX_QTY + " per item.", true); }
+    line.qty = q; saveCart(); renderCart();
+  }
+  function removeFromCart(id){
+    cart.items = cart.items.filter(l=>l.id!==id); saveCart(); renderCart();
+  }
+  function cartMsg(t, err){
+    const m = $("cartMsg"); if(!m) return;
+    m.textContent = t || ""; m.classList.toggle("err", !!err);
+  }
 
-    const btnHost = el("div"); btnHost.id = "ppButtons_" + item.id;
-    wrap.appendChild(btnHost);
-    const msg = el("div","pp-msg");
-    msg.textContent = "Ships from Korea. Import duties/taxes, if any, are paid by the buyer. · 한국 배송은 위 '국내 구매'를 이용해 주세요.";
-    wrap.appendChild(msg);
-    const setMsg = (t, err)=>{ msg.textContent = t; msg.classList.toggle("err", !!err); };
+  function ensureCartDom(){
+    let d = $("cartDrawer");
+    if(d) return d;
+    d = el("aside","cart-drawer"); d.id = "cartDrawer"; d.setAttribute("aria-label","Cart");
+    d.innerHTML =
+      '<button type="button" class="cart-tab" id="cartTab" aria-label="Open cart"><span class="cart-tab-label" id="cartTabLabel">CART</span></button>' +
+      '<div class="cart-panel">' +
+        '<div class="cart-head"><span class="cart-title">CART <span class="cart-sub">International · PayPal</span></span>' +
+          '<button type="button" class="cart-fold" id="cartFold" title="접기 / Collapse" aria-label="Collapse cart">›</button></div>' +
+        '<div class="cart-body" id="cartBody">' +
+          '<div class="cart-lines" id="cartLines"></div>' +
+          '<div class="cart-form" id="cartForm">' +
+            '<label class="cart-label" for="cartCountry">Ship to <span>*</span></label>' +
+            '<select id="cartCountry" class="cart-input"><option value="">Loading…</option></select>' +
+            '<div class="cart-kr" id="cartKrNote" hidden>Korean PayPal accounts may not be able to pay a Korean seller. · 한국 PayPal 계정은 결제가 안 될 수 있어요. 국내 구매는 네이버페이를 이용해 주세요.</div>' +
+            '<label class="cart-label" for="cartNote">Note <span class="opt">(optional · e.g. gift wrap)</span></label>' +
+            '<textarea id="cartNote" class="cart-input" rows="2" maxlength="300" placeholder="Anything I should know?"></textarea>' +
+          '</div>' +
+          '<div class="cart-sum" id="cartSum"></div>' +
+          '<div id="cartPayButtons" class="cart-pay"></div>' +
+          '<div class="cart-msg" id="cartMsg"></div>' +
+          '<div class="cart-fine">Name, address and email are entered securely in PayPal. Credit/debit cards accepted. Import duties/taxes are the buyer\'s responsibility.</div>' +
+        '</div>' +
+        '<div class="cart-done" id="cartDone" hidden></div>' +
+      '</div>';
+    document.body.appendChild(d);
+    $("cartTab").addEventListener("click", ()=>{ cart.collapsed = false; saveCart(); renderCart(); });
+    $("cartFold").addEventListener("click", ()=>{ cart.collapsed = true; saveCart(); renderCart(); });
+    $("cartCountry").addEventListener("change", ()=>{ cart.country = $("cartCountry").value; saveCart(); cartMsg(""); renderCart(); });
+    $("cartNote").addEventListener("input", ()=>{ cart.note = $("cartNote").value.slice(0,300); saveCart(); });
+    return d;
+  }
 
-    let cfg = null, rendered = false;
-    const zoneOf = (code)=>{ const c = cfg && cfg.countries.find(x=>x.code===code); return c ? c.zone : ""; };
-    const shipFor = (code)=>{ const z = zoneOf(code); if(!z || !cfg.zones[z]) return null; return numVal(cfg.zones[z][item.shipProfile === "tube" ? "tube" : "flat"]); };
+  function renderCart(){
+    const lines = cartLines();
+    // 사이트에서 지워진 상품은 장바구니에서도 정리
+    if(state.data && lines.length !== cart.items.length){
+      const ok = new Set(lines.map(l=>l.item.id));
+      cart.items = cart.items.filter(l=>ok.has(l.id)); saveCart();
+    }
+    const visible = lines.length > 0 || !!cart.done;
+    let d = $("cartDrawer");
+    if(!visible){ if(d) d.classList.add("hidden-cart"); document.body.classList.remove("has-cart"); return; }
+    d = ensureCartDom();
+    d.classList.remove("hidden-cart");
+    d.classList.toggle("collapsed", !!cart.collapsed);
+    document.body.classList.add("has-cart");
 
-    const showDone = (o)=>{
-      ppState.active = false;
-      const done = el("div","pp-done");
-      const big = el("div","big"); big.textContent = "PAYMENT COMPLETE · 결제 완료";
+    // 완료 화면
+    const done = $("cartDone"), body = $("cartBody");
+    if(cart.done){
+      body.hidden = true; done.hidden = false;
+      done.innerHTML = "";
+      const o = cart.done;
+      const big = el("div","big"); big.textContent = "PAYMENT COMPLETE";
+      const ko = el("div","ko"); ko.textContent = "결제 완료";
       const t1 = el("div"); t1.textContent = "Thank you! Your order has been placed.";
       const t2 = el("div","ord"); t2.textContent = "Order " + o.no;
-      const t3 = el("div"); t3.textContent = o.title + (o.editionNo ? " — Edition " + o.editionNo + (o.editionTotal ? "/" + o.editionTotal : "") : "") + " · $" + o.total;
-      const t4 = el("div"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". I'll ship within a few days and send you the tracking number.";
-      [big,t1,t2,t3,t4].forEach(x=>done.appendChild(x));
-      wrap.replaceWith(done);
-      if(item.saleType !== "edition"){
-        shopInv.items = shopInv.items || {};
-        shopInv.items[item.id] = Object.assign({}, shopInv.items[item.id]||{}, {available:false, remaining:0});
-      }
-      shopInv.at = 0;
-      if(typeof gtag === "function"){
-        gtag("event","purchase",{transaction_id:o.no, value:Number(o.total)||0, currency:"USD", shipping:Number(o.ship)||0,
-          items:[{item_id:item.id, item_name:o.title, price:Number(o.price)||0, quantity:1}]});
-      }
-    };
+      const ul = el("div","done-lines");
+      (o.lines||[]).forEach(l=>{ const r = el("div"); r.textContent = l.title + (l.qty>1 ? " × " + l.qty : ""); ul.appendChild(r); });
+      const t3 = el("div"); t3.textContent = "Total $" + o.total + " (incl. shipping $" + o.ship + ")";
+      const t4 = el("div","fine"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". I'll ship within a few days and send you the tracking number.";
+      const close = el("button","cart-close-done"); close.type = "button"; close.textContent = "Close";
+      close.addEventListener("click", ()=>{ cart.done = null; saveCart(); renderCart(); });
+      [big,ko,t1,t2,ul,t3,t4,close].forEach(x=>done.appendChild(x));
+      $("cartTabLabel").textContent = "ORDER COMPLETE";
+      return;
+    }
+    body.hidden = false; done.hidden = true;
 
-    const renderButtons = (paypal)=>{
-      if(rendered) return; rendered = true;
-      ppState.active = true;
-      paypal.Buttons({
-        style:{ layout:"vertical", color:"black", shape:"rect", label:"pay", height:45 },
+    // 상품 줄
+    const box = $("cartLines"); box.innerHTML = "";
+    let itemTotal = 0;
+    lines.forEach(({item, qty})=>{
+      const row = el("div","cart-line");
+      const th = el("div","cart-thumb");
+      if(item.cover){ const im = el("img"); im.src = item.cover; im.alt = ""; im.loading = "lazy"; th.appendChild(im); }
+      const info = el("div","cart-info");
+      const nm = el("a","cart-name"); nm.textContent = cleanText(item.title) || "Untitled"; nm.href = "#shop/" + item.id;
+      const meta = el("div","cart-meta");
+      const cat = shopCategory(item);
+      meta.textContent = (cat === "original" ? "Original" : (cat === "book" ? "Book" : "Edition")) + " · " + fmtUsd(item.priceUsd);
+      info.appendChild(nm); info.appendChild(meta);
+      const avail = paypalAvailable(item);
+      if(!avail){ const so = el("div","cart-soldout"); so.textContent = "Sold out — please remove"; info.appendChild(so); }
+      const ctl = el("div","cart-ctl");
+      if(cat !== "original"){
+        const minus = el("button","q"); minus.type="button"; minus.textContent = "−"; minus.setAttribute("aria-label","Decrease");
+        const n = el("span","n"); n.textContent = qty;
+        const plus = el("button","q"); plus.type="button"; plus.textContent = "+"; plus.setAttribute("aria-label","Increase");
+        plus.disabled = qty >= CART_MAX_QTY;
+        minus.addEventListener("click", ()=>setCartQty(item.id, qty-1));
+        plus.addEventListener("click", ()=>setCartQty(item.id, qty+1));
+        ctl.appendChild(minus); ctl.appendChild(n); ctl.appendChild(plus);
+      } else {
+        const n = el("span","n one"); n.textContent = "1 of 1"; ctl.appendChild(n);
+      }
+      const rm = el("button","cart-rm"); rm.type="button"; rm.textContent = "Remove";
+      rm.addEventListener("click", ()=>removeFromCart(item.id));
+      ctl.appendChild(rm);
+      info.appendChild(ctl);
+      row.appendChild(th); row.appendChild(info);
+      box.appendChild(row);
+      itemTotal += numVal(item.priceUsd) * qty;
+    });
+
+    // 국가 목록
+    const sel = $("cartCountry");
+    const cfg = ppState.config;
+    if(cfg && sel.dataset.filled !== "1"){
+      sel.innerHTML = "";
+      const o0 = el("option"); o0.value = ""; o0.textContent = "Select country…"; sel.appendChild(o0);
+      cfg.countries.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
+        const o = el("option"); o.value = x.code; o.textContent = x.name; sel.appendChild(o);
+      });
+      sel.dataset.filled = "1";
+    }
+    if(sel.dataset.filled === "1") sel.value = cfg.countries.some(x=>x.code===cart.country) ? cart.country : "";
+    if(document.activeElement !== $("cartNote")) $("cartNote").value = cart.note || "";
+    $("cartKrNote").hidden = cart.country !== "KR";
+
+    // 합계
+    const ship = cartShipping(lines);
+    const sum = $("cartSum"); sum.innerHTML = "";
+    const line = (k, v, cls)=>{ const r = el("div", cls||""); const a = el("span"); a.textContent = k; const b = el("span"); b.textContent = v; r.appendChild(a); r.appendChild(b); sum.appendChild(r); };
+    line("Items", "$" + itemTotal.toFixed(2));
+    line("Shipping" + (cart.country ? "" : " (select country)"), ship == null ? "—" : "$" + ship.toFixed(2));
+    line("Total (USD)", ship == null ? "—" : "$" + (itemTotal + ship).toFixed(2), "tot");
+
+    const count = lines.reduce((a,l)=>a+l.qty,0);
+    $("cartTabLabel").textContent = "CART · " + count + (ship != null ? " · $" + (itemTotal + ship).toFixed(0) : " · $" + itemTotal.toFixed(0));
+
+    // 설정·PayPal 버튼 준비
+    if(!cfg){
+      loadShopConfig().then(()=>renderCart()).catch(()=>{
+        cartMsg("International checkout is temporarily unavailable. Please email reyunsung@gmail.com.", true);
+      });
+      return;
+    }
+    if(!ppState.rendered) renderCartButtons(cfg);
+  }
+
+  function renderCartButtons(cfg){
+    ppState.rendered = true;
+    const api = shopApiBase();
+    const zoneOf = (code)=>{ const c = cfg.countries.find(x=>x.code===code); return c ? c.zone : ""; };
+    loadPayPalSdk(cfg.clientId).then(paypal=>{
+      return paypal.Buttons({
+        style:{ layout:"vertical", color:"black", shape:"rect", label:"pay", height:44 },
         onClick: (data, actions)=>{
-          if(!sel.value){ setMsg("Please select the shipping country first. · 배송 국가를 먼저 선택해 주세요.", true); return actions.reject(); }
-          setMsg("");
+          const lines = cartLines();
+          if(!lines.length){ cartMsg("Your cart is empty.", true); return actions.reject(); }
+          if(!cart.country){ cartMsg("Please select the shipping country first. · 배송 국가를 먼저 선택해 주세요.", true); $("cartCountry").focus(); return actions.reject(); }
+          const bad = lines.find(l=>!paypalAvailable(l.item));
+          if(bad){ cartMsg("\"" + cleanText(bad.item.title) + "\" is sold out. Please remove it.", true); return actions.reject(); }
+          cartMsg("");
           return actions.resolve();
         },
         createOrder: ()=> fetch(api + "/api/orders", {
             method:"POST", headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({ itemId: item.id, country: sel.value })
+            body: JSON.stringify({ items: cart.items.map(l=>({id:l.id, qty:l.qty})), country: cart.country, note: cart.note || "", token: cart.token })
           }).then(r=>r.json().then(j=>({ok:r.ok, j}))).then(({ok, j})=>{
             if(!ok || !j.id){
-              setMsg(j && j.message ? j.message : "Could not start checkout.", true);
-              if(j && j.error === "SOLD_OUT"){ shopInv.at = 0; loadShopInventory(); }
+              cartMsg(j && j.message ? j.message : "Could not start checkout.", true);
+              if(j && j.error === "SOLD_OUT"){ loadShopInventory(true); }
               throw new Error(j && j.error || "create failed");
             }
             return j.id;
           }),
         onShippingAddressChange: (data, actions)=>{
           const code = data && data.shippingAddress && data.shippingAddress.countryCode;
-          if(code && zoneOf(code) !== zoneOf(sel.value)){
-            setMsg("The PayPal shipping address country is different from the country you selected. Please choose that country above and try again.", true);
+          if(code && zoneOf(code) !== zoneOf(cart.country)){
+            cartMsg("The PayPal shipping address country is different from the country you selected. Please choose that country in the cart and try again.", true);
             return actions.reject(data.errors && data.errors.COUNTRY_ERROR);
           }
         },
         onApprove: (data, actions)=>{
-          setMsg("Completing payment… · 결제 확인 중…");
+          cartMsg("Completing payment… · 결제 확인 중…");
           return fetch(api + "/api/orders/" + encodeURIComponent(data.orderID) + "/capture", {method:"POST"})
             .then(r=>r.json().then(j=>({ok:r.ok, j})))
             .then(({ok, j})=>{
-              if(ok && j.ok) return showDone(j.order);
+              if(ok && j.ok){
+                const o = j.order;
+                cart.done = { no:o.no, total:o.total, ship:o.ship, email:o.email, lines:o.lines };
+                cart.items = []; cart.note = ""; cart.collapsed = false;
+                saveCart();
+                if(typeof gtag === "function"){
+                  gtag("event","purchase",{transaction_id:o.no, value:Number(o.total)||0, currency:"USD", shipping:Number(o.ship)||0,
+                    items:(o.lines||[]).map(l=>({item_id:l.id, item_name:l.title, price:Number(l.price)||0, quantity:l.qty}))});
+                }
+                loadShopInventory(true);
+                renderCart();
+                return;
+              }
               if(j && j.restart) return actions.restart();
-              setMsg((j && j.message) || "Payment could not be completed. You have not been charged.", true);
+              if(j && j.error === "SOLD_OUT") loadShopInventory(true);
+              cartMsg((j && j.message) || "Payment could not be completed. You have not been charged.", true);
             })
-            .catch(()=> setMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true));
+            .catch(()=> cartMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true));
         },
-        onCancel: ()=> setMsg("Payment canceled. · 결제를 취소했어요."),
-        onError: (err)=>{ if(!msg.classList.contains("err")) setMsg("Something went wrong with PayPal. Please try again, or email reyunsung@gmail.com.", true); console.warn(err); }
-      }).render(btnHost).catch(e=>{ rendered = false; ppState.active = false; setMsg("PayPal could not be loaded. Please refresh.", true); console.warn(e); });
-    };
-
-    loadShopConfig().then(c=>{
-      cfg = c;
-      sel.innerHTML = "";
-      const o0 = el("option"); o0.value = ""; o0.textContent = "Select country…"; sel.appendChild(o0);
-      c.countries.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
-        const o = el("option"); o.value = x.code; o.textContent = x.name; sel.appendChild(o);
-      });
-      sel.addEventListener("change", ()=>{
-        renderSum(sel.value ? shipFor(sel.value) : null);
-        setMsg(sel.value ? "" : msg.textContent);
-      });
-      return loadPayPalSdk(c.clientId).then(renderButtons);
+        onCancel: ()=> cartMsg("Payment canceled. · 결제를 취소했어요."),
+        onError: (err)=>{ const m = $("cartMsg"); if(!m || !m.classList.contains("err")) cartMsg("Something went wrong with PayPal. Please try again, or email reyunsung@gmail.com.", true); console.warn(err); }
+      }).render("#cartPayButtons");
     }).catch(e=>{
-      setMsg("International checkout is temporarily unavailable. Please email reyunsung@gmail.com. · 해외 결제를 불러오지 못했어요.", true);
+      ppState.rendered = false;
+      cartMsg("PayPal could not be loaded. Please refresh the page.", true);
       console.warn(e);
     });
-    return wrap;
   }
 
   function renderShopBiz(app){
@@ -1786,13 +2041,19 @@
     openModal("shopSettingsModal");
   }
   function saveShopSettings(){
-    const api = $("ssApi").value.trim().replace(/\/+$/,"");
-    if(api && !/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(api)){
-      alert("결제 서버 주소는 https://…workers.dev 형태로 넣어주세요 (끝에 경로 없이).");
-      return;
-    }
-    if(api && !/\.workers\.dev$/i.test(api)){
-      if(!confirm("workers.dev 주소가 아니에요. 사이트 보안설정(CSP)에 이 주소가 허용돼 있어야 작동해요. 그래도 저장할까요?")) return;
+    // 붙여넣다 딸려온 경로(/admin 등)·공백은 알아서 떼어냅니다
+    let raw = $("ssApi").value.trim().replace(/\s+/g,"");
+    let api = "";
+    if(raw){
+      if(!/^https?:\/\//i.test(raw)) raw = "https://" + raw;
+      try{ const u = new URL(raw); api = "https://" + u.host; }catch(e){ api = ""; }
+      if(!/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(api)){
+        alert("결제 서버 주소를 확인해 주세요. 예: https://leeyunsung-shop.아무개.workers.dev");
+        return;
+      }
+      if(!/\.workers\.dev$/i.test(api)){
+        if(!confirm("workers.dev 주소가 아니에요. 사이트 보안설정(CSP)에 이 주소가 허용돼 있어야 작동해요. 그래도 저장할까요?")) return;
+      }
     }
     state.data.shopApi = api;
     state.data.business = {
@@ -1805,8 +2066,8 @@
     ppState.config = null; shopInv.at = 0; shopInv.items = null; shopInv.sig = "";
     saveDraft();
     closeModal("shopSettingsModal");
-    ppState.active = false;
     rerenderShopView();
+    renderCart();
   }
   function openOrdersWindow(){
     const api = shopApiBase();
@@ -1815,8 +2076,8 @@
     if(w) try{ w.opener = null; }catch(e){}
   }
   (function bindShopUi(){
-    const st = $("itemSaleType");
-    if(st) st.addEventListener("change", ()=>{ $("itemEditionFields").style.display = st.value === "edition" ? "block" : "none"; });
+    const cat = $("itemCategory");
+    if(cat) cat.addEventListener("change", ()=>{ $("itemShipProfile").value = defaultProfileFor(cat.value); });
     const sv = $("ssSave");
     if(sv) sv.addEventListener("click", saveShopSettings);
   })();
@@ -1868,12 +2129,30 @@
     publishToGithub(false);
   }
 
-  function renderShopGrid(app){
+  function renderShopGrid(app, tabSlug){
     renderShopReleaseBar(app);
     loadShopInventory();
-    const items = state.data.shop || [];
-    const grid = el("div","shop-grid");
+    const tab = SHOP_TABS.find(t=>t.slug===tabSlug) || SHOP_TABS.find(t=>t.slug===SHOP_DEFAULT_TAB);
+    const wrap = el("div","shop-wrap");
 
+    const nav = el("nav","shop-tabs");
+    SHOP_TABS.forEach(t=>{
+      const a = el("a"); a.href = "#shop/" + t.slug; a.textContent = t.label;
+      if(t.slug === tab.slug) a.classList.add("active");
+      nav.appendChild(a);
+    });
+    wrap.appendChild(nav);
+
+    const items = (state.data.shop || []).filter(it=>shopCategory(it) === tab.cat);
+    if(!items.length && !state.master){
+      const cs = el("div","shop-tab-empty");
+      const t1 = el("div","t"); t1.textContent = "Coming soon";
+      const t2 = el("div","s"); t2.textContent = "준비중입니다";
+      cs.appendChild(t1); cs.appendChild(t2);
+      wrap.appendChild(cs);
+    }
+
+    const grid = el("div","shop-grid cols-5");
     items.forEach((item, idx)=>{
       const card = el("a","shop-card");
       setItemLink(card, "shop", item);
@@ -1882,33 +2161,23 @@
       if(item.cover){
         const img = el("img");
         img.alt = (cleanText(item.title)||"상품") + " — " + ARTIST;
-        img.loading = idx < 4 ? "eager" : "lazy";
+        img.loading = idx < 5 ? "eager" : "lazy";
         img.decoding = "async";
         img.src = item.cover;
         thumb.appendChild(img);
       } else {
         thumb.appendChild(el("div","placeholder-label"));
       }
-      const soldNow = isSoldOut(item);
-      if(soldNow){
-        const b = el("div","shop-sold-badge"); b.textContent = "SOLD OUT";
-        thumb.appendChild(b);
-      }
       card.appendChild(thumb);
 
+      const soldNow = isSoldOut(item);
       const info = el("div","shop-info");
       const nm = el("div","shop-name"); nm.textContent = cleanText(item.title) || "(Untitled)";
       info.appendChild(nm);
-      [item.spec1, item.spec2].forEach(s=>{
-        if(cleanText(s)){ const d = el("div","shop-spec"); d.textContent = cleanText(s); info.appendChild(d); }
-      });
-      if(cleanText(item.edition)){
-        const e = el("div","shop-edition"); e.textContent = cleanText(item.edition); info.appendChild(e);
-      }
+      const spec = [cleanText(item.spec1), cleanText(item.spec2)].filter(Boolean).join(" · ");
+      if(spec){ const d = el("div","shop-spec"); d.textContent = spec; info.appendChild(d); }
       const pr = el("div","shop-price"+(soldNow?" sold":"")); pr.textContent = priceLabel(item);
       info.appendChild(pr);
-      const rem = remainingLabel(item);
-      if(rem){ const r = el("div","shop-remaining"); r.textContent = rem; info.appendChild(r); }
       card.appendChild(info);
 
       const ctl = el("div","frame-editctl");
@@ -1922,81 +2191,66 @@
       grid.appendChild(card);
     });
 
-    const addTile = el("div","shop-card master-only-tile");
-    addTile.style.display = state.master ? "block" : "none";
-    const at = el("div","shop-thumb");
-    const plus = el("div","placeholder-label"); plus.textContent = "+ 상품 추가";
-    at.appendChild(plus);
-    addTile.appendChild(at);
-    addTile.style.cursor = "pointer";
-    addTile.addEventListener("click", ()=>openItemModal("shop",null));
-    grid.appendChild(addTile);
-
-    const bleed = el("div","grid-bleed");
-    bleed.appendChild(grid);
-    app.appendChild(bleed);
-
-    if(!items.length && !state.master){
-      const empty = el("div","empty-collection"); empty.textContent = "준비 중입니다.";
-      app.appendChild(empty);
+    if(state.master){
+      const addTile = el("div","shop-card master-only-tile");
+      const at = el("div","shop-thumb");
+      const plus = el("div","placeholder-label"); plus.textContent = "+ " + tab.label + " 추가";
+      at.appendChild(plus);
+      addTile.appendChild(at);
+      addTile.style.cursor = "pointer";
+      addTile.addEventListener("click", ()=>{ pendingShopCategory = tab.cat; openItemModal("shop",null); pendingShopCategory = null; });
+      grid.appendChild(addTile);
     }
+    if(items.length || state.master) wrap.appendChild(grid);
+    app.appendChild(wrap);
     renderShopBiz(app);
   }
 
   function buyRow(item){
     const box = el("div","buy-box");
-    if(isSoldOut(item)){
+    if(item.soldOut){
       const sd = el("div","buy-soldout"); sd.textContent = "SOLD OUT";
       box.appendChild(sd);
       return box;
     }
     const row = el("div","buy-row");
-    const kr = safeUrl(item.buyKr);
+    const kr = naverUrl(item);
     const onSite = canPayOnSite(item);
     const us = onSite ? "" : safeUrl(item.buyUs);
 
     if(kr){
-      const a = el("a","buy-btn"); a.href = kr; a.target="_blank"; a.rel="noopener";
-      const t = document.createElement("span"); t.textContent = "국내 구매";
+      const a = el("a","buy-btn naver"); a.href = kr; a.target="_blank"; a.rel="noopener";
+      const t = el("span","lbl"); t.textContent = "네이버페이로 구매";
+      const sub = el("span","sub"); sub.textContent = "국내 · Korea";
       const c = el("span","cur"); c.textContent = fmtKrw(item.priceKrw) || "₩";
-      a.appendChild(t); a.appendChild(c);
+      a.appendChild(t); a.appendChild(sub); a.appendChild(c);
       row.appendChild(a);
     }
-    let payHost = null;
     if(onSite){
-      const a = el("button","buy-btn"+(kr?" alt":"")); a.type = "button";
-      const t = document.createElement("span"); t.textContent = "International";
+      const avail = paypalAvailable(item);
+      const b = el("button","buy-btn paypal"); b.type = "button";
+      const t = el("span","lbl"); t.textContent = avail ? "PayPal로 구매" : "International — Sold out";
+      const sub = el("span","sub"); sub.textContent = "International · Card OK";
       const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd);
-      a.appendChild(t); a.appendChild(c);
-      a.style.cursor = "pointer"; a.style.font = "inherit";
-      payHost = el("div");
-      const openPanel = ()=>{
-        if(payHost.firstChild) { payHost.scrollIntoView({behavior:"smooth", block:"nearest"}); return; }
-        payHost.appendChild(buildPayPanel(item));
-        a.classList.add("alt");
-      };
-      a.addEventListener("click", openPanel);
-      row.appendChild(a);
-      if(!kr) setTimeout(openPanel, 0);
+      b.appendChild(t); b.appendChild(sub); b.appendChild(c);
+      b.disabled = !avail;
+      b.addEventListener("click", ()=> addToCart(item));
+      row.appendChild(b);
     } else if(us){
-      const a = el("a","buy-btn"+(kr?" alt":"")); a.href = us; a.target="_blank"; a.rel="noopener";
-      const t = document.createElement("span"); t.textContent = "International";
+      const a = el("a","buy-btn paypal"); a.href = us; a.target="_blank"; a.rel="noopener";
+      const t = el("span","lbl"); t.textContent = "International";
       const c = el("span","cur"); c.textContent = fmtUsd(item.priceUsd) || "$";
       a.appendChild(t); a.appendChild(c);
       row.appendChild(a);
     }
     if(!kr && !onSite && !us){
-      const sd = el("div","buy-soldout"); sd.textContent = "구매 문의: reyunsung@gmail.com";
+      const sd = el("div","buy-soldout"); sd.textContent = "구매 문의 · Inquire: reyunsung@gmail.com";
       box.appendChild(sd);
       return box;
     }
     box.appendChild(row);
-    if(payHost) box.appendChild(payHost);
     const note = el("div","buy-note");
-    const intl = onSite ? "International은 USD 결제(PayPal·카드)와 국제 배송입니다." : "International은 USD 결제와 국제 배송입니다.";
-    note.textContent = kr && (us || onSite)
-      ? "국내 구매는 원화 결제와 국내 배송, " + intl
-      : (kr ? "원화 결제 · 국내 배송" : "USD 결제 (PayPal · Credit/Debit card) · 국제 배송");
+    note.textContent = "국내 구매는 네이버 스마트스토어(네이버페이)로 이동해요. · International orders: add to cart and pay with PayPal or card (USD, shipping from Korea).";
     box.appendChild(note);
     return box;
   }
@@ -2009,7 +2263,8 @@
       const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
       app.appendChild(p); return;
     }
-    const back = el("a","detail-back"); back.href = "#shop"; back.textContent = "← Back to SHOP";
+    const tabSlug = tabForCategory(shopCategory(item));
+    const back = el("a","detail-back"); back.href = "#shop/" + tabSlug; back.textContent = "← Back to " + (SHOP_TABS.find(t=>t.slug===tabSlug)||{}).label;
     app.appendChild(back);
 
     const head = el("div","detail-head");
@@ -2173,10 +2428,8 @@
       $("itemBuyKr").value = item.buyKr || "";
       $("itemBuyUs").value = item.buyUs || "";
       $("itemSoldOut").checked = !!item.soldOut;
-      $("itemSaleType").value = item.saleType === "edition" ? "edition" : "unique";
-      $("itemEditionTotal").value = item.editionTotal || "";
-      $("itemEditionStart").value = item.editionStart || "";
-      $("itemShipProfile").value = item.shipProfile === "tube" ? "tube" : "flat";
+      $("itemCategory").value = shopCategory(item);
+      $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
       $("itemSlug").value = item.slug || "";
@@ -2187,10 +2440,8 @@
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
-      $("itemSaleType").value = "unique";
-      $("itemEditionTotal").value = "";
-      $("itemEditionStart").value = "";
-      $("itemShipProfile").value = "flat";
+      $("itemCategory").value = pendingShopCategory || "edition";
+      $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
       $("itemDesc").value = "";
       $("itemSlug").value = "";
@@ -2199,7 +2450,6 @@
     }
     $("itemSlugKind").textContent = key;
     $("shopFields").style.display = key==="shop" ? "block" : "none";
-    $("itemEditionFields").style.display = $("itemSaleType").value === "edition" ? "block" : "none";
     $("itemTitle").placeholder = key==="shop" ? "상품 이름" : "시리즈 제목";
     $("itemDesc").placeholder  = key==="shop" ? "상품 설명 (선택)" : "작품 설명";
     openModal("itemModal");
@@ -2231,10 +2481,9 @@
       payload.buyKr    = $("itemBuyKr").value.trim();
       payload.buyUs    = $("itemBuyUs").value.trim();
       payload.soldOut  = $("itemSoldOut").checked;
-      payload.saleType = $("itemSaleType").value === "edition" ? "edition" : "unique";
-      payload.editionTotal = payload.saleType === "edition" ? $("itemEditionTotal").value.replace(/[^0-9]/g,"") : "";
-      payload.editionStart = payload.saleType === "edition" ? $("itemEditionStart").value.replace(/[^0-9]/g,"") : "";
-      payload.shipProfile = $("itemShipProfile").value === "tube" ? "tube" : "flat";
+      payload.category = ["original","edition","book"].includes($("itemCategory").value) ? $("itemCategory").value : "edition";
+      payload.shipProfile = ["flat","tube","book"].includes($("itemShipProfile").value) ? $("itemShipProfile").value : defaultProfileFor(payload.category);
+      delete payload.saleType; delete payload.editionTotal; delete payload.editionStart;
     }
 
     if(idx>=0) arr[idx] = payload; else arr.push(payload);
@@ -3716,7 +3965,7 @@
              '        </a>';
     }).join("\n");
 
-    const backHref  = kind === "works" ? "/" : (kind === "shop" ? "/#shop" : "/#text");
+    const backHref  = kind === "works" ? "/" : (kind === "shop" ? "/#shop/" + tabForCategory(shopCategory(item)) : "/#text");
     const backLabel = kind === "works" ? "WORKS" : (kind === "shop" ? "SHOP" : "TEXT");
     const navActive = kind;
 
@@ -3734,11 +3983,10 @@
         buy = '      <div class="buy-soldout">구매 문의: reyunsung@gmail.com</div>';
       } else {
         const btns = [];
-        if(kr) btns.push('        <a class="buy-btn" href="'+esc(kr)+'" target="_blank" rel="noopener"><span>국내 구매</span><span class="cur">'+esc(fmtKrw(item.priceKrw)||"₩")+'</span></a>');
-        if(us) btns.push('        <a class="buy-btn'+(kr?' alt':'')+'" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span>International</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
+        if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">네이버페이로 구매</span><span class="sub">국내 · Korea</span><span class="cur">'+esc(fmtKrw(item.priceKrw)||"₩")+'</span></a>');
+        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?'PayPal로 구매':'International')+'</span><span class="sub">International · Card OK</span><span class="cur">'+esc(fmtUsd(item.priceUsd)||"$")+'</span></a>');
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
-              '      <div class="buy-note">'+(kr&&us ? "국내 구매는 원화 결제와 국내 배송, International은 USD 결제와 국제 배송입니다."
-                                                    : (kr ? "원화 결제 · 국내 배송" : "USD 결제 · 국제 배송"))+'</div>';
+              '      <div class="buy-note">국내 구매는 네이버 스마트스토어(네이버페이)로 이동해요. · International orders: add to cart and pay with PayPal or card (USD, shipping from Korea).</div>';
       }
       shopBlock =
         (specs.length ? '    <div class="shop-specs-line">'+esc(specs.join("  ·  "))+'</div>\n' : '') +
