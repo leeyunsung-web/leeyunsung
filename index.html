@@ -1842,7 +1842,7 @@
         img.alt = (cleanText(item.title) ? cleanText(item.title)+" — "+ARTIST+" 회화 연작" : ARTIST+" 작품");
         img.loading = itemIdx < 4 ? "eager" : "lazy";
         img.decoding = "async";
-        img.src = item.cover;
+        img.src = imgSrc(item.cover);
         frame.appendChild(img);
       } else {
         const ph = el("div","placeholder-label"); ph.textContent = "";
@@ -3321,7 +3321,7 @@
         img.alt = (cleanText(item.title)||"상품") + " — " + ARTIST;
         img.loading = idx < 5 ? "eager" : "lazy";
         img.decoding = "async";
-        img.src = item.cover;
+        img.src = imgSrc(item.cover);
         thumb.appendChild(img);
       } else {
         thumb.appendChild(el("div","placeholder-label"));
@@ -3530,7 +3530,7 @@
     // ---- 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 상품 정보
     const gallery = [];
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) gallery.push(p); }));
-    const imgs = gallery.length ? gallery.map(p=>({src:p.image, cap:cleanText(p.caption), video: isVideoPhoto(p) ? p.video : null})) : (item.cover ? [{src:item.cover, cap:""}] : []);
+    const imgs = gallery.length ? gallery.map(p=>({src:imgSrc(p.image), cap:cleanText(p.caption), video: isVideoPhoto(p) ? p.video : null})) : (item.cover ? [{src:imgSrc(item.cover), cap:""}] : []);
     const sd = shopDesign();
 
     const pd = el("div","pd");
@@ -4040,7 +4040,7 @@
       const frame = el("a","frame");
       setItemLink(frame, "works", item);
       if(item.cover){
-        const img = el("img"); img.src = item.cover; img.alt = item.title||"";
+        const img = el("img"); img.src = imgSrc(item.cover); img.alt = item.title||"";
         frame.appendChild(img);
       } else {
         const ph = el("div","placeholder-label"); frame.appendChild(ph);
@@ -4236,10 +4236,10 @@
     const i = lightboxState.index;
     const photo = flat[i];
 
-    $("lightboxImg").src = photo.image;
+    $("lightboxImg").src = imgSrc(photo.image);
     $("lightboxImg").alt = photo.caption || "";
-    $("lightboxImgPrev").src = n > 1 ? flat[(i - 1 + n) % n].image : "";
-    $("lightboxImgNext").src = n > 1 ? flat[(i + 1) % n].image : "";
+    $("lightboxImgPrev").src = n > 1 ? imgSrc(flat[(i - 1 + n) % n].image) : "";
+    $("lightboxImgNext").src = n > 1 ? imgSrc(flat[(i + 1) % n].image) : "";
 
     $("lightboxCaption").textContent = photo.caption || "";
     $("lightboxCaption").style.display = photo.caption ? "" : "none";
@@ -4609,7 +4609,7 @@
     img.loading = eager ? "eager" : "lazy";
     img.decoding = "async";
     img.addEventListener("load", scheduleJustifyLayout);
-    img.src = photo.image;
+    img.src = imgSrc(photo.image);
     cell.appendChild(img);
     return false;
   }
@@ -5271,6 +5271,10 @@
     for(let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
     return btoa(bin);
   }
+  // 방금 올린 사진은 GitHub Pages 반영(약 1분) 전까지 이 기기에 있는 원본으로 보여줌
+  const localImgCache = new Map();
+  function imgSrc(u){ return (u && localImgCache.get(u)) || u; }
+  function imgTag(base64){ return rawHash(base64).split(":")[0].padStart(8, "0"); }
   function extFromDataUrl(dataUrl){
     const m = /^data:image\/([a-zA-Z0-9+.-]+);base64,/.exec(dataUrl);
     if(!m) return "png";
@@ -5486,10 +5490,12 @@
           if(item.cover && item.cover.startsWith("data:")){
             const ext = extFromDataUrl(item.cover);
             const base64 = item.cover.split(",")[1];
-            const fname = `${ghConfig.imgPath}/${item.id}-cover.${ext}`;
+            // 파일 이름에 내용 지문을 붙여서, 사진을 바꾸면 주소도 바뀌게 (브라우저·GitHub 캐시가 옛 사진을 보여주지 않게)
+            const fname = `${ghConfig.imgPath}/${item.id}-cover-${imgTag(base64)}.${ext}`;
             const dataUrl = item.cover;
             await ghPutFile(fname, base64, `Add cover for "${item.title||item.id}"`);
             item.cover = "./"+fname;
+            localImgCache.set(item.cover, dataUrl);
             // 상세 사진 줄에 같은 커버가 들어 있으면 같은 파일을 쓰게 (두 번 올리지 않기)
             (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(ph=>{ if(ph.image === dataUrl) ph.image = item.cover; }));
           }
@@ -5498,8 +5504,9 @@
               if(photo.image && photo.image.startsWith("data:")){
                 const ext = extFromDataUrl(photo.image);
                 const base64 = photo.image.split(",")[1];
-                const fname = `${ghConfig.imgPath}/${item.id}-${photo.id}.${ext}`;
+                const fname = `${ghConfig.imgPath}/${item.id}-${photo.id}-${imgTag(base64)}.${ext}`;
                 await ghPutFile(fname, base64, `Add photo for "${item.title||item.id}"`);
+                localImgCache.set("./"+fname, photo.image);
                 photo.image = "./"+fname;
               }
             }
