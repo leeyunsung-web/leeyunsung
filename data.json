@@ -2360,41 +2360,19 @@
       "coverInRows": true
     },
     {
-      "id": "s-1790623636184-2mg2s",
-      "title": "",
-      "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
-      "description": "",
-      "slug": "shop-5",
+      "id": "s-1790625685891-fny4m",
+      "title": "Yunsung Lee The Drawing Book Torso 100",
+      "cover": "./images/s-1790625685891-fny4m-cover.jpg",
+      "description": "Yunsung Lee \n초타원형 / 160 x 160mm / 216P2020",
+      "slug": "yunsung-lee-the-drawing-book-torso-100",
       "photoRows": [
         {
-          "id": "rowc-s-1790623636184-2mg2s-5234cd",
+          "id": "rowc-s-1790625685891-fny4m-3c8850",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790623636184-2mg2s-5234cd",
-              "image": "./images/s-1790623636184-2mg2s-cover.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1790623906918-oxlu1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790623906918-brt2b",
-              "image": "./images/s-1790623636184-2mg2s-p-1790623906918-brt2b.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1790624773469-fzlgu",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790624773469-2us7y",
-              "image": "./images/s-1790623636184-2mg2s-p-1790624773469-2us7y.jpg",
+              "id": "pc-s-1790625685891-fny4m-3c8850",
+              "image": "./images/s-1790625685891-fny4m-cover.jpg",
               "caption": ""
             }
           ]
@@ -2968,6 +2946,59 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
+      "coverInRows": true
+    },
+    {
+      "id": "s-1790623636184-2mg2s",
+      "title": "",
+      "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
+      "description": "",
+      "slug": "shop-5",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623636184-2mg2s-5234cd",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623636184-2mg2s-5234cd",
+              "image": "./images/s-1790623636184-2mg2s-cover.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1790623906918-oxlu1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790623906918-brt2b",
+              "image": "./images/s-1790623636184-2mg2s-p-1790623906918-brt2b.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1790624773469-fzlgu",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790624773469-2us7y",
+              "image": "./images/s-1790623636184-2mg2s-p-1790624773469-2us7y.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "book",
+      "shipProfile": "book",
       "coverInRows": true
     }
   ],
