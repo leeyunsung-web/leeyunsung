@@ -154,12 +154,15 @@
   .shop-tab-empty .t{font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink);}
   .shop-tab-empty .s{font-size:12px; letter-spacing:.06em; color:var(--ink-faint);}
   /* 상품 수가 적어도 항상 가운데로 모이게 (마지막 줄도 가운데) */
+  /* WORKS 커버처럼 창 폭을 꽉 채움 — 한 줄 개수는 유지하고 카드가 창 크기만큼 커짐 */
   .shop-grid{--cols-now:var(--shop-cols,5); --gx:clamp(14px,1.6vw,26px);
+    --sgw:calc(var(--vwpx, 100vw) - 2 * var(--shop-side, 32px));
+    width:var(--sgw); max-width:none; margin-left:calc(50% - var(--sgw) / 2);
     display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); font-family:var(--shop-font,inherit);}
   .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
-  @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,4);} }
+  @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,5);} }
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
-  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px;} }
+  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
   .shop-card{position:relative; display:block; color:inherit;}
   .vis-seg{display:flex; border:1px solid var(--line-strong); border-radius:6px; overflow:hidden;}
   .vis-seg button{flex:1; font:inherit; font-size:12.5px; padding:9px 10px; border:0; background:#fff; color:var(--ink-faint); cursor:pointer;}
@@ -477,10 +480,13 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);
-    /* 폭은 DESIGN STUDIO → 작품·글 설명 폭. 사이트 폭보다 넓게도 되고, 항상 화면 가운데 */
-    --dw:min(var(--desc-max-width, 704px), var(--vwpx, 100vw) - 2 * var(--page-padding));
-    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0;
+    /* DESIGN STUDIO → 작품 설명 · TEXT 비평글 좌우 여백(%)
+       설정한 화면에서 보이던 모양 그대로, 화면이 커지면 여백·글 폭·글씨가 같은 비율로 커지고 작아지면 작아짐.
+       단, 휴대폰처럼 좁은 화면에서는 글 폭과 글씨가 읽을 수 있는 크기 아래로 내려가지 않음 */
+    --dw:max(calc(var(--vwpx, 100vw) * (1 - 2 * var(--desc-side, 0.25))), min(var(--vwpx, 100vw) - 32px, 560px));
+    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);
+    font-size:max(13px, calc(var(--vwpx, 100vw) * var(--desc-font-k, 0.0104)));}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -787,5 +793,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-max-width: 1000px; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.51px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 4; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 9.65px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
