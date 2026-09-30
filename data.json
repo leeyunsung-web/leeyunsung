@@ -1575,7 +1575,7 @@
               "caption": ""
             }
           ],
-          "size": 30,
+          "size": 20,
           "mb": "100"
         },
         {
@@ -1588,7 +1588,7 @@
               "caption": ""
             }
           ],
-          "size": 30,
+          "size": 20,
           "mb": "100"
         },
         {
@@ -3789,7 +3789,7 @@
     "page.css": "c75337f9:80412",
     "sitemap.xml": "bdc3677d:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "487f499e:46588"
+    "works/works-9/index.html": "c01d5bae:46588"
   },
   "shopDesign": {
     "mainPct": 56,
