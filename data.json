@@ -1563,7 +1563,7 @@
             }
           ],
           "size": 50,
-          "mb": "50"
+          "mb": "100"
         },
         {
           "id": "row-1790766442778-jfzuz",
@@ -1575,7 +1575,8 @@
               "caption": ""
             }
           ],
-          "size": 50
+          "size": 50,
+          "mb": "100"
         },
         {
           "id": "row-1790766487077-4eucj",
@@ -3785,7 +3786,7 @@
     "page.css": "42524592:80396",
     "sitemap.xml": "f8a094f6:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "b21162d2:46480"
+    "works/works-9/index.html": "b34c8794:46484"
   },
   "shopDesign": {
     "mainPct": 56,
