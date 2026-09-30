@@ -214,7 +214,7 @@
             },
             {
               "id": "p-1787465287347-94coq",
-              "image": "./images/w3-p-1787465287347-94coq.jpg",
+              "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg",
               "caption": "Torso 06, 2016, Oil on canvas, 162 × 130 cm"
             }
           ]
@@ -3150,7 +3150,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "3bca6f1c:25392",
-    "works/torso/index.html": "fd01281e:45920",
+    "works/torso/index.html": "638db090:45968",
     "works/danae/index.html": "61ed22ba:54092",
     "works/zodiac/index.html": "2821ba33:91052",
     "works/medusa/index.html": "f284662d:50156",
@@ -3165,7 +3165,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "bea9a905:35764",
     "cv/index.html": "472632d7:8152",
     "page.css": "594f5840:76088",
-    "sitemap.xml": "73f29ee7:98036",
+    "sitemap.xml": "f85912f7:98048",
     "robots.txt": "e7785df8:92"
   }
 }
