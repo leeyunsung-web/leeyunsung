@@ -2383,17 +2383,6 @@
               "caption": ""
             }
           ]
-        },
-        {
-          "id": "row-1790766452590-457zw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790766452590-csk9l",
-              "image": "./images/w-1790766011679-go31v-p-1790766452590-csk9l-c0a02b25.jpg",
-              "caption": ""
-            }
-          ]
         }
       ]
     }
@@ -3303,8 +3292,8 @@
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
     "page.css": "16bee3d:76372",
-    "sitemap.xml": "59cb2032:104152",
+    "sitemap.xml": "4dd3fc9f:103724",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "3570710:28672"
+    "works/works-9/index.html": "7289b28d:27096"
   }
 }
