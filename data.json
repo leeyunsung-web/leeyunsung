@@ -2642,7 +2642,7 @@
   "design": {
     "fontSize": 16,
     "letterSpacing": 0,
-    "bold": true,
+    "bold": false,
     "align": "left",
     "pagePadding": 30,
     "frameGap": 4,
