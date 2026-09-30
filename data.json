@@ -1548,7 +1548,7 @@
               "caption": ""
             }
           ],
-          "size": 30,
+          "size": 20,
           "mt": "100",
           "mb": "100"
         },
@@ -3789,7 +3789,7 @@
     "page.css": "acdf5ebc:80416",
     "sitemap.xml": "bdc3677d:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "1badf442:46588"
+    "works/works-9/index.html": "de5e79f2:46588"
   },
   "shopDesign": {
     "mainPct": 56,
