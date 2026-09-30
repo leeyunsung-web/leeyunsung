@@ -176,6 +176,9 @@
   /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
   body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
   body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  body.master-on .col-grid > .frame[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
+  body.master-on .col-grid > .frame[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  .frame.dragging{opacity:.35;}
   .shop-card.dragging{opacity:.35;}
   .shop-drag-ghost{position:fixed; z-index:400; pointer-events:none; opacity:.92; box-shadow:0 14px 34px rgba(0,0,0,.22); transform:rotate(1.2deg); background:#fff; cursor:grabbing;}
   body.shop-dragging, body.shop-dragging *{cursor:grabbing !important; user-select:none !important;}
@@ -538,6 +541,14 @@
     display:flex; align-items:center; justify-content:center;
   }
   .photo-editctl button:hover{background:var(--ink); color:#fff;}
+  .adj-panel{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:6; width:min(340px, calc(100% - 20px));
+    background:rgba(255,255,255,.97); border:1px solid var(--line-strong); border-radius:8px; padding:12px 14px 10px; box-shadow:0 10px 30px rgba(0,0,0,.18); cursor:default; font-size:12px; color:var(--ink);}
+  .adj-row{display:grid; grid-template-columns:34px 1fr 34px; align-items:center; gap:8px; margin-bottom:6px;}
+  .adj-row input[type=range]{width:100%; accent-color:#111;}
+  .adj-v{text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-soft);}
+  .adj-btns{display:flex; gap:6px; justify-content:flex-end; margin-top:6px;}
+  .adj-btns button{font:inherit; font-size:12px; padding:6px 11px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; cursor:pointer;}
+  .adj-btns button.primary{background:#111; color:#fff; border-color:#111;}
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
@@ -819,5 +830,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 10.84px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 9.93px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
