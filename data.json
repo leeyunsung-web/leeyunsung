@@ -1635,7 +1635,11 @@
             {
               "id": "p-1790798114177-wlw8x",
               "image": "./images/w-1790766011679-go31v-p-1790798114177-wlw8x-34667645.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 3,
+                "c": 0
+              }
             }
           ],
           "size": 30
@@ -3813,7 +3817,7 @@
     "page.css": "9f4a1f6f:81816",
     "sitemap.xml": "bd9d80db:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "358d2951:46676"
+    "works/works-9/index.html": "1df82731:46740"
   },
   "shopDesign": {
     "mainPct": 56,
