@@ -32,15 +32,14 @@
               "caption": "",
               "pan": {
                 "ratio": "21:9",
-                "zoom": 2.95,
+                "zoom": 3,
                 "x0": 0.654,
                 "y0": 0.025,
                 "x1": 0.319,
                 "y1": 0.855
               }
             }
-          ],
-          "size": 90
+          ]
         },
         {
           "id": "row-1787464162725-mbv3q",
@@ -3787,7 +3786,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "d6fd3795:27304",
+    "works/the-annunciation/index.html": "716bc33c:27280",
     "works/torso/index.html": "710e7844:46648",
     "works/danae/index.html": "5a0e7496:54804",
     "works/zodiac/index.html": "b01bcb79:91732",
