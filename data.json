@@ -3085,7 +3085,11 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "rowCols": 5
+      "rowCols": 5,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464596295-v0chu.jpg"
+      }
     },
     {
       "id": "s-1790624955390-u6892",
