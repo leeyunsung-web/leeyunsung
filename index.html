@@ -589,6 +589,14 @@
   .adj-btns{display:flex; gap:6px; justify-content:flex-end; margin-top:6px;}
   .adj-btns button{font:inherit; font-size:12px; padding:6px 11px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; cursor:pointer;}
   .adj-btns button.primary{background:#111; color:#fff; border-color:#111;}
+  /* ---------- 가로 패닝 칸: 큰 이미지를 좁은 창에서 좌우로 천천히 ---------- */
+  .pan-wrap{position:relative; width:100%; aspect-ratio:var(--pr, 1.7778); overflow:hidden; container-type:inline-size; background:#f3f2ef;}
+  .photo-grid .photo-cell .pan-wrap > img.pan-img{position:absolute; top:0; left:0; height:100% !important; width:auto !important; min-width:100%; max-width:none; aspect-ratio:auto; object-fit:cover;
+    animation:lysPan var(--pd, 24s) ease-in-out infinite alternate; will-change:transform;}
+  .pan-wrap.from-right > img.pan-img{animation-direction:alternate-reverse !important;}
+  .photo-cell.is-pan:hover img.pan-img{animation-play-state:paused;}
+  @keyframes lysPan{ from{transform:translateX(0);} to{transform:translateX(calc(100cqw - 100%));} }
+  @media (prefers-reduced-motion: reduce){ .pan-wrap > img.pan-img{animation:none;} }
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
@@ -861,6 +869,9 @@
   .range-val{float:right; color:var(--ink-soft); font-size:11px; text-transform:none; letter-spacing:0;}
   .field input[type=range]{width:100%; accent-color:#111; height:4px;}
   .segbtns{display:flex; gap:6px; flex-wrap:wrap;}
+  .pan-opts{margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; display:flex; flex-direction:column; gap:10px;}
+  .pan-opt > span{display:block; font-size:11.5px; color:var(--ink-soft); margin-bottom:5px;}
+  .pan-opt .segbtns button{padding:6px 10px;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
   }
@@ -1181,6 +1192,24 @@
           <div class="yt-msg" id="photoYtMsg">주소를 넣으면 이미지 대신 영상이 들어가요. 소리 없이 자동 반복 재생되고, 보는 사람이 멈추거나 소리를 켤 수 있어요.</div>
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
+        <div class="field" id="photoPanField">
+          <label>천천히 가로로 움직이기 (패닝)</label>
+          <div class="segbtns" id="photoPanSeg">
+            <button type="button" data-v="off">끄기</button>
+            <button type="button" data-v="on">켜기</button>
+          </div>
+          <div id="photoPanOpts" class="pan-opts" style="display:none;">
+            <div class="pan-opt"><span>보이는 창 비율</span>
+              <div class="segbtns" id="photoPanRatioSeg">
+                <button type="button" data-v="16:9">16:9</button><button type="button" data-v="21:9">21:9</button><button type="button" data-v="3:1">3:1</button><button type="button" data-v="3:2">3:2</button><button type="button" data-v="4:5">4:5</button><button type="button" data-v="1:1">1:1</button>
+              </div></div>
+            <div class="pan-opt"><span>한 번 지나가는 시간</span>
+              <div class="size-row"><input type="number" id="photoPanDur" min="4" max="180" step="1" placeholder="24" inputmode="numeric"><span>초</span></div></div>
+            <div class="pan-opt"><span>시작 위치</span>
+              <div class="segbtns" id="photoPanFromSeg"><button type="button" data-v="left">왼쪽부터</button><button type="button" data-v="right">오른쪽부터</button></div></div>
+          </div>
+          <div class="field-hint">큰 이미지를 좁은 창으로 보여주면서 좌우로 천천히 오가요(끝에 닿으면 부드럽게 되돌아옴). 가로로 긴 이미지일수록, 창 비율이 좁을수록 많이 움직여요. 마우스를 올리면 잠깐 멈춰요.</div>
+        </div>
         <div class="field">
           <label>이 줄에 나란히 놓을 사진 수</label>
           <div class="segbtns" id="photoRowColsSeg">
@@ -4349,6 +4378,16 @@
       : "";
   }
   let photoModalRowCount = 0;
+  let pendingPan = null;   // null = 끄기, {ratio,dur,from}
+  function setPanUi(pan){
+    pendingPan = pan ? Object.assign({ ratio:"16:9", from:"left" }, pan) : null;
+    document.querySelectorAll("#photoPanSeg button").forEach(b=>b.classList.toggle("active", (b.dataset.v === "on") === !!pendingPan));
+    $("photoPanOpts").style.display = pendingPan ? "" : "none";
+    if(pendingPan){
+      document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.ratio));
+      document.querySelectorAll("#photoPanFromSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.from));
+    }
+  }
   function syncYtRatioSeg(){
     const v = $("photoYtRatio").value;
     document.querySelectorAll("#photoYtRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === v));
@@ -4365,6 +4404,7 @@
     if(!video) $("photoYtRatio").value = "16:9";
     syncYtRatioSeg();
     msg.classList.toggle("ok", !!video);
+    const pf = $("photoPanField"); if(pf) pf.style.display = video ? "none" : "";
     msg.textContent = video ? "✓ 영상이 연결됐어요. 저장하면 이 자리에 소리 없이 자동 반복 재생돼요." : "주소를 넣으면 이미지 대신 영상이 들어가요. 소리 없이 자동 반복 재생되고, 보는 사람이 멈추거나 소리를 켤 수 있어요.";
   }
   function onPhotoYtInput(){
@@ -4408,6 +4448,7 @@
       const photo = row.photos.find(p=>p.id===photoId);
       $("photoModalTitle").textContent = "Edit Photo";
       $("photoCaption").value = photo.caption || "";
+      setPanUi(photo.pan || null); $("photoPanDur").value = photo.pan && photo.pan.dur ? photo.pan.dur : "";
       showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", photo.image);
       pendingPhotoImage = photo.image;
       if(isVideoPhoto(photo)) setPhotoVideoUi(Object.assign({}, photo.video));
@@ -4415,6 +4456,7 @@
     } else {
       $("photoModalTitle").textContent = "Add Photo";
       $("photoCaption").value = "";
+      setPanUi(null); $("photoPanDur").value = "";
       clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
       $("photoDeleteBtn").style.display = "none";
     }
@@ -4436,6 +4478,7 @@
     $("photoGapTop").value = ""; $("photoGapBottom").value = ""; $("photoGapX").value = "";
     $("photoModalTitle").textContent = "Add Photo";
     $("photoCaption").value = "";
+    setPanUi(null); $("photoPanDur").value = "";
     clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
     $("photoDeleteBtn").style.display = "none";
     openModal("photoModal");
@@ -4467,8 +4510,15 @@
     }
 
     const id = $("photoId").value || uid("p");
+    const prevPhoto = row.photos.find(p=>p.id===id) || null;
     const payload = { id, image: pendingPhotoImage, caption: $("photoCaption").value.trim() };
+    if(prevPhoto && prevPhoto.adj && prevPhoto.image === pendingPhotoImage) payload.adj = prevPhoto.adj;   // 같은 사진이면 밝기·대비 유지
     if(pendingPhotoVideo) payload.video = { id: pendingPhotoVideo.id, ratio: $("photoYtRatio").value || pendingPhotoVideo.ratio || "16:9" };
+    else if(pendingPan){
+      const dur = parseInt($("photoPanDur").value, 10);
+      payload.pan = { ratio: pendingPan.ratio || "16:9", from: pendingPan.from === "right" ? "right" : "left" };
+      if(dur >= 4 && dur <= 180) payload.pan.dur = dur;
+    }
     const idx = row.photos.findIndex(p=>p.id===id);
     if(idx>=0) row.photos[idx] = payload;
     else if(row.photos.length < Math.max(row.cols||1, pendingRowCols)) row.photos.push(payload);
@@ -4933,6 +4983,11 @@
     if(ob) ob.observe(wrap); else ytLoad(rec);
     return wrap;
   }
+  // 패닝 설정
+  const PAN_RATIOS = { "16:9":16/9, "21:9":21/9, "3:1":3, "3:2":1.5, "4:5":0.8, "1:1":1 };
+  function panOf(p){ return p && p.pan && !isVideoPhoto(p) ? p.pan : null; }
+  function panRatio(pan){ return PAN_RATIOS[pan.ratio] || 16/9; }
+  function panDur(pan){ const n = parseFloat(pan.dur); return Math.max(4, Math.min(180, n || 24)); }
   // 상세페이지 사진 줄의 한 칸 (사진 또는 영상)
   function fillPhotoCell(cell, photo, alt, eager){
     if(isVideoPhoto(photo)){
@@ -4948,6 +5003,17 @@
     img.addEventListener("load", scheduleJustifyLayout);
     img.src = imgSrc(photo.image);
     const f = adjFilter(photo); if(f) img.style.filter = f;
+    const pan = panOf(photo);
+    if(pan){
+      cell.classList.add("is-pan");
+      cell.dataset.ar = String(panRatio(pan));
+      const w = el("div", "pan-wrap" + (pan.from === "right" ? " from-right" : ""));
+      w.style.setProperty("--pr", String(panRatio(pan)));
+      w.style.setProperty("--pd", panDur(pan) + "s");
+      img.classList.add("pan-img");
+      w.appendChild(img); cell.appendChild(w);
+      return false;
+    }
     cell.appendChild(img);
     return false;
   }
@@ -6549,9 +6615,12 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
                  (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
                  '        </div>';
         }
-        return '        <a class="photo-cell" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'">\n' +
-               '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+(adjFilter(p) ? ' style="filter:'+adjFilter(p)+'"' : '')+
-               (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
+        const pan = panOf(p);
+        const imgTagHtml = '<img'+(pan ? ' class="pan-img"' : '')+' src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+(adjFilter(p) ? ' style="filter:'+adjFilter(p)+'"' : '')+
+               (i < 2 ? '' : ' loading="lazy"')+' decoding="async">';
+        return '        <a class="photo-cell'+(pan ? ' is-pan' : '')+'" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'"'+(pan ? ' data-ar="'+panRatio(pan).toFixed(5)+'"' : '')+'>\n' +
+               (pan ? '          <div class="pan-wrap'+(pan.from === "right" ? ' from-right' : '')+'" style="--pr:'+panRatio(pan).toFixed(5)+';--pd:'+panDur(pan)+'s">'+imgTagHtml+'</div>\n'
+                    : '          '+imgTagHtml+'\n') +
                (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
                '        </a>';
       }).join("\n");
@@ -6927,6 +6996,9 @@ shopBlock,
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
     document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setRowColsUi(b.dataset.val, photoModalRowCount)));
+    document.querySelectorAll("#photoPanSeg button").forEach(b=>b.addEventListener("click", ()=>setPanUi(b.dataset.v === "on" ? (pendingPan || {}) : null)));
+    document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.ratio = b.dataset.v; setPanUi(pendingPan); } }));
+    document.querySelectorAll("#photoPanFromSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.from = b.dataset.v; setPanUi(pendingPan); } }));
     document.querySelectorAll("textarea.grow").forEach(t=>t.addEventListener("input", ()=>autoGrow(t)));
     $("itemOrigWork").addEventListener("change", ()=>fillOrigPicker($("itemOrigWork").value, null));
     $("photoYtUrl").addEventListener("input", onPhotoYtInput);
