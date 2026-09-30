@@ -160,6 +160,12 @@
     width:var(--sgw); max-width:none; margin-left:calc(50% - var(--sgw) / 2);
     display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); font-family:var(--shop-font,inherit);}
   .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
+  /* 상품별 '이 줄 개수'로 나뉜 줄 */
+  .shop-grid{flex-direction:column; flex-wrap:nowrap;}
+  .shop-row{--cols-now:var(--n,5); display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); width:100%;}
+  .shop-row > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
+  @media (max-width:900px){ .shop-row{--cols-now:var(--n-sm,3);} }
+  @media (max-width:600px){ .shop-row{--cols-now:var(--n-xs,2); gap:30px 12px;} }
   @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,5);} }
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:var(--shop-cols-xs,2); --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
