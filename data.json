@@ -1545,7 +1545,11 @@
             {
               "id": "p-1790767398019-vncbr",
               "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 5,
+                "c": 0
+              }
             }
           ],
           "size": 50,
@@ -3786,10 +3790,10 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
-    "page.css": "efeceb9:80416",
+    "page.css": "42524592:80396",
     "sitemap.xml": "f8a094f6:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "16f88976:46588"
+    "works/works-9/index.html": "15e2799a:46652"
   },
   "shopDesign": {
     "mainPct": 56,
