@@ -1562,7 +1562,8 @@
               "caption": ""
             }
           ],
-          "size": 50
+          "size": 50,
+          "mb": "50"
         },
         {
           "id": "row-1790766442778-jfzuz",
@@ -3784,7 +3785,7 @@
     "page.css": "42524592:80396",
     "sitemap.xml": "f8a094f6:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "5703aba2:46456"
+    "works/works-9/index.html": "b21162d2:46480"
   },
   "shopDesign": {
     "mainPct": 56,
