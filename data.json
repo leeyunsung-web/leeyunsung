@@ -19,7 +19,8 @@
       "descStyle": {
         "align": "left",
         "bold": false,
-        "letterSpacing": 0
+        "letterSpacing": 0,
+        "lineHeight": 1.1
       },
       "photoRows": [
         {
@@ -3786,7 +3787,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "42f370d0:27328",
+    "works/the-annunciation/index.html": "ba382b65:27348",
     "works/torso/index.html": "710e7844:46648",
     "works/danae/index.html": "5a0e7496:54804",
     "works/zodiac/index.html": "b01bcb79:91732",
@@ -3801,7 +3802,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "9cd362f0:38972",
     "text/exploding-bishojo-baek-jihong/index.html": "af6c102c:36656",
     "cv/index.html": "4c6ebe9d:8156",
-    "page.css": "f8fea67c:85604",
+    "page.css": "f9d8f8d3:86332",
     "sitemap.xml": "6f53c7:114240",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "189c337c:55260"
