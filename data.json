@@ -1569,6 +1569,22 @@
           "mb": "100"
         },
         {
+          "id": "row-1790798504927-934un",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1790798504927-gvx9u",
+              "image": "./images/w-1790766011679-go31v-p-1790798504927-gvx9u-edf784d7.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1790798512648-k2mct",
+              "image": "./images/w-1790766011679-go31v-p-1790798512648-k2mct-be998c1d.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
           "id": "row-1790797726614-w74vd",
           "cols": 3,
           "photos": [
@@ -3789,9 +3805,9 @@
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
     "page.css": "b30a9b75:81816",
-    "sitemap.xml": "cf447a63:110464",
+    "sitemap.xml": "d9f83692:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "6ebecb96:45652"
+    "works/works-9/index.html": "a70276f9:46536"
   },
   "shopDesign": {
     "mainPct": 56,
