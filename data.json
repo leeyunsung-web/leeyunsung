@@ -2441,7 +2441,8 @@
               "image": "./images/w-1790766011679-go31v-p-1790766829810-0lxgy-c08f84c8.jpg",
               "caption": "The Three Graces Pixel Props 02, 2019, Oil on canvas, 53 × 45 cm"
             }
-          ]
+          ],
+          "size": 50
         },
         {
           "id": "row-1790766888925-8lrzh",
@@ -3438,6 +3439,6 @@
     "page.css": "59041938:76860",
     "sitemap.xml": "f23426d8:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "506e26fd:44820"
+    "works/works-9/index.html": "eba80c33:44840"
   }
 }
