@@ -2941,7 +2941,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790624929547-vad9p",
