@@ -2299,7 +2299,8 @@
     "frameGap": 4,
     "frameCols": 2,
     "detailMargin": 32,
-    "descWidth": 1000,
+    "descSide": 25,
+    "descRefW": 1440,
     "captionSize": 15,
     "frameTitleSize": 20,
     "photoGap": 4,
@@ -2312,7 +2313,8 @@
     "contactTopSpace": 120,
     "fontFamily": "pretendard",
     "textWidth": 600,
-    "uiItalic": false
+    "uiItalic": false,
+    "descWidth": 1000
   },
   "publishedPages": [
     "works/the-annunciation/index.html",
@@ -2333,9 +2335,9 @@
   "shop": [
     {
       "id": "s-1790622121911-1dl7b",
-      "title": "At the Last Judgment 2010 Art Poster, 2020 65 × 50 cm Signed, Limited Edition of 300",
+      "title": "At the Last Judgment Art poster (2020), 65 × 50 cm, Signed, Limited Edition of 300",
       "cover": "./images/s-1790622121911-1dl7b-cover.jpg",
-      "description": "At the Last Judgment 2010 Art Poster, 2020 65 &times; 50 cm Signed, Limited Edition of 300\nEdit Info\nDelete\n65 &times; 50 cm &middot; Digital Print on Paper\n2010년작 《At the Last Judgment》의 포스터 버전입니다. 2020년 한정 에디션으로 제작&middot;판매되었으며, 남은 수량을 웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster version of At the Last Judgment (2010), originally produced and released as a limited edition in 2020. The remaining prints are now available again to commemorate the renewal of Lee Yunsung's website.",
+      "description": "At the Last Judgment Art poster (2020), 65 × 50 cm, Signed, Limited Edition of 300\n Digital Print on Paper\n2010년작 《At the Last Judgment》의 포스터 버전입니다. 2020년 한정 에디션으로 제작, 판매되었으며, 남은 수량을 웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster version of At the Last Judgment (2010), originally produced and released as a limited edition in 2020. The remaining prints are now available again to commemorate the renewal of Lee Yunsung's website.",
       "slug": "at-the-last-judgment-2010-art-poster-2020-65-50-cm-signed-li",
       "photoRows": [
         {
@@ -2360,8 +2362,7 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": false
+      "coverInRows": true
     },
     {
       "id": "s-1790622337229-hzfwn",
@@ -3116,5 +3117,25 @@
     "owner": "leeyunsung",
     "regNo": "316-05-03339",
     "email": "nu-layer@naver.com"
+  },
+  "pageHashes": {
+    "works/the-annunciation/index.html": "a8e46316:24916",
+    "works/torso/index.html": "d22f99bc:44204",
+    "works/danae/index.html": "17bdebce:52652",
+    "works/zodiac/index.html": "bc8920dc:86824",
+    "works/medusa/index.html": "208ed423:48904",
+    "works/laocoon/index.html": "ad02d854:53864",
+    "works/frames-of-torso/index.html": "9f4b2bef:45552",
+    "works/works-8/index.html": "b3ec65b9:13988",
+    "text/critical-notes-lim-geunjun/index.html": "7cbcc935:28748",
+    "text/sections-of-structure-jung-hyun/index.html": "674a4057:27884",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "d5687af7:23472",
+    "text/painting-of-the-cut-konno-yuki/index.html": "8dc3b3b6:20152",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "f89f1890:37832",
+    "text/exploding-bishojo-baek-jihong/index.html": "89e9c91c:35480",
+    "cv/index.html": "472632d7:8152",
+    "page.css": "726d3e92:73584",
+    "sitemap.xml": "2980e62e:97672",
+    "robots.txt": "e7785df8:92"
   }
 }
