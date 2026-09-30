@@ -1584,7 +1584,11 @@
             {
               "id": "p-1790797609739-vi1o0",
               "image": "./images/w-1790766011679-go31v-p-1790797609739-vi1o0-be998c1d.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 1,
+                "c": 0
+              }
             }
           ],
           "gx": "5%",
@@ -3797,7 +3801,7 @@
     "page.css": "9f4a1f6f:81816",
     "sitemap.xml": "bd9d80db:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "ee895aba:46428"
+    "works/works-9/index.html": "db4c1431:46488"
   },
   "shopDesign": {
     "mainPct": 56,
