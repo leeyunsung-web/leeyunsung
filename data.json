@@ -2242,17 +2242,6 @@
               "caption": "Laocoon, 2010, Digital print, 230 × 295 cm"
             }
           ]
-        },
-        {
-          "id": "row-1790629404288-ak9jl",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790629404288-7a0xo",
-              "image": "./images/s-1790625273123-zjy2h-cover.jpg",
-              "caption": ""
-            }
-          ]
         }
       ]
     }
@@ -2550,37 +2539,6 @@
             {
               "id": "pc-s-1790625066588-fg7t1-646eab",
               "image": "./images/s-1790625066588-fg7t1-cover.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true
-    },
-    {
-      "id": "s-1790625273123-zjy2h",
-      "title": "",
-      "cover": "./images/s-1790625273123-zjy2h-cover.jpg",
-      "description": "",
-      "slug": "shop-17",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625273123-zjy2h-635739",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625273123-zjy2h-635739",
-              "image": "./images/s-1790625273123-zjy2h-cover.jpg",
               "caption": ""
             }
           ]
@@ -3167,7 +3125,7 @@
     "works/medusa/index.html": "96d920fe:50348",
     "works/laocoon/index.html": "23b0e3c1:55504",
     "works/frames-of-torso/index.html": "57c0d5f1:46764",
-    "works/works-8/index.html": "c7ea4f7a:17548",
+    "works/works-8/index.html": "a4c79d34:16208",
     "text/critical-notes-lim-geunjun/index.html": "e182b346:29228",
     "text/sections-of-structure-jung-hyun/index.html": "1c15c54b:28364",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "b86f60fa:23952",
@@ -3176,7 +3134,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
     "page.css": "16bee3d:76372",
-    "sitemap.xml": "2c5b6023:98764",
+    "sitemap.xml": "32c3a61f:98440",
     "robots.txt": "e7785df8:92"
   }
 }
