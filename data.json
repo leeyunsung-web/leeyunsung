@@ -2511,6 +2511,16 @@
               "id": "p-1790768423456-iczr9",
               "image": "./images/w-1790766011679-go31v-p-1790768423456-iczr9-0a4743e1.jpg",
               "caption": ""
+            },
+            {
+              "id": "p-1790768437838-b631t",
+              "image": "./images/w-1790766011679-go31v-p-1790768437838-b631t-4b770999.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1790768444520-l1z16",
+              "image": "./images/w-1790766011679-go31v-p-1790768444520-l1z16-a91b16bd.jpg",
+              "caption": ""
             }
           ]
         }
@@ -3422,8 +3432,8 @@
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
     "page.css": "16bee3d:76372",
-    "sitemap.xml": "66d5d7e3:110048",
+    "sitemap.xml": "82dc4c9:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "5f214b86:43856"
+    "works/works-9/index.html": "2bf5b092:44736"
   }
 }
