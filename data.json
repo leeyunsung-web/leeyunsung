@@ -2522,7 +2522,8 @@
               "image": "./images/w-1790766011679-go31v-p-1790767468134-6pa0h-edf784d7.jpg",
               "caption": ""
             }
-          ]
+          ],
+          "size": 30
         },
         {
           "id": "row-1790768423456-qt7zd",
@@ -3455,6 +3456,6 @@
     "page.css": "f99a953e:76840",
     "sitemap.xml": "f23426d8:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "b92fa047:45092"
+    "works/works-9/index.html": "2616bd45:45112"
   }
 }
