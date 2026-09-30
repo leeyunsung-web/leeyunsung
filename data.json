@@ -1610,7 +1610,11 @@
             {
               "id": "p-1790797733174-9lrmn",
               "image": "./images/w-1790766011679-go31v-p-1790797733174-9lrmn-0f73e761.jpg",
-              "caption": "The Three Graces Pixel Props 06, 2019, Oil on canvas, 15 x 15cm"
+              "caption": "The Three Graces Pixel Props 06, 2019, Oil on canvas, 15 x 15cm",
+              "adj": {
+                "b": 5,
+                "c": 0
+              }
             },
             {
               "id": "p-1790797739836-pynr4",
@@ -3807,7 +3811,7 @@
     "page.css": "3cc77070:81764",
     "sitemap.xml": "6d6294c6:112524",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "5b850597:50716"
+    "works/works-9/index.html": "27cb3d92:50780"
   },
   "shopDesign": {
     "mainPct": 56,
