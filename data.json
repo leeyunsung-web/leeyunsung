@@ -3549,7 +3549,8 @@
       "soldOut": false,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "rowCols": 4
     },
     {
       "id": "s-1790770433538-xp87a",
