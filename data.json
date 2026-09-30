@@ -2947,7 +2947,7 @@
       "id": "s-1790624929547-vad9p",
       "title": "Torso 01\nArt Poster (2021)\n62 x 50 cm\nSigned and numbered, edition of 300",
       "cover": "./images/w3-p-1787464242838-rtg3t.jpg",
-      "description": "",
+      "description": "2012년작 〈Torso〉 의 포스터 버전입니다.\n2021년 한정 에디션으로 제작·판매되었으며, 남은 수량을\n웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster edition of Cronos (2011), originally produced and released as a limited edition in 2021. The remaining prints are now available again to celebrate the relaunch of this website.",
       "slug": "shop-6",
       "photoRows": [
         {
@@ -2976,7 +2976,8 @@
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787464242838-rtg3t.jpg"
-      }
+      },
+      "rowCols": 5
     },
     {
       "id": "s-1790624935331-clud2",
