@@ -1726,8 +1726,7 @@
               "image": "./images/w-1790766011679-go31v-p-1790766417259-r3ah9-096d9eeb.jpg",
               "caption": ""
             }
-          ],
-          "size": 30
+          ]
         },
         {
           "id": "row-1790769544038-27v48",
@@ -3800,7 +3799,7 @@
     "page.css": "c75337f9:80412",
     "sitemap.xml": "a977b284:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "556e2851:46708"
+    "works/works-9/index.html": "86cc59b8:46684"
   },
   "shopDesign": {
     "mainPct": 56,
