@@ -3669,7 +3669,11 @@
       "soldOut": false,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "original": {
+        "workId": "w5",
+        "image": "./images/w5-p-1788445603485-941r0.jpg"
+      }
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
@@ -3695,7 +3699,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
-    "page.css": "eab3988a:78396",
+    "page.css": "1f500f04:78392",
     "sitemap.xml": "f66dbadc:111332",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "e00d0d6d:45940"
