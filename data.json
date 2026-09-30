@@ -1743,9 +1743,7 @@
               "caption": "2019, Pixel Prometheus: The Three Graces, STANDARD.a + Superellipse Gallery, Seoul, Korea"
             }
           ],
-          "size": 70,
-          "mt": "50",
-          "mb": "50"
+          "size": 70
         },
         {
           "id": "row-1790768423456-qt7zd",
@@ -3819,7 +3817,7 @@
     "page.css": "3cc77070:81764",
     "sitemap.xml": "a7e32df3:113344",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "4dfc75ff:53184"
+    "works/works-9/index.html": "881d81b9:53140"
   },
   "shopDesign": {
     "mainPct": 56,
