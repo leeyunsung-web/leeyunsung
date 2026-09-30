@@ -1151,6 +1151,13 @@
           </div>
           <div class="field-hint">숫자만 쓰면 px, %를 붙이면 화면 폭 대비 비율이에요. 예: 40 → 40px, 5% → 화면 폭의 5%. 음수를 쓰면 간격이 좁아져요. 비우면 기본 간격.</div>
         </div>
+        <div class="field" id="photoGapXField" style="display:none;">
+          <label>사진 사이 가로 간격 <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">— 이 줄 안에서 사진끼리 벌리기</span></label>
+          <div class="gap-row">
+            <label>간격 <input type="text" id="photoGapX" placeholder="기본" inputmode="decimal" autocomplete="off"></label>
+          </div>
+          <div class="field-hint">숫자만 쓰면 px, %를 붙이면 화면 폭 대비 비율이에요. 예: 0 → 딱 붙이기, 30 → 30px, 2% → 화면 폭의 2%. 비우면 기본 간격.</div>
+        </div>
         <div class="btnrow">
           <button class="btn primary" id="photoSaveBtn" style="flex:1;">저장</button>
           <button class="btn danger" id="photoDeleteBtn" style="display:none;">삭제</button>
@@ -4262,6 +4269,7 @@
   function setRowColsUi(n, rowPhotoCount){
     pendingRowCols = Math.min(3, Math.max(1, parseInt(n,10) || 1));
     document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.classList.toggle("active", parseInt(b.dataset.val,10) === pendingRowCols));
+    const gxf = $("photoGapXField"); if(gxf) gxf.style.display = pendingRowCols > 1 ? "" : "none";
     const extra = (rowPhotoCount || 0) - pendingRowCols;
     $("photoRowColsHint").textContent = extra > 0
       ? "이 사진은 " + pendingRowCols + "장짜리 줄이 되고, 나머지 " + extra + "장은 지워지지 않고 " + Math.min(3, extra) + "장짜리 줄로 따로 남아요."
@@ -4318,6 +4326,7 @@
       $("photoSize").value = rw && rw.size && rw.size < 100 ? rw.size : "";
       $("photoGapTop").value = rw && rw.mt ? rw.mt : "";
       $("photoGapBottom").value = rw && rw.mb ? rw.mb : "";
+      $("photoGapX").value = rw && rw.gx != null ? rw.gx : "";
     }
 
     if(photoId){
@@ -4351,7 +4360,7 @@
     photoModalRowCount = 0;
     setRowColsUi(cols, 0);
     $("photoSize").value = "";
-    $("photoGapTop").value = ""; $("photoGapBottom").value = "";
+    $("photoGapTop").value = ""; $("photoGapBottom").value = ""; $("photoGapX").value = "";
     $("photoModalTitle").textContent = "Add Photo";
     $("photoCaption").value = "";
     clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
@@ -4425,6 +4434,9 @@
     const gt = normGap($("photoGapTop").value), gb = normGap($("photoGapBottom").value);
     if(gt) myRow.mt = gt; else delete myRow.mt;
     if(gb) myRow.mb = gb; else delete myRow.mb;
+    // 사진 사이 가로 간격 (2장 이상 줄만)
+    const gx = normGapX($("photoGapX").value);
+    if(gx !== "" && (myRow.cols || 1) > 1) myRow.gx = gx; else delete myRow.gx;
 
     saveDraft();
     closeModal("photoModal");
@@ -4948,7 +4960,9 @@
 
   /* ================= 사진 순서 정리 창 =================
      작품(또는 글·상품) 상세의 모든 사진을 새 창에 썸네일로 보여주고, 끌어서 전체 순서를 바꿈.
-     줄 모양(각 줄에 몇 장인지·줄 크기)은 그대로 두고, 사진만 새 순서대로 채움.
+     줄 모양(각 줄에 몇 장인지)은 그대로 두고 사진을 새 순서대로 채움.
+     Edit Photo 에서 준 칸 설정(크기 %, 위·아래 여백, 가로 간격)은 사진을 따라 같이 이동.
+     줄 번호를 끌면 줄 전체(모양+설정)가 통째로 이동.
      바꾸는 즉시 원래 창에 반영 + 자동 저장. */
   let arrangeWin = null;
   function arrangeData(key, itemId){
@@ -4957,25 +4971,51 @@
     const abs = u=>{ try{ return new URL(imgSrc(u), location.href).href; }catch(e){ return u; } };
     return {
       title: multiLine(item.title) || "(Untitled)",
-      rows: (item.photoRows || []).map(r=>({ cols: r.cols || 1, size: r.size || 100,
+      rows: (item.photoRows || []).map(r=>({ cols: r.cols || 1, size: r.size || 100, mt: r.mt || "", mb: r.mb || "", gx: r.gx || "",
         photos: (r.photos || []).map(p=>({ id: p.id, src: abs(p.image), video: isVideoPhoto(p), cap: cleanText(p.caption) })) }))
     };
   }
   function arrangeApply(key, itemId, orderIds){
     const item = (state.data[key] || []).find(x=>x.id === itemId);
     if(!item) return false;
-    const flat = []; (item.photoRows || []).forEach(r=>(r.photos || []).forEach(p=>flat.push(p)));
+    const flat = [], home = new Map();
+    const SETS = ["size","mt","mb","gx"];
+    (item.photoRows || []).forEach(r=>{
+      const snap = {}; SETS.forEach(k=>{ if(r[k] != null && r[k] !== "") snap[k] = r[k]; });
+      (r.photos || []).forEach(p=>{ flat.push(p); home.set(p.id, snap); });
+    });
     const byId = new Map(flat.map(p=>[p.id, p]));
     const ordered = orderIds.map(id=>byId.get(id)).filter(Boolean);
     flat.forEach(p=>{ if(ordered.indexOf(p) < 0) ordered.push(p); });   // 혹시 빠진 사진은 뒤에 (절대 지우지 않음)
     let k = 0;
-    (item.photoRows || []).forEach(r=>{ const n = (r.photos || []).length; r.photos = ordered.slice(k, k + n); k += n; });
+    (item.photoRows || []).forEach(r=>{
+      const n = (r.photos || []).length; r.photos = ordered.slice(k, k + n); k += n;
+      if(!r.photos.length) return;
+      // 이 줄에 가장 많이 들어온 사진들의 원래 칸 설정을 따라감 (같으면 맨 앞 사진 기준)
+      const cnt = new Map(); let best = null, bestN = 0;
+      r.photos.forEach(p=>{ const h = home.get(p.id); const c = (cnt.get(h) || 0) + 1; cnt.set(h, c); if(c > bestN){ bestN = c; best = h; } });
+      const first = home.get(r.photos[0].id);
+      if(cnt.get(first) === bestN) best = first;
+      SETS.forEach(key=>{ delete r[key]; });
+      if(best) SETS.forEach(key=>{ if(best[key] != null) r[key] = best[key]; });
+    });
     saveDraft();
     const rt = parseHash();
     if(rt.id === itemId) renderRoute();
     return true;
   }
-  window.__lysArrange = { get: arrangeData, set: arrangeApply };
+  function arrangeMoveRow(key, itemId, from, to){
+    const item = (state.data[key] || []).find(x=>x.id === itemId);
+    const rows = item && item.photoRows;
+    if(!rows || from < 0 || from >= rows.length) return false;
+    const r = rows.splice(from, 1)[0];
+    rows.splice(Math.max(0, Math.min(rows.length, to)), 0, r);
+    saveDraft();
+    const rt = parseHash();
+    if(rt.id === itemId) renderRoute();
+    return true;
+  }
+  window.__lysArrange = { get: arrangeData, set: arrangeApply, moveRow: arrangeMoveRow };
   const ARRANGE_HTML = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사진 순서</title>
 <style>
 *{box-sizing:border-box} body{margin:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#111;background:#f6f5f3}
@@ -4983,7 +5023,10 @@ header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;paddin
 h1{font-size:14px;margin:0 0 2px;letter-spacing:.02em} .sub{color:#777;font-size:12px} #st{float:right;font-size:12px;color:#1d6b3a}
 main{padding:14px 16px 40px}
 .row{display:flex;gap:8px;align-items:flex-end;padding:8px;margin-bottom:8px;background:#fff;border:1px solid #e3e1dc;border-radius:6px}
-.row .no{flex:0 0 26px;color:#aaa;font-size:11px;align-self:center;text-align:center}
+.row .no{flex:0 0 44px;color:#999;font-size:11px;align-self:stretch;text-align:center;cursor:grab;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;user-select:none}
+.row .no:hover{background:#f0eee9;color:#111} .row .no b{font-size:15px;line-height:1;letter-spacing:-1px}
+.row .tag{font-size:9.5px;color:#8a6d1f;background:#fbf3dc;border-radius:3px;padding:0 3px;line-height:1.5;white-space:nowrap}
+.row.rdrag{opacity:.35} .row.rbefore{box-shadow:0 -4px 0 #111} .row.rafter{box-shadow:0 4px 0 #111}
 .th{position:relative;height:110px;min-width:60px;border-radius:3px;overflow:hidden;background:#eee;cursor:grab;flex:0 0 auto;user-select:none}
 .th img{height:100%;width:auto;display:block;pointer-events:none}
 .th .v{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6)}
@@ -4991,9 +5034,9 @@ main{padding:14px 16px 40px}
 .th .n{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:0 5px;border-radius:3px}
 .th.drag{opacity:.3} .th.before{box-shadow:-4px 0 0 #111} .th.after{box-shadow:4px 0 0 #111}
 .empty{color:#999;padding:30px;text-align:center}
-</style></head><body><header><span id="st"></span><h1 id="t">사진 순서</h1><div class="sub">사진을 끌어서 원하는 자리에 놓으세요. 줄 모양(한 줄에 몇 장)은 그대로이고, 사진만 순서대로 채워져요. 바꾸면 바로 홈페이지에 반영돼요.</div></header><main id="m"></main>
+</style></head><body><header><span id="st"></span><h1 id="t">사진 순서</h1><div class="sub">사진을 끌어 옮기면 그 칸의 설정(크기·여백·간격)도 사진을 따라가요. 왼쪽 줄 번호(≡)를 끌면 줄 전체가 통째로 옮겨져요. 바꾸면 바로 홈페이지에 반영돼요.</div></header><main id="m"></main>
 <script>
-var KEY=null,ID=null,dragId=null,SIG='';
+var KEY=null,ID=null,dragId=null,dragRow=-1,SIG='';
 function api(){ try{ return window.opener && window.opener.__lysArrange; }catch(e){ return null; } }
 function render(force){
   var a=api(), m=document.getElementById('m');
@@ -5007,7 +5050,15 @@ function render(force){
   if(!d.rows.length){ m.innerHTML='<div class="empty">아직 사진이 없어요.</div>'; return; }
   d.rows.forEach(function(r,ri){
     var row=document.createElement('div'); row.className='row';
-    var no=document.createElement('div'); no.className='no'; no.textContent=(ri+1); row.appendChild(no);
+    var no=document.createElement('div'); no.className='no'; no.draggable=true; no.title='끌어서 줄 전체 옮기기';
+    no.innerHTML='<b>\u2261</b><span>'+(ri+1)+'</span>';
+    var tags=[]; if(r.size&&r.size<100) tags.push(r.size+'%'); if(r.mt) tags.push('\u2191'+r.mt); if(r.mb) tags.push('\u2193'+r.mb); if(r.gx) tags.push('\u2194'+r.gx);
+    tags.forEach(function(x){ var g=document.createElement('span'); g.className='tag'; g.textContent=x; no.appendChild(g); });
+    no.addEventListener('dragstart',function(e){ dragRow=ri; row.classList.add('rdrag'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain','row'+ri);}catch(_){} });
+    no.addEventListener('dragend',function(){ dragRow=-1; clear(); row.classList.remove('rdrag'); });
+    row.addEventListener('dragover',function(e){ if(dragRow<0||dragRow===ri) return; e.preventDefault(); clear(); var b=row.getBoundingClientRect(); row.classList.add(e.clientY<b.top+b.height/2?'rbefore':'rafter'); });
+    row.addEventListener('drop',function(e){ if(dragRow<0) return; e.preventDefault(); if(dragRow===ri){clear();return;} var b=row.getBoundingClientRect(); var to=ri+(e.clientY>=b.top+b.height/2?1:0); if(dragRow<to) to--; var from=dragRow; dragRow=-1; var a2=api(); if(a2&&a2.moveRow&&a2.moveRow(KEY,ID,from,to)) done(); render(true); });
+    row.appendChild(no);
     r.photos.forEach(function(p){
       n++;
       var t=document.createElement('div'); t.className='th'; t.draggable=true; t.dataset.id=p.id; t.title=p.cap||'';
@@ -5024,17 +5075,18 @@ function render(force){
     m.appendChild(row);
   });
 }
-function clear(){ var l=document.querySelectorAll('.before,.after'); for(var i=0;i<l.length;i++) l[i].classList.remove('before','after'); }
+function clear(){ var l=document.querySelectorAll('.before,.after,.rbefore,.rafter'); for(var i=0;i<l.length;i++) l[i].classList.remove('before','after','rbefore','rafter'); }
+function done(){ var s=document.getElementById('st'); s.textContent='반영됨 ✓'; clearTimeout(window._st); window._st=setTimeout(function(){s.textContent='';},1500); }
 function move(from,to,after){
   var ids=[].map.call(document.querySelectorAll('.th'),function(x){return x.dataset.id;});
   ids.splice(ids.indexOf(from),1);
   var at=ids.indexOf(to)+(after?1:0);
   ids.splice(at,0,from);
-  var a=api(); if(a && a.set(KEY,ID,ids)){ var s=document.getElementById('st'); s.textContent='반영됨 ✓'; clearTimeout(window._st); window._st=setTimeout(function(){s.textContent='';},1500); }
+  var a=api(); if(a && a.set(KEY,ID,ids)) done();
   render(true);
 }
 window.__arrangeOpen=function(k,id){ KEY=k; ID=id; render(true); };
-window.addEventListener('focus',function(){ if(!dragId) render(false); });
+window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false); });
 <\/script></body></html>`;
   function openArrangeWindow(key, itemId){
     const w = window.open("", "lysArrange", "width=980,height=820");
@@ -5060,10 +5112,23 @@ window.addEventListener('focus',function(){ if(!dragId) render(false); });
     const g = normGap(v); if(!g) return "";
     return g.endsWith("%") ? "calc(var(--vwpx, 100vw) * " + (parseFloat(g) / 100) + ")" : g + "px";
   }
+  // 가로 간격: 0 허용(딱 붙이기), 음수 불가
+  function normGapX(v){
+    const t = String(v == null ? "" : v).trim().replace(/\s+/g, "");
+    const m = t.match(/^(\d+(?:\.\d+)?)(%|px)?$/i);
+    if(!m) return "";
+    const n = Math.min(2000, parseFloat(m[1]));
+    return m[2] === "%" ? n + "%" : String(n);
+  }
+  function gapXCss(v){
+    const g = normGapX(v); if(g === "") return "";
+    return g.endsWith("%") ? "calc(var(--vwpx, 100vw) * " + (parseFloat(g) / 100) + ")" : g + "px";
+  }
   function applyRowGaps(el_, row){
-    const t = gapCss(row.mt), b = gapCss(row.mb);
+    const t = gapCss(row.mt), b = gapCss(row.mb), x = (row.cols || 1) > 1 ? gapXCss(row.gx) : "";
     if(t) el_.style.marginTop = t;
     if(b) el_.style.marginBottom = b;
+    if(x) el_.style.columnGap = x;
   }
   function adjFilter(p){
     const a = p && p.adj; if(!a) return "";
@@ -6309,8 +6374,8 @@ window.addEventListener('focus',function(){ if(!dragId) render(false); });
       }).join("\n");
       if(!cells) return "";
       const sized = row.size && row.size < 100;
-      const gt = gapCss(row.mt), gb = gapCss(row.mb);
-      return '      <div class="photo-grid'+(cols>1?' multi':'')+(sized?' sized':'')+'" style="--row-cols:'+cols+(sized?';width:'+row.size+'%':'')+(gt?';margin-top:'+gt:'')+(gb?';margin-bottom:'+gb:'')+'">\n'+cells+'\n      </div>';
+      const gt = gapCss(row.mt), gb = gapCss(row.mb), gxs = cols > 1 ? gapXCss(row.gx) : "";
+      return '      <div class="photo-grid'+(cols>1?' multi':'')+(sized?' sized':'')+'" style="--row-cols:'+cols+(sized?';width:'+row.size+'%':'')+(gt?';margin-top:'+gt:'')+(gb?';margin-bottom:'+gb:'')+(gxs?';column-gap:'+gxs:'')+'">\n'+cells+'\n      </div>';
     }).filter(Boolean).join("\n");
 
     /* ---- 하단: 다른 작업 썸네일 (본체의 Next와 동일한 모양) ---- */
