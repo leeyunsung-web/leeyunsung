@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var l;try{l=localStorage.getItem("lysLang")}catch(e){}if(l!=="ko"&&l!=="en")l=/^ko/i.test(navigator.language||"")?"ko":"en";document.documentElement.setAttribute("data-lang",l);})();</script>
 
 <!-- ===== 보안: 콘텐츠 보안 정책 =====
      외부 스크립트 주입을 막고, GitHub 토큰이 외부로 새어나가는 경로를 차단합니다.
@@ -125,12 +126,22 @@
   }
   nav.site-nav a:hover{color:var(--ink);}
   nav.site-nav a.active{color:var(--ink); border-bottom-color:var(--ink);}
+  /* KO / EN 스위치 */
+  .lang-switch{display:inline-flex; align-items:center; gap:5px; padding-left:18px; margin-left:-8px; border-left:1px solid var(--line-strong); align-self:center; line-height:1;}
+  .lang-switch button{all:unset; cursor:pointer; font-size:10.5px; letter-spacing:.12em; color:var(--ink-faint, #aaa); font-style:var(--ui-font-style); padding:2px 0;}
+  .lang-switch button:hover{color:var(--ink);}
+  .lang-switch i{font-style:normal; font-size:10px; color:var(--line-strong);}
+  html:not([data-lang="en"]) .lang-switch [data-setlang="ko"], html[data-lang="en"] .lang-switch [data-setlang="en"]{color:var(--ink); font-weight:600;}
+  /* 한/영 설명: 두 언어가 다 있을 때만 하나를 숨김 */
+  html[data-lang="en"] .l-ko{display:none;}
+  html:not([data-lang="en"]) .l-en{display:none;}
 
   @media (max-width:640px){
     .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
     .head-spacer{display:none;}
     .head-center{grid-column:1; justify-self:center;}
     nav.site-nav{grid-column:1; justify-self:center; gap:16px; flex-wrap:wrap; justify-content:center;}
+    .lang-switch{position:absolute; top:12px; right:16px; padding:0; margin:0; border-left:0;}
   }
 
   /* ---------- page ---------- */
@@ -244,7 +255,7 @@
     position:absolute; left:0; bottom:0; padding:5px 10px; background:var(--ink); color:#fff;
     font-size:10px; letter-spacing:.14em;
   }
-  .shop-info{padding:12px 1px 0;}
+  .shop-info{padding:12px 1px 0; text-align:center;}
   .shop-name{font-size:var(--shop-grid-title,13px); letter-spacing:.01em; line-height:1.45;}
   .shop-spec{font-size:var(--caption-font-size); color:var(--ink-soft); line-height:1.5; margin-top:4px;}
   .shop-edition{font-size:var(--caption-font-size); color:var(--ink-faint); margin-top:2px; font-family:var(--mono);}
@@ -715,6 +726,10 @@
   .rp-hit del{background:#fde8e6; color:#8b1d12; text-decoration:line-through; white-space:pre-wrap;}
   .rp-hit ins{background:#e3f4e8; color:#1d5b31; text-decoration:none; white-space:pre-wrap;}
   .rp-hit .arrow{color:#aaa; margin:0 4px;}
+  .sl-warn{font-size:11.5px; color:#9a5b00; margin:2px 0 4px;}
+  .sl-cols{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;}
+  .sl-cols > div{background:#faf9f7; border:1px solid var(--line); border-radius:4px; padding:6px 8px; white-space:pre-wrap; max-height:140px; overflow:auto; font-size:11.5px; line-height:1.55;}
+  .sl-cols b{display:block; font-size:10px; letter-spacing:.08em; color:var(--ink-faint); margin-bottom:3px;}
   .pick-site-img{display:block; width:100%; margin-top:8px; padding:9px 10px; font:inherit; font-size:12px; color:var(--ink-soft,#555); background:#faf9f7; border:1px solid var(--line-strong); border-radius:6px; cursor:pointer;}
   .pick-site-img:hover{color:var(--ink); border-color:var(--ink);}
   #imgPickModal{z-index:240;}
@@ -884,6 +899,7 @@
   .pan-frame i{position:absolute; left:4px; top:3px; font-style:normal; font-size:10px; color:#fff; padding:1px 5px; border-radius:3px;}
   .pan-frame.start i{background:#1d8a45;} .pan-frame.end i{background:#c62828; left:auto; right:4px;}
   .pan-preview{max-width:360px;}
+  .pan-noimg{font-size:12px; color:var(--ink-soft); background:#f6f5f2; border:1px dashed var(--line-strong); border-radius:6px; padding:14px 12px; line-height:1.6;}
   .pan-qnote{font-size:12px; margin-top:8px; line-height:1.5;} .pan-qnote.ok{color:#1d6b3a;} .pan-qnote.warn{color:#9a5b00;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
@@ -942,6 +958,7 @@
         <a href="#text" data-page="text">TEXT</a>
         <a href="#shop" data-page="shop">SHOP</a>
         <a href="#contact" data-page="contact">CONTACT</a>
+        <span class="lang-switch" role="group" aria-label="Language"><button type="button" data-setlang="ko">KO</button><i>/</i><button type="button" data-setlang="en">EN</button></span>
       </nav>
     </div>
   </header>
@@ -974,6 +991,7 @@
     <span class="tag">Master</span>
     <button class="icon" id="btnDesign" title="DESIGN STUDIO — 디자인·글꼴·SHOP 설정 (새 창)">Aa</button>
     <button class="icon" id="btnReplace" title="문구 일괄 바꾸기">⇄</button>
+    <button class="icon" id="btnSplitLang" title="설명 한글/영문 나누기" style="font-size:10.5px;letter-spacing:.02em;">한/En</button>
     <div class="sep"></div>
     <button class="icon" id="btnPublish" title="Publish to GitHub"><span id="publishGlyph">⇪</span><span class="unpub-dot" id="unpubDot"></span></button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
@@ -1075,11 +1093,13 @@
         </div>
         <div class="field"><label>Title</label><textarea id="itemTitle" class="grow" rows="1" placeholder="시리즈 제목"></textarea></div>
         <div class="field">
-          <div class="desc-labelrow"><label>Description</label>
+          <div class="desc-labelrow"><label>Description — 한국어</label>
             <div class="rich-tools"><button type="button" id="itemDescBold" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요. 다시 누르면 풀려요."><b>B</b></button></div>
           </div>
-          <textarea id="itemDesc" class="desc-big" placeholder="작품 설명"></textarea>
-          <div class="field-hint">굵게 할 글자를 드래그해서 고른 뒤 <b>B</b>(또는 Ctrl+B)를 누르세요. 글 안에는 **이렇게** 표시되고, 홈페이지에서는 굵은 글씨로 보여요.</div>
+          <textarea id="itemDesc" class="desc-big" placeholder="작품 설명 (한국어)"></textarea>
+          <div class="desc-labelrow" style="margin-top:14px;"><label>Description — English</label></div>
+          <textarea id="itemDescEn" class="desc-big" placeholder="Description (English) — 비워 두면 영어로 볼 때도 한국어가 보여요"></textarea>
+          <div class="field-hint">홈페이지 오른쪽 위 KO / EN 스위치로 두 언어 중 하나가 보여요. 굵게 할 글자를 드래그해서 고른 뒤 <b>B</b>(또는 Ctrl+B)를 누르세요. 글 안에는 **이렇게** 표시되고, 홈페이지에서는 굵은 글씨로 보여요.</div>
           <div class="lh-row">
             <span>줄 간격</span>
             <input type="range" id="itemDescLh" min="1" max="3.2" step="0.05" value="1.85">
@@ -1146,6 +1166,18 @@
   </div>
 
   <!-- photo add/edit modal -->
+  <div class="overlay" id="splitLangModal">
+    <div class="modal wide">
+      <div class="modal-head"><h2>설명 한글 / 영문 나누기</h2><button class="modal-close" data-close="splitLangModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field-hint" style="margin-top:0;">한 칸에 한글과 영어가 같이 들어 있는 설명을 찾아서, <b>한글이 있는 줄 → 한국어</b>, <b>한글 없이 영어로 된 줄 → English</b> 칸으로 나눠요. 나눈 뒤에는 홈페이지 KO / EN 스위치로 한 언어씩 보여요. 이상하게 나뉜 곳은 체크를 빼세요.</div>
+        <div id="slMsg" class="rp-msg"></div>
+        <div id="slList" class="rp-list" style="max-height:56vh;"></div>
+        <div class="btnrow" id="slApplyRow" style="display:none;"><button class="btn primary" id="slApplyBtn" style="flex:1;">선택한 곳 나누기</button></div>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="replaceModal">
     <div class="modal wide">
       <div class="modal-head"><h2>문구 일괄 바꾸기</h2><button class="modal-close" data-close="replaceModal">✕</button></div>
@@ -1229,9 +1261,10 @@
               <div class="pan-custom"><input type="text" id="photoPanRatio" placeholder="직접 입력 예) 2.35:1, 5:2, 3:4" autocomplete="off"></div></div>
             <div class="pan-opt"><span>확대 <b id="photoPanZoomVal">1.0×</b></span>
               <input type="range" id="photoPanZoom" min="1" max="4" step="0.05" value="1"></div>
-            <div class="pan-opt"><span>움직일 영역 — <b style="color:#1d6b3a">초록 = 시작</b>, <b style="color:#b3261e">빨강 = 끝</b>. 네모를 끌어서 옮기세요.</span>
+            <div class="pan-noimg" id="photoPanNoImg">위 이미지 칸에 원본을 올리면 여기서 움직일 영역을 정하고 미리볼 수 있어요. (패닝용 2배 고화질로 올라가요)</div>
+            <div class="pan-opt needs-img"><span>움직일 영역 — <b style="color:#1d6b3a">초록 = 시작</b>, <b style="color:#b3261e">빨강 = 끝</b>. 네모를 끌어서 옮기세요.</span>
               <div class="pan-editor" id="photoPanEditor"><img id="photoPanEdImg" alt=""><div class="pan-frame start" id="photoPanFrameA"><i>시작</i></div><div class="pan-frame end" id="photoPanFrameB"><i>끝</i></div></div></div>
-            <div class="pan-opt"><span>미리보기</span>
+            <div class="pan-opt needs-img"><span>미리보기</span>
               <div class="pan-preview"><div class="pan-wrap" id="photoPanPreview"><img class="pan-img" id="photoPanPrevImg" alt=""></div></div></div>
             <div class="pan-opt"><span>한 번 지나가는 시간</span>
               <div class="size-row"><input type="number" id="photoPanDur" min="3" max="180" step="1" placeholder="24" inputmode="numeric"><span>초</span></div></div>
@@ -1545,6 +1578,45 @@
     if(last < t.length) node.appendChild(document.createTextNode(t.slice(last)));
   }
   function richHtml(escaped){ return String(escaped).replace(BOLD_RE, "<strong>$1</strong>"); }
+  // 한/영 설명: 둘 다 있으면 두 덩어리로 넣고 KO/EN 스위치로 하나만 보임, 하나만 있으면 그대로
+  function setBilingual(node, ko, en){
+    ko = String(ko || "").trim(); en = String(en || "").trim();
+    if(ko && en){
+      node.textContent = "";
+      const a = document.createElement("div"); a.className = "l-ko"; a.lang = "ko"; setRichText(a, ko);
+      const b = document.createElement("div"); b.className = "l-en"; b.lang = "en"; setRichText(b, en);
+      node.appendChild(a); node.appendChild(b);
+    } else setRichText(node, ko || en);
+  }
+  function bilingualHtml(ko, en){
+    ko = cleanText0(String(ko || "")).trim(); en = cleanText0(String(en || "")).trim();
+    if(ko && en) return '<div class="l-ko" lang="ko">'+richHtml(esc(ko))+'</div><div class="l-en" lang="en">'+richHtml(esc(en))+'</div>';
+    return richHtml(esc(ko || en));
+  }
+  function hasDesc(item){ return !!(cleanText(item && item.description) || cleanText(item && item.descriptionEn)); }
+  function setSiteLang(l){
+    l = l === "en" ? "en" : "ko";
+    document.documentElement.setAttribute("data-lang", l);
+    try{ localStorage.setItem("lysLang", l); }catch(e){}
+  }
+  // 기존 설명(한글 줄 + 영어 줄이 한 칸에 섞인 것)을 한/영으로 나누기 — 한글이 있는 줄은 한국어, 한글 없이 영어로 된 줄은 English
+  function splitKoEn(text){
+    // 순서는 그대로 두고, "앞은 한국어 · 뒤는 영어"가 가장 잘 맞는 한 지점에서 자름 (중간에 섞인 영어 한 줄 때문에 순서가 흐트러지지 않게)
+    const lines = String(text || "").split(/\r?\n/);
+    const kind = lines.map(l=>{ const t = l.trim(); return !t ? 0 : /[\uac00-\ud7a3]/.test(t) ? 1 : /[A-Za-z]/.test(t) ? 2 : 0; });
+    const n = lines.length; let best = -1, bestK = n;
+    const koBefore = [0], enAfter = new Array(n + 1).fill(0);
+    for(let i=0;i<n;i++) koBefore.push(koBefore[i] + (kind[i] === 1 ? 1 : 0));
+    for(let i=n-1;i>=0;i--) enAfter[i] = enAfter[i+1] + (kind[i] === 2 ? 1 : 0);
+    for(let k=0;k<=n;k++){ const sc = koBefore[k] + enAfter[k]; if(sc > best){ best = sc; bestK = k; } }
+    const tidy = a=>a.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    const ko = tidy(lines.slice(0, bestK)), en = tidy(lines.slice(bestK));
+    const koLines = kind.filter(x=>x === 1).length, enLines = kind.filter(x=>x === 2).length;
+    const mixed = (koLines + enLines) - best;             // 반대편에 남은 줄 수
+    const shortEn = en.length < 60 || en.length < (ko.length + en.length) * 0.15;
+    return { ko, en, mixed, shortEn };
+  }
+
   function toggleBold(ta){
     const v = ta.value; let a = ta.selectionStart, b = ta.selectionEnd;
     if(a === b){ ta.focus(); return; }
@@ -3935,8 +4007,8 @@
     }
     const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
     if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
-    if(cleanText(item.description)){
-      const desc = el("div","pd-desc"); setRichText(desc, item.description); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
+    if(hasDesc(item)){
+      const desc = el("div","pd-desc"); setBilingual(desc, item.description, item.descriptionEn); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
       info.appendChild(desc);
     }
     info.appendChild(buyRow(item));
@@ -4087,6 +4159,7 @@
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
+      $("itemDescEn").value = item.descriptionEn || "";
       setDescLhUi(item.descStyle && item.descStyle.lineHeight ? item.descStyle.lineHeight : null);
       $("itemSlug").value = item.slug || "";
       if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
@@ -4103,6 +4176,7 @@
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
       $("itemDesc").value = "";
+      $("itemDescEn").value = "";
       setDescLhUi(null);
       $("itemSlug").value = "";
       clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop");
@@ -4140,9 +4214,11 @@
       title: $("itemTitle").value.trim(),
       cover: pendingItemImage || "",
       description: $("itemDesc").value.trim(),
+      descriptionEn: $("itemDescEn").value.trim(),
       slug: slugify($("itemSlug").value),
       photoRows: prev ? (prev.photoRows || []) : []
     });
+    if(!payload.descriptionEn) delete payload.descriptionEn;
     {
       const ds = Object.assign({}, payload.descStyle || {});
       if(pendingDescLh) ds.lineHeight = Math.round(pendingDescLh * 100) / 100; else delete ds.lineHeight;
@@ -4282,7 +4358,7 @@
     }
 
     const desc = el("div","detail-desc");
-    setRichText(desc, item.description || "");
+    setBilingual(desc, item.description, item.descriptionEn);
     app.appendChild(desc);
 
     const descTarget = makeItemStyleTarget(key,item.id,"descStyle");
@@ -4451,7 +4527,12 @@
     $("photoPanOpts").style.display = pendingPan ? "" : "none";
     if(!pendingPan) return;
     const src = pendingPhotoImage ? imgSrc(pendingPhotoImage) : "";
-    if($("photoPanEdImg").getAttribute("src") !== src){ $("photoPanEdImg").src = src; $("photoPanPrevImg").src = src; }
+    if(($("photoPanEdImg").getAttribute("src") || "") !== src){
+      if(src){ $("photoPanEdImg").src = src; $("photoPanPrevImg").src = src; }
+      else { $("photoPanEdImg").removeAttribute("src"); $("photoPanPrevImg").removeAttribute("src"); }
+    }
+    document.querySelectorAll("#photoPanOpts .needs-img").forEach(x=>{ x.style.display = src ? "" : "none"; });
+    $("photoPanNoImg").style.display = src ? "none" : "";
     const inPreset = [...document.querySelectorAll("#photoPanRatioSeg button")].some(b=>b.dataset.v === pendingPan.ratio);
     document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.ratio));
     if(document.activeElement !== $("photoPanRatio")) $("photoPanRatio").value = inPreset ? "" : pendingPan.ratio;
@@ -5194,8 +5275,10 @@
     if(!w) return null;
     const imgs = workImages(w);
     const image = (o.image && imgs.indexOf(o.image) >= 0) ? o.image : (imgs[0] || "");
-    const text = cleanText(o.text) ? String(o.text).trim() : (w.description || "").trim();
-    return { work:w, image, text, title: cleanText(w.title) || "Untitled", photoId: origPhotoId(w, image) };
+    const custom = !!cleanText(o.text);
+    const text = custom ? String(o.text).trim() : (w.description || "").trim();
+    const textEn = custom ? "" : (w.descriptionEn || "").trim();
+    return { work:w, image, text, textEn, title: cleanText(w.title) || "Untitled", photoId: origPhotoId(w, image) };
   }
   let pendingOrigImage = "";
   function fillOrigPicker(workId, selected){
@@ -5244,7 +5327,7 @@
     grid.appendChild(a);
     const info = el("div","orig-info");
     const h = el("h2","orig-title"); const ha = el("a"); setItemLink(ha, "works", o.work); linkToImg(ha); ha.textContent = o.title; h.appendChild(ha); info.appendChild(h);
-    if(o.text){ const d = el("div","orig-desc"); setRichText(d, o.text); info.appendChild(d); }
+    if(o.text || o.textEn){ const d = el("div","orig-desc"); setBilingual(d, o.text, o.textEn); info.appendChild(d); }
     const more = el("a","orig-more"); setItemLink(more, "works", o.work); linkToImg(more); more.textContent = "View work →"; info.appendChild(more);
     grid.appendChild(info);
     sec.appendChild(grid);
@@ -5284,6 +5367,7 @@
         if(scope[key]){
           add(nameOf(key,it) + " · 제목", it, "title");
           add(nameOf(key,it) + " · 설명", it, "description");
+          add(nameOf(key,it) + " · 설명(EN)", it, "descriptionEn");
           if(key === "shop"){ add(nameOf(key,it) + " · 사양1", it, "spec1"); add(nameOf(key,it) + " · 사양2", it, "spec2"); add(nameOf(key,it) + " · 에디션", it, "edition"); if(it.original) add(nameOf(key,it) + " · 원작 설명", it.original, "text"); }
         }
         if(scope.caption) (it.photoRows || []).forEach(r=>(r.photos || []).forEach(ph=>add(nameOf(key,it) + " · 사진 캡션", ph, "caption")));
@@ -5304,6 +5388,41 @@
       hits.push({ t, before: m, after: m.map(x=>{ re.lastIndex = 0; return x.replace(re, fn); }), apply: ()=>{ re.lastIndex = 0; t.set(t.get().replace(re, fn)); } });
     });
     return hits;
+  }
+  let slHits = [];
+  function openSplitLang(){
+    slHits = [];
+    const nameOf = (key,it)=>(key === "works" ? "WORKS" : key === "text" ? "TEXT" : "SHOP") + " · " + (cleanText(it.title) || "(제목 없음)");
+    ["works","text","shop"].forEach(key=>(state.data[key] || []).forEach(it=>{
+      if(cleanText(it.descriptionEn) || !cleanText(it.description)) return;
+      const r = splitKoEn(it.description);
+      if(r.ko && r.en) slHits.push({ it, key, label: nameOf(key,it), ko: r.ko, en: r.en, warn: r.shortEn ? "영어 부분이 아주 짧아요 — 번역이 아니라 이름·정보일 수 있으니 확인하세요" : (r.mixed ? "반대 언어 줄이 " + r.mixed + "줄 섞여 있어요 — 확인하세요" : "") });
+    }));
+    const list = $("slList"); list.innerHTML = "";
+    $("slMsg").className = "rp-msg";
+    $("slMsg").textContent = slHits.length ? slHits.length + "곳에서 한글과 영어가 같이 들어 있는 설명을 찾았어요." : "나눌 설명이 없어요. (이미 나눴거나 한 언어만 있어요)";
+    slHits.forEach((h,i)=>{
+      const row = el("label","rp-hit");
+      const cb = el("input"); cb.type = "checkbox"; cb.checked = !h.warn; cb.dataset.i = i; row.appendChild(cb);
+      const box = el("div");
+      const w = el("div","where"); w.textContent = h.label; box.appendChild(w);
+      if(h.warn){ const wn = el("div","sl-warn"); wn.textContent = "⚠ " + h.warn; box.appendChild(wn); }
+      const cols = el("div","sl-cols");
+      const a = el("div"); const at = el("b"); at.textContent = "한국어"; a.appendChild(at); a.appendChild(document.createTextNode(h.ko));
+      const b = el("div"); const bt = el("b"); bt.textContent = "ENGLISH"; b.appendChild(bt); b.appendChild(document.createTextNode(h.en));
+      cols.appendChild(a); cols.appendChild(b); box.appendChild(cols);
+      row.appendChild(box); list.appendChild(row);
+    });
+    $("slApplyRow").style.display = slHits.length ? "" : "none";
+    openModal("splitLangModal");
+  }
+  function applySplitLang(){
+    const on = Array.from(document.querySelectorAll("#slList input[type=checkbox]")).filter(c=>c.checked).map(c=>slHits[+c.dataset.i]).filter(Boolean);
+    if(!on.length){ alert("선택한 곳이 없어요."); return; }
+    on.forEach(h=>{ h.it.description = h.ko; h.it.descriptionEn = h.en; });
+    saveDraft(); renderRoute();
+    $("slList").innerHTML = ""; $("slApplyRow").style.display = "none"; slHits = [];
+    $("slMsg").className = "rp-msg ok"; $("slMsg").textContent = "✓ " + on.length + "곳을 한국어 / English 로 나눴어요. 자동으로 저장·업로드돼요.";
   }
   let rpHits = [];
   function openReplaceModal(){
@@ -6578,6 +6697,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     return css + "\n:root{" + vars + "}\n" + EXTRA_CSS + "\n";
   }
 
+  const LANG_INIT_JS = "(function(){var l;try{l=localStorage.getItem(\"lysLang\")}catch(e){}if(l!==\"ko\"&&l!==\"en\")l=/^ko/i.test(navigator.language||\"\")?\"ko\":\"en\";document.documentElement.setAttribute(\"data-lang\",l);})();";
   // 여러 장이 한 줄에 들어간 경우 높이를 맞추는 계산 (본체와 동일한 방식)
   const JUSTIFY_JS = [
     "(function(){",
@@ -6598,6 +6718,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     "w.style.setProperty('--tx1',f(-(iw-1)*d.x1*100));w.style.setProperty('--ty1',f(-(ih-hh)*d.y1*100));}",
     "if(m.complete)G();m.addEventListener('load',G);}",
     "document.querySelectorAll('.pan-wrap[data-pan]').forEach(P);",
+    "document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-setlang]');if(!b)return;var l=b.getAttribute('data-setlang');document.documentElement.setAttribute('data-lang',l);try{localStorage.setItem('lysLang',l);}catch(x){}});",
     "L();})();"
   ].join("");
 
@@ -6644,6 +6765,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '<head>',
 '<meta charset="UTF-8">',
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<script>'+LANG_INIT_JS+'<\/script>',
 '<title>'+esc(title)+'</title>',
 '<meta name="description" content="'+esc(desc)+'">',
 '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">',
@@ -6674,6 +6796,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '        <a href="/#text">TEXT</a>',
 '        <a href="/#shop">SHOP</a>',
 '        <a href="/#contact">CONTACT</a>',
+'        <span class="lang-switch" role="group" aria-label="Language"><button type="button" data-setlang="ko">KO</button><i>/</i><button type="button" data-setlang="en">EN</button></span>',
 '      </nav>',
 '    </div>',
 '  </header>',
@@ -6697,7 +6820,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
            '        <a class="orig-img" href="'+esc(href)+'">' + (o.image ? '<img src="'+esc(rootPath(o.image))+'" alt="'+esc(o.title+" — "+ARTIST+" "+ARTIST_EN)+'" loading="lazy" decoding="async">' : '') + '</a>\n' +
            '        <div class="orig-info">\n' +
            '          <h2 class="orig-title"><a href="'+esc(href)+'">'+esc(o.title)+'</a></h2>\n' +
-           (o.text ? '          <div class="orig-desc">'+richHtml(esc(o.text))+'</div>\n' : '') +
+           (o.text || o.textEn ? '          <div class="orig-desc">'+bilingualHtml(o.text, o.textEn)+'</div>\n' : '') +
            '          <a class="orig-more" href="'+esc(href)+'">View work →</a>\n' +
            '        </div>\n' +
            '      </div>\n' +
@@ -6850,7 +6973,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
         (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+esc(item.soldOut ? "Sold out" : priceTxt)+'</div>\n' : '') +
-        (cleanText(item.description) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+richHtml(esc(cleanText0(item.description)))+'</div>\n' : '') +
+        (hasDesc(item) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>\n' : '') +
         '        <div class="buy-box">\n'+buy+'\n        </div>\n' +
         '      </div>\n' +
         '    </div>';
@@ -6862,6 +6985,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '<head>',
 '<meta charset="UTF-8">',
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<script>'+LANG_INIT_JS+'<\/script>',
 '<title>'+esc(title)+' — '+ARTIST+' Yunsung Lee</title>',
 '<meta name="description" content="'+esc(desc)+'">',
 '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">',
@@ -6895,13 +7019,14 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '        <a href="/#text"'+(navActive==="text"?' class="active"':'')+'>TEXT</a>',
 '        <a href="/#shop"'+(navActive==="shop"?' class="active"':'')+'>SHOP</a>',
 '        <a href="/#contact">CONTACT</a>',
+'        <span class="lang-switch" role="group" aria-label="Language"><button type="button" data-setlang="ko">KO</button><i>/</i><button type="button" data-setlang="en">EN</button></span>',
 '      </nav>',
 '    </div>',
 '  </header>',
 '  <main class="shell">',
 '    <a class="detail-back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
 '    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>'),
-(kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+richHtml(esc(cleanText0(item.description)))+'</div>' : ''),
+(kind!=="shop" && hasDesc(item) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>' : ''),
 shopBlock,
 (rowsHtml ? '    <div class="photo-rows-wrap wide">\n'+rowsHtml+'\n    </div>' : ''),
 (kind==="shop" ? staticOriginalHtml(item) : ''),
@@ -7148,9 +7273,18 @@ shopBlock,
     $("itemDescLh").addEventListener("input", ()=>setDescLhUi($("itemDescLh").value));
     $("itemDescLhReset").addEventListener("click", ()=>setDescLhUi(null));
     $("itemDescBold").addEventListener("mousedown", e=>e.preventDefault());   // 버튼을 눌러도 글자 선택이 풀리지 않게
-    $("itemDescBold").addEventListener("click", ()=>toggleBold($("itemDesc")));
-    $("itemDesc").addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold($("itemDesc")); } });
+    let lastDescTa = $("itemDesc");
+    ["itemDesc","itemDescEn"].forEach(tid=>{
+      const ta = $(tid);
+      ta.addEventListener("focus", ()=>{ lastDescTa = ta; });
+      ta.addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold(ta); } });
+    });
+    $("itemDescBold").addEventListener("click", ()=>toggleBold(lastDescTa));
+    // KO / EN 스위치
+    document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("[data-setlang]"); if(b){ e.preventDefault(); setSiteLang(b.getAttribute("data-setlang")); } });
     $("btnReplace").addEventListener("click", openReplaceModal);
+    $("btnSplitLang").addEventListener("click", openSplitLang);
+    $("slApplyBtn").addEventListener("click", applySplitLang);
     $("rpPreviewBtn").addEventListener("click", rpPreview);
     $("rpApplyBtn").addEventListener("click", rpApply);
     bindDesignEvents();
@@ -7165,7 +7299,6 @@ shopBlock,
     $("imgPickSearch").addEventListener("input", renderImgPicker);
     document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setRowColsUi(b.dataset.val, photoModalRowCount)));
     document.querySelectorAll("#photoPanSeg button").forEach(b=>b.addEventListener("click", ()=>{
-      if(b.dataset.v === "on" && !pendingPhotoImage){ alert("먼저 이미지를 올려 주세요."); return; }
       setPanUi(b.dataset.v === "on" ? (pendingPan || {}) : null);
     }));
     document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.ratio = b.dataset.v; $("photoPanRatio").value = ""; setPanUi(pendingPan); } }));
