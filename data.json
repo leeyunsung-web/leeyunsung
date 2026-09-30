@@ -1704,18 +1704,6 @@
           "size": 30
         },
         {
-          "id": "row-1790767454584-9p0jb",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790766829810-0lxgy",
-              "image": "./images/w-1790766011679-go31v-p-1790766829810-0lxgy-c08f84c8.jpg",
-              "caption": "The Three Graces Pixel Props 02, 2019, Oil on canvas, 53 × 45 cm"
-            }
-          ],
-          "size": 30
-        },
-        {
           "id": "row-1790769537259-3n162",
           "cols": 1,
           "photos": [
@@ -3796,9 +3784,9 @@
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
     "page.css": "c75337f9:80412",
-    "sitemap.xml": "7a2dd8c9:111408",
+    "sitemap.xml": "c59b26ab:110892",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "c81ef5e9:46900"
+    "works/works-9/index.html": "82964691:46116"
   },
   "shopDesign": {
     "mainPct": 56,
