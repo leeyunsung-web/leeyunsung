@@ -2541,13 +2541,20 @@
         },
         {
           "id": "row-1790768423456-qt7zd",
-          "cols": 3,
+          "cols": 1,
           "photos": [
             {
               "id": "p-1790768423456-iczr9",
               "image": "./images/w-1790766011679-go31v-p-1790768423456-iczr9-007e39e1.jpg",
               "caption": ""
-            },
+            }
+          ],
+          "size": 50
+        },
+        {
+          "id": "row-1790769564954-b0oq3",
+          "cols": 2,
+          "photos": [
             {
               "id": "p-1790768437838-b631t",
               "image": "./images/w-1790766011679-go31v-p-1790768437838-b631t-512bdb8f.jpg",
@@ -3470,6 +3477,6 @@
     "page.css": "f99a953e:76840",
     "sitemap.xml": "f23426d8:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "202049f4:45320"
+    "works/works-9/index.html": "d2097b38:45428"
   }
 }
