@@ -77,7 +77,7 @@
           "photos": [
             {
               "id": "p-1787384904997-pmnc5",
-              "image": "./images/w2-p-1787384904997-pmnc5.jpg",
+              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
               "caption": "The Annunciation, 2014, Central diptych, Oil on canvas, 194 × 261 cm"
             }
           ]
@@ -3786,7 +3786,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "a60fd1dc:27232",
+    "works/the-annunciation/index.html": "63f357d:27280",
     "works/torso/index.html": "f9c9d70f:46212",
     "works/danae/index.html": "f6953a6b:54336",
     "works/zodiac/index.html": "ad117210:91296",
@@ -3802,7 +3802,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
     "page.css": "c75337f9:80412",
-    "sitemap.xml": "8995960b:111740",
+    "sitemap.xml": "296bc2dd:111752",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "16f88976:46588"
   },
