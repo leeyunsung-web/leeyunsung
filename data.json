@@ -3268,7 +3268,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790625341891-lztca",
@@ -3299,7 +3300,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790625349765-b3wfj",
@@ -3330,7 +3332,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790625359809-iikzl",
@@ -3361,7 +3364,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790625368565-3m6dk",
@@ -3392,7 +3396,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790625378337-5f333",
@@ -3423,7 +3428,8 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790623636184-2mg2s",
