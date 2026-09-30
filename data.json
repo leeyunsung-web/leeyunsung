@@ -32,8 +32,8 @@
               "image": "./images/w2-p-1787384904997-pmnc5.jpg",
               "caption": "",
               "pan": {
-                "ratio": "21:9",
-                "from": "left",
+                "ratio": "4:5",
+                "from": "right",
                 "dur": 10
               }
             }
@@ -3789,7 +3789,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "9084bb00:26204",
+    "works/the-annunciation/index.html": "d163bccb:26216",
     "works/torso/index.html": "94c43fd7:45804",
     "works/danae/index.html": "5fe308c8:53932",
     "works/zodiac/index.html": "268e7578:90888",
