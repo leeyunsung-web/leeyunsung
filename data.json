@@ -1452,7 +1452,9 @@
               "caption": ""
             }
           ],
-          "size": 50
+          "size": 50,
+          "mt": "50",
+          "mb": "50"
         },
         {
           "id": "row-1790766250971-bq0j4",
@@ -2661,6 +2663,8 @@
     "detailMargin": 32,
     "descSide": 25,
     "descRefW": 1440,
+    "captionMode": "hover",
+    "captionGap": 10,
     "captionSize": 15,
     "frameTitleSize": 20,
     "photoGap": 4,
@@ -3684,25 +3688,25 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "416ca92b:25588",
-    "works/torso/index.html": "dded5f25:46164",
-    "works/danae/index.html": "aff24fc1:54288",
-    "works/zodiac/index.html": "3779b37a:91248",
-    "works/medusa/index.html": "96d920fe:50348",
-    "works/laocoon/index.html": "23b0e3c1:55504",
-    "works/frames-of-torso/index.html": "57c0d5f1:46764",
-    "works/works-8/index.html": "a4c79d34:16208",
-    "text/critical-notes-lim-geunjun/index.html": "e182b346:29228",
-    "text/sections-of-structure-jung-hyun/index.html": "1c15c54b:28364",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "b86f60fa:23952",
-    "text/painting-of-the-cut-konno-yuki/index.html": "7bf00251:20632",
-    "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
-    "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
+    "works/the-annunciation/index.html": "ebc50575:25636",
+    "works/torso/index.html": "f9c9d70f:46212",
+    "works/danae/index.html": "f6953a6b:54336",
+    "works/zodiac/index.html": "ad117210:91296",
+    "works/medusa/index.html": "c6884c5d:50396",
+    "works/laocoon/index.html": "143cc63b:55552",
+    "works/frames-of-torso/index.html": "e5eae5d2:46812",
+    "works/works-8/index.html": "106d2f5a:16256",
+    "text/critical-notes-lim-geunjun/index.html": "53bca51c:29276",
+    "text/sections-of-structure-jung-hyun/index.html": "cd057dc9:28412",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "93223f90:24000",
+    "text/painting-of-the-cut-konno-yuki/index.html": "e432038b:20680",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
+    "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
-    "page.css": "1f500f04:78392",
+    "page.css": "1a44c22b:79740",
     "sitemap.xml": "f66dbadc:111332",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "e00d0d6d:45940"
+    "works/works-9/index.html": "2c02ce26:46036"
   },
   "shopDesign": {
     "mainPct": 56,
