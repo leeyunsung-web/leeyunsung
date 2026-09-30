@@ -3833,7 +3833,7 @@
     pd.appendChild(info);
     app.appendChild(pd);
 
-    const rowsWrap = el("div","photo-rows-wrap");
+    const rowsWrap = el("div","photo-rows-wrap wide");   // 작품 상세와 똑같이 화면 폭 기준 (크기 %도 화면 폭 대비)
     rowsWrap.style.marginTop = "72px";
     let flatIdx = 0;
     (item.photoRows||[]).forEach((row, rowIndex)=>{
@@ -4186,7 +4186,7 @@
       desc.addEventListener("click", ()=>openDesignModal(descTarget,"작품 설명"));
     }
 
-    const rowsWrap = el("div","photo-rows-wrap" + (key === "works" ? " wide" : ""));
+    const rowsWrap = el("div","photo-rows-wrap wide");   // WORKS·TEXT 모두 화면 폭 기준
     let flatIdx = 0;
     const rows = item.photoRows || [];
 
@@ -6643,7 +6643,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>'),
 (kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+esc(cleanText0(item.description))+'</div>' : ''),
 shopBlock,
-(rowsHtml ? '    <div class="photo-rows-wrap'+(kind==="works" ? ' wide' : '')+'">\n'+rowsHtml+'\n    </div>' : ''),
+(rowsHtml ? '    <div class="photo-rows-wrap wide">\n'+rowsHtml+'\n    </div>' : ''),
 (kind==="shop" ? staticOriginalHtml(item) : ''),
 (others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),
 '  </main>',
