@@ -3580,7 +3580,8 @@
       "soldOut": false,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "rowCols": 4
     },
     {
       "id": "s-1790770458879-rgl4h",
@@ -3703,7 +3704,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
-    "page.css": "1a44c22b:79740",
+    "page.css": "42524592:80396",
     "sitemap.xml": "f66dbadc:111332",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "2c02ce26:46036"
