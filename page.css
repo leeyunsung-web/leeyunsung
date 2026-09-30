@@ -557,6 +557,14 @@
   .adj-btns{display:flex; gap:6px; justify-content:flex-end; margin-top:6px;}
   .adj-btns button{font:inherit; font-size:12px; padding:6px 11px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; cursor:pointer;}
   .adj-btns button.primary{background:#111; color:#fff; border-color:#111;}
+  /* ---------- 가로 패닝 칸: 큰 이미지를 좁은 창에서 좌우로 천천히 ---------- */
+  .pan-wrap{position:relative; width:100%; aspect-ratio:var(--pr, 1.7778); overflow:hidden; container-type:inline-size; background:#f3f2ef;}
+  .photo-grid .photo-cell .pan-wrap > img.pan-img{position:absolute; top:0; left:0; height:100% !important; width:auto !important; min-width:100%; max-width:none; aspect-ratio:auto; object-fit:cover;
+    animation:lysPan var(--pd, 24s) ease-in-out infinite alternate; will-change:transform;}
+  .pan-wrap.from-right > img.pan-img{animation-direction:alternate-reverse !important;}
+  .photo-cell.is-pan:hover img.pan-img{animation-play-state:paused;}
+  @keyframes lysPan{ from{transform:translateX(0);} to{transform:translateX(calc(100cqw - 100%));} }
+  @media (prefers-reduced-motion: reduce){ .pan-wrap > img.pan-img{animation:none;} }
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
@@ -829,6 +837,9 @@
   .range-val{float:right; color:var(--ink-soft); font-size:11px; text-transform:none; letter-spacing:0;}
   .field input[type=range]{width:100%; accent-color:#111; height:4px;}
   .segbtns{display:flex; gap:6px; flex-wrap:wrap;}
+  .pan-opts{margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; display:flex; flex-direction:column; gap:10px;}
+  .pan-opt > span{display:block; font-size:11.5px; color:var(--ink-soft); margin-bottom:5px;}
+  .pan-opt .segbtns button{padding:6px 10px;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
   }
