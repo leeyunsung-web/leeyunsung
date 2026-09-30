@@ -512,7 +512,7 @@
   .detail-back{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); display:inline-block; margin-bottom:28px; font-style:var(--ui-font-style);}
   .detail-back:hover{color:var(--ink);}
   .detail-head{position:relative; margin-bottom:8px; padding:0 0 8px;}
-  .detail-title{font-size:26px; font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style); text-align:center !important;}
+  .detail-title{font-size:var(--detail-title-size, 26px); font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style); text-align:center !important;}
   .detail-actions{display:none; gap:8px; position:absolute; top:0; right:0;}
   .master-on .detail-actions{display:flex;}
   .detail-actions button{
@@ -521,7 +521,7 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0;
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:var(--desc-top, 20px) 0 48px; padding:0;
     /* DESIGN STUDIO → 작품 설명 · TEXT 비평글 좌우 여백(%)
        설정한 화면에서 보이던 모양 그대로, 화면이 커지면 여백·글 폭·글씨가 같은 비율로 커지고 작아지면 작아짐.
        단, 휴대폰처럼 좁은 화면에서는 글 폭과 글씨가 읽을 수 있는 크기 아래로 내려가지 않음 */
@@ -823,6 +823,13 @@
   /* 줄 크기 (%): 가운데 정렬로 줄 폭만 줄임 */
   .photo-grid.sized{margin-left:auto; margin-right:auto;}
   .field textarea.tall{min-height:280px; font-size:14px; line-height:1.8;}
+  .field textarea.desc-big{min-height:260px; height:260px; font-size:13.5px; line-height:1.75;}
+  .desc-labelrow{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:6px;}
+  .desc-labelrow label{margin:0;}
+  .rich-tools{display:flex; gap:4px;}
+  .rich-tools button{min-width:28px; height:26px; padding:0 8px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; font:inherit; font-size:13px; cursor:pointer; color:var(--ink);}
+  .rich-tools button:hover{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
   .imgdrop{border:1.5px dashed var(--line-strong); border-radius:6px; padding:18px; text-align:center; cursor:pointer; color:var(--ink-faint); font-size:12.5px; position:relative; overflow:hidden;}
@@ -1043,7 +1050,13 @@
           <button type="button" class="pick-site-img" data-pick="item">▦ 홈페이지에 있는 이미지에서 고르기</button>
         </div>
         <div class="field"><label>Title</label><textarea id="itemTitle" class="grow" rows="1" placeholder="시리즈 제목"></textarea></div>
-        <div class="field"><label>Description</label><textarea id="itemDesc" placeholder="작품 설명"></textarea></div>
+        <div class="field">
+          <div class="desc-labelrow"><label>Description</label>
+            <div class="rich-tools"><button type="button" id="itemDescBold" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요. 다시 누르면 풀려요."><b>B</b></button></div>
+          </div>
+          <textarea id="itemDesc" class="desc-big" placeholder="작품 설명"></textarea>
+          <div class="field-hint">굵게 할 글자를 드래그해서 고른 뒤 <b>B</b>(또는 Ctrl+B)를 누르세요. 글 안에는 **이렇게** 표시되고, 홈페이지에서는 굵은 글씨로 보여요.</div>
+        </div>
         <div id="shopFields" style="display:none;">
           <div class="field">
             <label>공개 여부</label>
@@ -1460,8 +1473,35 @@
     return String(s||"").split(/\r?\n/).map(cleanText).filter(Boolean).join("\n");
   }
   function autoGrow(t){ if(!t) return; t.style.height = "auto"; t.style.height = (t.scrollHeight + 2) + "px"; }
+  // 설명 글의 **굵게** 표시 → 화면에서는 굵은 글씨, 요약·검색용 글에서는 표시만 빼기
+  const BOLD_RE = /\*\*([^\n]+?)\*\*/g;
+  function stripBold(s){ return String(s||"").replace(BOLD_RE, "$1"); }
+  function setRichText(node, s){
+    node.textContent = "";
+    const t = String(s||""); let last = 0, m; BOLD_RE.lastIndex = 0;
+    while((m = BOLD_RE.exec(t))){
+      if(m.index > last) node.appendChild(document.createTextNode(t.slice(last, m.index)));
+      const b = document.createElement("strong"); b.textContent = m[1]; node.appendChild(b);
+      last = m.index + m[0].length;
+    }
+    if(last < t.length) node.appendChild(document.createTextNode(t.slice(last)));
+  }
+  function richHtml(escaped){ return String(escaped).replace(BOLD_RE, "<strong>$1</strong>"); }
+  function toggleBold(ta){
+    const v = ta.value; let a = ta.selectionStart, b = ta.selectionEnd;
+    if(a === b){ ta.focus(); return; }
+    while(a < b && /\s/.test(v[a])) a++;            // 앞뒤 공백은 빼고 감싸기
+    while(b > a && /\s/.test(v[b-1])) b--;
+    const sel = v.slice(a, b);
+    let nv, na, nb;
+    if(v.slice(a-2, a) === "**" && v.slice(b, b+2) === "**"){ nv = v.slice(0, a-2) + sel + v.slice(b+2); na = a-2; nb = b-2; }
+    else if(/^\*\*[\s\S]*\*\*$/.test(sel) && sel.length >= 4){ const inner = sel.slice(2, -2); nv = v.slice(0, a) + inner + v.slice(b); na = a; nb = a + inner.length; }
+    else { const lines = sel.split("\n").map(l=>l.trim() ? l.replace(/^(\s*)(.*?)(\s*)$/, "$1**$2**$3") : l).join("\n"); nv = v.slice(0, a) + lines + v.slice(b); na = a; nb = a + lines.length; }
+    ta.value = nv; ta.focus(); ta.setSelectionRange(na, nb);
+    ta.dispatchEvent(new Event("input", {bubbles:true}));
+  }
   function excerpt(s, n){
-    const t = cleanText(String(s||"").replace(/\n+/g," "));
+    const t = cleanText(stripBold(String(s||"")).replace(/\n+/g," "));
     if(t.length <= n) return t;
     return t.slice(0, n-1).replace(/[\s,.·]+$/,"") + "…";
   }
@@ -1664,7 +1704,7 @@
         type  = "article";
         if(it.slug) canonicalOverride = pageUrl("text", it);
         // 본문 첫 줄이 필자 이름인 경우가 많아 author로 씁니다
-        const firstLine = cleanText((String(it.description||"").split("\n").find(l=>cleanText(l))||""));
+        const firstLine = cleanText((stripBold(it.description).split("\n").find(l=>cleanText(l))||""));
         ld = {
           "@context":"https://schema.org",
           "@type":"Article",
@@ -2900,7 +2940,9 @@
         ["design","pagePadding","range","머리글·바닥글·글 페이지 좌우 여백 (px)", {min:0,max:100,step:2}],
         ["design","frameGap","range","네모칸 간격 (px)", {min:0,max:80,step:2}],
         ["design","frameTitleSize","range","네모칸 제목 글씨 (px)", {min:12,max:28,step:1}],
+        ["design","detailTitleSize","range","작품·글 상세 제목 크기 (px) — 모든 제목에 한 번에", {min:16,max:60,step:1}],
         ["design","descSide","range","작품 설명 · TEXT 비평글 좌우 여백 (%) — 화면 크기에 비례", {min:0,max:40,step:1}],
+        ["design","descTop","range","작품 설명 · TEXT 비평글 위치 — 위쪽 여백 (px, 클수록 아래로)", {min:0,max:400,step:4}],
         ["design","detailMargin","range","상세 사진 좌우 여백 (px)", {min:0,max:120,step:4}],
         ["design","photoGap","range","사진 사이 간격 (px)", {min:0,max:60,step:2}],
         ["design","captionSize","range","사진 캡션 글씨 (px)", {min:10,max:24,step:1}],
@@ -2908,7 +2950,7 @@
         ["design","captionGap","range","캡션과 사진 사이 간격 (px) — 사진 아래일 때", {min:0,max:60,step:1}]
       ]},
       { title:"TEXT 목록", items:[
-        ["design","textListTitleSize","range","글 제목 크기 (px)", {min:14,max:40,step:1}],
+        ["design","textListTitleSize","range","글 제목 크기 (px) — 모든 제목에 한 번에", {min:14,max:40,step:1}],
         ["design","textListTopSpace","range","위쪽 여백 (px)", {min:0,max:150,step:4}],
         ["design","textListItemGap","range","제목 사이 간격 (px)", {min:6,max:60,step:2}],
         ["design","textListAlign","seg","위치", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"]]}]
@@ -2966,7 +3008,7 @@
     if(group === "design"){
       const v = (d.design || {})[key];
       if(key === "fontFamily") return siteFontKey(v);
-      return v != null ? v : DEFAULT_DESIGN[key];
+      return v != null ? v : (DEFAULT_DESIGN[key] != null ? DEFAULT_DESIGN[key] : ({ descTop:20, detailTitleSize:26 })[key]);
     }
     if(group === "shopDesign") return shopDesign()[key];
     if(group === "shopTexts") return shopTexts()[key];
@@ -3000,7 +3042,7 @@
       if(["fontSize","letterSpacing","bold","align"].includes(key)) return (on("cv") || on("works","item") || on("text","item")) ? null : "#cv";
       if(key === "textWidth") return go("#cv", on("cv"));
       if(["frameCols","frameGap","frameTitleSize","pagePadding"].includes(key)) return go("#works", on("works","list") || on("text","list") && key!=="frameCols");
-      if(["descSide","detailMargin","photoGap","captionSize","captionMode","captionGap"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
+      if(["descSide","descTop","detailTitleSize","detailMargin","photoGap","captionSize","captionMode","captionGap"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
       if(/^textList/.test(key)) return go("#text", on("text","list"));
       if(/^contact/.test(key)) return go("#contact", on("contact"));
     }
@@ -3032,6 +3074,17 @@
       if(key === "descSide" || key === "fontSize") d.design.descRefW = document.documentElement.clientWidth;
       applyDesignVars();
       if(["textListAlign","contactAlign","frameCols"].includes(key)) rerender = true;
+      // 제목 크기는 '일괄' — 제목마다 따로 정해 둔 크기(Aa)가 있으면 지워서 모두 같은 크기로
+      if(key === "textListTitleSize" || key === "detailTitleSize"){
+        const cols = key === "textListTitleSize" ? ["text"] : ["works","text"];
+        cols.forEach(c=>(d[c] || []).forEach(it=>{
+          if(it.titleStyle && it.titleStyle.fontSize != null){
+            delete it.titleStyle.fontSize;
+            if(!Object.keys(it.titleStyle).length) delete it.titleStyle;
+            rerender = true;
+          }
+        }));
+      }
       if(["detailMargin","photoGap","captionMode","captionGap","captionSize"].includes(key)) scheduleJustifyLayout();
     } else if(group === "shopDesign"){
       d.shopDesign = Object.assign({}, shopDesign(), { [key]: Number(value) });
@@ -3823,7 +3876,7 @@
     const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
     if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
     if(cleanText(item.description)){
-      const desc = el("div","pd-desc"); desc.textContent = item.description;
+      const desc = el("div","pd-desc"); setRichText(desc, item.description);
       info.appendChild(desc);
     }
     info.appendChild(buyRow(item));
@@ -4151,7 +4204,7 @@
     }
 
     const desc = el("div","detail-desc");
-    desc.textContent = item.description || "";
+    setRichText(desc, item.description || "");
     app.appendChild(desc);
 
     const descTarget = makeItemStyleTarget(key,item.id,"descStyle");
@@ -4971,7 +5024,7 @@
     grid.appendChild(a);
     const info = el("div","orig-info");
     const h = el("h2","orig-title"); const ha = el("a"); setItemLink(ha, "works", o.work); linkToImg(ha); ha.textContent = o.title; h.appendChild(ha); info.appendChild(h);
-    if(o.text){ const d = el("div","orig-desc"); d.textContent = o.text; info.appendChild(d); }
+    if(o.text){ const d = el("div","orig-desc"); setRichText(d, o.text); info.appendChild(d); }
     const more = el("a","orig-more"); setItemLink(more, "works", o.work); linkToImg(more); more.textContent = "View work →"; info.appendChild(more);
     grid.appendChild(info);
     sec.appendChild(grid);
@@ -5497,6 +5550,8 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
     root.setProperty("--cap-gap", (d.captionGap!=null ? d.captionGap : 10) + "px");
     document.body.classList.toggle("cap-below", d.captionMode === "below");
+    root.setProperty("--desc-top", (d.descTop!=null ? d.descTop : 20) + "px");
+    root.setProperty("--detail-title-size", (d.detailTitleSize!=null ? d.detailTitleSize : 26) + "px");
     root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
     root.setProperty("--text-list-title-size", (d.textListTitleSize!=null ? d.textListTitleSize : 21) + "px");
     root.setProperty("--text-list-top-space", (d.textListTopSpace!=null ? d.textListTopSpace : 40) + "px");
@@ -6281,7 +6336,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
   const EXTRA_CSS = [
     "a.photo-cell{display:block;}",
     ".photo-cell{cursor:zoom-in;}",
-    ".static-page .detail-desc{margin-top:20px;}",
+    ".static-page .detail-desc{margin-top:var(--desc-top, 20px);}",
     ".static-page .frame{cursor:pointer;}",
     "@media print{header.site-head,footer{display:none}}"
   ].join("");
@@ -6410,7 +6465,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
            '        <a class="orig-img" href="'+esc(href)+'">' + (o.image ? '<img src="'+esc(rootPath(o.image))+'" alt="'+esc(o.title+" — "+ARTIST+" "+ARTIST_EN)+'" loading="lazy" decoding="async">' : '') + '</a>\n' +
            '        <div class="orig-info">\n' +
            '          <h2 class="orig-title"><a href="'+esc(href)+'">'+esc(o.title)+'</a></h2>\n' +
-           (o.text ? '          <div class="orig-desc">'+esc(o.text)+'</div>\n' : '') +
+           (o.text ? '          <div class="orig-desc">'+richHtml(esc(o.text))+'</div>\n' : '') +
            '          <a class="orig-more" href="'+esc(href)+'">View work →</a>\n' +
            '        </div>\n' +
            '      </div>\n' +
@@ -6465,7 +6520,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       if(m.year)   ld.dateCreated = m.year;
       if(m.size)   ld.size = m.size;
     } else {
-      const firstLine = cleanText((String(item.description||"").split("\n").find(l=>cleanText(l))||""));
+      const firstLine = cleanText((stripBold(item.description).split("\n").find(l=>cleanText(l))||""));
       const author = firstLine.replace(/[(\uff08<][^)\uff09>]*[)\uff09>]/g,"").trim();
       ld = {"@context":"https://schema.org","@type":"Article","headline":title,
             "description":excerpt(item.description,300),"about":PERSON_LD,
@@ -6560,7 +6615,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
         (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+esc(item.soldOut ? "Sold out" : priceTxt)+'</div>\n' : '') +
-        (cleanText(item.description) ? '        <div class="pd-desc">'+esc(cleanText0(item.description))+'</div>\n' : '') +
+        (cleanText(item.description) ? '        <div class="pd-desc">'+richHtml(esc(cleanText0(item.description)))+'</div>\n' : '') +
         '        <div class="buy-box">\n'+buy+'\n        </div>\n' +
         '      </div>\n' +
         '    </div>';
@@ -6611,7 +6666,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '  <main class="shell">',
 '    <a class="detail-back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
 '    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>'),
-(kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+esc(cleanText0(item.description))+'</div>' : ''),
+(kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+richHtml(esc(cleanText0(item.description)))+'</div>' : ''),
 shopBlock,
 (rowsHtml ? '    <div class="photo-rows-wrap wide">\n'+rowsHtml+'\n    </div>' : ''),
 (kind==="shop" ? staticOriginalHtml(item) : ''),
@@ -6855,6 +6910,9 @@ shopBlock,
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
     $("btnDesign").addEventListener("click", ()=>openStudio());
+    $("itemDescBold").addEventListener("mousedown", e=>e.preventDefault());   // 버튼을 눌러도 글자 선택이 풀리지 않게
+    $("itemDescBold").addEventListener("click", ()=>toggleBold($("itemDesc")));
+    $("itemDesc").addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold($("itemDesc")); } });
     $("btnReplace").addEventListener("click", openReplaceModal);
     $("rpPreviewBtn").addEventListener("click", rpPreview);
     $("rpApplyBtn").addEventListener("click", rpApply);
