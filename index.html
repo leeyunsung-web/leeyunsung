@@ -1808,8 +1808,25 @@
     return { page: parts[0]||"works", id: parts[1]||null };
   }
 
+  // 다른 페이지로 넘어가면 맨 위에서 시작 (같은 페이지를 다시 그릴 때는 위치 유지)
+  let lastRouteKey = null, pendingScrollImg = null;
+  function scrollToImg(path, flash){
+    const want = [path, imgSrc(path)];
+    const cells = document.querySelectorAll(".photo-rows-wrap .photo-cell");
+    for(const c of cells){
+      const im = c.querySelector("img");
+      if(im && want.indexOf(im.getAttribute("src")) >= 0){
+        c.scrollIntoView({ block:"center", behavior: flash ? "auto" : "smooth" });
+        return true;
+      }
+    }
+    return false;
+  }
   function renderRoute(){
     const r = parseHash();
+    const routeKey = r.page + "/" + (r.id || "");
+    const changedRoute = routeKey !== lastRouteKey;
+    lastRouteKey = routeKey;
 
     // Pages swap via the hash here, so GA's automatic page_view only fires on
     // first load — send one per in-app navigation too.
@@ -1828,6 +1845,16 @@
 
     const app = $("app");
     app.innerHTML = "";
+    if(changedRoute){
+      window.scrollTo(0, 0);
+      if(pendingScrollImg){
+        // 원작 링크로 왔으면 그 그림 위치로 (사진이 불러와지며 줄 높이가 바뀌니 몇 번 맞춤)
+        const t = pendingScrollImg; pendingScrollImg = null;
+        setTimeout(()=>scrollToImg(t, true), 120);
+        setTimeout(()=>scrollToImg(t, false), 700);
+        setTimeout(()=>scrollToImg(t, false), 1600);
+      }
+    }
     if(r.page==="cv") renderCV(app);
     else if(r.page==="works" && !r.id) renderCollectionGrid(app,"works","WORKS");
     else if(r.page==="works" && r.id) renderCollectionDetail(app,"works",r.id);
@@ -4686,6 +4713,11 @@
     (w.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image && !isVideoPhoto(p) && out.indexOf(p.image) < 0) out.push(p.image); }));
     return out;
   }
+  function origPhotoId(w, image){
+    let id = null;
+    (w.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(!id && p.image === image) id = p.id; }));
+    return id;
+  }
   function resolveOriginal(item){
     const o = item && item.original;
     if(!o || !o.workId) return null;
@@ -4694,7 +4726,7 @@
     const imgs = workImages(w);
     const image = (o.image && imgs.indexOf(o.image) >= 0) ? o.image : (imgs[0] || "");
     const text = cleanText(o.text) ? String(o.text).trim() : (w.description || "").trim();
-    return { work:w, image, text, title: cleanText(w.title) || "Untitled" };
+    return { work:w, image, text, title: cleanText(w.title) || "Untitled", photoId: origPhotoId(w, image) };
   }
   let pendingOrigImage = "";
   function fillOrigPicker(workId, selected){
@@ -4733,12 +4765,18 @@
     const lab = el("div","orig-label"); lab.textContent = "Original Work"; sec.appendChild(lab);
     const grid = el("div","orig-grid");
     const a = el("a","orig-img"); setItemLink(a, "works", o.work); a.title = o.title + " — WORKS";
+    // 누르면 WORKS 페이지에서 바로 이 그림 위치로
+    const linkToImg = x=>{
+      if(o.photoId && x.getAttribute("href") && x.getAttribute("href").charAt(0) === "/") x.setAttribute("href", x.getAttribute("href") + "#p-" + o.photoId);
+      x.addEventListener("click", ()=>{ pendingScrollImg = o.photoId ? o.image : null; });
+    };
+    linkToImg(a);
     if(o.image){ const im = el("img"); im.src = imgSrc(o.image); im.alt = o.title + " — " + ARTIST; im.loading = "lazy"; im.decoding = "async"; a.appendChild(im); }
     grid.appendChild(a);
     const info = el("div","orig-info");
-    const h = el("h2","orig-title"); const ha = el("a"); setItemLink(ha, "works", o.work); ha.textContent = o.title; h.appendChild(ha); info.appendChild(h);
+    const h = el("h2","orig-title"); const ha = el("a"); setItemLink(ha, "works", o.work); linkToImg(ha); ha.textContent = o.title; h.appendChild(ha); info.appendChild(h);
     if(o.text){ const d = el("div","orig-desc"); d.textContent = o.text; info.appendChild(d); }
-    const more = el("a","orig-more"); setItemLink(more, "works", o.work); more.textContent = "View work →"; info.appendChild(more);
+    const more = el("a","orig-more"); setItemLink(more, "works", o.work); linkToImg(more); more.textContent = "View work →"; info.appendChild(more);
     grid.appendChild(info);
     sec.appendChild(grid);
     app.appendChild(sec);
@@ -5742,6 +5780,8 @@
     "c.forEach(function(el,i){el.style.height=h+'px';el.style.width=(r[i]*h)+'px';});});}",
     "function V(){document.body.style.setProperty('--vwpx',document.documentElement.clientWidth+'px');}",
         "V();window.addEventListener('resize',V);",
+    "function T(){var h=location.hash;if(h&&h.indexOf('#p-')===0){var e=document.getElementById(h.slice(1));if(e)e.scrollIntoView({block:'center'});}}",
+    "window.addEventListener('load',function(){L();setTimeout(T,50);});",
     "window.addEventListener('resize',L);window.addEventListener('load',L);",
     "document.addEventListener('DOMContentLoaded',L);",
     "document.querySelectorAll('.photo-grid.multi img').forEach(function(m){m.addEventListener('load',L);});",
@@ -5836,7 +5876,7 @@
   function staticOriginalHtml(item){
     const o = resolveOriginal(item);
     if(!o) return "";
-    const href = "/" + pagePath("works", o.work);
+    const href = "/" + pagePath("works", o.work) + (o.photoId ? "#p-" + o.photoId : "");
     return '    <section class="orig-work">\n' +
            '      <div class="orig-label">Original Work</div>\n' +
            '      <div class="orig-grid">\n' +
@@ -5927,7 +5967,7 @@
                  (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
                  '        </div>';
         }
-        return '        <a class="photo-cell" href="'+esc(rootPath(p.image))+'">\n' +
+        return '        <a class="photo-cell" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'">\n' +
                '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
                (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
