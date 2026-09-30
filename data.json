@@ -3047,9 +3047,9 @@
     },
     {
       "id": "s-1790624955390-u6892",
-      "title": "",
+      "title": "Torso 04\nArt Poster (2021)\n62 x 50 cm\nSigned and numbered, edition of 300",
       "cover": "./images/w3-p-1787465231077-kzbxf.jpg",
-      "description": "",
+      "description": "2013년작 《Torso 04》의 포스터 버전입니다. \n2021년 한정 에디션으로 제작, 판매되었으며, 남은 수량을 \n웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster edition of Torso 03 (2013), originally produced and released as a limited edition in 2021. The remaining prints are now available again to celebrate the relaunch of this website.",
       "slug": "shop-10",
       "photoRows": [
         {
@@ -3065,10 +3065,10 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
+      "spec2": "Digital Print on Paper",
       "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "priceKrw": "40000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -3598,7 +3598,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
-    "page.css": "1794bd7e:78392",
+    "page.css": "eab3988a:78396",
     "sitemap.xml": "85b980c2:111332",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "bcc162f1:46100"
