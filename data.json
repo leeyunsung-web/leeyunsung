@@ -3819,6 +3819,7 @@
     "naverLabel": "NPAY",
     "naverSub": "국내",
     "paypalLabel": "PayPal / Card",
-    "paypalSub": "International"
+    "paypalSub": "International",
+    "buyNote": "국내 구매는 네이버 스마트스토어(네이버페이)로 이동합니다. · International orders: add to cart and pay with PayPal or card (USD, shipping from Korea)."
   }
 }
