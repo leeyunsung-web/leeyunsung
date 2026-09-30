@@ -2306,6 +2306,17 @@
               "caption": ""
             }
           ]
+        },
+        {
+          "id": "row-1790766344845-zl82c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790766344845-zl6rm",
+              "image": "./images/w-1790766011679-go31v-p-1790766344845-zl6rm-a474108a.jpg",
+              "caption": ""
+            }
+          ]
         }
       ]
     }
@@ -3214,9 +3225,9 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
-    "page.css": "f26422d2:76392",
-    "sitemap.xml": "8b8cad67:100728",
+    "page.css": "16bee3d:76372",
+    "sitemap.xml": "f4329ce0:101156",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "748bbceb:16064"
+    "works/works-9/index.html": "86c60064:17640"
   }
 }
