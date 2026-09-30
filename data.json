@@ -150,6 +150,17 @@
           ]
         },
         {
+          "id": "row-1790756583254-rjy3x",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790756583255-pfr1t",
+              "image": "./images/w3-p-1790756583255-pfr1t-9057863c.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
           "id": "row-1787464162725-hzch0",
           "cols": 1,
           "photos": [
@@ -3139,7 +3150,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "3bca6f1c:25392",
-    "works/torso/index.html": "cd6913b5:45300",
+    "works/torso/index.html": "bfe8328f:45700",
     "works/danae/index.html": "61ed22ba:54092",
     "works/zodiac/index.html": "2821ba33:91052",
     "works/medusa/index.html": "f284662d:50156",
@@ -3154,7 +3165,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "bea9a905:35764",
     "cv/index.html": "472632d7:8152",
     "page.css": "594f5840:76088",
-    "sitemap.xml": "9bdfb0a1:97656",
+    "sitemap.xml": "5cc0eebe:97984",
     "robots.txt": "e7785df8:92"
   }
 }
