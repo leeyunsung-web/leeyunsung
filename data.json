@@ -1582,7 +1582,8 @@
               "image": "./images/w-1790766011679-go31v-p-1790798512648-k2mct-be998c1d.jpg",
               "caption": ""
             }
-          ]
+          ],
+          "size": 60
         },
         {
           "id": "row-1790797726614-w74vd",
@@ -3807,7 +3808,7 @@
     "page.css": "b30a9b75:81816",
     "sitemap.xml": "d9f83692:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "a70276f9:46536"
+    "works/works-9/index.html": "a7224391:46556"
   },
   "shopDesign": {
     "mainPct": 56,
