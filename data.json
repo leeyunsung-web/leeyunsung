@@ -2738,7 +2738,8 @@
         "workId": "w-1790628203345-iya5b",
         "image": "./images/s-1790622121911-1dl7b-cover.jpg"
       },
-      "rowCols": 5
+      "rowCols": 5,
+      "hidden": false
     },
     {
       "id": "s-1790622337229-hzfwn",
