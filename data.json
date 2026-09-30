@@ -80,7 +80,7 @@
           "photos": [
             {
               "id": "p-1787384904997-pmnc5",
-              "image": "./images/w2-p-1787384904997-pmnc5.jpg",
+              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
               "caption": "The Annunciation, 2014, Central diptych, Oil on canvas, 194 × 261 cm"
             }
           ]
@@ -3786,7 +3786,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "716bc33c:27280",
+    "works/the-annunciation/index.html": "42f370d0:27328",
     "works/torso/index.html": "710e7844:46648",
     "works/danae/index.html": "5a0e7496:54804",
     "works/zodiac/index.html": "b01bcb79:91732",
@@ -3801,8 +3801,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "9cd362f0:38972",
     "text/exploding-bishojo-baek-jihong/index.html": "af6c102c:36656",
     "cv/index.html": "4c6ebe9d:8156",
-    "page.css": "f33d7e04:85604",
-    "sitemap.xml": "d0a0e2cc:114228",
+    "page.css": "f8fea67c:85604",
+    "sitemap.xml": "6f53c7:114240",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "189c337c:55260"
   },
