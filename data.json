@@ -1575,7 +1575,11 @@
             {
               "id": "p-1790767398019-vncbr",
               "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 8,
+                "c": 0
+              }
             }
           ],
           "size": 20,
@@ -3799,7 +3803,7 @@
     "page.css": "c75337f9:80412",
     "sitemap.xml": "a977b284:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "92f4de82:46684"
+    "works/works-9/index.html": "1bc730a3:46748"
   },
   "shopDesign": {
     "mainPct": 56,
