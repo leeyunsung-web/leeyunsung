@@ -1748,7 +1748,9 @@
               "caption": "The Three Graces Pixel Props 02, 2019, Oil on canvas, 53 × 45 cm"
             }
           ],
-          "size": 50
+          "size": 40,
+          "mt": "50",
+          "mb": "50"
         },
         {
           "id": "row-1790769564954-b0oq3",
@@ -3791,7 +3793,7 @@
     "page.css": "c75337f9:80412",
     "sitemap.xml": "bdc3677d:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "24a42360:46636"
+    "works/works-9/index.html": "28ca9474:46684"
   },
   "shopDesign": {
     "mainPct": 56,
