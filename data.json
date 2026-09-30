@@ -3275,7 +3275,7 @@
       "id": "s-1790624996756-xnr3j",
       "title": "Torso 04\nArt Poster (2021)\n62 x 50 cm\nSigned and numbered, edition of 300",
       "cover": "./images/w3-p-1787465590493-13mdp.jpg",
-      "description": "2013년작 《Torso 04》의 포스터 버전입니다. \n2021년 한정 에디션으로 제작, 판매되었으며, 남은 수량을 \n웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster edition of Torso 03 (2013), originally produced and released as a limited edition in 2021. The remaining prints are now available again to celebrate the relaunch of this website.",
+      "description": "2020년작 〈Torso 10〉 의 포스터 버전입니다.\n2021년 한정 에디션으로 제작·판매되었으며, 남은 수량을\n웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. The remaining prints are now available again to celebrate the relaunch of this website.",
       "slug": "shop-15",
       "photoRows": [
         {
@@ -3304,7 +3304,8 @@
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787465590493-13mdp.jpg"
-      }
+      },
+      "rowCols": 5
     },
     {
       "id": "s-1790625329545-jex4a",
