@@ -2673,7 +2673,7 @@
     "textWidth": 600,
     "uiItalic": false,
     "descWidth": 1000,
-    "descTop": 60
+    "descTop": 40
   },
   "publishedPages": [
     "works/the-annunciation/index.html",
@@ -3788,7 +3788,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "3ae87e9e:38096",
     "text/exploding-bishojo-baek-jihong/index.html": "618296de:35784",
     "cv/index.html": "4c6ebe9d:8156",
-    "page.css": "e7add638:84348",
+    "page.css": "4b451c0:84348",
     "sitemap.xml": "95ce724a:113872",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "bdffd5bf:54384"
