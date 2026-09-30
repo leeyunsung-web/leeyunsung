@@ -1523,7 +1523,9 @@
               "image": "./images/w-1790766011679-go31v-p-1790766957166-hbp9w-62e01e4a.jpg",
               "caption": "Prometheus, 2019, Oil on canvas, 130 × 162 cm"
             }
-          ]
+          ],
+          "mt": "50",
+          "mb": "50"
         },
         {
           "id": "row-1790766405552-pxiux",
@@ -3780,7 +3782,7 @@
     "page.css": "42524592:80396",
     "sitemap.xml": "f8a094f6:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "95638941:46360"
+    "works/works-9/index.html": "be6dbc6b:46408"
   },
   "shopDesign": {
     "mainPct": 56,
