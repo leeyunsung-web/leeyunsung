@@ -833,6 +833,10 @@
   .desc-labelrow{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:6px;}
   .desc-labelrow label{margin:0;}
   .rich-tools{display:flex; gap:4px;}
+  .lh-row{display:flex; align-items:center; gap:10px; margin-top:10px; font-size:12px; color:var(--ink-soft);}
+  .lh-row input[type=range]{flex:1; accent-color:#111;}
+  .lh-row b{min-width:64px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .lh-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer;}
   .rich-tools button{min-width:28px; height:26px; padding:0 8px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; font:inherit; font-size:13px; cursor:pointer; color:var(--ink);}
   .rich-tools button:hover{border-color:var(--ink); background:var(--ink); color:#fff;}
   .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
@@ -880,6 +884,7 @@
   .pan-frame i{position:absolute; left:4px; top:3px; font-style:normal; font-size:10px; color:#fff; padding:1px 5px; border-radius:3px;}
   .pan-frame.start i{background:#1d8a45;} .pan-frame.end i{background:#c62828; left:auto; right:4px;}
   .pan-preview{max-width:360px;}
+  .pan-qnote{font-size:12px; margin-top:8px; line-height:1.5;} .pan-qnote.ok{color:#1d6b3a;} .pan-qnote.warn{color:#9a5b00;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
   }
@@ -1075,6 +1080,12 @@
           </div>
           <textarea id="itemDesc" class="desc-big" placeholder="작품 설명"></textarea>
           <div class="field-hint">굵게 할 글자를 드래그해서 고른 뒤 <b>B</b>(또는 Ctrl+B)를 누르세요. 글 안에는 **이렇게** 표시되고, 홈페이지에서는 굵은 글씨로 보여요.</div>
+          <div class="lh-row">
+            <span>줄 간격</span>
+            <input type="range" id="itemDescLh" min="1" max="3.2" step="0.05" value="1.85">
+            <b id="itemDescLhVal">기본</b>
+            <button type="button" id="itemDescLhReset">기본으로</button>
+          </div>
         </div>
         <div id="shopFields" style="display:none;">
           <div class="field">
@@ -1225,6 +1236,7 @@
             <div class="pan-opt"><span>한 번 지나가는 시간</span>
               <div class="size-row"><input type="number" id="photoPanDur" min="3" max="180" step="1" placeholder="24" inputmode="numeric"><span>초</span></div></div>
           </div>
+          <div id="photoPanQNote" class="pan-qnote"></div>
           <div class="field-hint">이미지를 창 안에서 시작 영역 → 끝 영역으로 천천히 움직이고, 끝에 닿으면 부드럽게 되돌아와요(계속 반복). 확대하면 이미지의 일부만 크게 보면서 움직여요. 가로·세로·대각선 모두 가능해요.</div>
         </div>
         <div class="field">
@@ -2010,6 +2022,7 @@
 
   // 다른 페이지로 넘어가면 맨 위에서 시작 (같은 페이지를 다시 그릴 때는 위치 유지)
   let lastRouteKey = null, pendingScrollImg = null;
+  let panEpoch = performance.now();   // 같은 페이지 안에서는 화면을 다시 그려도 이 시각 기준으로 이어서 움직임
   function scrollToImg(path, flash){
     const want = [path, imgSrc(path)];
     const cells = document.querySelectorAll(".photo-rows-wrap .photo-cell");
@@ -2030,6 +2043,7 @@
     const routeKey = r.page + "/" + (r.id || "");
     const changedRoute = routeKey !== lastRouteKey;
     lastRouteKey = routeKey;
+    if(changedRoute) panEpoch = performance.now();   // 다른 페이지로 갈 때만 패닝을 처음부터
 
     // Pages swap via the hash here, so GA's automatic page_view only fires on
     // first load — send one per in-app navigation too.
@@ -3922,7 +3936,7 @@
     const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
     if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
     if(cleanText(item.description)){
-      const desc = el("div","pd-desc"); setRichText(desc, item.description);
+      const desc = el("div","pd-desc"); setRichText(desc, item.description); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
       info.appendChild(desc);
     }
     info.appendChild(buyRow(item));
@@ -4073,6 +4087,7 @@
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
       $("itemDesc").value = item.description || "";
+      setDescLhUi(item.descStyle && item.descStyle.lineHeight ? item.descStyle.lineHeight : null);
       $("itemSlug").value = item.slug || "";
       if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
       else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
@@ -4088,6 +4103,7 @@
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
       $("itemDesc").value = "";
+      setDescLhUi(null);
       $("itemSlug").value = "";
       clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop");
       $("itemDeleteBtn").style.display = "none";
@@ -4100,6 +4116,17 @@
     requestAnimationFrame(()=>document.querySelectorAll("#itemModal textarea.grow").forEach(autoGrow));
   }
 
+  let pendingDescLh = null;   // null = 기본 줄 간격
+  function setDescLhUi(v){
+    pendingDescLh = v ? Math.max(1, Math.min(3.2, parseFloat(v))) : null;
+    $("itemDescLh").value = pendingDescLh || 1.85;
+    $("itemDescLhVal").textContent = pendingDescLh ? pendingDescLh.toFixed(2) : "기본";
+    // 지금 보고 있는 상세 페이지 설명에 바로 반영 (미리보기)
+    const rt = parseHash();
+    if(rt.id && rt.id === $("itemId").value){
+      document.querySelectorAll(".detail-desc, .pd-desc").forEach(d=>{ d.style.lineHeight = pendingDescLh ? String(pendingDescLh) : ""; });
+    }
+  }
   function saveItem(){
     const key = $("itemCollection").value;
     const id = $("itemId").value || uid(key[0]);
@@ -4116,6 +4143,11 @@
       slug: slugify($("itemSlug").value),
       photoRows: prev ? (prev.photoRows || []) : []
     });
+    {
+      const ds = Object.assign({}, payload.descStyle || {});
+      if(pendingDescLh) ds.lineHeight = Math.round(pendingDescLh * 100) / 100; else delete ds.lineHeight;
+      if(Object.keys(ds).length) payload.descStyle = ds; else delete payload.descStyle;
+    }
 
     if(key === "shop"){
       payload.spec1    = $("itemSpec1").value.trim();
@@ -4371,6 +4403,27 @@
 
   // ---------------- photo modal ----------------
   let pendingPhotoImage = null;
+  let pendingPhotoFile = null, pendingPhotoHi = false;   // 원본 파일(패닝이면 고화질로 다시 만들기 위해)
+  function takePhotoFile(file){
+    if(!file || !file.type.startsWith("image/")) return;
+    pendingPhotoFile = file;
+    const hi = !!pendingPan;
+    resizeImageFile(file, hi ? IMG_PAN : IMG_PHOTO, d=>{
+      pendingPhotoImage = d; pendingPhotoHi = hi; setPhotoVideoUi(null);
+      showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", d);
+      panQualityNote();
+    });
+  }
+  // 패닝을 켰는데 지금 이미지가 일반 화질이면 안내
+  function panQualityNote(){
+    const n = $("photoPanQNote"); if(!n) return;
+    if(!pendingPan){ n.textContent = ""; return; }
+    if(pendingPhotoFile){ n.className = "pan-qnote ok"; n.textContent = pendingPhotoHi ? "✓ 패닝용 고화질(긴 변 최대 6000px)로 올라가요." : "✓ 저장할 때 패닝용 고화질(긴 변 최대 6000px)로 다시 만들어 올려요."; return; }
+    const im = $("photoImgPreview");
+    const long = Math.max(im.naturalWidth || 0, im.naturalHeight || 0);
+    if(long && long < 4000){ n.className = "pan-qnote warn"; n.textContent = "지금 이미지는 일반 화질(긴 변 " + long + "px)이에요. 확대해서 움직이면 흐릴 수 있으니, 위 이미지 칸에 원본 파일을 다시 올리면 2배 고화질로 올라가요."; }
+    else { n.className = "pan-qnote ok"; n.textContent = long ? "✓ 고화질 이미지예요 (긴 변 " + long + "px)." : ""; }
+  }
   let pendingNewRowFor = null;
 
   function startNewRowFlow(key,itemId,insertIndex){
@@ -4406,7 +4459,7 @@
     const dir = pendingPan.y0 === pendingPan.y1 && pendingPan.x0 === 0 && pendingPan.x1 === 1 ? "lr" : pendingPan.y0 === pendingPan.y1 && pendingPan.x0 === 1 && pendingPan.x1 === 0 ? "rl"
               : pendingPan.x0 === pendingPan.x1 && pendingPan.y0 === 0 && pendingPan.y1 === 1 ? "tb" : pendingPan.x0 === pendingPan.x1 && pendingPan.y0 === 1 && pendingPan.y1 === 0 ? "bt" : "";
     document.querySelectorAll("#photoPanDirSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === dir));
-    drawPanEditor();
+    drawPanEditor(); panQualityNote();
   }
   function drawPanEditor(){
     if(!pendingPan) return;
@@ -4483,7 +4536,7 @@
     $("photoNewRowCols").value = "";
     $("photoInsertIndex").value = "";
     $("photoId").value = photoId || "";
-    pendingPhotoImage = null;
+    pendingPhotoImage = null; pendingPhotoFile = null; pendingPhotoHi = false;
     setPhotoVideoUi(null);
     {
       const it = state.data[key].find(x=>x.id===itemId);
@@ -4525,7 +4578,7 @@
     $("photoNewRowCols").value = cols;
     $("photoInsertIndex").value = (insertIndex==null ? "" : String(insertIndex));
     $("photoId").value = "";
-    pendingPhotoImage = null;
+    pendingPhotoImage = null; pendingPhotoFile = null; pendingPhotoHi = false;
     setPhotoVideoUi(null);
     photoModalRowCount = 0;
     setRowColsUi(cols, 0);
@@ -4540,6 +4593,16 @@
   }
 
   function savePhoto(){
+    // 패닝을 켰고 원본 파일이 있는데 아직 일반 화질이면, 고화질로 다시 만들어서 저장
+    if(pendingPan && pendingPhotoFile && !pendingPhotoHi && !pendingPhotoVideo){
+      $("photoSaveBtn").disabled = true; $("photoSaveBtn").textContent = "고화질로 만드는 중…";
+      resizeImageFile(pendingPhotoFile, IMG_PAN, d=>{
+        pendingPhotoImage = d; pendingPhotoHi = true;
+        $("photoSaveBtn").disabled = false; $("photoSaveBtn").textContent = "저장";
+        savePhoto();
+      });
+      return;
+    }
     const key = $("photoCollection").value;
     const itemId = $("photoItemId").value;
     const item = state.data[key].find(x=>x.id===itemId);
@@ -5076,6 +5139,7 @@
     const w = el("div", "pan-wrap");
     w.style.setProperty("--pr", panRatio(pan).toFixed(5));
     w.style.setProperty("--pd", panDur(pan) + "s");
+    img.style.animationDelay = (-(performance.now() - panEpoch) / 1000).toFixed(3) + "s";   // 다시 그려져도 멈춘 자리에서 이어서
     img.classList.add("pan-img");
     w.appendChild(img);
     const go = ()=>applyPanVars(w, img, pan);
@@ -5587,6 +5651,8 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
      · 상세 사진: 긴 변 3000px, 한 장 약 1MB 목표 (화질 0.92에서 시작해 1.2MB를 넘으면 조금씩 낮춤, 최저 0.84)
      · 커버(목록 네모칸): 긴 변 2000px — 목록에서는 화면 절반 크기라 이 정도면 선명하고 목록 페이지가 가벼움 */
   const IMG_PHOTO = { maxDim:3000, minDim:2200, q:0.92, minQ:0.84, target:1.2 * 1024 * 1024, hardMax:1.6 * 1024 * 1024, keepMax:1.5 * 1024 * 1024 };
+  // 패닝용: 확대해서 움직이므로 상세 사진의 2배 화질 (긴 변 6000px, 약 2.4MB)
+  const IMG_PAN   = { maxDim:6000, minDim:4400, q:0.93, minQ:0.85, target:2.4 * 1024 * 1024, hardMax:3.2 * 1024 * 1024, keepMax:3.0 * 1024 * 1024 };
   const IMG_COVER = { maxDim:2000, minDim:1400, q:0.9,  minQ:0.82, target:0.6 * 1024 * 1024, hardMax:0.9 * 1024 * 1024, keepMax:0.8 * 1024 * 1024 };
   function handleFileToDataUrl(file, cb, kind){
     if(!file || !file.type.startsWith("image/")) return;
@@ -5738,6 +5804,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     elm.style.letterSpacing = override && override.letterSpacing!=null ? (override.letterSpacing/100)+"em" : "";
     elm.style.fontWeight = override && override.bold!=null ? (override.bold?"700":"400") : "";
     elm.style.textAlign = override && override.align ? override.align : "";
+    elm.style.lineHeight = override && override.lineHeight ? String(override.lineHeight) : "";
   }
 
   function makeCvStyleTarget(){
@@ -6146,6 +6213,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
   }
   function closeModal(id){
     $(id).classList.remove("show");
+    if(id === "itemModal") document.querySelectorAll(".detail-desc, .pd-desc").forEach(d=>{ d.style.lineHeight = ""; }), setTimeout(()=>{ if(!$("itemModal").classList.contains("show")) renderRoute(); }, 0);   // 저장 안 하고 닫으면 미리보기 원래대로
     if(id === "photoLightbox") document.body.classList.remove("lightbox-open");
   }
   function setStatus(id,msg,type){ const e=$(id); e.textContent=msg; e.className="status-msg"+(msg?" show":"")+(type?(" "+type):""); }
@@ -6548,6 +6616,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     if(o.letterSpacing != null) p.push("letter-spacing:"+(o.letterSpacing/100)+"em");
     if(o.bold != null)          p.push("font-weight:"+(o.bold?"700":"400"));
     if(o.align)                 p.push("text-align:"+o.align);
+    if(o.lineHeight)            p.push("line-height:"+o.lineHeight);
     return p.length ? ' style="'+esc(p.join(";"))+'"' : "";
   }
 
@@ -6781,7 +6850,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
         (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+esc(item.soldOut ? "Sold out" : priceTxt)+'</div>\n' : '') +
-        (cleanText(item.description) ? '        <div class="pd-desc">'+richHtml(esc(cleanText0(item.description)))+'</div>\n' : '') +
+        (cleanText(item.description) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+richHtml(esc(cleanText0(item.description)))+'</div>\n' : '') +
         '        <div class="buy-box">\n'+buy+'\n        </div>\n' +
         '      </div>\n' +
         '    </div>';
@@ -7076,6 +7145,8 @@ shopBlock,
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
     $("btnDesign").addEventListener("click", ()=>openStudio());
+    $("itemDescLh").addEventListener("input", ()=>setDescLhUi($("itemDescLh").value));
+    $("itemDescLhReset").addEventListener("click", ()=>setDescLhUi(null));
     $("itemDescBold").addEventListener("mousedown", e=>e.preventDefault());   // 버튼을 눌러도 글자 선택이 풀리지 않게
     $("itemDescBold").addEventListener("click", ()=>toggleBold($("itemDesc")));
     $("itemDesc").addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold($("itemDesc")); } });
@@ -7107,7 +7178,7 @@ shopBlock,
     $("photoPanZoom").addEventListener("input", ()=>{ if(pendingPan){ pendingPan.zoom = parseFloat($("photoPanZoom").value) || 1; setPanUi(pendingPan); } });
     $("photoPanDur").addEventListener("input", drawPanEditor);
     $("photoPanEdImg").addEventListener("load", drawPanEditor);
-    $("photoImgPreview").addEventListener("load", ()=>{ if(pendingPan) setPanUi(pendingPan); });   // 이미지를 바꾸면 영역 편집기도 새 이미지로
+    $("photoImgPreview").addEventListener("load", ()=>{ if(pendingPan) setPanUi(pendingPan); else panQualityNote(); });   // 이미지를 바꾸면 영역 편집기도 새 이미지로
     $("photoPanPrevImg").addEventListener("load", drawPanEditor);
     bindPanFrameDrag("photoPanFrameA", "x0", "y0");
     bindPanFrameDrag("photoPanFrameB", "x1", "y1");
@@ -7132,7 +7203,7 @@ shopBlock,
     document.querySelectorAll("#itemRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setItemRowColsUi(b.dataset.val)));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
-      else openImgPicker(src=>{ pendingPhotoImage = src; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
+      else openImgPicker(src=>{ pendingPhotoImage = src; pendingPhotoFile = null; pendingPhotoHi = false; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
     }));
     $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
     itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
@@ -7152,10 +7223,10 @@ shopBlock,
     });
     const photoDrop = $("photoImgDrop");
     photoDrop.addEventListener("click", ()=>$("photoImageFile").click());
-    $("photoImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingPhotoImage=d; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+    $("photoImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) takePhotoFile(e.target.files[0]); e.target.value = ""; });
     photoDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); photoDrop.style.borderColor="#111"; });
     photoDrop.addEventListener("dragleave",()=>{ photoDrop.style.borderColor=""; });
-    photoDrop.addEventListener("drop",(e)=>{ e.preventDefault(); photoDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingPhotoImage=d; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop",d); }); });
+    photoDrop.addEventListener("drop",(e)=>{ e.preventDefault(); photoDrop.style.borderColor=""; if(e.dataTransfer.files[0]) takePhotoFile(e.dataTransfer.files[0]); });
 
     $("addLinkRowBtn").addEventListener("click", ()=>addLinkRow("",""));
     $("contactSaveBtn").addEventListener("click", saveContact);
