@@ -2449,9 +2449,9 @@
           "cols": 1,
           "photos": [
             {
-              "id": "p-1790766888925-on1v5",
-              "image": "./images/w-1790766011679-go31v-p-1790766888925-on1v5-971a8d56.jpg",
-              "caption": "The Three Graces Pixel Props 03, 2019, Oil on canvas, 53 × 45 cm"
+              "id": "p-1790769766447-3rt80",
+              "image": "./images/w-1790766011679-go31v-p-1790769766447-3rt80-8981fc17.jpg",
+              "caption": ""
             }
           ],
           "size": 50
@@ -2461,9 +2461,9 @@
           "cols": 1,
           "photos": [
             {
-              "id": "p-1790766957166-hbp9w",
-              "image": "./images/w-1790766011679-go31v-p-1790766957166-hbp9w-62e01e4a.jpg",
-              "caption": "Prometheus, 2019, Oil on canvas, 130 × 162 cm"
+              "id": "p-1790766888925-on1v5",
+              "image": "./images/w-1790766011679-go31v-p-1790766888925-on1v5-971a8d56.jpg",
+              "caption": "The Three Graces Pixel Props 03, 2019, Oil on canvas, 53 × 45 cm"
             }
           ]
         },
@@ -2472,19 +2472,27 @@
           "cols": 1,
           "photos": [
             {
-              "id": "p-1790767398019-vncbr",
-              "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": "",
-              "adj": {
-                "b": 5,
-                "c": 1
-              }
+              "id": "p-1790766957166-hbp9w",
+              "image": "./images/w-1790766011679-go31v-p-1790766957166-hbp9w-62e01e4a.jpg",
+              "caption": "Prometheus, 2019, Oil on canvas, 130 × 162 cm"
             }
           ],
           "size": 30
         },
         {
           "id": "row-1790769501665-ig9cv",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790767398019-vncbr",
+              "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
+              "caption": ""
+            }
+          ],
+          "size": 30
+        },
+        {
+          "id": "row-1790769514686-4nr0d",
           "cols": 1,
           "photos": [
             {
@@ -2496,7 +2504,7 @@
           "size": 30
         },
         {
-          "id": "row-1790769514686-4nr0d",
+          "id": "row-1790767454584-9p0jb",
           "cols": 1,
           "photos": [
             {
@@ -2508,7 +2516,7 @@
           "size": 30
         },
         {
-          "id": "row-1790767454584-9p0jb",
+          "id": "row-1790769537259-3n162",
           "cols": 1,
           "photos": [
             {
@@ -2520,7 +2528,7 @@
           "size": 30
         },
         {
-          "id": "row-1790769537259-3n162",
+          "id": "row-1790769544038-27v48",
           "cols": 1,
           "photos": [
             {
@@ -2532,7 +2540,7 @@
           "size": 30
         },
         {
-          "id": "row-1790769544038-27v48",
+          "id": "row-1790768423456-qt7zd",
           "cols": 1,
           "photos": [
             {
@@ -2541,10 +2549,10 @@
               "caption": ""
             }
           ],
-          "size": 30
+          "size": 50
         },
         {
-          "id": "row-1790768423456-qt7zd",
+          "id": "row-1790769564954-b0oq3",
           "cols": 1,
           "photos": [
             {
@@ -2556,7 +2564,7 @@
           "size": 50
         },
         {
-          "id": "row-1790769564954-b0oq3",
+          "id": "row-1790769573085-dmgpj",
           "cols": 1,
           "photos": [
             {
@@ -2568,24 +2576,12 @@
           "size": 50
         },
         {
-          "id": "row-1790769573085-dmgpj",
+          "id": "row-1790769766447-tqy8v",
           "cols": 1,
           "photos": [
             {
               "id": "p-1790768444520-l1z16",
               "image": "./images/w-1790766011679-go31v-p-1790768444520-l1z16-6ce9e3d8.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 50
-        },
-        {
-          "id": "row-1790769766447-tqy8v",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790769766447-3rt80",
-              "image": "./images/w-1790766011679-go31v-p-1790769766447-3rt80-8981fc17.jpg",
               "caption": ""
             }
           ],
@@ -3607,6 +3603,37 @@
       "category": "original",
       "shipProfile": "flat",
       "coverInRows": true
+    },
+    {
+      "id": "s-1790773205085-h4d9d",
+      "title": "",
+      "cover": "./images/s-1790773205085-h4d9d-cover-e6d087eb.jpg",
+      "description": "",
+      "slug": "shop-27",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790773205085-h4d9d-f90d17",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790773205085-h4d9d-f90d17",
+              "image": "./images/s-1790773205085-h4d9d-cover-e6d087eb.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
@@ -3633,8 +3660,8 @@
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
     "page.css": "eab3988a:78396",
-    "sitemap.xml": "85b980c2:111332",
+    "sitemap.xml": "2beebd16:111332",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "40800deb:46160"
+    "works/works-9/index.html": "1b428c81:46100"
   }
 }
