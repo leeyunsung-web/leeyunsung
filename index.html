@@ -192,6 +192,12 @@
     width:var(--sgw); max-width:none; margin-left:calc(50% - var(--sgw) / 2);
     display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); font-family:var(--shop-font,inherit);}
   .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
+  /* 상품별 '이 줄 개수'로 나뉜 줄 */
+  .shop-grid{flex-direction:column; flex-wrap:nowrap;}
+  .shop-row{--cols-now:var(--n,5); display:flex; flex-wrap:wrap; justify-content:center; gap:44px var(--gx); width:100%;}
+  .shop-row > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
+  @media (max-width:900px){ .shop-row{--cols-now:var(--n-sm,3);} }
+  @media (max-width:600px){ .shop-row{--cols-now:var(--n-xs,2); gap:30px 12px;} }
   @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,5);} }
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
   @media (max-width:600px){ .shop-grid{--cols-now:var(--shop-cols-xs,2); --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
@@ -1038,6 +1044,13 @@
               <button type="button" data-v="hidden">○ 비공개</button>
             </div>
             <div class="vis-note" id="itemVisNote"></div>
+          </div>
+          <div class="field">
+            <label>이 줄에 나란히 놓을 개수</label>
+            <div class="segbtns" id="itemRowColsSeg">
+              <button type="button" data-val="1">1</button><button type="button" data-val="2">2</button><button type="button" data-val="3">3</button><button type="button" data-val="4">4</button><button type="button" data-val="5">5</button>
+            </div>
+            <div class="field-hint">같은 개수로 정한 상품끼리 한 줄을 채워요. 개수가 적을수록 크게 보여요. (휴대폰은 최대 2개)</div>
           </div>
           <div class="field"><label>사양 1 <span style="color:#999;font-weight:400;">— 예: 162 × 130 cm</span></label><textarea id="itemSpec1" class="grow" rows="1" placeholder="크기"></textarea></div>
           <div class="field"><label>사양 2 <span style="color:#999;font-weight:400;">— 예: Oil on canvas</span></label><textarea id="itemSpec2" class="grow" rows="1" placeholder="재료 / 인쇄 방식"></textarea></div>
@@ -2705,7 +2718,6 @@
     ["titleSize",    "상세: 제목 글씨 (px)",         16, 48, 1],
     ["bodySize",     "상세: 설명 글씨 (px)",         11, 20, 1],
     ["priceSize",    "상세: 가격 글씨 (px)",         12, 32, 1],
-    ["gridCols",     "목록: 한 줄 개수",              1, 5, 1],
     ["gridSide",     "목록: 좌우 여백 (px)",         0, 200, 4],
     ["gridTitleSize","목록: 제목 글씨 (px)",         10, 20, 1],
     ["gridPriceSize","목록: Sold out 글씨 (px)",         10, 18, 1],
@@ -2860,7 +2872,6 @@
         ["design","contactAlign","seg","위치", {options:[["left","왼쪽"],["center","가운데"],["right","오른쪽"]]}]
       ]},
       { id:"shop", title:"SHOP 목록", items:[
-        ["shopDesign","gridCols","range","한 줄 개수 (1~5개)", {min:1,max:5,step:1}],
         ["shopDesign","gridSide","range","목록 좌우 여백 (px) — 작을수록 크게", {min:0,max:200,step:4}],
         ["shopDesign","gridTitleSize","range","상품 이름 글씨 (px)", {min:10,max:20,step:1}],
         ["shopDesign","gridPriceSize","range","Sold out 글씨 (px)", {min:10,max:18,step:1}]
@@ -3354,6 +3365,7 @@
   // The shop stays private until the owner presses the release button in
   // master mode: visitors only see "coming soon", and no product page,
   // sitemap entry or product metadata is published before that.
+  function shopRowCols(item){ const n = parseInt(item && item.rowCols, 10); return n >= 1 && n <= 5 ? n : 5; }
   function isShopPublic(){ return !!(state.data && state.data.shopPublic); }
   // 상품별 공개/비공개 — 비공개 상품은 방문자 화면·정적 페이지·사이트맵·장바구니에서 빠짐 (마스터에게만 보임)
   function isItemHidden(it){ return !!(it && it.hidden); }
@@ -3365,6 +3377,11 @@
     if(r.page === "shop") rerenderShopView(); else renderRoute();
   }
   let pendingItemHidden = false;
+  let pendingRowColsShop = 5;
+  function setItemRowColsUi(n){
+    pendingRowColsShop = Math.min(5, Math.max(1, parseInt(n,10) || 5));
+    document.querySelectorAll("#itemRowColsSeg button").forEach(b=>b.classList.toggle("active", parseInt(b.dataset.val,10) === pendingRowColsShop));
+  }
   function setItemVisUi(hidden){
     pendingItemHidden = !!hidden;
     document.querySelectorAll("#itemVisSeg button").forEach(b=>b.classList.toggle("on", (b.dataset.v === "hidden") === pendingItemHidden));
@@ -3446,11 +3463,23 @@
     }
 
     const grid = el("div","shop-grid cols-5");
+    // 상품마다 정한 '이 줄에 나란히 놓을 개수'대로 줄을 나눔 — 같은 개수인 상품끼리 한 줄을 채움
+    let rowEl = null, rowN = 0, rowCount = 0;
+    const placeInRow = (node, n)=>{
+      if(!rowEl || n !== rowN || rowCount >= n){
+        rowEl = el("div","shop-row");
+        rowEl.style.setProperty("--n", n);
+        rowEl.style.setProperty("--n-sm", Math.min(n, 3));
+        rowEl.style.setProperty("--n-xs", Math.min(n, 2));
+        grid.appendChild(rowEl); rowN = n; rowCount = 0;
+      }
+      rowEl.appendChild(node); rowCount++;
+    };
     items.forEach((item, idx)=>{
       const card = el("a","shop-card");
       setItemLink(card, "shop", item);
       card.dataset.id = item.id;
-      if(state.master) enableShopDrag(card, grid, "shop", ".shop-grid > .shop-card[data-id]");
+      if(state.master) enableShopDrag(card, grid, "shop", ".shop-grid .shop-card[data-id]");
       if(state.master && isItemHidden(item)){
         card.classList.add("is-hidden");
         const hb = el("span","shop-hidden-badge"); hb.textContent = "비공개"; card.appendChild(hb);
@@ -3488,7 +3517,7 @@
       ctl.appendChild(vb); ctl.appendChild(eb); ctl.appendChild(db);
       card.appendChild(ctl);
 
-      grid.appendChild(card);
+      placeInRow(card, shopRowCols(item));
     });
 
     if(state.master){
@@ -3499,7 +3528,7 @@
       addTile.appendChild(at);
       addTile.style.cursor = "pointer";
       addTile.addEventListener("click", ()=>{ pendingShopCategory = tab.cat; openItemModal("shop",null); pendingShopCategory = null; });
-      grid.appendChild(addTile);
+      placeInRow(addTile, rowN || 5);
     }
     if(state.master && items.length > 1){
       const hint = el("div","shop-reorder-hint");
@@ -3547,11 +3576,10 @@
     if(y < edge) window.scrollBy(0, -12); else if(y > window.innerHeight - edge) window.scrollBy(0, 12);
     const under = document.elementFromPoint(x, y);
     const target = under && under.closest(d.itemSel);
-    if(!target || target === d.card || target.parentNode !== d.grid) return;
-    const kids = [...d.grid.children];
-    const from = kids.indexOf(d.card), to = kids.indexOf(target);
-    // 앞에서 뒤로 가면 대상 뒤에, 뒤에서 앞으로 가면 대상 앞에 넣기
-    d.grid.insertBefore(d.card, from < to ? target.nextSibling : target);
+    if(!target || target === d.card || !d.grid.contains(target)) return;
+    // 앞에서 뒤로 가면 대상 뒤에, 뒤에서 앞으로 가면 대상 앞에 넣기 (다른 줄로도 이동 가능)
+    const forward = !!(d.card.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING);
+    target.parentNode.insertBefore(d.card, forward ? target.nextSibling : target);
     d.moved = true;
   }
   function endShopDrag(d, cancel){
@@ -3566,7 +3594,7 @@
     d.card.addEventListener("click", block, { capture:true, once:true });
     setTimeout(()=>d.card.removeEventListener("click", block, { capture:true }), 400);
     if(cancel || !d.moved){ if(cancel) renderRoute(); return; }
-    const order = [...d.grid.children].filter(c=>c.dataset && c.dataset.id).map(c=>c.dataset.id);
+    const order = [...d.grid.querySelectorAll("[data-id]")].map(c=>c.dataset.id);
     const all = state.data[d.kind] || [];
     const set = new Set(order);
     const byId = new Map(all.map(it=>[it.id, it]));
@@ -3893,6 +3921,7 @@
       $("itemBuyUs").value = item.buyUs || "";
       $("itemSoldOut").checked = !!item.soldOut;
       setItemVisUi(!!item.hidden);
+      setItemRowColsUi(shopRowCols(item));
       setupOrigFields(item);
       $("itemCategory").value = shopCategory(item);
       $("itemShipProfile").value = shopProfile(item);
@@ -3907,6 +3936,7 @@
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
       setItemVisUi(false);
+      setItemRowColsUi(5);
       setupOrigFields(null);
       $("itemCategory").value = pendingShopCategory || "edition";
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
@@ -3951,6 +3981,7 @@
       payload.buyUs    = $("itemBuyUs").value.trim();
       payload.soldOut  = $("itemSoldOut").checked;
       if(pendingItemHidden) payload.hidden = true; else delete payload.hidden;
+      payload.rowCols = pendingRowColsShop;
       const ow = $("itemOrigWork").value;
       if(ow){
         payload.original = { workId: ow };
@@ -6660,6 +6691,7 @@ shopBlock,
       msg.textContent = "칸을 누르고 Ctrl+V (Mac은 ⌘+V, 휴대폰은 길게 눌러 붙여넣기) 해 주세요.";
     });
     document.querySelectorAll("#itemVisSeg button").forEach(b=>b.addEventListener("click", ()=>setItemVisUi(b.dataset.v === "hidden")));
+    document.querySelectorAll("#itemRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setItemRowColsUi(b.dataset.val)));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
       if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
       else openImgPicker(src=>{ pendingPhotoImage = src; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
