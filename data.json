@@ -2496,7 +2496,11 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790623028311-pavmn-cover.jpg"
+      }
     },
     {
       "id": "s-1790625685891-fny4m",
