@@ -1569,86 +1569,6 @@
           "mb": "100"
         },
         {
-          "id": "row-1790766442778-jfzuz",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767398019-vncbr",
-              "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": "",
-              "adj": {
-                "b": 5,
-                "c": 0
-              }
-            }
-          ],
-          "size": 20,
-          "mb": "100"
-        },
-        {
-          "id": "row-1790766487077-4eucj",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767409830-it5oj",
-              "image": "./images/w-1790766011679-go31v-p-1790767409830-it5oj-b702a6ed.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 20,
-          "mb": "100"
-        },
-        {
-          "id": "row-1790766503701-9rilm",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767454584-beuut",
-              "image": "./images/w-1790766011679-go31v-p-1790767454584-beuut-be998c1d.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 20,
-          "mb": "100"
-        },
-        {
-          "id": "row-1790766517741-bqezb",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767461328-3ksm5",
-              "image": "./images/w-1790766011679-go31v-p-1790767461328-3ksm5-16dc435e.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 20,
-          "mb": "100"
-        },
-        {
-          "id": "row-1790766735286-0d1nt",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767468134-6pa0h",
-              "image": "./images/w-1790766011679-go31v-p-1790767468134-6pa0h-edf784d7.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 20
-        },
-        {
-          "id": "row-1790766829810-zbgo9",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790767416002-f0s9l",
-              "image": "./images/w-1790766011679-go31v-p-1790767416002-f0s9l-64d3abfd.jpg",
-              "caption": ""
-            }
-          ],
-          "size": 20
-        },
-        {
           "id": "row-1790766888925-8lrzh",
           "cols": 1,
           "photos": [
@@ -3818,10 +3738,10 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
-    "page.css": "5f821816:81816",
-    "sitemap.xml": "a977b284:111320",
+    "page.css": "b30a9b75:81816",
+    "sitemap.xml": "b64c6581:109180",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "eeb5299d:46748"
+    "works/works-9/index.html": "22ac110e:43928"
   },
   "shopDesign": {
     "mainPct": 56,
