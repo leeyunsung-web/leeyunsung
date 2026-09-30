@@ -1772,7 +1772,6 @@
             }
           ],
           "size": 70,
-          "mt": "50",
           "mb": "50"
         },
         {
@@ -3822,7 +3821,7 @@
     "page.css": "3cc77070:81764",
     "sitemap.xml": "a7e32df3:113344",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "1dc238a3:53252"
+    "works/works-9/index.html": "548a5df0:53232"
   },
   "shopDesign": {
     "mainPct": 56,
