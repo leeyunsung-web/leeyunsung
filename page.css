@@ -801,6 +801,10 @@
   .desc-labelrow{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:6px;}
   .desc-labelrow label{margin:0;}
   .rich-tools{display:flex; gap:4px;}
+  .lh-row{display:flex; align-items:center; gap:10px; margin-top:10px; font-size:12px; color:var(--ink-soft);}
+  .lh-row input[type=range]{flex:1; accent-color:#111;}
+  .lh-row b{min-width:64px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .lh-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer;}
   .rich-tools button{min-width:28px; height:26px; padding:0 8px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; font:inherit; font-size:13px; cursor:pointer; color:var(--ink);}
   .rich-tools button:hover{border-color:var(--ink); background:var(--ink); color:#fff;}
   .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
@@ -848,6 +852,7 @@
   .pan-frame i{position:absolute; left:4px; top:3px; font-style:normal; font-size:10px; color:#fff; padding:1px 5px; border-radius:3px;}
   .pan-frame.start i{background:#1d8a45;} .pan-frame.end i{background:#c62828; left:auto; right:4px;}
   .pan-preview{max-width:360px;}
+  .pan-qnote{font-size:12px; margin-top:8px; line-height:1.5;} .pan-qnote.ok{color:#1d6b3a;} .pan-qnote.warn{color:#9a5b00;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
   }
@@ -878,5 +883,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 16px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.25; --desc-font-k: 0.007785888077858881; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 14.211112060546876px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 16px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.25; --desc-font-k: 0.007785888077858881; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.144444580078126px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
