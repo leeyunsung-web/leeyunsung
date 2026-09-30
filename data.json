@@ -34,10 +34,11 @@
               "pan": {
                 "ratio": "1:1",
                 "from": "left",
-                "dur": 10
+                "dur": 20
               }
             }
-          ]
+          ],
+          "size": 50
         },
         {
           "id": "row-1787464162725-mbv3q",
@@ -3789,7 +3790,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "328928c4:26204",
+    "works/the-annunciation/index.html": "f94a2b78:26224",
     "works/torso/index.html": "94c43fd7:45804",
     "works/danae/index.html": "5fe308c8:53932",
     "works/zodiac/index.html": "268e7578:90888",
