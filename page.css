@@ -480,7 +480,7 @@
   .detail-back{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); display:inline-block; margin-bottom:28px; font-style:var(--ui-font-style);}
   .detail-back:hover{color:var(--ink);}
   .detail-head{position:relative; margin-bottom:8px; padding:0 0 8px;}
-  .detail-title{font-size:26px; font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style); text-align:center !important;}
+  .detail-title{font-size:var(--detail-title-size, 26px); font-weight:700; letter-spacing:.01em; font-style:var(--ui-font-style); text-align:center !important;}
   .detail-actions{display:none; gap:8px; position:absolute; top:0; right:0;}
   .master-on .detail-actions{display:flex;}
   .detail-actions button{
@@ -489,7 +489,7 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0;
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:var(--desc-top, 20px) 0 48px; padding:0;
     /* DESIGN STUDIO → 작품 설명 · TEXT 비평글 좌우 여백(%)
        설정한 화면에서 보이던 모양 그대로, 화면이 커지면 여백·글 폭·글씨가 같은 비율로 커지고 작아지면 작아짐.
        단, 휴대폰처럼 좁은 화면에서는 글 폭과 글씨가 읽을 수 있는 크기 아래로 내려가지 않음 */
@@ -791,6 +791,13 @@
   /* 줄 크기 (%): 가운데 정렬로 줄 폭만 줄임 */
   .photo-grid.sized{margin-left:auto; margin-right:auto;}
   .field textarea.tall{min-height:280px; font-size:14px; line-height:1.8;}
+  .field textarea.desc-big{min-height:260px; height:260px; font-size:13.5px; line-height:1.75;}
+  .desc-labelrow{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:6px;}
+  .desc-labelrow label{margin:0;}
+  .rich-tools{display:flex; gap:4px;}
+  .rich-tools button{min-width:28px; height:26px; padding:0 8px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; font:inherit; font-size:13px; cursor:pointer; color:var(--ink);}
+  .rich-tools button:hover{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
   .imgdrop{border:1.5px dashed var(--line-strong); border-radius:6px; padding:18px; text-align:center; cursor:pointer; color:var(--ink-faint); font-size:12.5px; position:relative; overflow:hidden;}
@@ -852,5 +859,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --frame-title-size: 20px; --text-list-title-size: 17px; --text-list-top-space: 64px; --text-list-item-gap: 10px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.144444580078126px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
-a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
+:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 60px; --detail-title-size: 26px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.144444580078126px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
