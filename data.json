@@ -2469,13 +2469,20 @@
         },
         {
           "id": "row-1790767398019-gvoyu",
-          "cols": 3,
+          "cols": 1,
           "photos": [
             {
               "id": "p-1790767398019-vncbr",
               "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
               "caption": ""
-            },
+            }
+          ],
+          "size": 30
+        },
+        {
+          "id": "row-1790769501665-ig9cv",
+          "cols": 2,
+          "photos": [
             {
               "id": "p-1790767409830-it5oj",
               "image": "./images/w-1790766011679-go31v-p-1790767409830-it5oj-b702a6ed.jpg",
@@ -3437,9 +3444,9 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
-    "page.css": "59041938:76860",
+    "page.css": "f99a953e:76840",
     "sitemap.xml": "f23426d8:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "74106930:44864"
+    "works/works-9/index.html": "75fa8621:44972"
   }
 }
