@@ -2655,7 +2655,7 @@
     "frameGap": 4,
     "frameCols": 2,
     "detailMargin": 32,
-    "descSide": 20,
+    "descSide": 25,
     "descRefW": 2035,
     "captionMode": "hover",
     "captionGap": 10,
@@ -3788,7 +3788,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "3ae87e9e:38096",
     "text/exploding-bishojo-baek-jihong/index.html": "618296de:35784",
     "cv/index.html": "4c6ebe9d:8156",
-    "page.css": "de664d2f:84348",
+    "page.css": "e7add638:84348",
     "sitemap.xml": "95ce724a:113872",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "bdffd5bf:54384"
