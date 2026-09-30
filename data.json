@@ -3682,7 +3682,8 @@
         "workId": "w5",
         "image": "./images/w5-p-1788445603485-941r0.jpg"
       },
-      "rowCols": 3
+      "rowCols": 3,
+      "hidden": true
     },
     {
       "id": "s-1790778508840-1dfbv",
@@ -3714,7 +3715,8 @@
       "rowCols": 3,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     },
     {
       "id": "s-1790778537358-887zs",
@@ -3746,7 +3748,8 @@
       "rowCols": 3,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "hidden": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
