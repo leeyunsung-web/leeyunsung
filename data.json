@@ -24,6 +24,21 @@
       },
       "photoRows": [
         {
+          "id": "row-1790809855909-9a69e",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790809855909-698fj",
+              "image": "./images/w2-p-1787384904997-pmnc5.jpg",
+              "caption": "",
+              "pan": {
+                "ratio": "16:9",
+                "from": "left"
+              }
+            }
+          ]
+        },
+        {
           "id": "row-1787464162725-mbv3q",
           "cols": 1,
           "photos": [
@@ -3773,7 +3788,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "92908c4b:24712",
+    "works/the-annunciation/index.html": "7d61c8c:26204",
     "works/torso/index.html": "94c43fd7:45804",
     "works/danae/index.html": "5fe308c8:53932",
     "works/zodiac/index.html": "268e7578:90888",
@@ -3788,8 +3803,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "3ae87e9e:38096",
     "text/exploding-bishojo-baek-jihong/index.html": "618296de:35784",
     "cv/index.html": "4c6ebe9d:8156",
-    "page.css": "fa21be48:82796",
-    "sitemap.xml": "95ce724a:113872",
+    "page.css": "78f858c0:84348",
+    "sitemap.xml": "93a04188:113776",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "bdffd5bf:54384"
   },
