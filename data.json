@@ -2172,7 +2172,7 @@
     },
     {
       "id": "w-1790628203345-iya5b",
-      "title": "",
+      "title": "Digital",
       "cover": "./images/w-1790628203345-iya5b-cover.jpg",
       "description": "",
       "slug": "works-8",
@@ -3141,7 +3141,7 @@
     "works/medusa/index.html": "f284662d:50156",
     "works/laocoon/index.html": "60161c74:55308",
     "works/frames-of-torso/index.html": "b8a759e6:46572",
-    "works/works-8/index.html": "b9ddf7e6:14464",
+    "works/works-8/index.html": "ea137342:14432",
     "text/critical-notes-lim-geunjun/index.html": "87c72647:29032",
     "text/sections-of-structure-jung-hyun/index.html": "fc3f70a2:28168",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "63fb0fb3:23756",
@@ -3149,8 +3149,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "a6eed2e4:38112",
     "text/exploding-bishojo-baek-jihong/index.html": "bea9a905:35764",
     "cv/index.html": "472632d7:8152",
-    "page.css": "427a134b:76088",
-    "sitemap.xml": "2980e62e:97672",
+    "page.css": "594f5840:76088",
+    "sitemap.xml": "9bdfb0a1:97656",
     "robots.txt": "e7785df8:92"
   }
 }
