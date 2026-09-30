@@ -1569,44 +1569,54 @@
           "mb": "100"
         },
         {
-          "id": "row-1790797593809-rjt4o",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1790797593809-63had",
-              "image": "./images/w-1790766011679-go31v-p-1790797593809-63had-edf784d7.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1790797609739-vi1o0",
-              "image": "./images/w-1790766011679-go31v-p-1790797609739-vi1o0-be998c1d.jpg",
-              "caption": ""
-            }
-          ],
-          "gx": "5%",
-          "size": 60
-        },
-        {
           "id": "row-1790797726614-w74vd",
           "cols": 3,
           "photos": [
             {
               "id": "p-1790797726614-1oll2",
               "image": "./images/w-1790766011679-go31v-p-1790797726614-1oll2-45941589.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 5,
+                "c": 0
+              }
             },
             {
               "id": "p-1790797733174-9lrmn",
               "image": "./images/w-1790766011679-go31v-p-1790797733174-9lrmn-0f73e761.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 3,
+                "c": 0
+              }
             },
             {
               "id": "p-1790797739836-pynr4",
               "image": "./images/w-1790766011679-go31v-p-1790797739836-pynr4-16dc435e.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 3,
+                "c": 0
+              }
             }
           ],
           "gx": "5%"
+        },
+        {
+          "id": "row-1790798114177-3g8wn",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790798114177-wlw8x",
+              "image": "./images/w-1790766011679-go31v-p-1790798114177-wlw8x-34667645.jpg",
+              "caption": "",
+              "adj": {
+                "b": 3,
+                "c": 0
+              }
+            }
+          ],
+          "size": 30
         },
         {
           "id": "row-1790766888925-8lrzh",
@@ -1667,9 +1677,7 @@
               "caption": "The Three Graces Pixel Props 03, 2019, Oil on canvas, 53 × 45 cm"
             }
           ],
-          "size": 60,
-          "mt": "50",
-          "mb": "50"
+          "size": 60
         },
         {
           "id": "row-1790789841620-6g78w",
@@ -1681,9 +1689,7 @@
               "caption": ""
             }
           ],
-          "size": 60,
-          "mt": "50",
-          "mb": "50"
+          "size": 60
         },
         {
           "id": "row-1790769537259-3n162",
@@ -3783,9 +3789,9 @@
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
     "page.css": "b30a9b75:81816",
-    "sitemap.xml": "663b6aed:110892",
+    "sitemap.xml": "cf447a63:110464",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "527638ab:45908"
+    "works/works-9/index.html": "6ebecb96:45652"
   },
   "shopDesign": {
     "mainPct": 56,
