@@ -3818,7 +3818,7 @@
   "shopTexts": {
     "naverLabel": "NPAY",
     "naverSub": "국내",
-    "paypalLabel": "PayPal",
+    "paypalLabel": "PayPal / Card",
     "paypalSub": "International"
   }
 }
