@@ -591,11 +591,9 @@
   .adj-btns button.primary{background:#111; color:#fff; border-color:#111;}
   /* ---------- 가로 패닝 칸: 큰 이미지를 좁은 창에서 좌우로 천천히 ---------- */
   .pan-wrap{position:relative; width:100%; aspect-ratio:var(--pr, 1.7778); overflow:hidden; container-type:inline-size; background:#f3f2ef;}
-  .photo-grid .photo-cell .pan-wrap > img.pan-img{position:absolute; top:0; left:0; height:100% !important; width:auto !important; min-width:100%; max-width:none; aspect-ratio:auto; object-fit:cover;
-    animation:lysPan var(--pd, 24s) ease-in-out infinite alternate; will-change:transform;}
-  .pan-wrap.from-right > img.pan-img{animation-direction:alternate-reverse !important;}
-  .photo-cell.is-pan:hover img.pan-img{animation-play-state:paused;}
-  @keyframes lysPan{ from{transform:translateX(0);} to{transform:translateX(calc(100cqw - 100%));} }
+  .photo-grid .photo-cell .pan-wrap > img.pan-img, .pan-wrap > img.pan-img{position:absolute; top:0; left:0; width:var(--iw, 100%) !important; height:var(--ih, 100%) !important; min-width:0; max-width:none; aspect-ratio:auto; object-fit:cover;
+    transform:translate(var(--tx0, 0px), var(--ty0, 0px)); animation:lysPan var(--pd, 24s) ease-in-out infinite alternate; will-change:transform;}
+  @keyframes lysPan{ from{transform:translate(var(--tx0, 0px), var(--ty0, 0px));} to{transform:translate(var(--tx1, 0px), var(--ty1, 0px));} }
   @media (prefers-reduced-motion: reduce){ .pan-wrap > img.pan-img{animation:none;} }
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
@@ -872,6 +870,16 @@
   .pan-opts{margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; display:flex; flex-direction:column; gap:10px;}
   .pan-opt > span{display:block; font-size:11.5px; color:var(--ink-soft); margin-bottom:5px;}
   .pan-opt .segbtns button{padding:6px 10px;}
+  .pan-custom{margin-top:6px;} .pan-custom input{width:220px; max-width:100%;}
+  .pan-opt input[type=range]{width:100%; accent-color:#111;}
+  .pan-editor{position:relative; display:inline-block; max-width:100%; background:#eee; user-select:none; touch-action:none; line-height:0; vertical-align:top;}
+  .pan-editor img{width:auto; height:auto; max-width:100%; max-height:340px; display:block; pointer-events:none;}
+  .pan-frame{position:absolute; box-sizing:border-box; border:2px solid; cursor:move; line-height:1.2;}
+  .pan-frame.start{border-color:#1d8a45; background:rgba(29,138,69,.14);}
+  .pan-frame.end{border-color:#c62828; border-style:dashed; background:rgba(198,40,40,.10);}
+  .pan-frame i{position:absolute; left:4px; top:3px; font-style:normal; font-size:10px; color:#fff; padding:1px 5px; border-radius:3px;}
+  .pan-frame.start i{background:#1d8a45;} .pan-frame.end i{background:#c62828; left:auto; right:4px;}
+  .pan-preview{max-width:360px;}
   .segbtns button{
     font-size:11.5px; padding:8px 13px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; color:var(--ink-soft);
   }
@@ -1193,22 +1201,31 @@
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
         <div class="field" id="photoPanField">
-          <label>천천히 가로로 움직이기 (패닝)</label>
+          <label>천천히 움직이기 (패닝)</label>
           <div class="segbtns" id="photoPanSeg">
             <button type="button" data-v="off">끄기</button>
             <button type="button" data-v="on">켜기</button>
           </div>
           <div id="photoPanOpts" class="pan-opts" style="display:none;">
-            <div class="pan-opt"><span>보이는 창 비율</span>
-              <div class="segbtns" id="photoPanRatioSeg">
-                <button type="button" data-v="16:9">16:9</button><button type="button" data-v="21:9">21:9</button><button type="button" data-v="3:1">3:1</button><button type="button" data-v="3:2">3:2</button><button type="button" data-v="4:5">4:5</button><button type="button" data-v="1:1">1:1</button>
+            <div class="pan-opt"><span>움직이는 방향 (빠른 설정)</span>
+              <div class="segbtns" id="photoPanDirSeg">
+                <button type="button" data-v="lr">가로 →</button><button type="button" data-v="rl">가로 ←</button><button type="button" data-v="tb">세로 ↓</button><button type="button" data-v="bt">세로 ↑</button>
               </div></div>
+            <div class="pan-opt"><span>보이는 창 비율 (가로:세로)</span>
+              <div class="segbtns" id="photoPanRatioSeg">
+                <button type="button" data-v="16:9">16:9</button><button type="button" data-v="21:9">21:9</button><button type="button" data-v="3:1">3:1</button><button type="button" data-v="3:2">3:2</button><button type="button" data-v="1:1">1:1</button><button type="button" data-v="4:5">4:5</button><button type="button" data-v="9:16">9:16</button>
+              </div>
+              <div class="pan-custom"><input type="text" id="photoPanRatio" placeholder="직접 입력 예) 2.35:1, 5:2, 3:4" autocomplete="off"></div></div>
+            <div class="pan-opt"><span>확대 <b id="photoPanZoomVal">1.0×</b></span>
+              <input type="range" id="photoPanZoom" min="1" max="4" step="0.05" value="1"></div>
+            <div class="pan-opt"><span>움직일 영역 — <b style="color:#1d6b3a">초록 = 시작</b>, <b style="color:#b3261e">빨강 = 끝</b>. 네모를 끌어서 옮기세요.</span>
+              <div class="pan-editor" id="photoPanEditor"><img id="photoPanEdImg" alt=""><div class="pan-frame start" id="photoPanFrameA"><i>시작</i></div><div class="pan-frame end" id="photoPanFrameB"><i>끝</i></div></div></div>
+            <div class="pan-opt"><span>미리보기</span>
+              <div class="pan-preview"><div class="pan-wrap" id="photoPanPreview"><img class="pan-img" id="photoPanPrevImg" alt=""></div></div></div>
             <div class="pan-opt"><span>한 번 지나가는 시간</span>
-              <div class="size-row"><input type="number" id="photoPanDur" min="4" max="180" step="1" placeholder="24" inputmode="numeric"><span>초</span></div></div>
-            <div class="pan-opt"><span>시작 위치</span>
-              <div class="segbtns" id="photoPanFromSeg"><button type="button" data-v="left">왼쪽부터</button><button type="button" data-v="right">오른쪽부터</button></div></div>
+              <div class="size-row"><input type="number" id="photoPanDur" min="3" max="180" step="1" placeholder="24" inputmode="numeric"><span>초</span></div></div>
           </div>
-          <div class="field-hint">큰 이미지를 좁은 창으로 보여주면서 좌우로 천천히 오가요(끝에 닿으면 부드럽게 되돌아옴). 가로로 긴 이미지일수록, 창 비율이 좁을수록 많이 움직여요. 마우스를 올리면 잠깐 멈춰요.</div>
+          <div class="field-hint">이미지를 창 안에서 시작 영역 → 끝 영역으로 천천히 움직이고, 끝에 닿으면 부드럽게 되돌아와요(계속 반복). 확대하면 이미지의 일부만 크게 보면서 움직여요. 가로·세로·대각선 모두 가능해요.</div>
         </div>
         <div class="field">
           <label>이 줄에 나란히 놓을 사진 수</label>
@@ -4308,11 +4325,6 @@
     observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
 
-    if(!flatIdx && !state.master){
-      const empty = el("div","empty-collection"); empty.textContent = "등록된 사진이 없습니다.";
-      app.appendChild(empty);
-    }
-
     renderNextWorks(app, key, id);
   }
 
@@ -4378,15 +4390,57 @@
       : "";
   }
   let photoModalRowCount = 0;
-  let pendingPan = null;   // null = 끄기, {ratio,dur,from}
+  let pendingPan = null;   // null = 끄기
+  function panEdAspect(){ const im = $("photoPanEdImg"); return im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 0; }
   function setPanUi(pan){
-    pendingPan = pan ? Object.assign({ ratio:"16:9", from:"left" }, pan) : null;
+    pendingPan = pan ? normPan(Object.assign({ ratio:"16:9" }, pan)) : null;
     document.querySelectorAll("#photoPanSeg button").forEach(b=>b.classList.toggle("active", (b.dataset.v === "on") === !!pendingPan));
     $("photoPanOpts").style.display = pendingPan ? "" : "none";
-    if(pendingPan){
-      document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.ratio));
-      document.querySelectorAll("#photoPanFromSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.from));
-    }
+    if(!pendingPan) return;
+    const src = pendingPhotoImage ? imgSrc(pendingPhotoImage) : "";
+    if($("photoPanEdImg").getAttribute("src") !== src){ $("photoPanEdImg").src = src; $("photoPanPrevImg").src = src; }
+    const inPreset = [...document.querySelectorAll("#photoPanRatioSeg button")].some(b=>b.dataset.v === pendingPan.ratio);
+    document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === pendingPan.ratio));
+    if(document.activeElement !== $("photoPanRatio")) $("photoPanRatio").value = inPreset ? "" : pendingPan.ratio;
+    $("photoPanZoom").value = pendingPan.zoom; $("photoPanZoomVal").textContent = pendingPan.zoom.toFixed(2).replace(/0$/,"") + "×";
+    const dir = pendingPan.y0 === pendingPan.y1 && pendingPan.x0 === 0 && pendingPan.x1 === 1 ? "lr" : pendingPan.y0 === pendingPan.y1 && pendingPan.x0 === 1 && pendingPan.x1 === 0 ? "rl"
+              : pendingPan.x0 === pendingPan.x1 && pendingPan.y0 === 0 && pendingPan.y1 === 1 ? "tb" : pendingPan.x0 === pendingPan.x1 && pendingPan.y0 === 1 && pendingPan.y1 === 0 ? "bt" : "";
+    document.querySelectorAll("#photoPanDirSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === dir));
+    drawPanEditor();
+  }
+  function drawPanEditor(){
+    if(!pendingPan) return;
+    const a = panEdAspect();
+    const pw = $("photoPanPreview"); pw.style.setProperty("--pr", panRatio(pendingPan).toFixed(5)); pw.style.setProperty("--pd", panDur({dur:$("photoPanDur").value}) + "s");
+    applyPanVars(pw, $("photoPanPrevImg"), pendingPan);
+    if(!a) return;
+    const g = panGeom(a, pendingPan);
+    const fw = Math.min(1, g.fw), fh = Math.min(1, g.fh);
+    [["photoPanFrameA", pendingPan.x0, pendingPan.y0], ["photoPanFrameB", pendingPan.x1, pendingPan.y1]].forEach(([id, x, y])=>{
+      const f = $(id);
+      f.style.width = (fw * 100) + "%"; f.style.height = (fh * 100) + "%";
+      f.style.left = (x * (1 - fw) * 100) + "%"; f.style.top = (y * (1 - fh) * 100) + "%";
+    });
+  }
+  function bindPanFrameDrag(id, kx, ky){
+    const f = $(id);
+    f.addEventListener("pointerdown", e=>{
+      if(!pendingPan) return;
+      e.preventDefault(); f.setPointerCapture(e.pointerId);
+      const box = $("photoPanEditor").getBoundingClientRect();
+      const g = panGeom(panEdAspect() || 1, pendingPan);
+      const fw = Math.min(1, g.fw), fh = Math.min(1, g.fh);
+      const sx = e.clientX, sy = e.clientY, x0 = pendingPan[kx], y0 = pendingPan[ky];
+      const move = ev=>{
+        const dx = (ev.clientX - sx) / box.width, dy = (ev.clientY - sy) / box.height;
+        if(fw < 1) pendingPan[kx] = Math.max(0, Math.min(1, x0 + dx / (1 - fw)));
+        if(fh < 1) pendingPan[ky] = Math.max(0, Math.min(1, y0 + dy / (1 - fh)));
+        pendingPan[kx] = Math.round(pendingPan[kx] * 1000) / 1000; pendingPan[ky] = Math.round(pendingPan[ky] * 1000) / 1000;
+        setPanUi(pendingPan);
+      };
+      const up = ()=>{ f.removeEventListener("pointermove", move); f.removeEventListener("pointerup", up); f.removeEventListener("pointercancel", up); };
+      f.addEventListener("pointermove", move); f.addEventListener("pointerup", up); f.addEventListener("pointercancel", up);
+    });
   }
   function syncYtRatioSeg(){
     const v = $("photoYtRatio").value;
@@ -4448,9 +4502,10 @@
       const photo = row.photos.find(p=>p.id===photoId);
       $("photoModalTitle").textContent = "Edit Photo";
       $("photoCaption").value = photo.caption || "";
-      setPanUi(photo.pan || null); $("photoPanDur").value = photo.pan && photo.pan.dur ? photo.pan.dur : "";
       showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", photo.image);
       pendingPhotoImage = photo.image;
+      $("photoPanDur").value = photo.pan && photo.pan.dur ? photo.pan.dur : "";
+      setPanUi(photo.pan || null);
       if(isVideoPhoto(photo)) setPhotoVideoUi(Object.assign({}, photo.video));
       $("photoDeleteBtn").style.display = "inline-block";
     } else {
@@ -4516,8 +4571,9 @@
     if(pendingPhotoVideo) payload.video = { id: pendingPhotoVideo.id, ratio: $("photoYtRatio").value || pendingPhotoVideo.ratio || "16:9" };
     else if(pendingPan){
       const dur = parseInt($("photoPanDur").value, 10);
-      payload.pan = { ratio: pendingPan.ratio || "16:9", from: pendingPan.from === "right" ? "right" : "left" };
-      if(dur >= 4 && dur <= 180) payload.pan.dur = dur;
+      const r4 = v=>Math.round(v * 1000) / 1000;
+      payload.pan = { ratio: parseRatio(pendingPan.ratio) ? pendingPan.ratio : "16:9", zoom: r4(pendingPan.zoom || 1), x0: r4(pendingPan.x0), y0: r4(pendingPan.y0), x1: r4(pendingPan.x1), y1: r4(pendingPan.y1) };
+      if(dur >= 3 && dur <= 180) payload.pan.dur = dur;
     }
     const idx = row.photos.findIndex(p=>p.id===id);
     if(idx>=0) row.photos[idx] = payload;
@@ -4983,11 +5039,49 @@
     if(ob) ob.observe(wrap); else ytLoad(rec);
     return wrap;
   }
-  // 패닝 설정
-  const PAN_RATIOS = { "16:9":16/9, "21:9":21/9, "3:1":3, "3:2":1.5, "4:5":0.8, "1:1":1 };
-  function panOf(p){ return p && p.pan && !isVideoPhoto(p) ? p.pan : null; }
-  function panRatio(pan){ return PAN_RATIOS[pan.ratio] || 16/9; }
-  function panDur(pan){ const n = parseFloat(pan.dur); return Math.max(4, Math.min(180, n || 24)); }
+  // 패닝 설정: pan = { ratio:"가로:세로", dur, zoom, x0,y0 (시작), x1,y1 (끝) }  x·y 는 0~1 (이미지 안에서 창의 위치)
+  function parseRatio(v){
+    const m = String(v || "").trim().match(/^(\d+(?:\.\d+)?)\s*[:x×\/]\s*(\d+(?:\.\d+)?)$/i);
+    if(m){ const a = parseFloat(m[1]), b = parseFloat(m[2]); if(a > 0 && b > 0) return a / b; }
+    const n = parseFloat(v); return n > 0 && /^\d+(\.\d+)?$/.test(String(v).trim()) ? n : 0;
+  }
+  function normPan(p){
+    if(!p) return null;
+    const c = (v, d)=>{ const n = parseFloat(v); return isFinite(n) ? Math.max(0, Math.min(1, n)) : d; };
+    const o = { ratio: String(p.ratio || "16:9"), dur: p.dur, zoom: Math.max(1, Math.min(4, parseFloat(p.zoom) || 1)) };
+    if(p.x0 == null && p.x1 == null && p.y0 == null && p.y1 == null){   // 예전 형식(가로, 왼쪽/오른쪽부터)
+      const r = p.from === "right"; o.x0 = r ? 1 : 0; o.x1 = r ? 0 : 1; o.y0 = o.y1 = 0.5;
+    } else { o.x0 = c(p.x0, 0); o.y0 = c(p.y0, 0.5); o.x1 = c(p.x1, 1); o.y1 = c(p.y1, 0.5); }
+    return o;
+  }
+  function panOf(p){ return p && p.pan && !isVideoPhoto(p) ? normPan(p.pan) : null; }
+  function panRatio(pan){ const r = parseRatio(pan.ratio); return r ? Math.max(0.2, Math.min(8, r)) : 16/9; }
+  function panDur(pan){ const n = parseFloat(pan.dur); return Math.max(3, Math.min(180, n || 24)); }
+  // 이미지 비율(a)과 창 비율로 크기·이동값 계산 — 모두 창 폭(cqw) 기준이라 창 크기가 바뀌어도 그대로 맞음
+  function panGeom(a, pan){
+    const r = panRatio(pan), z = pan.zoom || 1;
+    const iw = (a > r ? a / r : 1) * z, ih = iw / a, hh = 1 / r;
+    return { iw, ih, fw: 1 / iw, fh: hh / ih,
+      tx: x=>(-(iw - 1) * x * 100), ty: y=>(-(ih - hh) * y * 100) };
+  }
+  function applyPanVars(wrap, img, pan){
+    const a = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 0;
+    if(!a) return;
+    const g = panGeom(a, pan), f = v=>v.toFixed(3) + "cqw";
+    wrap.style.setProperty("--iw", f(g.iw * 100)); wrap.style.setProperty("--ih", f(g.ih * 100));
+    wrap.style.setProperty("--tx0", f(g.tx(pan.x0))); wrap.style.setProperty("--ty0", f(g.ty(pan.y0)));
+    wrap.style.setProperty("--tx1", f(g.tx(pan.x1))); wrap.style.setProperty("--ty1", f(g.ty(pan.y1)));
+  }
+  function makePanWrap(img, pan){
+    const w = el("div", "pan-wrap");
+    w.style.setProperty("--pr", panRatio(pan).toFixed(5));
+    w.style.setProperty("--pd", panDur(pan) + "s");
+    img.classList.add("pan-img");
+    w.appendChild(img);
+    const go = ()=>applyPanVars(w, img, pan);
+    if(img.complete && img.naturalWidth) go(); else img.addEventListener("load", go);
+    return w;
+  }
   // 상세페이지 사진 줄의 한 칸 (사진 또는 영상)
   function fillPhotoCell(cell, photo, alt, eager){
     if(isVideoPhoto(photo)){
@@ -5007,11 +5101,7 @@
     if(pan){
       cell.classList.add("is-pan");
       cell.dataset.ar = String(panRatio(pan));
-      const w = el("div", "pan-wrap" + (pan.from === "right" ? " from-right" : ""));
-      w.style.setProperty("--pr", String(panRatio(pan)));
-      w.style.setProperty("--pd", panDur(pan) + "s");
-      img.classList.add("pan-img");
-      w.appendChild(img); cell.appendChild(w);
+      cell.appendChild(makePanWrap(img, pan));
       return false;
     }
     cell.appendChild(img);
@@ -6433,6 +6523,13 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     "window.addEventListener('resize',L);window.addEventListener('load',L);",
     "document.addEventListener('DOMContentLoaded',L);",
     "document.querySelectorAll('.photo-grid.multi img').forEach(function(m){m.addEventListener('load',L);});",
+    "function P(w){var m=w.querySelector('img'),d;try{d=JSON.parse(w.getAttribute('data-pan'));}catch(e){return;}",
+    "function G(){if(!m.naturalWidth)return;var a=m.naturalWidth/m.naturalHeight,r=d.r,z=d.z||1,iw=(a>r?a/r:1)*z,ih=iw/a,hh=1/r,f=function(v){return v.toFixed(3)+'cqw';};",
+    "w.style.setProperty('--iw',f(iw*100));w.style.setProperty('--ih',f(ih*100));",
+    "w.style.setProperty('--tx0',f(-(iw-1)*d.x0*100));w.style.setProperty('--ty0',f(-(ih-hh)*d.y0*100));",
+    "w.style.setProperty('--tx1',f(-(iw-1)*d.x1*100));w.style.setProperty('--ty1',f(-(ih-hh)*d.y1*100));}",
+    "if(m.complete)G();m.addEventListener('load',G);}",
+    "document.querySelectorAll('.pan-wrap[data-pan]').forEach(P);",
     "L();})();"
   ].join("");
 
@@ -6619,7 +6716,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         const imgTagHtml = '<img'+(pan ? ' class="pan-img"' : '')+' src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+(adjFilter(p) ? ' style="filter:'+adjFilter(p)+'"' : '')+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">';
         return '        <a class="photo-cell'+(pan ? ' is-pan' : '')+'" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'"'+(pan ? ' data-ar="'+panRatio(pan).toFixed(5)+'"' : '')+'>\n' +
-               (pan ? '          <div class="pan-wrap'+(pan.from === "right" ? ' from-right' : '')+'" style="--pr:'+panRatio(pan).toFixed(5)+';--pd:'+panDur(pan)+'s">'+imgTagHtml+'</div>\n'
+               (pan ? '          <div class="pan-wrap" data-pan="'+esc(JSON.stringify({r:+panRatio(pan).toFixed(5),z:pan.zoom,x0:pan.x0,y0:pan.y0,x1:pan.x1,y1:pan.y1}))+'" style="--pr:'+panRatio(pan).toFixed(5)+';--pd:'+panDur(pan)+'s">'+imgTagHtml+'</div>\n'
                     : '          '+imgTagHtml+'\n') +
                (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
                '        </a>';
@@ -6996,9 +7093,24 @@ shopBlock,
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
     document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setRowColsUi(b.dataset.val, photoModalRowCount)));
-    document.querySelectorAll("#photoPanSeg button").forEach(b=>b.addEventListener("click", ()=>setPanUi(b.dataset.v === "on" ? (pendingPan || {}) : null)));
-    document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.ratio = b.dataset.v; setPanUi(pendingPan); } }));
-    document.querySelectorAll("#photoPanFromSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.from = b.dataset.v; setPanUi(pendingPan); } }));
+    document.querySelectorAll("#photoPanSeg button").forEach(b=>b.addEventListener("click", ()=>{
+      if(b.dataset.v === "on" && !pendingPhotoImage){ alert("먼저 이미지를 올려 주세요."); return; }
+      setPanUi(b.dataset.v === "on" ? (pendingPan || {}) : null);
+    }));
+    document.querySelectorAll("#photoPanRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{ if(pendingPan){ pendingPan.ratio = b.dataset.v; $("photoPanRatio").value = ""; setPanUi(pendingPan); } }));
+    $("photoPanRatio").addEventListener("input", ()=>{ if(!pendingPan) return; const v = $("photoPanRatio").value.trim(); if(parseRatio(v)){ pendingPan.ratio = v; setPanUi(pendingPan); } });
+    document.querySelectorAll("#photoPanDirSeg button").forEach(b=>b.addEventListener("click", ()=>{
+      if(!pendingPan) return;
+      const P = { lr:[0,.5,1,.5], rl:[1,.5,0,.5], tb:[.5,0,.5,1], bt:[.5,1,.5,0] }[b.dataset.v];
+      [pendingPan.x0, pendingPan.y0, pendingPan.x1, pendingPan.y1] = P; setPanUi(pendingPan);
+    }));
+    $("photoPanZoom").addEventListener("input", ()=>{ if(pendingPan){ pendingPan.zoom = parseFloat($("photoPanZoom").value) || 1; setPanUi(pendingPan); } });
+    $("photoPanDur").addEventListener("input", drawPanEditor);
+    $("photoPanEdImg").addEventListener("load", drawPanEditor);
+    $("photoImgPreview").addEventListener("load", ()=>{ if(pendingPan) setPanUi(pendingPan); });   // 이미지를 바꾸면 영역 편집기도 새 이미지로
+    $("photoPanPrevImg").addEventListener("load", drawPanEditor);
+    bindPanFrameDrag("photoPanFrameA", "x0", "y0");
+    bindPanFrameDrag("photoPanFrameB", "x1", "y1");
     document.querySelectorAll("textarea.grow").forEach(t=>t.addEventListener("input", ()=>autoGrow(t)));
     $("itemOrigWork").addEventListener("change", ()=>fillOrigPicker($("itemOrigWork").value, null));
     $("photoYtUrl").addEventListener("input", onPhotoYtInput);
