@@ -316,7 +316,10 @@
           ]
         }
       ],
-      "slug": "torso"
+      "slug": "torso",
+      "descStyle": {
+        "lineHeight": 1.2
+      }
     },
     {
       "id": "w4",
@@ -3788,7 +3791,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "3b37ef1:27348",
-    "works/torso/index.html": "92471c0:46652",
+    "works/torso/index.html": "987acd8b:46684",
     "works/danae/index.html": "5a0e7496:54804",
     "works/zodiac/index.html": "b01bcb79:91732",
     "works/medusa/index.html": "50e868dd:50868",
