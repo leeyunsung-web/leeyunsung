@@ -1540,16 +1540,12 @@
         },
         {
           "id": "row-1790766417259-nmwov",
-          "cols": 1,
+          "cols": 3,
           "photos": [
             {
               "id": "p-1790767398019-vncbr",
               "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": "",
-              "adj": {
-                "b": 5,
-                "c": 0
-              }
+              "caption": ""
             }
           ],
           "size": 30,
@@ -3793,7 +3789,7 @@
     "page.css": "c75337f9:80412",
     "sitemap.xml": "bdc3677d:111408",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "bfaf33d3:46652"
+    "works/works-9/index.html": "6a941dfc:46596"
   },
   "shopDesign": {
     "mainPct": 56,
