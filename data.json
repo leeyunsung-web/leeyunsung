@@ -1583,7 +1583,7 @@
               "caption": ""
             }
           ],
-          "gx": "10%",
+          "gx": "5%",
           "size": 60
         },
         {
@@ -3756,10 +3756,10 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
     "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
     "cv/index.html": "472632d7:8152",
-    "page.css": "b30a9b75:81816",
+    "page.css": "9f4a1f6f:81816",
     "sitemap.xml": "3d010c1c:109608",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "508c0c1b:44432"
+    "works/works-9/index.html": "cd0ecc38:44432"
   },
   "shopDesign": {
     "mainPct": 56,
