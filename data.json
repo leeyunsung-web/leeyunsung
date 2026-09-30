@@ -2659,7 +2659,11 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464576033-gohda.jpg"
+      }
     },
     {
       "id": "s-1790624948985-2vkw6",
