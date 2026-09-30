@@ -1583,7 +1583,8 @@
               "caption": ""
             }
           ],
-          "size": 60
+          "size": 60,
+          "gx": "5%"
         },
         {
           "id": "row-1790797726614-w74vd",
@@ -1601,11 +1602,7 @@
             {
               "id": "p-1790797733174-9lrmn",
               "image": "./images/w-1790766011679-go31v-p-1790797733174-9lrmn-0f73e761.jpg",
-              "caption": "",
-              "adj": {
-                "b": 3,
-                "c": 0
-              }
+              "caption": ""
             },
             {
               "id": "p-1790797739836-pynr4",
@@ -1617,7 +1614,9 @@
               }
             }
           ],
-          "gx": "5%"
+          "gx": "5%",
+          "mt": "20",
+          "mb": "20"
         },
         {
           "id": "row-1790798114177-3g8wn",
@@ -3790,25 +3789,25 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "5386216c:25116",
-    "works/torso/index.html": "f9c9d70f:46212",
-    "works/danae/index.html": "f6953a6b:54336",
-    "works/zodiac/index.html": "ad117210:91296",
-    "works/medusa/index.html": "c6884c5d:50396",
-    "works/laocoon/index.html": "143cc63b:55552",
-    "works/frames-of-torso/index.html": "e5eae5d2:46812",
-    "works/works-8/index.html": "106d2f5a:16256",
-    "text/critical-notes-lim-geunjun/index.html": "53bca51c:29276",
-    "text/sections-of-structure-jung-hyun/index.html": "cd057dc9:28412",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "93223f90:24000",
-    "text/painting-of-the-cut-konno-yuki/index.html": "e432038b:20680",
-    "text/taxidermy-of-joy-jo-saemi/index.html": "958f950d:38356",
-    "text/exploding-bishojo-baek-jihong/index.html": "32837e85:36004",
+    "works/the-annunciation/index.html": "92908c4b:24712",
+    "works/torso/index.html": "94c43fd7:45804",
+    "works/danae/index.html": "5fe308c8:53932",
+    "works/zodiac/index.html": "268e7578:90888",
+    "works/medusa/index.html": "da367ade:49992",
+    "works/laocoon/index.html": "9f7451db:55144",
+    "works/frames-of-torso/index.html": "5e3e8875:46408",
+    "works/works-8/index.html": "76e1e699:15852",
+    "text/critical-notes-lim-geunjun/index.html": "9107216c:28868",
+    "text/sections-of-structure-jung-hyun/index.html": "4a03a2b5:28004",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "e9b5b2f8:23592",
+    "text/painting-of-the-cut-konno-yuki/index.html": "54d7044b:20272",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "d1d1d4f2:37952",
+    "text/exploding-bishojo-baek-jihong/index.html": "587c43f6:35600",
     "cv/index.html": "472632d7:8152",
-    "page.css": "b30a9b75:81816",
+    "page.css": "3cc77070:81764",
     "sitemap.xml": "f59fe2f6:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "e9c1ad21:46968"
+    "works/works-9/index.html": "cf3bf8a8:46620"
   },
   "shopDesign": {
     "mainPct": 56,
