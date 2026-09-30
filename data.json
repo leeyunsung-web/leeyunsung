@@ -2605,7 +2605,11 @@
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464242838-rtg3t.jpg"
+      }
     },
     {
       "id": "s-1790624935331-clud2",
