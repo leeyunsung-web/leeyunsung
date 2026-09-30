@@ -2653,7 +2653,7 @@
     "align": "left",
     "pagePadding": 32,
     "frameGap": 4,
-    "frameCols": 2,
+    "frameCols": 1,
     "detailMargin": 32,
     "descSide": 25,
     "descRefW": 1440,
