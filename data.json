@@ -2460,6 +2460,17 @@
               "caption": "Prometheus, 2019, Oil on canvas, 130 × 162 cm"
             }
           ]
+        },
+        {
+          "id": "row-1790767398019-gvoyu",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1790767398019-vncbr",
+              "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
+              "caption": ""
+            }
+          ]
         }
       ]
     }
@@ -3369,8 +3380,8 @@
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
     "page.css": "16bee3d:76372",
-    "sitemap.xml": "46b8f502:107052",
+    "sitemap.xml": "38193030:107480",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "545d53ac:39440"
+    "works/works-9/index.html": "d62ad458:41024"
   }
 }
