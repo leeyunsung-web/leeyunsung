@@ -702,6 +702,17 @@
   .overlay.show{display:flex;}
   .modal{background:#fff; border:1px solid var(--line-strong); border-radius:8px; width:100%; max-width:460px; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.2);}
   .modal.wide{max-width:640px;}
+  #replaceModal textarea{width:100%; font:inherit; font-size:13px; line-height:1.5; padding:8px 10px; border:1px solid var(--line-strong); border-radius:6px; resize:vertical;}
+  .rp-opts .chk{display:inline-flex; gap:6px; align-items:center; font-size:12px; text-transform:none; letter-spacing:0; color:var(--ink); margin:0 14px 6px 0; font-weight:400;}
+  .rp-scope{margin-top:4px;}
+  .rp-msg{font-size:12px; color:var(--ink-soft); margin:10px 0 6px;}
+  .rp-msg.ok{color:#1d6b3a;}
+  .rp-list{display:flex; flex-direction:column; gap:8px; max-height:44vh; overflow:auto; margin-bottom:10px;}
+  .rp-hit{display:grid; grid-template-columns:20px 1fr; gap:8px; padding:9px 10px; border:1px solid var(--line); border-radius:6px; font-size:12px; line-height:1.5;}
+  .rp-hit .where{font-weight:600; margin-bottom:3px;}
+  .rp-hit del{background:#fde8e6; color:#8b1d12; text-decoration:line-through; white-space:pre-wrap;}
+  .rp-hit ins{background:#e3f4e8; color:#1d5b31; text-decoration:none; white-space:pre-wrap;}
+  .rp-hit .arrow{color:#aaa; margin:0 4px;}
   .pick-site-img{display:block; width:100%; margin-top:8px; padding:9px 10px; font:inherit; font-size:12px; color:var(--ink-soft,#555); background:#faf9f7; border:1px solid var(--line-strong); border-radius:6px; cursor:pointer;}
   .pick-site-img:hover{color:var(--ink); border-color:var(--ink);}
   #imgPickModal{z-index:240;}
@@ -935,6 +946,7 @@
   <div id="masterbar">
     <span class="tag">Master</span>
     <button class="icon" id="btnDesign" title="DESIGN STUDIO — 디자인·글꼴·SHOP 설정 (새 창)">Aa</button>
+    <button class="icon" id="btnReplace" title="문구 일괄 바꾸기">⇄</button>
     <div class="sep"></div>
     <button class="icon" id="btnPublish" title="Publish to GitHub"><span id="publishGlyph">⇪</span><span class="unpub-dot" id="unpubDot"></span></button>
     <button class="icon" id="btnGhSettings" title="GitHub settings">⚙</button>
@@ -1095,6 +1107,37 @@
   </div>
 
   <!-- photo add/edit modal -->
+  <div class="overlay" id="replaceModal">
+    <div class="modal wide">
+      <div class="modal-head"><h2>문구 일괄 바꾸기</h2><button class="modal-close" data-close="replaceModal">✕</button></div>
+      <div class="modal-body">
+        <div class="field">
+          <label>찾을 문장</label>
+          <textarea id="rpFind" rows="3" placeholder="예) 0000년작 〈0000〉의 포스터 버전입니다."></textarea>
+        </div>
+        <div class="field">
+          <label>바꿀 문장</label>
+          <textarea id="rpTo" rows="3" placeholder="예) 0000년작 〈0000〉의 포스터 에디션입니다."></textarea>
+          <div class="field-hint">글마다 달라지는 부분(연도·제목 등)은 <b>0000</b> 또는 <b>*</b> 로 쓰세요. 찾은 글의 그 자리 내용이 바꿀 문장의 0000 자리에 순서대로 그대로 들어가요.</div>
+        </div>
+        <div class="field rp-opts">
+          <label class="chk"><input type="checkbox" id="rpLoose" checked> 띄어쓰기·줄바꿈 차이는 무시하고 찾기</label>
+          <div class="rp-scope">
+            <label class="chk"><input type="checkbox" data-rp="works" checked> WORKS</label>
+            <label class="chk"><input type="checkbox" data-rp="text" checked> TEXT</label>
+            <label class="chk"><input type="checkbox" data-rp="shop" checked> SHOP</label>
+            <label class="chk"><input type="checkbox" data-rp="caption" checked> 사진 캡션</label>
+            <label class="chk"><input type="checkbox" data-rp="cv"> CV</label>
+          </div>
+        </div>
+        <div class="btnrow"><button class="btn" id="rpPreviewBtn" style="flex:1;">찾아보기 (미리보기)</button></div>
+        <div id="rpMsg" class="rp-msg"></div>
+        <div id="rpList" class="rp-list"></div>
+        <div class="btnrow" id="rpApplyRow" style="display:none;"><button class="btn primary" id="rpApplyBtn" style="flex:1;">선택한 곳 모두 바꾸기</button></div>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="photoModal">
     <div class="modal">
       <div class="modal-head"><h2 id="photoModalTitle">Add Photo</h2><button class="modal-close" data-close="photoModal">✕</button></div>
@@ -4958,6 +5001,120 @@
     app.appendChild(sec);
   }
 
+  /* ================= 문구 일괄 바꾸기 =================
+     찾을 문장의 0000(또는 *) 자리는 글마다 다른 내용으로 보고, 그 내용을 바꿀 문장의 0000 자리에 순서대로 넣음. */
+  const RP_WILD = /\*|(?<!\d)0000(?!\d)/;
+  function rpRegex(find, loose){
+    const parts = String(find).split(RP_WILD);
+    const esc_ = c=>c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const lit = t=>{
+      if(!loose) return esc_(t);
+      const chars = Array.from(t.trim().replace(/\s+/g, " "));
+      return chars.map(c=>c === " " ? "\\s*" : esc_(c)).join("\\s*");
+    };
+    const body = parts.map(lit).join(loose ? "\\s*(.+?)\\s*" : "(.+?)");
+    if(!body.replace(/\\s\*/g, "")) return null;
+    return new RegExp(body, "g");
+  }
+  function rpReplacer(to, nGroups){
+    const parts = String(to).split(RP_WILD);
+    return function(){
+      const caps = Array.prototype.slice.call(arguments, 1, 1 + nGroups);
+      let out = parts[0];
+      for(let i=1;i<parts.length;i++) out += (caps[i-1] != null ? caps[i-1].trim() : "") + parts[i];
+      return out;
+    };
+  }
+  function rpTargets(scope){
+    const T = [], d = state.data;
+    const nameOf = (key,it)=>(key === "works" ? "WORKS" : key === "text" ? "TEXT" : "SHOP") + " · " + (cleanText(it.title) || "(제목 없음)");
+    const add = (label, obj, field)=>{ if(obj && typeof obj[field] === "string" && obj[field]) T.push({ label, get:()=>obj[field], set:v=>{ obj[field] = v; } }); };
+    ["works","text","shop"].forEach(key=>{
+      (d[key] || []).forEach(it=>{
+        if(scope[key]){
+          add(nameOf(key,it) + " · 제목", it, "title");
+          add(nameOf(key,it) + " · 설명", it, "description");
+          if(key === "shop"){ add(nameOf(key,it) + " · 사양1", it, "spec1"); add(nameOf(key,it) + " · 사양2", it, "spec2"); add(nameOf(key,it) + " · 에디션", it, "edition"); if(it.original) add(nameOf(key,it) + " · 원작 설명", it.original, "text"); }
+        }
+        if(scope.caption) (it.photoRows || []).forEach(r=>(r.photos || []).forEach(ph=>add(nameOf(key,it) + " · 사진 캡션", ph, "caption")));
+      });
+    });
+    if(scope.cv && d.cv) add("CV", d.cv, "text");
+    return T;
+  }
+  function rpFindAll(find, to, loose, scope){
+    const re = rpRegex(find, loose); if(!re) return [];
+    const fn = rpReplacer(to, String(find).split(RP_WILD).length - 1), hits = [];
+    rpTargets(scope).forEach(t=>{
+      const v = t.get(); re.lastIndex = 0;
+      const m = v.match(re); if(!m) return;
+      re.lastIndex = 0;
+      const after = v.replace(re, fn);
+      if(after === v) return;
+      hits.push({ t, before: m, after: m.map(x=>{ re.lastIndex = 0; return x.replace(re, fn); }), apply: ()=>{ re.lastIndex = 0; t.set(t.get().replace(re, fn)); } });
+    });
+    return hits;
+  }
+  let rpHits = [];
+  function openReplaceModal(){
+    $("rpMsg").textContent = ""; $("rpMsg").className = "rp-msg"; $("rpList").innerHTML = ""; $("rpApplyRow").style.display = "none"; rpHits = [];
+    openModal("replaceModal");
+  }
+  function rpScope(){ const o = {}; document.querySelectorAll("#replaceModal [data-rp]").forEach(c=>{ o[c.dataset.rp] = c.checked; }); return o; }
+  function rpPreview(){
+    const find = $("rpFind").value, to = $("rpTo").value;
+    const list = $("rpList"); list.innerHTML = ""; $("rpMsg").className = "rp-msg";
+    if(!find.trim()){ $("rpMsg").textContent = "찾을 문장을 넣어 주세요."; $("rpApplyRow").style.display = "none"; return; }
+    rpHits = rpFindAll(find, to, $("rpLoose").checked, rpScope());
+    $("rpMsg").textContent = rpHits.length ? rpHits.length + "곳을 찾았어요. 바꾸지 않을 곳은 체크를 빼세요." : "찾는 문장이 없어요. 띄어쓰기 무시를 켜거나 문장을 조금 짧게 넣어 보세요.";
+    rpHits.forEach((h,i)=>{
+      const row = el("label","rp-hit");
+      const cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.dataset.i = i; row.appendChild(cb);
+      const box = el("div");
+      const w = el("div","where"); w.textContent = h.t.label; box.appendChild(w);
+      h.before.forEach((b,k)=>{ const line = el("div"); const d_ = el("del"); d_.textContent = b; const a = el("span","arrow"); a.textContent = "→"; const n = el("ins"); n.textContent = h.after[k]; line.appendChild(d_); line.appendChild(a); line.appendChild(n); box.appendChild(line); });
+      row.appendChild(box); list.appendChild(row);
+    });
+    $("rpApplyRow").style.display = rpHits.length ? "" : "none";
+  }
+  function rpApply(){
+    const on = Array.from(document.querySelectorAll("#rpList input[type=checkbox]")).filter(c=>c.checked).map(c=>rpHits[+c.dataset.i]).filter(Boolean);
+    if(!on.length){ alert("선택한 곳이 없어요."); return; }
+    on.forEach(h=>h.apply());
+    saveDraft(); renderRoute();
+    $("rpList").innerHTML = ""; $("rpApplyRow").style.display = "none"; rpHits = [];
+    $("rpMsg").textContent = "✓ " + on.length + "곳을 바꿨어요. 자동으로 저장·업로드돼요."; $("rpMsg").className = "rp-msg ok";
+  }
+
+  /* 한 번만 실행하는 문구 정리 (마스터 모드에서 GitHub 최신본 확인이 끝난 뒤, 이미 했으면 건너뜀) */
+  const ONE_TIME_FIXES = [{
+    id: "poster-copy-2026-10",
+    run(){
+      const ko = /(\d{4})년작\s*〈\s*([^〉\n]+?)\s*〉\s*의\s*포스터\s*버전입니다\.\s*2021년\s*한정\s*에디션으로\s*제작\s*[·,]\s*판매되었으며,\s*남은\s*수량을\s*웹사이트\s*리뉴얼을\s*기념하여\s*다시\s*선보입니다\./g;
+      const en = /The remaining prints are now available again to celebrate the relaunch of this website\./g;
+      let n = 0;
+      (state.data.shop || []).forEach(it=>{
+        const v = it.description; if(typeof v !== "string") return;
+        const nv = v.replace(ko, (m,y,t)=>y + "년작 〈" + t + "〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.")
+                    .replace(en, "To mark the relaunch of the website, the remaining prints are now available once again.");
+        if(nv !== v){ it.description = nv; n++; }
+      });
+      return n;
+    }
+  }];
+  let oneTimeFixesRan = false;
+  function runOneTimeFixes(){
+    if(oneTimeFixesRan || !state.master) return;
+    oneTimeFixesRan = true;
+    const d = state.data; const done = Array.isArray(d.fixesDone) ? d.fixesDone : [];
+    let changed = 0; const ids = [];
+    ONE_TIME_FIXES.forEach(f=>{ if(done.indexOf(f.id) >= 0) return; const n = f.run(); if(n){ changed += n; ids.push(f.id); } });
+    if(!changed) return;
+    d.fixesDone = done.concat(ids);
+    saveDraft(); renderRoute();
+    setTimeout(()=>alert("상품 설명 " + changed + "곳의 포스터 문구를 새 문장으로 바꿨어요.\n자동으로 저장·업로드돼요."), 50);
+  }
+
   /* ================= 사진 순서 정리 창 =================
      작품(또는 글·상품) 상세의 모든 사진을 새 창에 썸네일로 보여주고, 끌어서 전체 순서를 바꿈.
      줄 모양(각 줄에 몇 장인지)은 그대로 두고 사진을 새 순서대로 채움.
@@ -5878,6 +6035,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
   function setSync(status, message){
     sync.status = status; sync.message = message || "";
     renderSyncUi();
+    if(status === "synced" && sync.checked) setTimeout(runOneTimeFixes, 0);
   }
   function renderSyncUi(){
     const pill = $("syncPill"), ban = $("syncBanner");
@@ -6727,6 +6885,9 @@ shopBlock,
 
     $("btnEditSiteName").addEventListener("click", openSiteNameModal);
     $("btnDesign").addEventListener("click", ()=>openStudio());
+    $("btnReplace").addEventListener("click", openReplaceModal);
+    $("rpPreviewBtn").addEventListener("click", rpPreview);
+    $("rpApplyBtn").addEventListener("click", rpApply);
     bindDesignEvents();
     $("siteNameSaveBtn").addEventListener("click", saveSiteName);
 
