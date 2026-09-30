@@ -1781,7 +1781,7 @@
           "photos": [
             {
               "id": "p-1788797562303-7x9rg",
-              "image": "./images/w6-p-1788797562303-7x9rg-4ac1693b.jpg",
+              "image": "./images/w6-p-1788797562303-7x9rg.jpg",
               "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
             }
           ]
@@ -2738,8 +2738,7 @@
         "workId": "w-1790628203345-iya5b",
         "image": "./images/s-1790622121911-1dl7b-cover.jpg"
       },
-      "rowCols": 5,
-      "hidden": false
+      "rowCols": 5
     },
     {
       "id": "s-1790622337229-hzfwn",
@@ -3583,17 +3582,6 @@
               "caption": ""
             }
           ]
-        },
-        {
-          "id": "row-1790807374725-3vn7x",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790807374725-zej19",
-              "image": "./images/w-1790766011679-go31v-p-1790797739836-pynr4-16dc435e.jpg",
-              "caption": ""
-            }
-          ]
         }
       ],
       "spec1": "",
@@ -3789,7 +3777,7 @@
     "works/torso/index.html": "94c43fd7:45804",
     "works/danae/index.html": "5fe308c8:53932",
     "works/zodiac/index.html": "268e7578:90888",
-    "works/medusa/index.html": "14da228c:50040",
+    "works/medusa/index.html": "da367ade:49992",
     "works/laocoon/index.html": "9f7451db:55144",
     "works/frames-of-torso/index.html": "5e3e8875:46408",
     "works/works-8/index.html": "76e1e699:15852",
@@ -3801,7 +3789,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "618296de:35784",
     "cv/index.html": "4c6ebe9d:8156",
     "page.css": "fa21be48:82796",
-    "sitemap.xml": "32e80dca:113884",
+    "sitemap.xml": "95ce724a:113872",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "bdffd5bf:54384"
   },
