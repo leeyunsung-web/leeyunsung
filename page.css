@@ -753,6 +753,10 @@
   /* 제목·사양: 한 줄로 시작하고 Enter로 줄을 나누면 칸이 저절로 늘어남 */
   .field textarea.grow{min-height:0; resize:none; overflow:hidden; line-height:1.5;}
   .ml{white-space:pre-line;}
+  .size-row{display:flex; align-items:center; gap:8px;}
+  .field .size-row input[type=number]{width:110px; background:#fff; border:1px solid var(--line-strong); border-radius:5px; padding:10px 11px; font:inherit; font-size:14px;}
+  /* 줄 크기 (%): 가운데 정렬로 줄 폭만 줄임 */
+  .photo-grid.sized{margin-left:auto; margin-right:auto;}
   .field textarea.tall{min-height:280px; font-size:14px; line-height:1.8;}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
