@@ -2429,7 +2429,8 @@
               "image": "./images/w-1790766011679-go31v-p-1790766735286-83d7f-2ee44855.jpg",
               "caption": "The Three Graces Pixel Props 01, 2019, Oil on canvas, 53 × 45 cm"
             }
-          ]
+          ],
+          "size": 50
         },
         {
           "id": "row-1790766829810-zbgo9",
@@ -3434,9 +3435,9 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "921e9183:38308",
     "text/exploding-bishojo-baek-jihong/index.html": "2ce318e6:35956",
     "cv/index.html": "472632d7:8152",
-    "page.css": "f99a953e:76840",
+    "page.css": "59041938:76860",
     "sitemap.xml": "f23426d8:110904",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "77fefe17:44800"
+    "works/works-9/index.html": "506e26fd:44820"
   }
 }
