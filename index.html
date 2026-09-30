@@ -208,6 +208,9 @@
   /* 마스터 모드: 상품 카드 끌어서 순서 바꾸기 */
   body.master-on .shop-grid > .shop-card[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
   body.master-on .shop-grid > .shop-card[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  body.master-on .col-grid > .frame[data-id]{cursor:grab; -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none;}
+  body.master-on .col-grid > .frame[data-id] img{-webkit-user-drag:none; pointer-events:none;}
+  .frame.dragging{opacity:.35;}
   .shop-card.dragging{opacity:.35;}
   .shop-drag-ghost{position:fixed; z-index:400; pointer-events:none; opacity:.92; box-shadow:0 14px 34px rgba(0,0,0,.22); transform:rotate(1.2deg); background:#fff; cursor:grabbing;}
   body.shop-dragging, body.shop-dragging *{cursor:grabbing !important; user-select:none !important;}
@@ -570,6 +573,14 @@
     display:flex; align-items:center; justify-content:center;
   }
   .photo-editctl button:hover{background:var(--ink); color:#fff;}
+  .adj-panel{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:6; width:min(340px, calc(100% - 20px));
+    background:rgba(255,255,255,.97); border:1px solid var(--line-strong); border-radius:8px; padding:12px 14px 10px; box-shadow:0 10px 30px rgba(0,0,0,.18); cursor:default; font-size:12px; color:var(--ink);}
+  .adj-row{display:grid; grid-template-columns:34px 1fr 34px; align-items:center; gap:8px; margin-bottom:6px;}
+  .adj-row input[type=range]{width:100%; accent-color:#111;}
+  .adj-v{text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-soft);}
+  .adj-btns{display:flex; gap:6px; justify-content:flex-end; margin-top:6px;}
+  .adj-btns button{font:inherit; font-size:12px; padding:6px 11px; border-radius:5px; border:1px solid var(--line-strong); background:#fff; cursor:pointer;}
+  .adj-btns button.primary{background:#111; color:#fff; border-color:#111;}
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
@@ -1940,6 +1951,8 @@
     items.forEach((item, itemIdx)=>{
       const frame = el("a","frame"+(!item.cover && !item.title ? " empty":""));
       setItemLink(frame, key, item);
+      frame.dataset.id = item.id;
+      if(state.master) enableShopDrag(frame, grid, key, ".col-grid > .frame[data-id]");
       if(item.cover){
         const img = el("img");
         img.alt = (cleanText(item.title) ? cleanText(item.title)+" — "+ARTIST+" 회화 연작" : ARTIST+" 작품");
@@ -3417,7 +3430,7 @@
       const card = el("a","shop-card");
       setItemLink(card, "shop", item);
       card.dataset.id = item.id;
-      if(state.master) enableShopDrag(card, grid, tab);
+      if(state.master) enableShopDrag(card, grid, "shop", ".shop-grid > .shop-card[data-id]");
       if(state.master && isItemHidden(item)){
         card.classList.add("is-hidden");
         const hb = el("span","shop-hidden-badge"); hb.textContent = "비공개"; card.appendChild(hb);
@@ -3440,8 +3453,7 @@
       const info = el("div","shop-info");
       const nm = el("div","shop-name ml"); nm.textContent = multiLine(item.title) || "(Untitled)";
       info.appendChild(nm);
-      const spec = [cleanText(item.spec1), cleanText(item.spec2)].filter(Boolean).join(" · ");
-      if(spec){ const d = el("div","shop-spec"); d.textContent = spec; info.appendChild(d); }
+      // 목록에서는 사양·에디션을 숨기고 상세페이지에서만 보여줌
       // 목록에서는 가격을 숨기고 상세페이지에서만 보여줌 (품절만 표시)
       if(soldNow){ const pr = el("div","shop-price sold"); pr.textContent = "Sold out"; info.appendChild(pr); }
       card.appendChild(info);
@@ -3481,12 +3493,12 @@
 
   /* ---------- 마스터 모드: 상품 순서 바꾸기 (마우스는 끌기, 터치는 길게 누른 뒤 끌기) ---------- */
   let shopDrag = null;
-  function enableShopDrag(card, grid){
+  function enableShopDrag(card, grid, kind, itemSel){
     card.addEventListener("dragstart", e=>e.preventDefault());
     card.addEventListener("pointerdown", e=>{
       if(!state.master || e.button !== 0) return;
       if(e.target.closest(".frame-editctl")) return;
-      const d = { card, grid, id: card.dataset.id, x0: e.clientX, y0: e.clientY, pid: e.pointerId, touch: e.pointerType !== "mouse", started:false, timer:null, ghost:null, dx:0, dy:0, moved:false };
+      const d = { card, grid, kind: kind || "shop", itemSel: itemSel || ".shop-grid > .shop-card[data-id]", id: card.dataset.id, x0: e.clientX, y0: e.clientY, pid: e.pointerId, touch: e.pointerType !== "mouse", started:false, timer:null, ghost:null, dx:0, dy:0, moved:false };
       shopDrag = d;
       if(d.touch){
         d.timer = setTimeout(()=>{ if(shopDrag === d) startShopDrag(d, d.x0, d.y0); }, 380);
@@ -3514,7 +3526,7 @@
     const edge = 60;
     if(y < edge) window.scrollBy(0, -12); else if(y > window.innerHeight - edge) window.scrollBy(0, 12);
     const under = document.elementFromPoint(x, y);
-    const target = under && under.closest(".shop-grid > .shop-card[data-id]");
+    const target = under && under.closest(d.itemSel);
     if(!target || target === d.card || target.parentNode !== d.grid) return;
     const kids = [...d.grid.children];
     const from = kids.indexOf(d.card), to = kids.indexOf(target);
@@ -3534,13 +3546,13 @@
     d.card.addEventListener("click", block, { capture:true, once:true });
     setTimeout(()=>d.card.removeEventListener("click", block, { capture:true }), 400);
     if(cancel || !d.moved){ if(cancel) renderRoute(); return; }
-    const order = [...d.grid.querySelectorAll(".shop-card[data-id]")].map(c=>c.dataset.id);
-    const all = state.data.shop || [];
+    const order = [...d.grid.children].filter(c=>c.dataset && c.dataset.id).map(c=>c.dataset.id);
+    const all = state.data[d.kind] || [];
     const set = new Set(order);
     const byId = new Map(all.map(it=>[it.id, it]));
-    // 이 탭 상품들이 있던 자리만 새 순서로 채우고, 다른 탭 상품 위치는 그대로
+    // 화면에 보이던 항목들이 있던 자리만 새 순서로 채우고, 나머지(다른 탭 상품 등) 위치는 그대로
     let k = 0;
-    state.data.shop = all.map(it=>set.has(it.id) ? byId.get(order[k++]) : it);
+    state.data[d.kind] = all.map(it=>set.has(it.id) ? byId.get(order[k++]) : it);
     saveDraft();
     renderRoute();
   }
@@ -3638,7 +3650,7 @@
     // ---- 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 상품 정보
     const gallery = [];
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) gallery.push(p); }));
-    const imgs = gallery.length ? gallery.map(p=>({src:imgSrc(p.image), cap:cleanText(p.caption), video: isVideoPhoto(p) ? p.video : null})) : (item.cover ? [{src:imgSrc(item.cover), cap:""}] : []);
+    const imgs = gallery.length ? gallery.map(p=>({src:imgSrc(p.image), cap:cleanText(p.caption), video: isVideoPhoto(p) ? p.video : null, filter: adjFilter(p)})) : (item.cover ? [{src:imgSrc(item.cover), cap:""}] : []);
     const sd = shopDesign();
 
     const pd = el("div","pd");
@@ -3661,7 +3673,7 @@
         main.appendChild(box);
       } else {
         mainImg.style.display = "";
-        mainImg.src = im.src; mainImg.alt = altOf(im);
+        mainImg.src = im.src; mainImg.alt = altOf(im); mainImg.style.filter = im.filter || "";
       }
     };
     if(imgs.length){
@@ -3683,7 +3695,7 @@
       imgs.slice(0, sd.thumbCount).forEach((im, i)=>{
         const b = el("button","pd-thumb" + (i===0 ? " on" : "") + (im.video ? " is-video" : "")); b.type = "button";
         b.setAttribute("aria-label", (im.video ? "Video " : "Image ") + (i+1));
-        const t = el("img"); t.src = im.src; t.alt = ""; t.loading = "lazy"; b.appendChild(t);
+        const t = el("img"); t.src = im.src; t.alt = ""; t.loading = "lazy"; if(im.filter) t.style.filter = im.filter; b.appendChild(t);
         if(im.video) b.appendChild(el("span","yt-badge"));
         b.addEventListener("click", ()=>{
           if(current === i) return;
@@ -3702,7 +3714,8 @@
     const actions = el("div","detail-actions");
     const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal("shop",item.id));
     const delBtn = el("button","danger"); delBtn.textContent="Delete"; delBtn.addEventListener("click",()=>deleteItem("shop",item.id));
-    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    const arrBtn = el("button"); arrBtn.textContent="사진 순서"; arrBtn.addEventListener("click",()=>openArrangeWindow("shop",item.id));
+    actions.appendChild(arrBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
     head.appendChild(h); head.appendChild(actions);
     info.appendChild(head);
 
@@ -3747,6 +3760,7 @@
         if(!isVid) cell.addEventListener("click", ()=>openPhotoLightbox("shop",item.id,myIdx));
         const ctl = el("div","photo-editctl");
         const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",(e)=>{ e.stopPropagation(); openPhotoModal("shop",item.id,row.id,photo.id); });
+        if(!isVid){ const ab = el("button"); ab.textContent = "☀"; ab.title = "밝기·대비"; ab.addEventListener("click",(e)=>{ e.stopPropagation(); openAdjustPanel(cell,"shop",item.id,row.id,photo.id); }); ctl.appendChild(ab); }
         const db = el("button"); db.textContent="✕"; db.addEventListener("click",(e)=>{ e.stopPropagation(); deletePhoto("shop",item.id,row.id,photo.id); });
         ctl.appendChild(eb); ctl.appendChild(db);
         cell.appendChild(ctl);
@@ -4041,7 +4055,8 @@
     const actions = el("div","detail-actions");
     const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal(key,item.id));
     const delBtn = el("button","danger"); delBtn.textContent="Delete Series"; delBtn.addEventListener("click",()=>deleteItem(key,item.id));
-    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    const arrBtn = el("button"); arrBtn.textContent="사진 순서"; arrBtn.title="새 창에서 사진을 작게 보며 끌어서 순서 바꾸기"; arrBtn.addEventListener("click",()=>openArrangeWindow(key,item.id));
+    actions.appendChild(arrBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
     head.appendChild(h); head.appendChild(actions);
     app.appendChild(head);
 
@@ -4095,6 +4110,7 @@
         if(!isVid) cell.addEventListener("click", ()=>openPhotoLightbox(key,item.id,myIdx));
         const ctl = el("div","photo-editctl");
         const eb = el("button"); eb.textContent="✎"; eb.addEventListener("click",(e)=>{ e.stopPropagation(); openPhotoModal(key,item.id,row.id,photo.id); });
+        if(!isVid){ const ab = el("button"); ab.textContent = "☀"; ab.title = "밝기·대비"; ab.addEventListener("click",(e)=>{ e.stopPropagation(); openAdjustPanel(cell,key,item.id,row.id,photo.id); }); ctl.appendChild(ab); }
         const db = el("button"); db.textContent="✕"; db.addEventListener("click",(e)=>{ e.stopPropagation(); deletePhoto(key,item.id,row.id,photo.id); });
         ctl.appendChild(eb); ctl.appendChild(db);
         cell.appendChild(ctl);
@@ -4409,9 +4425,12 @@
     const photo = flat[i];
 
     $("lightboxImg").src = imgSrc(photo.image);
+    $("lightboxImg").style.filter = adjFilter(photo);
     $("lightboxImg").alt = photo.caption || "";
     $("lightboxImgPrev").src = n > 1 ? imgSrc(flat[(i - 1 + n) % n].image) : "";
+    $("lightboxImgPrev").style.filter = n > 1 ? adjFilter(flat[(i - 1 + n) % n]) : "";
     $("lightboxImgNext").src = n > 1 ? imgSrc(flat[(i + 1) % n].image) : "";
+    $("lightboxImgNext").style.filter = n > 1 ? adjFilter(flat[(i + 1) % n]) : "";
 
     $("lightboxCaption").textContent = photo.caption || "";
     $("lightboxCaption").style.display = photo.caption ? "" : "none";
@@ -4782,6 +4801,7 @@
     img.decoding = "async";
     img.addEventListener("load", scheduleJustifyLayout);
     img.src = imgSrc(photo.image);
+    const f = adjFilter(photo); if(f) img.style.filter = f;
     cell.appendChild(img);
     return false;
   }
@@ -4863,6 +4883,156 @@
     grid.appendChild(info);
     sec.appendChild(grid);
     app.appendChild(sec);
+  }
+
+  /* ================= 사진 순서 정리 창 =================
+     작품(또는 글·상품) 상세의 모든 사진을 새 창에 썸네일로 보여주고, 끌어서 전체 순서를 바꿈.
+     줄 모양(각 줄에 몇 장인지·줄 크기)은 그대로 두고, 사진만 새 순서대로 채움.
+     바꾸는 즉시 원래 창에 반영 + 자동 저장. */
+  let arrangeWin = null;
+  function arrangeData(key, itemId){
+    const item = (state.data[key] || []).find(x=>x.id === itemId);
+    if(!item) return null;
+    const abs = u=>{ try{ return new URL(imgSrc(u), location.href).href; }catch(e){ return u; } };
+    return {
+      title: multiLine(item.title) || "(Untitled)",
+      rows: (item.photoRows || []).map(r=>({ cols: r.cols || 1, size: r.size || 100,
+        photos: (r.photos || []).map(p=>({ id: p.id, src: abs(p.image), video: isVideoPhoto(p), cap: cleanText(p.caption) })) }))
+    };
+  }
+  function arrangeApply(key, itemId, orderIds){
+    const item = (state.data[key] || []).find(x=>x.id === itemId);
+    if(!item) return false;
+    const flat = []; (item.photoRows || []).forEach(r=>(r.photos || []).forEach(p=>flat.push(p)));
+    const byId = new Map(flat.map(p=>[p.id, p]));
+    const ordered = orderIds.map(id=>byId.get(id)).filter(Boolean);
+    flat.forEach(p=>{ if(ordered.indexOf(p) < 0) ordered.push(p); });   // 혹시 빠진 사진은 뒤에 (절대 지우지 않음)
+    let k = 0;
+    (item.photoRows || []).forEach(r=>{ const n = (r.photos || []).length; r.photos = ordered.slice(k, k + n); k += n; });
+    saveDraft();
+    const rt = parseHash();
+    if(rt.id === itemId) renderRoute();
+    return true;
+  }
+  window.__lysArrange = { get: arrangeData, set: arrangeApply };
+  const ARRANGE_HTML = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사진 순서</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#111;background:#f6f5f3}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:12px 16px;z-index:2}
+h1{font-size:14px;margin:0 0 2px;letter-spacing:.02em} .sub{color:#777;font-size:12px} #st{float:right;font-size:12px;color:#1d6b3a}
+main{padding:14px 16px 40px}
+.row{display:flex;gap:8px;align-items:flex-end;padding:8px;margin-bottom:8px;background:#fff;border:1px solid #e3e1dc;border-radius:6px}
+.row .no{flex:0 0 26px;color:#aaa;font-size:11px;align-self:center;text-align:center}
+.th{position:relative;height:110px;min-width:60px;border-radius:3px;overflow:hidden;background:#eee;cursor:grab;flex:0 0 auto;user-select:none}
+.th img{height:100%;width:auto;display:block;pointer-events:none}
+.th .v{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6)}
+.th .v::after{content:"";position:absolute;left:9px;top:6px;border-left:8px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.th .n{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:0 5px;border-radius:3px}
+.th.drag{opacity:.3} .th.before{box-shadow:-4px 0 0 #111} .th.after{box-shadow:4px 0 0 #111}
+.empty{color:#999;padding:30px;text-align:center}
+</style></head><body><header><span id="st"></span><h1 id="t">사진 순서</h1><div class="sub">사진을 끌어서 원하는 자리에 놓으세요. 줄 모양(한 줄에 몇 장)은 그대로이고, 사진만 순서대로 채워져요. 바꾸면 바로 홈페이지에 반영돼요.</div></header><main id="m"></main>
+<script>
+var KEY=null,ID=null,dragId=null,SIG='';
+function api(){ try{ return window.opener && window.opener.__lysArrange; }catch(e){ return null; } }
+function render(force){
+  var a=api(), m=document.getElementById('m');
+  var d0=a?a.get(KEY,ID):null, sig=JSON.stringify(d0);
+  if(!force && sig===SIG && m.childNodes.length) return;   // 바뀐 게 없으면 다시 그리지 않음
+  SIG=sig; m.innerHTML='';
+  if(!a){ m.innerHTML='<div class="empty">원래 홈페이지 창이 닫혀 있어요. 이 창을 닫고 다시 열어 주세요.</div>'; return; }
+  var d=a.get(KEY,ID); if(!d){ m.innerHTML='<div class="empty">항목을 찾을 수 없어요.</div>'; return; }
+  document.getElementById('t').textContent='사진 순서 — '+d.title.replace(/\\n/g,' ');
+  var n=0;
+  if(!d.rows.length){ m.innerHTML='<div class="empty">아직 사진이 없어요.</div>'; return; }
+  d.rows.forEach(function(r,ri){
+    var row=document.createElement('div'); row.className='row';
+    var no=document.createElement('div'); no.className='no'; no.textContent=(ri+1); row.appendChild(no);
+    r.photos.forEach(function(p){
+      n++;
+      var t=document.createElement('div'); t.className='th'; t.draggable=true; t.dataset.id=p.id; t.title=p.cap||'';
+      var im=document.createElement('img'); im.src=p.src; im.alt=''; t.appendChild(im);
+      if(p.video){ var v=document.createElement('span'); v.className='v'; t.appendChild(v); }
+      var nn=document.createElement('span'); nn.className='n'; nn.textContent=n; t.appendChild(nn);
+      t.addEventListener('dragstart',function(e){ dragId=p.id; t.classList.add('drag'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain',p.id);}catch(_){} });
+      t.addEventListener('dragend',function(){ dragId=null; clear(); t.classList.remove('drag'); });
+      t.addEventListener('dragover',function(e){ if(!dragId||dragId===p.id) return; e.preventDefault(); clear(); var b=t.getBoundingClientRect(); t.classList.add(e.clientX<b.left+b.width/2?'before':'after'); });
+      t.addEventListener('dragleave',function(){ t.classList.remove('before','after'); });
+      t.addEventListener('drop',function(e){ e.preventDefault(); if(!dragId||dragId===p.id) return; var b=t.getBoundingClientRect(); move(dragId,p.id,e.clientX>=b.left+b.width/2); });
+      row.appendChild(t);
+    });
+    m.appendChild(row);
+  });
+}
+function clear(){ var l=document.querySelectorAll('.before,.after'); for(var i=0;i<l.length;i++) l[i].classList.remove('before','after'); }
+function move(from,to,after){
+  var ids=[].map.call(document.querySelectorAll('.th'),function(x){return x.dataset.id;});
+  ids.splice(ids.indexOf(from),1);
+  var at=ids.indexOf(to)+(after?1:0);
+  ids.splice(at,0,from);
+  var a=api(); if(a && a.set(KEY,ID,ids)){ var s=document.getElementById('st'); s.textContent='반영됨 ✓'; clearTimeout(window._st); window._st=setTimeout(function(){s.textContent='';},1500); }
+  render(true);
+}
+window.__arrangeOpen=function(k,id){ KEY=k; ID=id; render(true); };
+window.addEventListener('focus',function(){ if(!dragId) render(false); });
+<\/script></body></html>`;
+  function openArrangeWindow(key, itemId){
+    const w = window.open("", "lysArrange", "width=980,height=820");
+    if(!w){ alert("팝업이 막혀 있어요. 브라우저 주소창 오른쪽에서 이 사이트의 팝업을 허용해 주세요."); return; }
+    if(!w.__arrangeOpen){ w.document.open(); w.document.write(ARRANGE_HTML); w.document.close(); }
+    arrangeWin = w;
+    w.__arrangeOpen(key, itemId);
+    w.focus();
+  }
+
+  /* ================= 사진 밝기·대비 (원본은 그대로, 보정값만 저장) =================
+     photo.adj = { b: 밝기 -50~+50, c: 대비 -50~+50 } → 보여줄 때 CSS filter 로 적용 */
+  function adjFilter(p){
+    const a = p && p.adj; if(!a) return "";
+    const b = Number(a.b) || 0, c = Number(a.c) || 0;
+    if(!b && !c) return "";
+    return "brightness(" + (1 + b/100).toFixed(2) + ") contrast(" + (1 + c/100).toFixed(2) + ")";
+  }
+  function openAdjustPanel(cell, key, itemId, rowId, photoId){
+    document.querySelectorAll(".adj-panel").forEach(x=>x.remove());
+    const item = (state.data[key] || []).find(x=>x.id === itemId);
+    const row = item && (item.photoRows || []).find(r=>r.id === rowId);
+    const photo = row && row.photos.find(p=>p.id === photoId);
+    const img = cell.querySelector("img");
+    if(!photo || !img) return;
+    const orig = { b: (photo.adj && photo.adj.b) || 0, c: (photo.adj && photo.adj.c) || 0 };
+    const cur = { b: orig.b, c: orig.c };
+    const panel = el("div","adj-panel");
+    panel.addEventListener("click", e=>e.stopPropagation());
+    panel.addEventListener("pointerdown", e=>e.stopPropagation());
+    const apply = ()=>{ img.style.filter = adjFilter({ adj: cur }); };
+    const mkRow = (label, k)=>{
+      const r = el("div","adj-row");
+      const l = el("span","adj-l"); l.textContent = label;
+      const inp = document.createElement("input"); inp.type = "range"; inp.min = "-50"; inp.max = "50"; inp.step = "1"; inp.value = String(cur[k]);
+      const v = el("span","adj-v"); v.textContent = (cur[k] > 0 ? "+" : "") + cur[k];
+      inp.addEventListener("input", ()=>{ cur[k] = parseInt(inp.value, 10) || 0; v.textContent = (cur[k] > 0 ? "+" : "") + cur[k]; apply(); });
+      inp.addEventListener("dblclick", ()=>{ inp.value = "0"; inp.dispatchEvent(new Event("input")); });
+      r.appendChild(l); r.appendChild(inp); r.appendChild(v);
+      panel.appendChild(r);
+      return inp;
+    };
+    const ib = mkRow("밝기", "b");
+    const ic = mkRow("대비", "c");
+    const btns = el("div","adj-btns");
+    const reset = el("button"); reset.type = "button"; reset.textContent = "원래대로";
+    reset.addEventListener("click", ()=>{ ib.value = "0"; ic.value = "0"; ib.dispatchEvent(new Event("input")); ic.dispatchEvent(new Event("input")); });
+    const cancel = el("button"); cancel.type = "button"; cancel.textContent = "취소";
+    cancel.addEventListener("click", ()=>{ img.style.filter = adjFilter({ adj: orig }); panel.remove(); });
+    const save = el("button","primary"); save.type = "button"; save.textContent = "저장";
+    save.addEventListener("click", ()=>{
+      if(cur.b || cur.c) photo.adj = { b: cur.b, c: cur.c }; else delete photo.adj;
+      saveDraft();
+      panel.remove();
+      renderRoute();
+    });
+    btns.appendChild(reset); btns.appendChild(cancel); btns.appendChild(save);
+    panel.appendChild(btns);
+    cell.appendChild(panel);
   }
 
   // ---------------- 홈페이지에 이미 있는 이미지에서 고르기 ----------------
@@ -6051,7 +6221,7 @@
                  '        </div>';
         }
         return '        <a class="photo-cell" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'">\n' +
-               '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+
+               '          <img src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+(adjFilter(p) ? ' style="filter:'+adjFilter(p)+'"' : '')+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">\n' +
                (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
                '        </a>';
@@ -6096,8 +6266,8 @@
               (stx.buyNote ? '      <div class="buy-note">'+esc(stx.buyNote)+'</div>' : '');
       }
       // 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 정보 (앱 화면과 같은 구조)
-      const gal = [];
-      (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) gal.push(absUrl(p.image)); }));
+      const gal = [], galF = [];
+      (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image){ gal.push(absUrl(p.image)); galF.push(adjFilter(p)); } }));
       if(!gal.length && item.cover) gal.push(absUrl(item.cover));
       const sdz = shopDesign();
       const thumbs = gal.length > 1 && sdz.thumbCount > 0
@@ -6108,7 +6278,7 @@
       shopBlock =
         '    <div class="pd">\n' +
         '      <div class="pd-media">\n' +
-        '        <div class="pd-main">' + (gal[0] ? '<img id="pdMain" src="'+esc(gal[0])+'" alt="'+esc(title+" — "+ARTIST)+'">' : '') + '</div>\n' +
+        '        <div class="pd-main">' + (gal[0] ? '<img id="pdMain" src="'+esc(gal[0])+'" alt="'+esc(title+" — "+ARTIST)+'"'+(galF[0] ? ' style="filter:'+galF[0]+'"' : '')+'>' : '') + '</div>\n' +
         thumbs +
         '      </div>\n' +
         '      <div class="pd-info">\n' +
