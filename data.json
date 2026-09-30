@@ -1575,7 +1575,11 @@
             {
               "id": "p-1790797593809-63had",
               "image": "./images/w-1790766011679-go31v-p-1790797593809-63had-edf784d7.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 1,
+                "c": 0
+              }
             },
             {
               "id": "p-1790797609739-vi1o0",
@@ -3793,7 +3797,7 @@
     "page.css": "9f4a1f6f:81816",
     "sitemap.xml": "bd9d80db:111320",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "a074ddd3:46364"
+    "works/works-9/index.html": "ee895aba:46428"
   },
   "shopDesign": {
     "mainPct": 56,
