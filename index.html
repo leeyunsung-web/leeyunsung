@@ -624,6 +624,25 @@
   .row-insert:hover span{color:var(--ink);}
 
   /* ---------- next works (bottom of detail page) ---------- */
+  /* 상품 페이지 맨 아래: ORIGINAL WORK (왼쪽 원작 이미지, 오른쪽 설명) */
+  .orig-work{margin:80px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
+  .orig-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:24px;}
+  .orig-grid{display:grid; grid-template-columns:minmax(0, var(--shop-main-pct,56%)) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:start;}
+  .orig-img{display:block; background:#f3f3f1; cursor:pointer; overflow:hidden;}
+  .orig-img img{width:100%; height:auto; display:block; transition:transform .5s ease, opacity .2s ease;}
+  .orig-img:hover img{transform:scale(1.015); opacity:.94;}
+  .orig-title{font-size:var(--shop-title,26px); font-weight:600; line-height:1.3; margin:0 0 14px; letter-spacing:.01em;}
+  .orig-title a{color:inherit;}
+  .orig-desc{font-size:var(--shop-body,14px); line-height:1.85; color:var(--ink-soft); white-space:pre-wrap;}
+  .orig-more{display:inline-block; margin-top:20px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); border-bottom:1px solid currentColor; padding-bottom:2px;}
+  .orig-more:hover{color:var(--ink);}
+  @media (max-width:760px){ .orig-grid{grid-template-columns:1fr;} .orig-work{margin-top:56px;} }
+  .orig-field select{margin-bottom:10px;}
+  .orig-pick-label{font-size:11px; color:var(--ink-faint); margin:4px 0 6px;}
+  .orig-pick{display:grid; grid-template-columns:repeat(auto-fill, minmax(64px,1fr)); gap:6px; margin-bottom:10px;}
+  .orig-pick button{all:unset; cursor:pointer; aspect-ratio:1/1; background:#f1efeb; border-radius:3px; overflow:hidden; outline:2px solid transparent; outline-offset:1px;}
+  .orig-pick button img{width:100%; height:100%; object-fit:cover; display:block;}
+  .orig-pick button.on{outline-color:var(--ink,#111);}
   .next-works-section{margin-top:72px; padding-top:36px; border-top:1px solid var(--line);}
   .next-works-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:22px;}
   .next-works-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--frame-gap);}
@@ -1016,6 +1035,15 @@
           <div class="field"><label>네이버 스토어 주소 <span style="color:#999;font-weight:400;">— 네이버페이 버튼이 이 상품 페이지로 연결돼요 (비우면 버튼 숨김)</span></label><input type="text" id="itemBuyKr" placeholder="https://smartstore.naver.com/…/products/…"></div>
           <input type="hidden" id="itemBuyUs">
           <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (네이버·PayPal 모두 SOLD OUT 표시)</label></div>
+          <div class="field orig-field">
+            <label>원작 연결 · ORIGINAL WORK <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">— 상품 페이지 맨 아래에 원작을 보여줘요</span></label>
+            <select id="itemOrigWork"><option value="">연결 안 함</option></select>
+            <div id="itemOrigBox" style="display:none;">
+              <div class="orig-pick-label">원작 이미지 (누르면 WORKS 작품 페이지로 이동)</div>
+              <div class="orig-pick" id="itemOrigPick"></div>
+              <textarea id="itemOrigText" rows="5" placeholder="원작 설명 — 비워두면 WORKS에 적어 둔 작품 설명을 그대로 보여줘요&#10;예: At the Last Judgment, 2010&#10;Oil on canvas, 162 × 130 cm"></textarea>
+            </div>
+          </div>
         </div>
         <div class="field"><label>주소(slug) <span style="color:#999;font-weight:400;">— leeyunsung.com/works/<b id="itemSlugKind">works</b>/…</span></label><input type="text" id="itemSlug" placeholder="비워두면 제목에서 자동 생성" autocomplete="off"></div>
         <div class="btnrow">
@@ -3693,6 +3721,7 @@
     app.appendChild(rowsWrap);
     observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
+    renderOriginalWork(app, item);
     renderShopBiz(app);
   }
 
@@ -3772,6 +3801,7 @@
       $("itemBuyUs").value = item.buyUs || "";
       $("itemSoldOut").checked = !!item.soldOut;
       setItemVisUi(!!item.hidden);
+      setupOrigFields(item);
       $("itemCategory").value = shopCategory(item);
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
@@ -3785,6 +3815,7 @@
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
       setItemVisUi(false);
+      setupOrigFields(null);
       $("itemCategory").value = pendingShopCategory || "edition";
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
@@ -3827,6 +3858,13 @@
       payload.buyUs    = $("itemBuyUs").value.trim();
       payload.soldOut  = $("itemSoldOut").checked;
       if(pendingItemHidden) payload.hidden = true; else delete payload.hidden;
+      const ow = $("itemOrigWork").value;
+      if(ow){
+        payload.original = { workId: ow };
+        if(pendingOrigImage) payload.original.image = pendingOrigImage;
+        const ot = $("itemOrigText").value.trim();
+        if(ot) payload.original.text = ot;
+      } else delete payload.original;
       payload.category = ["original","edition","book"].includes($("itemCategory").value) ? $("itemCategory").value : "edition";
       payload.shipProfile = ["flat","tube","book"].includes($("itemShipProfile").value) ? $("itemShipProfile").value : defaultProfileFor(payload.category);
       delete payload.saleType; delete payload.editionTotal; delete payload.editionStart;
@@ -4636,6 +4674,74 @@
     img.src = imgSrc(photo.image);
     cell.appendChild(img);
     return false;
+  }
+
+  /* ================= ORIGINAL WORK (상품 ↔ WORKS 원작 연결) =================
+     item.original = { workId, image, text }
+     · image: 원작 작품의 커버 또는 사진 중 하나 (비우면 커버)
+     · text : 비우면 WORKS에 적어 둔 작품 설명을 그대로 사용 */
+  function workImages(w){
+    const out = [];
+    if(w.cover) out.push(w.cover);
+    (w.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image && !isVideoPhoto(p) && out.indexOf(p.image) < 0) out.push(p.image); }));
+    return out;
+  }
+  function resolveOriginal(item){
+    const o = item && item.original;
+    if(!o || !o.workId) return null;
+    const w = (state.data.works || []).find(x=>x.id === o.workId);
+    if(!w) return null;
+    const imgs = workImages(w);
+    const image = (o.image && imgs.indexOf(o.image) >= 0) ? o.image : (imgs[0] || "");
+    const text = cleanText(o.text) ? String(o.text).trim() : (w.description || "").trim();
+    return { work:w, image, text, title: cleanText(w.title) || "Untitled" };
+  }
+  let pendingOrigImage = "";
+  function fillOrigPicker(workId, selected){
+    const box = $("itemOrigBox"), pick = $("itemOrigPick");
+    pick.innerHTML = "";
+    const w = (state.data.works || []).find(x=>x.id === workId);
+    box.style.display = w ? "" : "none";
+    if(!w) { pendingOrigImage = ""; return; }
+    const imgs = workImages(w);
+    pendingOrigImage = (selected && imgs.indexOf(selected) >= 0) ? selected : (imgs[0] || "");
+    imgs.forEach(src=>{
+      const b = el("button", src === pendingOrigImage ? "on" : ""); b.type = "button";
+      const im = document.createElement("img"); im.src = imgSrc(src); im.alt = ""; im.loading = "lazy"; b.appendChild(im);
+      b.addEventListener("click", ()=>{ pendingOrigImage = src; pick.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x === b)); });
+      pick.appendChild(b);
+    });
+    $("itemOrigText").placeholder = "원작 설명 — 비워두면 WORKS에 적어 둔 작품 설명을 그대로 보여줘요" + (cleanText(w.description) ? "\n\n(지금 WORKS 설명: " + excerpt(w.description, 80) + ")" : "");
+  }
+  function setupOrigFields(item){
+    const sel = $("itemOrigWork");
+    sel.innerHTML = "";
+    const none = document.createElement("option"); none.value = ""; none.textContent = "연결 안 함"; sel.appendChild(none);
+    (state.data.works || []).forEach(w=>{
+      const o = document.createElement("option"); o.value = w.id; o.textContent = cleanText(w.title) || "(제목 없음)"; sel.appendChild(o);
+    });
+    const orig = (item && item.original) || {};
+    sel.value = orig.workId && (state.data.works||[]).some(w=>w.id === orig.workId) ? orig.workId : "";
+    $("itemOrigText").value = orig.text || "";
+    fillOrigPicker(sel.value, orig.image);
+  }
+  // 상품 페이지 맨 아래 ORIGINAL WORK 칸
+  function renderOriginalWork(app, item){
+    const o = resolveOriginal(item);
+    if(!o) return;
+    const sec = el("section","orig-work");
+    const lab = el("div","orig-label"); lab.textContent = "Original Work"; sec.appendChild(lab);
+    const grid = el("div","orig-grid");
+    const a = el("a","orig-img"); setItemLink(a, "works", o.work); a.title = o.title + " — WORKS";
+    if(o.image){ const im = el("img"); im.src = imgSrc(o.image); im.alt = o.title + " — " + ARTIST; im.loading = "lazy"; im.decoding = "async"; a.appendChild(im); }
+    grid.appendChild(a);
+    const info = el("div","orig-info");
+    const h = el("h2","orig-title"); const ha = el("a"); setItemLink(ha, "works", o.work); ha.textContent = o.title; h.appendChild(ha); info.appendChild(h);
+    if(o.text){ const d = el("div","orig-desc"); d.textContent = o.text; info.appendChild(d); }
+    const more = el("a","orig-more"); setItemLink(more, "works", o.work); more.textContent = "View work →"; info.appendChild(more);
+    grid.appendChild(info);
+    sec.appendChild(grid);
+    app.appendChild(sec);
   }
 
   // ---------------- 홈페이지에 이미 있는 이미지에서 고르기 ----------------
@@ -5727,6 +5833,22 @@
     ].join("\n");
   }
 
+  function staticOriginalHtml(item){
+    const o = resolveOriginal(item);
+    if(!o) return "";
+    const href = "/" + pagePath("works", o.work);
+    return '    <section class="orig-work">\n' +
+           '      <div class="orig-label">Original Work</div>\n' +
+           '      <div class="orig-grid">\n' +
+           '        <a class="orig-img" href="'+esc(href)+'">' + (o.image ? '<img src="'+esc(rootPath(o.image))+'" alt="'+esc(o.title+" — "+ARTIST+" "+ARTIST_EN)+'" loading="lazy" decoding="async">' : '') + '</a>\n' +
+           '        <div class="orig-info">\n' +
+           '          <h2 class="orig-title"><a href="'+esc(href)+'">'+esc(o.title)+'</a></h2>\n' +
+           (o.text ? '          <div class="orig-desc">'+esc(o.text)+'</div>\n' : '') +
+           '          <a class="orig-more" href="'+esc(href)+'">View work →</a>\n' +
+           '        </div>\n' +
+           '      </div>\n' +
+           '    </section>';
+  }
   function buildStaticPage(kind, item, siblings){
     const title   = cleanText(item.title) || "Untitled";
     const url     = pageUrl(kind, item);
@@ -5923,6 +6045,7 @@
 (kind!=="shop" && cleanText(item.description) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+esc(cleanText0(item.description))+'</div>' : ''),
 shopBlock,
 (rowsHtml ? '    <div class="photo-rows-wrap'+(kind==="works" ? ' wide' : '')+'">\n'+rowsHtml+'\n    </div>' : ''),
+(kind==="shop" ? staticOriginalHtml(item) : ''),
 (others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
@@ -6173,6 +6296,7 @@ shopBlock,
     const itemDrop = $("itemImgDrop");
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
+    $("itemOrigWork").addEventListener("change", ()=>fillOrigPicker($("itemOrigWork").value, null));
     $("photoYtUrl").addEventListener("input", onPhotoYtInput);
     $("photoYtUrl").addEventListener("paste", ()=>setTimeout(onPhotoYtInput, 0));
     document.querySelectorAll("#photoYtRatioSeg button").forEach(b=>b.addEventListener("click", ()=>{
