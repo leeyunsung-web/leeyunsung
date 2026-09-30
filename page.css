@@ -513,25 +513,23 @@
     padding-left:0; padding-right:0;
   }
   .photo-rows-wrap.wide .photo-grid:not(.multi) > .photo-cell.add-tile{width:min(100%, 720px); margin:0 auto;}
-  body{overflow-x:clip;}
+  body{overflow-x:clip; --vwpx:calc(100vw - var(--sbw, 0px));}
   .photo-cell{position:relative; overflow:hidden; background:#fafafa; border:1px solid var(--line); width:100%; cursor:pointer;}
   .photo-cell img{width:100%; height:auto; object-fit:cover; display:block;}
 
-  /* rows with 2+ photos: match every photo's height, let width follow its own ratio */
+  /* 2장 이상 줄: 사진마다 가로세로 비율(--r)만큼 폭을 나눠 가짐 → 높이가 저절로 같아지고 줄 폭을 꽉 채움.
+     크기 계산을 브라우저가 직접 하므로 창 크기·크기(%)가 바뀌어도 떨림 없이 매끄럽게 따라감. */
   .photo-grid.multi{
-    display:flex; flex-wrap:wrap; align-items:stretch; justify-content:flex-start;
+    display:flex; flex-wrap:nowrap; align-items:flex-start; justify-content:flex-start;
   }
   .photo-grid.multi .photo-cell{
-    width:auto; height:var(--photo-row-height,380px); flex:0 0 auto;
+    flex:var(--r,1) 1 0; min-width:0; width:auto; height:auto;
   }
   .photo-grid.multi .photo-cell img{
-    width:auto; height:100%; object-fit:cover;
+    width:100%; height:auto; aspect-ratio:var(--r, auto); object-fit:cover;
   }
   .photo-grid.multi .photo-cell.add-tile{
-    height:var(--photo-row-height,380px); width:calc(var(--photo-row-height,380px) * 0.75); aspect-ratio:auto;
-  }
-  @media (max-width:640px){
-    .photo-grid.multi{ --photo-row-height:220px; }
+    flex:.75 1 0; height:auto; aspect-ratio:.75;
   }
   .photo-caption{
     position:absolute; left:0; right:0; bottom:0; padding:14px 12px;
@@ -543,9 +541,7 @@
   /* 캡션을 사진 아래에 항상 표시 (DESIGN STUDIO → 사진 캡션 위치) */
   .cap-below .photo-cell{background:transparent; border:0; overflow:visible; cursor:pointer;}
   .cap-below .photo-caption{position:static; opacity:1; background:none; color:var(--ink-soft); text-shadow:none; padding:var(--cap-gap,10px) 0 0; pointer-events:none;}
-  .cap-below .photo-grid.multi .photo-cell{height:auto !important;}
-  .cap-below .photo-grid.multi .photo-cell img{height:var(--jh, 380px); width:100%;}
-  .cap-below .photo-grid.multi .photo-cell .yt-wrap{height:var(--jh, 380px);}
+  .cap-below .photo-grid.multi .photo-cell{height:auto;}
   .photo-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px;}
   .master-on .photo-editctl{display:flex;}
   .photo-editctl button{
@@ -564,7 +560,7 @@
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
-  .photo-grid.multi .photo-cell .yt-wrap{width:100%; height:100%; aspect-ratio:auto;}
+  .photo-grid.multi .photo-cell .yt-wrap{width:100%; height:auto; aspect-ratio:var(--r, var(--ar,1.7778));}
   .photo-cell .yt-wrap img.yt-poster, .yt-wrap img.yt-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
   .yt-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; opacity:0; transition:opacity .45s ease;}
   .yt-wrap.ready iframe{opacity:1;}
