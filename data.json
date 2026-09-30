@@ -3814,5 +3814,8 @@
   },
   "fixesDone": [
     "poster-copy-2026-10"
-  ]
+  ],
+  "shopTexts": {
+    "naverLabel": "NPAY"
+  }
 }
