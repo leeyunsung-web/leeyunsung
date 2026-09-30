@@ -20,7 +20,7 @@
         "align": "left",
         "bold": false,
         "letterSpacing": 0,
-        "lineHeight": 1.2
+        "lineHeight": 1.4
       },
       "photoRows": [
         {
@@ -3790,7 +3790,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "3b37ef1:27348",
+    "works/the-annunciation/index.html": "ba70a289:27348",
     "works/torso/index.html": "39e86f9b:46684",
     "works/danae/index.html": "5a0e7496:54804",
     "works/zodiac/index.html": "b01bcb79:91732",
