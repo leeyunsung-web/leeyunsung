@@ -2434,7 +2434,7 @@
     },
     {
       "id": "s-1790623313493-6o5cs",
-      "title": "Laocoon\nArt poster (2021)\n50 × 64 cm\nSigned and numbered, edition of 300",
+      "title": "Laocoon\nArt poster (2020)\n50 × 64 cm\nSigned and numbered, edition of 300",
       "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
       "description": "2010년작 《Laocoon》의 포스터 버전입니다.\n2021년 한정 에디션으로 제작, 판매되었으며, 남은 수량을\n웹사이트 리뉴얼을 기념하여 다시 선보입니다.\n\nA poster edition of At the Last Judgment (2010), originally produced and released as a limited edition in 2021. The remaining prints are now available again to celebrate the relaunch of this website.",
       "slug": "shop-4",
@@ -2597,7 +2597,7 @@
     },
     {
       "id": "s-1790624935331-clud2",
-      "title": "",
+      "title": "Torso 02\nArt Poster (2021)\n62 x 50 cm\nSigned and numbered, edition of 300",
       "cover": "./images/w3-p-1787464255794-6t81e.jpg",
       "description": "",
       "slug": "shop-7",
@@ -2615,16 +2615,20 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
+      "spec2": "Digital Print on Paper",
       "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "priceKrw": "40000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464255794-6t81e.jpg"
+      }
     },
     {
       "id": "s-1790624943259-8qxbq",
