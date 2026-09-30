@@ -3743,7 +3743,7 @@
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "rowCols": 5,
+      "rowCols": 3,
       "category": "original",
       "shipProfile": "flat",
       "coverInRows": true
