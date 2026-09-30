@@ -512,10 +512,13 @@
   }
   .detail-actions button:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
   .detail-actions button.danger:hover{background:#c0392b; border-color:#c0392b;}
-  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0 var(--detail-margin);
-    /* 폭은 DESIGN STUDIO → 작품·글 설명 폭. 사이트 폭보다 넓게도 되고, 항상 화면 가운데 */
-    --dw:min(var(--desc-max-width, 704px), var(--vwpx, 100vw) - 2 * var(--page-padding));
-    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);}
+  .detail-desc{color:var(--ink-soft); font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); line-height:1.85; white-space:pre-wrap; margin:20px 0 48px; padding:0;
+    /* DESIGN STUDIO → 작품 설명 · TEXT 비평글 좌우 여백(%)
+       설정한 화면에서 보이던 모양 그대로, 화면이 커지면 여백·글 폭·글씨가 같은 비율로 커지고 작아지면 작아짐.
+       단, 휴대폰처럼 좁은 화면에서는 글 폭과 글씨가 읽을 수 있는 크기 아래로 내려가지 않음 */
+    --dw:max(calc(var(--vwpx, 100vw) * (1 - 2 * var(--desc-side, 0.25))), min(var(--vwpx, 100vw) - 32px, 560px));
+    width:var(--dw); max-width:none; margin-left:calc(50% - var(--dw) / 2);
+    font-size:max(13px, calc(var(--vwpx, 100vw) * var(--desc-font-k, 0.0104)));}
 
   .photo-rows-wrap{
     display:flex; flex-direction:column; gap:var(--frame-gap);
@@ -1597,7 +1600,7 @@
 
   const DEFAULT_DESIGN = {
     fontSize:15, letterSpacing:0, bold:false, align:"left",
-    pagePadding:32, frameGap:28, frameCols:2, detailMargin:32, descWidth:704,
+    pagePadding:32, frameGap:28, frameCols:2, detailMargin:32, descSide:25, descRefW:1440,
     captionSize:12, frameTitleSize:14, photoGap:16,
     textListTitleSize:21, textListAlign:"left", contactAlign:"center",
     textListTopSpace:40, textListItemGap:22,
@@ -1639,7 +1642,20 @@
 
     state.hadLocalDraftChanges = !!(draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw);
     if(!state.hadLocalDraftChanges && state.publishedRaw && !localStorage.getItem("leeArchiveDraftDirty_v2")) setBaseRaw(state.publishedRaw);   // 고친 게 없으면 지금 게시본이 기준
-    if(draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw){
+    // 방문자 화면(마스터 모드가 아닐 때)은 이 브라우저에 남은 옛 임시저장이 있어도 항상 게시된 최신 내용을 보여줌.
+    // 마스터 모드에서도 '아직 GitHub에 못 올린 수정'이 남아 있을 때만 임시저장을 쓰고,
+    // 이미 올라간(또는 옛날) 임시저장이면 최신 게시본을 보여줌 (옛 임시저장은 따로 백업)
+    const masterView = loadMasterFlag();
+    let dirtyFlag = false; try{ dirtyFlag = localStorage.getItem("leeArchiveDraftDirty_v2") === "1"; }catch(e){}
+    if(masterView && !dirtyFlag && draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw){
+      try{
+        localStorage.setItem("leeArchiveDraftBackup_v2", JSON.stringify({ at: Date.now(), data: draft }));
+        localStorage.setItem(LS_DATA, state.publishedRaw);
+      }catch(e){}
+      state.hadLocalDraftChanges = false;
+      setBaseRaw(state.publishedRaw);
+    }
+    if(masterView && dirtyFlag && draft && state.publishedRaw && JSON.stringify(draft) !== state.publishedRaw){
       state.data = draft;
       showDraftNotice(true);
     } else if(draft && !published){
@@ -2710,7 +2726,7 @@
         ["design","pagePadding","range","머리글·바닥글·글 페이지 좌우 여백 (px)", {min:0,max:100,step:2}],
         ["design","frameGap","range","네모칸 간격 (px)", {min:0,max:80,step:2}],
         ["design","frameTitleSize","range","네모칸 제목 글씨 (px)", {min:12,max:28,step:1}],
-        ["design","descWidth","range","작품 설명 · TEXT 비평글 폭 (px)", {min:400,max:1800,step:20}],
+        ["design","descSide","range","작품 설명 · TEXT 비평글 좌우 여백 (%) — 화면 크기에 비례", {min:0,max:40,step:1}],
         ["design","detailMargin","range","상세 사진 좌우 여백 (px)", {min:0,max:120,step:4}],
         ["design","photoGap","range","사진 사이 간격 (px)", {min:0,max:60,step:2}],
         ["design","captionSize","range","사진 캡션 글씨 (px)", {min:10,max:24,step:1}]
@@ -2809,7 +2825,7 @@
       if(["fontSize","letterSpacing","bold","align"].includes(key)) return (on("cv") || on("works","item") || on("text","item")) ? null : "#cv";
       if(key === "textWidth") return go("#cv", on("cv"));
       if(["frameCols","frameGap","frameTitleSize","pagePadding"].includes(key)) return go("#works", on("works","list") || on("text","list") && key!=="frameCols");
-      if(["descWidth","detailMargin","photoGap","captionSize"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
+      if(["descSide","detailMargin","photoGap","captionSize"].includes(key)) return firstWork ? go("#works/" + firstWork.id, on("works","item") || on("text","item")) : null;
       if(/^textList/.test(key)) return go("#text", on("text","list"));
       if(/^contact/.test(key)) return go("#contact", on("contact"));
     }
@@ -2837,6 +2853,8 @@
     if(group === "design"){
       d.design = d.design || Object.assign({}, DEFAULT_DESIGN);
       d.design[key] = value;
+      // 지금 보고 있는 화면 폭을 기준으로 기억 → 다른 화면 크기에서는 같은 비율로 커지고 작아짐
+      if(key === "descSide" || key === "fontSize") d.design.descRefW = document.documentElement.clientWidth;
       applyDesignVars();
       if(["textListAlign","contactAlign","frameCols"].includes(key)) rerender = true;
       if(["detailMargin","photoGap"].includes(key)) scheduleJustifyLayout();
@@ -3273,7 +3291,7 @@
       : "SHOP을 다시 비공개로 돌릴까요?\n\n방문자에겐 '준비중'만 보이고, 게시된 상품 페이지는 지워져요.";
     if(!confirm(ask)) return;
     state.data.shopPublic = !!on;
-    saveDraft(false);
+    saveDraft();
     renderRoute();
     // Full publish so product pages + sitemap are created (or removed) now.
     publishToGithub(false);
@@ -4797,7 +4815,9 @@
     root.setProperty("--detail-margin", (d.detailMargin!=null ? d.detailMargin : 32) + "px");
     root.setProperty("--active-font-family", SITE_FONTS[siteFontKey(d.fontFamily)][1]);
     root.setProperty("--content-max-width", (d.textWidth!=null ? d.textWidth : 640) + "px");
-    root.setProperty("--desc-max-width", (d.descWidth!=null ? d.descWidth : 704) + "px");
+    // 작품 설명 · 비평글: 좌우 여백(%)과 '설정할 때의 화면 폭' 기준 글씨 비율
+    root.setProperty("--desc-side", String(Math.min(40, Math.max(0, d.descSide!=null ? d.descSide : 25)) / 100));
+    root.setProperty("--desc-font-k", String((d.fontSize || 15) / (d.descRefW || 1440)));
     root.setProperty("--ui-font-style", d.uiItalic ? "italic" : "normal");
     root.setProperty("--caption-font-size", (d.captionSize!=null ? d.captionSize : 12) + "px");
     root.setProperty("--frame-title-size", (d.frameTitleSize!=null ? d.frameTitleSize : 14) + "px");
@@ -5519,16 +5539,11 @@
           }
         }
       }
-      let pageCount = 0;
-      if(!silent){
-        // 수동 게시(⇪)일 때만 정적 페이지 + 사이트맵까지 전부 갱신합니다.
-        // 자동 저장은 호출이 많아 data.json/이미지만 올립니다.
-        ensureSlugs();
-        pageCount = await publishStaticPages((i,n)=>{ glyph.textContent = String(i)+"/"+String(n); });
-        pagesStale = false;
-      } else {
-        pagesStale = true;
-      }
+      // 자동 저장 때도 작품·글·상품 페이지와 사이트맵을 함께 갱신 (내용이 바뀐 페이지만 올림)
+      // 수동 게시(⇪)는 전부 다시 올림 — 혹시 GitHub 쪽 파일이 어긋났을 때 바로잡는 용도
+      ensureSlugs();
+      const pageCount = await publishStaticPages(silent ? null : (i,n)=>{ glyph.textContent = String(i)+"/"+String(n); }, !silent);
+      pagesStale = false;
 
       const jsonStr = JSON.stringify(state.data, null, 2);
       const putRes = await ghPutFile(ghConfig.dataPath, utf8ToBase64(jsonStr), "Update site data");
@@ -5704,7 +5719,7 @@
 '  </header>',
 '  <main class="shell">',
 '    <h1 class="detail-title" style="text-align:left">CV</h1>',
-'    <div class="detail-desc" style="padding:0; --desc-max-width:var(--content-max-width)">'+esc(text)+'</div>',
+'    <div class="detail-desc" style="padding:0; width:auto; max-width:var(--content-max-width); margin-left:0; font-size:var(--content-font-size)">'+esc(text)+'</div>',
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
 '</body>',
@@ -5988,7 +6003,18 @@ shopBlock,
     });
   }
 
-  async function publishStaticPages(onProgress){
+  // 페이지 내용이 지난번 올린 것과 같으면 건너뜀 (자동 저장 때도 바뀐 페이지만 올라가서 가볍게)
+  const ghSessionHave = new Set();
+  async function putIfChanged(path, base64, msg, force){
+    const d = state.data;
+    if(!d.pageHashes || typeof d.pageHashes !== "object") d.pageHashes = {};
+    const h = rawHash(base64);
+    if(!force && d.pageHashes[path] === h) return false;
+    await ghPutFile(path, base64, msg);
+    d.pageHashes[path] = h;
+    return true;
+  }
+  async function publishStaticPages(onProgress, force){
     const d = state.data;
     const written = [];
     const jobs = [];
@@ -6000,43 +6026,48 @@ shopBlock,
     for(const [kind, item, sibs] of jobs){
       const path = pagePath(kind, item) + "index.html";
       const html = buildStaticPage(kind, item, sibs);
-      await ghPutFile(path, utf8ToBase64(html), "Update page: " + (cleanText(item.title)||item.id));
+      await putIfChanged(path, utf8ToBase64(html), "Update page: " + (cleanText(item.title)||item.id), force);
       written.push(path);
       if(onProgress) onProgress(++i, jobs.length);
     }
 
     // CV as its own crawlable page (see buildCvPage)
     if(cleanText((d.cv && d.cv.text) || "")){
-      await ghPutFile("cv/index.html", utf8ToBase64(buildCvPage()), "Update CV page");
+      await putIfChanged("cv/index.html", utf8ToBase64(buildCvPage()), "Update CV page", force);
     }
 
     // 공유 스타일시트 (Design 패널 값 포함)
-    await ghPutFile("page.css", utf8ToBase64(buildPageCss()), "Update shared page stylesheet");
+    await putIfChanged("page.css", utf8ToBase64(buildPageCss()), "Update shared page stylesheet", force);
 
     // 폰트는 바뀌지 않으므로 없을 때 한 번만 올립니다
     const fonts = extractFontBase64();
     for(let i=0;i<FONT_FILES.length && i<fonts.length;i++){
+      if(ghSessionHave.has(FONT_FILES[i]) && !force) continue;
       if(!(await ghGetSha(FONT_FILES[i]))){
         await ghPutFile(FONT_FILES[i], fonts[i], "Add web font " + FONT_FILES[i]);
       }
+      ghSessionHave.add(FONT_FILES[i]);
     }
 
-    await ghPutFile("sitemap.xml", utf8ToBase64(buildSitemap()), "Update sitemap");
-    await ghPutFile("robots.txt",  utf8ToBase64(buildRobots()),  "Update robots.txt");
-    if(!(await ghGetSha(".nojekyll"))){
-      await ghPutFile(".nojekyll", "", "Add .nojekyll");
+    await putIfChanged("sitemap.xml", utf8ToBase64(buildSitemap()), "Update sitemap", force);
+    await putIfChanged("robots.txt",  utf8ToBase64(buildRobots()),  "Update robots.txt", force);
+    if(force || !ghSessionHave.has(".nojekyll")){
+      if(!(await ghGetSha(".nojekyll"))){
+        await ghPutFile(".nojekyll", "", "Add .nojekyll");
+      }
+      ghSessionHave.add(".nojekyll");
     }
 
     // 지난번에 만들었지만 이번엔 없는 페이지 삭제
     const stale = (d.publishedPages||[]).filter(p => written.indexOf(p) === -1);
-    for(const p of stale){ try{ await ghDeleteFile(p); }catch(e){ console.warn("stale delete failed", p, e); } }
+    for(const p of stale){ try{ await ghDeleteFile(p); if(d.pageHashes) delete d.pageHashes[p]; }catch(e){ console.warn("stale delete failed", p, e); } }
     d.publishedPages = written;
     return written.length;
   }
 
   function openGhModal(){
     const c = ghConfig || {};
-    $("ghOwner").value=c.owner||""; $("ghRepo").value=c.repo||""; $("ghBranch").value=c.branch||"main";
+    $("ghOwner").value=c.owner||"leeyunsung-web"; $("ghRepo").value=c.repo||"leeyunsung"; $("ghBranch").value=c.branch||"main";
     $("ghDataPath").value=c.dataPath||"data.json"; $("ghImgPath").value=c.imgPath||"images"; $("ghToken").value=c.token||"";
     let kept = false; try{ kept = !!localStorage.getItem(LS_GH_TOKEN_KEEP); }catch(e){}
     if($("ghKeep")) $("ghKeep").checked = kept || !c.token;
