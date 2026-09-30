@@ -785,6 +785,10 @@
   /* 제목·사양: 한 줄로 시작하고 Enter로 줄을 나누면 칸이 저절로 늘어남 */
   .field textarea.grow{min-height:0; resize:none; overflow:hidden; line-height:1.5;}
   .ml{white-space:pre-line;}
+  .size-row{display:flex; align-items:center; gap:8px;}
+  .field .size-row input[type=number]{width:110px; background:#fff; border:1px solid var(--line-strong); border-radius:5px; padding:10px 11px; font:inherit; font-size:14px;}
+  /* 줄 크기 (%): 가운데 정렬로 줄 폭만 줄임 */
+  .photo-grid.sized{margin-left:auto; margin-right:auto;}
   .field textarea.tall{min-height:280px; font-size:14px; line-height:1.8;}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
@@ -1092,6 +1096,20 @@
           <div class="yt-msg" id="photoYtMsg">주소를 넣으면 이미지 대신 영상이 들어가요. 소리 없이 자동 반복 재생되고, 보는 사람이 멈추거나 소리를 켤 수 있어요.</div>
         </div>
         <div class="field"><label>Caption</label><input type="text" id="photoCaption" placeholder="사진 캡션"></div>
+        <div class="field">
+          <label>이 줄에 나란히 놓을 사진 수</label>
+          <div class="segbtns" id="photoRowColsSeg">
+            <button type="button" data-val="1">1장</button>
+            <button type="button" data-val="2">2장</button>
+            <button type="button" data-val="3">3장</button>
+          </div>
+          <div class="field-hint" id="photoRowColsHint"></div>
+        </div>
+        <div class="field">
+          <label>크기 (%) <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">— 화면을 꽉 채우는 것이 100 · 항상 가운데 정렬</span></label>
+          <div class="size-row"><input type="number" id="photoSize" min="1" max="100" step="1" placeholder="100" inputmode="numeric"><span>%</span></div>
+          <div class="field-hint">비워 두면 100%예요. 여러 장이 나란히 있는 줄은 줄 전체가 이 크기로 줄어요.</div>
+        </div>
         <div class="btnrow">
           <button class="btn primary" id="photoSaveBtn" style="flex:1;">저장</button>
           <button class="btn danger" id="photoDeleteBtn" style="display:none;">삭제</button>
@@ -3717,6 +3735,7 @@
       }
       const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
+      if(row.size && row.size < 100){ rowGrid.classList.add("sized"); rowGrid.style.width = row.size + "%"; }
       row.photos.forEach(photo=>{
         const cell = el("div","photo-cell");
         const isVid = fillPhotoCell(cell, photo, cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST), flatIdx < 2);
@@ -4064,6 +4083,7 @@
       }
       const rowGrid = el("div","photo-grid"+((row.cols||1) > 1 ? " multi" : ""));
       rowGrid.style.setProperty("--row-cols", row.cols || 1);
+      if(row.size && row.size < 100){ rowGrid.classList.add("sized"); rowGrid.style.width = row.size + "%"; }
       row.photos.forEach(photo=>{
         const cell = el("div","photo-cell");
         const isVid = fillPhotoCell(cell, photo, cleanText(photo.caption) || (cleanText(item.title)+" — "+ARTIST), flatIdx < 2);
@@ -4168,6 +4188,16 @@
   }
 
   let pendingPhotoVideo = null;
+  let pendingRowCols = 1;
+  function setRowColsUi(n, rowPhotoCount){
+    pendingRowCols = Math.min(3, Math.max(1, parseInt(n,10) || 1));
+    document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.classList.toggle("active", parseInt(b.dataset.val,10) === pendingRowCols));
+    const extra = (rowPhotoCount || 0) - pendingRowCols;
+    $("photoRowColsHint").textContent = extra > 0
+      ? "이 사진은 " + pendingRowCols + "장짜리 줄이 되고, 나머지 " + extra + "장은 지워지지 않고 " + Math.min(3, extra) + "장짜리 줄로 따로 남아요."
+      : "";
+  }
+  let photoModalRowCount = 0;
   function syncYtRatioSeg(){
     const v = $("photoYtRatio").value;
     document.querySelectorAll("#photoYtRatioSeg button").forEach(b=>b.classList.toggle("active", b.dataset.v === v));
@@ -4210,6 +4240,13 @@
     $("photoId").value = photoId || "";
     pendingPhotoImage = null;
     setPhotoVideoUi(null);
+    {
+      const it = state.data[key].find(x=>x.id===itemId);
+      const rw = it && rowId ? (it.photoRows||[]).find(r=>r.id===rowId) : null;
+      photoModalRowCount = rw ? rw.photos.length : 0;
+      setRowColsUi(rw ? rw.cols : 1, photoModalRowCount);
+      $("photoSize").value = rw && rw.size && rw.size < 100 ? rw.size : "";
+    }
 
     if(photoId){
       const item = state.data[key].find(x=>x.id===itemId);
@@ -4239,6 +4276,9 @@
     $("photoId").value = "";
     pendingPhotoImage = null;
     setPhotoVideoUi(null);
+    photoModalRowCount = 0;
+    setRowColsUi(cols, 0);
+    $("photoSize").value = "";
     $("photoModalTitle").textContent = "Add Photo";
     $("photoCaption").value = "";
     clearImgPreview("photoImgPreview","photoImgDropText","photoImgDrop");
@@ -4276,7 +4316,38 @@
     if(pendingPhotoVideo) payload.video = { id: pendingPhotoVideo.id, ratio: $("photoYtRatio").value || pendingPhotoVideo.ratio || "16:9" };
     const idx = row.photos.findIndex(p=>p.id===id);
     if(idx>=0) row.photos[idx] = payload;
-    else if(row.photos.length < (row.cols||1)) row.photos.push(payload);
+    else if(row.photos.length < Math.max(row.cols||1, pendingRowCols)) row.photos.push(payload);
+
+    // 이 줄 사진 수 바꾸기 — 사진은 절대 지우지 않음
+    // 예) 3장 줄에서 한 장을 '1장'으로 → 그 사진은 혼자 한 줄, 나머지 2장은 2장짜리 한 줄
+    const newCols = pendingRowCols;
+    if(newCols !== (row.cols||1) || row.photos.length > newCols){
+      if(row.photos.length <= newCols){
+        row.cols = newCols;                       // 늘리기: 빈 칸이 생기고 + 로 채움
+      } else {
+        const all = row.photos.slice();
+        const myIdx = Math.max(0, all.findIndex(p=>p.id===id));
+        // 고친 사진 + (필요하면) 바로 옆 사진들로 새 줄을 만들고, 나머지는 따로 한 줄
+        const mine = [all[myIdx]];
+        for(let k=1; mine.length < newCols && k < all.length; k++){
+          if(myIdx + k < all.length) mine.push(all[myIdx + k]);
+          if(mine.length < newCols && myIdx - k >= 0) mine.unshift(all[myIdx - k]);
+        }
+        const rest = all.filter(p=>mine.indexOf(p) < 0);
+        const at = item.photoRows.indexOf(row);
+        const mineRow = { id: row.id, cols: newCols, photos: mine };
+        const restRows = [];
+        for(let i=0; i<rest.length; i+=3){ const chunk = rest.slice(i, i+3); restRows.push({ id: uid("row"), cols: chunk.length, photos: chunk }); }
+        const firstIsMine = all.indexOf(mine[0]) === 0;
+        const replaced = firstIsMine ? [mineRow].concat(restRows) : restRows.concat([mineRow]);
+        if(row.size && restRows.length) restRows.forEach(r=>{ r.size = row.size; });   // 원래 줄 크기는 나머지 줄에 유지
+        item.photoRows.splice(at, 1, ...replaced);
+      }
+    }
+    // 줄 크기 (%) — 방금 고친 사진이 들어 있는 줄에 적용
+    const sz = parseInt($("photoSize").value, 10);
+    const myRow = item.photoRows.find(r=>(r.photos||[]).some(p=>p.id===id)) || row;
+    if(sz >= 1 && sz < 100) myRow.size = sz; else delete myRow.size;
 
     saveDraft();
     closeModal("photoModal");
@@ -5986,7 +6057,8 @@
                '        </a>';
       }).join("\n");
       if(!cells) return "";
-      return '      <div class="photo-grid'+(cols>1?' multi':'')+'" style="--row-cols:'+cols+'">\n'+cells+'\n      </div>';
+      const sized = row.size && row.size < 100;
+      return '      <div class="photo-grid'+(cols>1?' multi':'')+(sized?' sized':'')+'" style="--row-cols:'+cols+(sized?';width:'+row.size+'%':'')+'">\n'+cells+'\n      </div>';
     }).filter(Boolean).join("\n");
 
     /* ---- 하단: 다른 작업 썸네일 (본체의 Next와 동일한 모양) ---- */
@@ -6348,6 +6420,7 @@ shopBlock,
     const itemDrop = $("itemImgDrop");
     itemDrop.addEventListener("click", ()=>$("itemImageFile").click());
     $("imgPickSearch").addEventListener("input", renderImgPicker);
+    document.querySelectorAll("#photoRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setRowColsUi(b.dataset.val, photoModalRowCount)));
     document.querySelectorAll("textarea.grow").forEach(t=>t.addEventListener("input", ()=>autoGrow(t)));
     $("itemOrigWork").addEventListener("change", ()=>fillOrigPicker($("itemOrigWork").value, null));
     $("photoYtUrl").addEventListener("input", onPhotoYtInput);
