@@ -3635,6 +3635,37 @@
       "category": "original",
       "shipProfile": "flat",
       "coverInRows": true
+    },
+    {
+      "id": "s-1790774155257-fht69",
+      "title": "",
+      "cover": "./images/s-1790774155257-fht69-cover-b881ff2d.jpg",
+      "description": "",
+      "slug": "shop-28",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790774155257-fht69-5e3164",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790774155257-fht69-5e3164",
+              "image": "./images/s-1790774155257-fht69-cover-b881ff2d.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
