@@ -1437,7 +1437,7 @@
           "photos": [
             {
               "id": "p-1790766120209-tngtq",
-              "image": "./images/w-1790766011679-go31v-cover-d71294c9.jpg",
+              "image": "./images/w-1790766011679-go31v-cover-6dbcf930.jpg",
               "caption": "2019, PIXEL PROMETHEUS THE THREE GRACES, STANDARD.a + Superellipse Gallery, Seoul, Korea"
             }
           ]
@@ -3788,9 +3788,9 @@
     "text/exploding-bishojo-baek-jihong/index.html": "587c43f6:35600",
     "cv/index.html": "4c6ebe9d:8156",
     "page.css": "3cc77070:81764",
-    "sitemap.xml": "19de6046:114396",
+    "sitemap.xml": "95ce724a:113872",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "9d880608:54384"
+    "works/works-9/index.html": "bdffd5bf:54384"
   },
   "shopDesign": {
     "mainPct": 56,
