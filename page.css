@@ -162,7 +162,7 @@
   .shop-grid > .shop-card{flex:0 0 calc((100% - (var(--cols-now) - 1) * var(--gx)) / var(--cols-now)); min-width:0;}
   @media (max-width:1180px){ .shop-grid{--cols-now:var(--shop-cols-md,5);} }
   @media (max-width:900px){ .shop-grid{--cols-now:var(--shop-cols-sm,3);} }
-  @media (max-width:600px){ .shop-grid{--cols-now:2; --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
+  @media (max-width:600px){ .shop-grid{--cols-now:var(--shop-cols-xs,2); --gx:12px; row-gap:30px; --sgw:calc(var(--vwpx, 100vw) - 2 * min(var(--shop-side, 32px), 24px));} }
   .shop-card{position:relative; display:block; color:inherit;}
   .vis-seg{display:flex; border:1px solid var(--line-strong); border-radius:6px; overflow:hidden;}
   .vis-seg button{flex:1; font:inherit; font-size:12.5px; padding:9px 10px; border:0; background:#fff; color:var(--ink-faint); cursor:pointer;}
@@ -534,6 +534,12 @@
     text-shadow:0 1px 3px rgba(0,0,0,.6); text-align:center;
   }
   .photo-cell:hover .photo-caption{opacity:1;}
+  /* 캡션을 사진 아래에 항상 표시 (DESIGN STUDIO → 사진 캡션 위치) */
+  .cap-below .photo-cell{background:transparent; border:0; overflow:visible; cursor:pointer;}
+  .cap-below .photo-caption{position:static; opacity:1; background:none; color:var(--ink-soft); text-shadow:none; padding:var(--cap-gap,10px) 0 0; pointer-events:none;}
+  .cap-below .photo-grid.multi .photo-cell{height:auto !important;}
+  .cap-below .photo-grid.multi .photo-cell img{height:var(--jh, 380px); width:100%;}
+  .cap-below .photo-grid.multi .photo-cell .yt-wrap{height:var(--jh, 380px);}
   .photo-editctl{position:absolute; top:8px; right:8px; display:none; gap:6px;}
   .master-on .photo-editctl{display:flex;}
   .photo-editctl button{
@@ -765,6 +771,9 @@
   .field textarea.grow{min-height:0; resize:none; overflow:hidden; line-height:1.5;}
   .ml{white-space:pre-line;}
   .size-row{display:flex; align-items:center; gap:8px;}
+  .gap-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .gap-row label{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); text-transform:none; letter-spacing:0; margin:0;}
+  .field .gap-row input[type=text]{width:110px; background:#fff; border:1px solid var(--line-strong); border-radius:5px; padding:9px 10px; font:inherit; font-size:14px;}
   .field .size-row input[type=number]{width:110px; background:#fff; border:1px solid var(--line-strong); border-radius:5px; padding:10px 11px; font:inherit; font-size:14px;}
   /* 줄 크기 (%): 가운데 정렬로 줄 폭만 줄임 */
   .photo-grid.sized{margin-left:auto; margin-right:auto;}
@@ -830,5 +839,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 9.41px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 13px; --content-letter-spacing: 0em; --content-font-weight: 400; --content-text-align: left; --page-padding: 32px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 600px; --desc-side: 0.25; --desc-font-k: 0.009027777777777777; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 9.41px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:20px;}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
