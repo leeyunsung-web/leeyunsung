@@ -2346,7 +2346,7 @@
           "photos": [
             {
               "id": "pc-s-1790622121911-1dl7b-943a5c",
-              "image": "./images/s-1790622121911-1dl7b-cover.jpg",
+              "image": "./images/s-1790622121911-1dl7b-pc-s-1790622121911-1dl7b-943a5c-212128a7.jpg",
               "caption": ""
             }
           ]
@@ -3123,22 +3123,22 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "8290ed71:24920",
-    "works/torso/index.html": "56bf574e:44204",
-    "works/danae/index.html": "6178ac90:52652",
-    "works/zodiac/index.html": "57cbc493:86828",
-    "works/medusa/index.html": "c57b4530:48908",
-    "works/laocoon/index.html": "bb511ccb:53868",
-    "works/frames-of-torso/index.html": "d583f7b4:45556",
-    "works/works-8/index.html": "7d004d30:13988",
-    "text/critical-notes-lim-geunjun/index.html": "c5d50c7f:28752",
-    "text/sections-of-structure-jung-hyun/index.html": "e3f61bba:27888",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "f2eae15b:23476",
-    "text/painting-of-the-cut-konno-yuki/index.html": "9ce10354:20156",
-    "text/taxidermy-of-joy-jo-saemi/index.html": "1ca31e89:37832",
-    "text/exploding-bishojo-baek-jihong/index.html": "3c1f50fb:35480",
+    "works/the-annunciation/index.html": "3bca6f1c:25392",
+    "works/torso/index.html": "cd6913b5:45300",
+    "works/danae/index.html": "61ed22ba:54092",
+    "works/zodiac/index.html": "2821ba33:91052",
+    "works/medusa/index.html": "f284662d:50156",
+    "works/laocoon/index.html": "60161c74:55308",
+    "works/frames-of-torso/index.html": "b8a759e6:46572",
+    "works/works-8/index.html": "b9ddf7e6:14464",
+    "text/critical-notes-lim-geunjun/index.html": "87c72647:29032",
+    "text/sections-of-structure-jung-hyun/index.html": "fc3f70a2:28168",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "63fb0fb3:23756",
+    "text/painting-of-the-cut-konno-yuki/index.html": "278d61e4:20436",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "a6eed2e4:38112",
+    "text/exploding-bishojo-baek-jihong/index.html": "bea9a905:35764",
     "cv/index.html": "472632d7:8152",
-    "page.css": "89a711d3:76088",
+    "page.css": "427a134b:76088",
     "sitemap.xml": "2980e62e:97672",
     "robots.txt": "e7785df8:92"
   }
