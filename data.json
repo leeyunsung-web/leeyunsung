@@ -2474,7 +2474,11 @@
             {
               "id": "p-1790767398019-vncbr",
               "image": "./images/w-1790766011679-go31v-p-1790767398019-vncbr-4f3744a1.jpg",
-              "caption": ""
+              "caption": "",
+              "adj": {
+                "b": 5,
+                "c": 1
+              }
             }
           ],
           "size": 30
@@ -3603,37 +3607,6 @@
       "category": "original",
       "shipProfile": "flat",
       "coverInRows": true
-    },
-    {
-      "id": "s-1790773205085-h4d9d",
-      "title": "",
-      "cover": "./images/s-1790773205085-h4d9d-cover-e6d087eb.jpg",
-      "description": "",
-      "slug": "shop-27",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790773205085-h4d9d-f90d17",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790773205085-h4d9d-f90d17",
-              "image": "./images/s-1790773205085-h4d9d-cover-e6d087eb.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
@@ -3662,6 +3635,6 @@
     "page.css": "eab3988a:78396",
     "sitemap.xml": "85b980c2:111332",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "bcc162f1:46100"
+    "works/works-9/index.html": "40800deb:46160"
   }
 }
