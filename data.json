@@ -748,7 +748,7 @@
           "photos": [
             {
               "id": "p-1788437973041-63rhd",
-              "image": "./images/w5-p-1788437973041-63rhd.jpg",
+              "image": "./images/w5-p-1788437973041-63rhd-ca446dd8.jpg",
               "caption": "2019, Inside of Light, UARTSPACE, Seoul, Korea"
             }
           ]
@@ -3853,7 +3853,7 @@
     "works/the-annunciation/index.html": "73f298dd:28292",
     "works/torso/index.html": "f0312502:47212",
     "works/danae/index.html": "78a1b64a:56792",
-    "works/zodiac/index.html": "83326632:93596",
+    "works/zodiac/index.html": "d6ea7fa3:93644",
     "works/medusa/index.html": "afc1f31:51832",
     "works/laocoon/index.html": "f0007cd8:56988",
     "works/frames-of-torso/index.html": "55f795f:48248",
@@ -3866,7 +3866,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "75950481:37536",
     "cv/index.html": "f6ae5fdd:8688",
     "page.css": "b3334a99:88404",
-    "sitemap.xml": "76938142:114840",
+    "sitemap.xml": "20dcbe1:114852",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "81b66376:56136"
   },
