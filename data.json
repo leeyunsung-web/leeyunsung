@@ -125,7 +125,8 @@
                 "dur": 120
               }
             }
-          ]
+          ],
+          "size": 90
         },
         {
           "id": "row-1787464162725-os0nq",
@@ -3817,7 +3818,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "73f298dd:28292",
-    "works/torso/index.html": "5f766aca:47220",
+    "works/torso/index.html": "c9d691a6:47244",
     "works/danae/index.html": "953e2706:55772",
     "works/zodiac/index.html": "3e121d49:92700",
     "works/medusa/index.html": "afc1f31:51832",
