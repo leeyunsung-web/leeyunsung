@@ -1857,7 +1857,7 @@
           "photos": [
             {
               "id": "p-1788797562303-7x9rg",
-              "image": "./images/w6-p-1788797562303-7x9rg.jpg",
+              "image": "./images/w6-p-1788797562303-7x9rg-4ac1693b.jpg",
               "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
             }
           ]
@@ -3874,7 +3874,7 @@
     "works/torso/index.html": "f0312502:47212",
     "works/danae/index.html": "78a1b64a:56792",
     "works/zodiac/index.html": "61f60659:93052",
-    "works/medusa/index.html": "48091ea4:50648",
+    "works/medusa/index.html": "67ce4bfe:50696",
     "works/laocoon/index.html": "592b25b7:55120",
     "works/frames-of-torso/index.html": "c59f6d32:46024",
     "works/works-8/index.html": "a29c6e22:17604",
@@ -3886,7 +3886,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "75950481:37536",
     "cv/index.html": "f6ae5fdd:8688",
     "page.css": "c6cfdbe0:88404",
-    "sitemap.xml": "66855fd0:115196",
+    "sitemap.xml": "6ecdf02:115208",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "81b66376:56136"
   },
