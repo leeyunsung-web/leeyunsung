@@ -656,7 +656,7 @@
                 "y0": 0,
                 "x1": 0.48,
                 "y1": 1,
-                "dur": 35
+                "dur": 40
               }
             }
           ]
@@ -3854,7 +3854,7 @@
     "works/the-annunciation/index.html": "73f298dd:28292",
     "works/torso/index.html": "f0312502:47212",
     "works/danae/index.html": "78a1b64a:56792",
-    "works/zodiac/index.html": "6b9fe246:93692",
+    "works/zodiac/index.html": "353e43c0:93692",
     "works/medusa/index.html": "afc1f31:51832",
     "works/laocoon/index.html": "f0007cd8:56988",
     "works/frames-of-torso/index.html": "55f795f:48248",
