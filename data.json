@@ -455,7 +455,7 @@
           "photos": [
             {
               "id": "p-1787385955479-3ervm",
-              "image": "./images/w4-p-1787385955479-3ervm.jpg",
+              "image": "./images/w4-p-1787385955479-3ervm-ff13e878.jpg",
               "caption": "2016, NU, DOOSAN Gallery New York, New York, USA"
             }
           ]
@@ -3822,7 +3822,7 @@
   "pageHashes": {
     "works/the-annunciation/index.html": "73f298dd:28292",
     "works/torso/index.html": "f0312502:47212",
-    "works/danae/index.html": "39bf67e9:55604",
+    "works/danae/index.html": "c93d9673:55652",
     "works/zodiac/index.html": "3e121d49:92700",
     "works/medusa/index.html": "afc1f31:51832",
     "works/laocoon/index.html": "f0007cd8:56988",
@@ -3836,7 +3836,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "75950481:37536",
     "cv/index.html": "f6ae5fdd:8688",
     "page.css": "51e8fadd:88400",
-    "sitemap.xml": "633e4e92:114328",
+    "sitemap.xml": "2a281ca1:114340",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "81b66376:56136"
   },
