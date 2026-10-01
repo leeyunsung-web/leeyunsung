@@ -340,12 +340,12 @@
               "image": "./images/w4-p-1790813387830-y4uag-a76eb6d2.jpg",
               "caption": "",
               "pan": {
-                "ratio": "16:9",
+                "ratio": "3:1",
                 "zoom": 1.5,
                 "x0": 0,
-                "y0": 0.5,
+                "y0": 0.439,
                 "x1": 1,
-                "y1": 0.5
+                "y1": 0.433
               }
             }
           ]
@@ -3822,7 +3822,7 @@
   "pageHashes": {
     "works/the-annunciation/index.html": "73f298dd:28292",
     "works/torso/index.html": "f0312502:47212",
-    "works/danae/index.html": "16c114f4:55376",
+    "works/danae/index.html": "3d85a981:55376",
     "works/zodiac/index.html": "3e121d49:92700",
     "works/medusa/index.html": "afc1f31:51832",
     "works/laocoon/index.html": "f0007cd8:56988",
