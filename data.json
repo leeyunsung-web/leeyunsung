@@ -117,11 +117,11 @@
               "caption": "",
               "pan": {
                 "ratio": "21:9",
-                "zoom": 4,
+                "zoom": 3.25,
                 "x0": 0,
-                "y0": 0.516,
+                "y0": 0.475,
                 "x1": 1,
-                "y1": 0.484,
+                "y1": 0.464,
                 "dur": 60
               }
             }
@@ -3818,7 +3818,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "73f298dd:28292",
-    "works/torso/index.html": "ac63d777:47236",
+    "works/torso/index.html": "70434255:47240",
     "works/danae/index.html": "953e2706:55772",
     "works/zodiac/index.html": "3e121d49:92700",
     "works/medusa/index.html": "afc1f31:51832",
