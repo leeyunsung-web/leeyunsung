@@ -324,7 +324,10 @@
         }
       ],
       "slug": "torso",
-      "descriptionEn": "The Torso series begins with classical torso sculptures—figures stripped of arms and legs—and reconfigures them through the visual language of anime and subculture. Drawing from the climactic transformation scenes of 1990s Japanese magical-girl manga, the works depict violently swirling space and time—whirling motion, ruptured bodies, and erupting blood. Within this explosive continuity, the torso becomes a site of tension where collapse and formation occur simultaneously, presenting a state of possibility in which destruction and birth coexist.\n\nJust as fragmented classical sculptures can be perceived as complete aesthetic forms, I actively draw upon the distinctiveness and latent potential of manga and anime—often categorized as subculture—and translate them into a painterly language. This approach seeks to renew a long-standing inquiry into the painted figure from a contemporary perspective.\n\nAt the same time, the work is less about transporting classical forms into the present than about revealing a condition in which the images I have internalized collide within painting and ultimately resist being sealed into a single, unified meaning."
+      "descriptionEn": "The Torso series begins with classical torso sculptures—figures stripped of arms and legs—and reconfigures them through the visual language of anime and subculture. Drawing from the climactic transformation scenes of 1990s Japanese magical-girl manga, the works depict violently swirling space and time—whirling motion, ruptured bodies, and erupting blood. Within this explosive continuity, the torso becomes a site of tension where collapse and formation occur simultaneously, presenting a state of possibility in which destruction and birth coexist.\n\nJust as fragmented classical sculptures can be perceived as complete aesthetic forms, I actively draw upon the distinctiveness and latent potential of manga and anime—often categorized as subculture—and translate them into a painterly language. This approach seeks to renew a long-standing inquiry into the painted figure from a contemporary perspective.\n\nAt the same time, the work is less about transporting classical forms into the present than about revealing a condition in which the images I have internalized collide within painting and ultimately resist being sealed into a single, unified meaning.",
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     },
     {
       "id": "w4",
@@ -3873,7 +3876,7 @@
   },
   "pageHashes": {
     "works/the-annunciation/index.html": "1702f816:29824",
-    "works/torso/index.html": "47174fae:51312",
+    "works/torso/index.html": "32add974:51344",
     "works/danae/index.html": "78a1b64a:56792",
     "works/zodiac/index.html": "61f60659:93052",
     "works/medusa/index.html": "67ce4bfe:50696",
