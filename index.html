@@ -512,6 +512,9 @@
     transition:opacity .18s ease; font-style:var(--ui-font-style);
   }
   .text-list-item:hover .text-list-title{opacity:.5;}
+  .text-list-main{display:flex; flex-direction:column; gap:4px; min-width:0;}
+  .text-list-meta{font-size:calc(var(--text-list-title-size) * 0.62); letter-spacing:.04em; color:var(--ink-faint); font-weight:400; font-style:var(--ui-font-style);}
+  .text-list-item:hover .text-list-meta{opacity:.5;}
   .text-list-right{display:flex; align-items:center; gap:14px; flex-shrink:0;}
   .text-list-arrow{
     font-size:15px; color:var(--ink-faint); opacity:0; transform:translateX(-6px);
@@ -1125,6 +1128,14 @@
         </div>
         <div class="field"><label>Title</label><textarea id="itemTitle" class="grow" rows="1" placeholder="시리즈 제목"></textarea></div>
         <div class="field" id="itemTitleEnField"><label>Title — English</label><textarea id="itemTitleEn" class="grow" rows="1" placeholder="영어 제목 — 비워 두면 영어로 볼 때도 한국어 제목이 보여요"></textarea></div>
+        <div id="textFields" style="display:none;">
+          <div class="field" style="display:grid;grid-template-columns:1fr 1fr 90px;gap:8px;">
+            <div><label>필자 — 한국어</label><input type="text" id="itemAuthor" placeholder="예: 임근준"></div>
+            <div><label>Author — English</label><input type="text" id="itemAuthorEn" placeholder="e.g. Geunjun Lim"></div>
+            <div><label>연도</label><input type="text" id="itemYear" placeholder="2014" inputmode="numeric"></div>
+          </div>
+          <div class="field-hint">TEXT 목록에서 제목 아래에 "필자 · 연도"로 보여요. 비우면 그 줄이 숨겨져요.</div>
+        </div>
         <div class="field">
           <div class="desc-labelrow"><label>Description — 한국어</label>
             <div class="rich-tools"><button type="button" id="itemDescBold" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요. 다시 누르면 풀려요."><b>B</b></button></div>
@@ -4221,10 +4232,19 @@
       const row = el("a","text-list-item");
       setItemLink(row, "text", item);
 
+      const main = el("span","text-list-main");
       const title = el("span","text-list-title");
       setBiTitle(title, item.title || "(제목 없음)", item.titleEn);
       applyElStyleOverride(title, item.titleStyle);
-      row.appendChild(title);
+      main.appendChild(title);
+      const metaKo = [cleanText(item.author), cleanText(item.year)].filter(Boolean).join(" · ");
+      const metaEn = [cleanText(item.authorEn) || cleanText(item.author), cleanText(item.year)].filter(Boolean).join(" · ");
+      if(metaKo || metaEn){
+        const meta = el("span","text-list-meta");
+        setBilingual(meta, metaKo || metaEn, metaEn || metaKo);
+        main.appendChild(meta);
+      }
+      row.appendChild(main);
 
       const right = el("span","text-list-right");
       const arrow = el("span","text-list-arrow"); arrow.textContent = "→";
@@ -4297,6 +4317,7 @@
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
       $("itemTitleEn").value = item.titleEn || "";
+      $("itemAuthor").value = item.author || ""; $("itemAuthorEn").value = item.authorEn || ""; $("itemYear").value = item.year || "";
       $("itemDesc").value = item.description || "";
       $("itemDescEn").value = item.descriptionEn || "";
       setDescLhUi(item.descStyle && item.descStyle.lineHeight ? item.descStyle.lineHeight : null);
@@ -4316,6 +4337,7 @@
       syncBookLinksUi();
       $("itemTitle").value = "";
       $("itemTitleEn").value = "";
+      $("itemAuthor").value = ""; $("itemAuthorEn").value = ""; $("itemYear").value = "";
       $("itemDesc").value = "";
       $("itemDescEn").value = "";
       setDescLhUi(null);
@@ -4325,6 +4347,7 @@
     }
     $("itemSlugKind").textContent = key;
     $("shopFields").style.display = key==="shop" ? "block" : "none";
+    $("textFields").style.display = key==="text" ? "block" : "none";
     $("itemTitle").placeholder = key==="shop" ? "상품 이름" : "시리즈 제목";
     $("itemDesc").placeholder  = key==="shop" ? "상품 설명 (선택)" : "작품 설명";
     openModal("itemModal");
@@ -4354,6 +4377,9 @@
       id,
       title: $("itemTitle").value.trim(),
       titleEn: $("itemTitleEn").value.trim(),
+      author: $("itemAuthor").value.trim(),
+      authorEn: $("itemAuthorEn").value.trim(),
+      year: $("itemYear").value.trim(),
       cover: pendingItemImage || "",
       description: $("itemDesc").value.trim(),
       descriptionEn: $("itemDescEn").value.trim(),
@@ -7028,7 +7054,9 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       ld = {"@context":"https://schema.org","@type":"Article","headline":title,
             "description":excerpt(item.description,300),"about":PERSON_LD,
             "url":url,"inLanguage":"ko"};
-      if(author && author.length <= 40) ld.author = {"@type":"Person","name":author};
+      const authorName = cleanText(item.authorEn) || cleanText(item.author) || author;
+      if(authorName && authorName.length <= 40) ld.author = {"@type":"Person","name":authorName};
+      if(cleanText(item.year)) ld.datePublished = cleanText(item.year);
     }
 
     /* ---- 사진: photoRows의 열 구성을 그대로 재현 ---- */
