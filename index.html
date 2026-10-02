@@ -151,6 +151,14 @@
   /* ---------- CV ---------- */
   .cv-wrap{max-width:var(--content-max-width); position:relative; margin-left:auto; margin-right:auto;}
   .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
+  .cv-style-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:10px; font-size:12px; color:var(--ink-soft);}
+  .cv-style-row .grp{display:flex; align-items:center; gap:6px; white-space:nowrap;}
+  .cv-style-row span, .cv-style-row button, .cv-style-row b{white-space:nowrap;}
+  .cv-style-row input[type=number]{width:62px; font:inherit; font-size:12px; padding:4px 6px; border:1px solid var(--line-strong); border-radius:5px;}
+  .cv-style-row input[type=range]{width:120px; accent-color:#111;}
+  .cv-style-row b{min-width:40px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .cv-style-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer; color:var(--ink);}
+  .cv-style-row button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
   .cv-name{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:1.9; margin:0 0 1.6rem;}
   .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:min(100%, 38em); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
   .cv-statement .l-ko,.cv-statement .l-en{white-space:pre-wrap;}
@@ -1036,9 +1044,25 @@
     <div class="modal wide">
       <div class="modal-head"><h2>Edit CV</h2><button class="modal-close" data-close="cvModal">✕</button></div>
       <div class="modal-body">
-        <div class="field"><label>스테이트먼트 (한국어) — 이력 위에 표시</label><textarea id="cvStatement" placeholder="작가 스테이트먼트 (한국어)"></textarea></div>
-        <div class="field"><label>Statement (English)</label><textarea id="cvStatementEn" placeholder="Artist statement (English)"></textarea></div>
-        <div class="field"><label>이력</label><textarea id="cvTextarea" class="tall" placeholder="이력을 입력하세요"></textarea></div>
+        <div class="field">
+          <div class="desc-labelrow"><label>스테이트먼트 — 한국어 (이력 위에 표시)</label>
+            <div class="rich-tools"><button type="button" class="cv-bold" data-ta="cvStatement" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요"><b>B</b></button></div>
+          </div>
+          <textarea id="cvStatement" placeholder="작가 스테이트먼트 (한국어)"></textarea>
+          <div class="desc-labelrow" style="margin-top:10px;"><label>Statement — English</label>
+            <div class="rich-tools"><button type="button" class="cv-bold" data-ta="cvStatementEn" title="Bold (Ctrl+B)"><b>B</b></button></div>
+          </div>
+          <textarea id="cvStatementEn" placeholder="Artist statement (English) — 비워 두면 영어로 볼 때도 한국어가 보여요"></textarea>
+          <div class="cv-style-row" data-cvstyle="statementStyle"></div>
+        </div>
+        <div class="field">
+          <div class="desc-labelrow"><label>이력</label>
+            <div class="rich-tools"><button type="button" class="cv-bold" data-ta="cvTextarea" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요"><b>B</b></button></div>
+          </div>
+          <textarea id="cvTextarea" class="tall" placeholder="이력을 입력하세요"></textarea>
+          <div class="cv-style-row" data-cvstyle="style"></div>
+          <div class="field-hint">굵게 할 글자를 드래그해서 고른 뒤 <b>B</b>(또는 Ctrl+B)를 누르세요. 글 안에는 **이렇게** 표시되고, 홈페이지에서는 굵은 글씨로 보여요. 글자 크기·줄 간격·정렬은 스테이트먼트와 이력에 따로 적용돼요.</div>
+        </div>
         <div class="btnrow"><button class="btn primary" id="cvSaveBtn" style="flex:1;">저장</button></div>
       </div>
     </div>
@@ -2187,10 +2211,11 @@
       if(sp.name){ const nm = el("div","cv-name"); nm.textContent = sp.name; wrap.appendChild(nm); }
       const st = el("div","cv-statement");
       setBilingual(st, stKo, stEn);
+      applyElStyleOverride(st, state.data.cv.statementStyle);
       wrap.appendChild(st);
-      text.textContent = sp.rest;
+      setRichText(text, sp.rest);
     } else {
-      text.textContent = state.data.cv.text || "";
+      setRichText(text, state.data.cv.text || "");
     }
     wrap.appendChild(text);
     app.appendChild(wrap);
@@ -2204,10 +2229,43 @@
       text.addEventListener("click", ()=>openDesignModal(target,"CV 텍스트"));
     }
   }
+  // Edit CV 모달의 글자 크기 / 줄 간격 / 정렬 줄 — 스테이트먼트(statementStyle)와 이력(style)에 각각
+  let cvStyleDraft = { statementStyle:{}, style:{} };
+  function buildCvStyleRow(row){
+    const key = row.getAttribute("data-cvstyle");
+    const d = cvStyleDraft[key] || (cvStyleDraft[key] = {});
+    row.innerHTML = "";
+    const mk = (tag, cls, txt)=>{ const n = document.createElement(tag); if(cls) n.className = cls; if(txt != null) n.textContent = txt; return n; };
+    // 글자 크기
+    const g1 = mk("div","grp"); g1.appendChild(mk("span",null,"글자 크기"));
+    const num = document.createElement("input"); num.type = "number"; num.min = 10; num.max = 40; num.step = 0.5; num.placeholder = "기본";
+    num.value = d.fontSize != null ? d.fontSize : "";
+    num.addEventListener("input", ()=>{ const v = parseFloat(num.value); d.fontSize = isNaN(v) ? null : v; });
+    g1.appendChild(num); g1.appendChild(mk("span",null,"px"));
+    const r1 = mk("button",null,"기본"); r1.type = "button"; r1.addEventListener("click", ()=>{ d.fontSize = null; num.value = ""; }); g1.appendChild(r1);
+    row.appendChild(g1);
+    // 줄 간격
+    const g2 = mk("div","grp"); g2.appendChild(mk("span",null,"줄 간격"));
+    const rng = document.createElement("input"); rng.type = "range"; rng.min = 1; rng.max = 3.2; rng.step = 0.05;
+    const val = mk("b",null,"");
+    const setLh = v=>{ d.lineHeight = v ? Math.max(1, Math.min(3.2, parseFloat(v))) : null; rng.value = d.lineHeight || 1.9; val.textContent = d.lineHeight ? d.lineHeight.toFixed(2) : "기본"; };
+    rng.addEventListener("input", ()=>setLh(rng.value)); setLh(d.lineHeight);
+    g2.appendChild(rng); g2.appendChild(val);
+    const r2 = mk("button",null,"기본"); r2.type = "button"; r2.addEventListener("click", ()=>setLh(null)); g2.appendChild(r2);
+    row.appendChild(g2);
+    // 정렬
+    const g3 = mk("div","grp"); g3.appendChild(mk("span",null,"정렬"));
+    const opts = [["left","왼쪽"],["center","가운데"],["right","오른쪽"],["justify","양쪽"]];
+    const btns = opts.map(([v,label])=>{ const b = mk("button",null,label); b.type = "button"; b.dataset.v = v; b.addEventListener("click", ()=>{ d.align = (d.align === v) ? null : v; paint(); }); g3.appendChild(b); return b; });
+    const paint = ()=>btns.forEach(b=>b.classList.toggle("active", d.align === b.dataset.v)); paint();
+    row.appendChild(g3);
+  }
   function openCvModal(){
     $("cvTextarea").value = state.data.cv.text || "";
     $("cvStatement").value = state.data.cv.statement || "";
     $("cvStatementEn").value = state.data.cv.statementEn || "";
+    cvStyleDraft = { statementStyle: Object.assign({}, state.data.cv.statementStyle || {}), style: Object.assign({}, state.data.cv.style || {}) };
+    document.querySelectorAll(".cv-style-row").forEach(buildCvStyleRow);
     openModal("cvModal");
   }
   function saveCv(){
@@ -2216,6 +2274,10 @@
     state.data.cv.statementEn = $("cvStatementEn").value.trim();
     if(!state.data.cv.statement) delete state.data.cv.statement;
     if(!state.data.cv.statementEn) delete state.data.cv.statementEn;
+    ["statementStyle","style"].forEach(k=>{
+      const o = {}; Object.keys(cvStyleDraft[k] || {}).forEach(key=>{ const v = cvStyleDraft[k][key]; if(v !== null && v !== undefined && v !== "") o[key] = v; });
+      if(Object.keys(o).length) state.data.cv[k] = o; else delete state.data.cv[k];
+    });
     saveDraft();
     closeModal("cvModal");
     renderRoute();
@@ -6832,8 +6894,8 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '  </header>',
 '  <main class="shell">',
 '    <h1 class="detail-title" style="text-align:left">CV</h1>',
-(stKo || stEn ? (splitCvName(text).name ? '    <div class="cv-name">'+esc(splitCvName(text).name)+'</div>\n' : '') + '    <div class="cv-statement">'+bilingualHtml(stKo, stEn)+'</div>' : ''),
-'    <div class="detail-desc" style="padding:0; width:auto; max-width:var(--content-max-width); margin-left:0; font-size:var(--content-font-size)">'+esc(stKo || stEn ? splitCvName(text).rest : text)+'</div>',
+(stKo || stEn ? (splitCvName(text).name ? '    <div class="cv-name">'+esc(splitCvName(text).name)+'</div>\n' : '') + '    <div class="cv-statement"'+styleAttr(d.cv.statementStyle)+'>'+bilingualHtml(stKo, stEn)+'</div>' : ''),
+'    <div class="detail-desc" style="padding:0; width:auto; max-width:var(--content-max-width); margin-left:0; font-size:var(--content-font-size)">'+richHtml(esc(stKo || stEn ? splitCvName(text).rest : text))+'</div>',
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
 '</body>',
@@ -7311,6 +7373,14 @@ shopBlock,
       ta.addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold(ta); } });
     });
     $("itemDescBold").addEventListener("click", ()=>toggleBold(lastDescTa));
+    // CV 모달의 굵게 버튼 (스테이트먼트 KO/EN, 이력)
+    document.querySelectorAll(".cv-bold").forEach(btn=>{
+      btn.addEventListener("mousedown", e=>e.preventDefault());
+      btn.addEventListener("click", ()=>toggleBold($(btn.getAttribute("data-ta"))));
+    });
+    ["cvStatement","cvStatementEn","cvTextarea"].forEach(tid=>{
+      $(tid).addEventListener("keydown", e=>{ if((e.ctrlKey || e.metaKey) && (e.key === "b" || e.key === "B")){ e.preventDefault(); toggleBold($(tid)); } });
+    });
     // KO / EN 스위치
     document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("[data-setlang]"); if(b){ e.preventDefault(); setSiteLang(b.getAttribute("data-setlang")); } });
     $("btnReplace").addEventListener("click", openReplaceModal);
