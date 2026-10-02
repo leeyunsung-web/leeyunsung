@@ -129,7 +129,7 @@
                 "y0": 0.493,
                 "x1": 1,
                 "y1": 0.488,
-                "dur": 120
+                "dur": 100
               }
             }
           ]
@@ -3932,25 +3932,25 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "1702f816:29824",
-    "works/torso/index.html": "32add974:51344",
-    "works/danae/index.html": "7cf8f085:58952",
-    "works/zodiac/index.html": "c8cfa3f0:96976",
-    "works/medusa/index.html": "1b8baeeb:53356",
-    "works/laocoon/index.html": "83e55750:57412",
-    "works/frames-of-torso/index.html": "25ed5e30:49468",
-    "works/works-8/index.html": "ffdfdb9d:26788",
-    "text/critical-notes-lim-geunjun/index.html": "fa618df7:48052",
-    "text/sections-of-structure-jung-hyun/index.html": "7f96bb6c:47720",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "4f5a220e:37164",
-    "text/painting-of-the-cut-konno-yuki/index.html": "5dcbca64:32196",
+    "works/the-annunciation/index.html": "c5ba8e5b:31548",
+    "works/torso/index.html": "aa64f324:55248",
+    "works/danae/index.html": "58ad9519:61336",
+    "works/zodiac/index.html": "f0023b03:100884",
+    "works/medusa/index.html": "2894c1dc:56236",
+    "works/laocoon/index.html": "535213af:59828",
+    "works/frames-of-torso/index.html": "1938b061:51912",
+    "works/works-8/index.html": "779730f9:31896",
+    "text/critical-notes-lim-geunjun/index.html": "df12f1a8:48036",
+    "text/sections-of-structure-jung-hyun/index.html": "52fad62b:47704",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "6697da25:37148",
+    "text/painting-of-the-cut-konno-yuki/index.html": "d6a5f38a:32180",
     "text/taxidermy-of-joy-jo-saemi/index.html": "3394cece:66484",
-    "text/exploding-bishojo-baek-jihong/index.html": "f60e80d3:98104",
-    "cv/index.html": "580ce37c:10836",
-    "page.css": "a07b124b:90204",
-    "sitemap.xml": "8562b726:115568",
+    "text/exploding-bishojo-baek-jihong/index.html": "fb2e5351:98240",
+    "cv/index.html": "27852748:10852",
+    "page.css": "e4137253:90216",
+    "sitemap.xml": "21a61e8d:116064",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "96e052cf:62276"
+    "works/works-9/index.html": "ba151b63:66916"
   },
   "shopDesign": {
     "mainPct": 56,
