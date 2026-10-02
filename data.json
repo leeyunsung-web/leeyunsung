@@ -2129,7 +2129,10 @@
         }
       ],
       "slug": "medusa",
-      "descriptionEn": "The Medusa series began with the face of Medusa—one of the most widely known icons, yet one whose reality no one has ever directly witnessed. The myth that anyone who looks at her face turns to stone paradoxically presupposes that no one could ever look at her directly. Just as even Perseus faced her only through the reflection in his shield, I saw the Medusa we know as less a reality than an image formed by the layering of other people's gazes, fears, and rumors.\n\nImagining the beauty Medusa may once have possessed, I placed a silver circle reminiscent of a shield's ornament within a square canvas and set her face inside it. Borrowing the lyrical style of 1980s classic anime, I took care to render her blond hair and ornamentally arranged snakes so that they would carry the lines and colors of classic animation. The vivid red blood flowing from her severed neck captures the tragic moment of the myth. The image calls to mind a face before it was named \"monster,\" while also prompting us to reconsider the gazes that have so readily defined others.\n\nThe work did not stop at painting. For the first time, I attempted to translate a 2D image into 3D: I built the painted Medusa as a 3D digital model and then gave it physical form as a tangible sculpture through 3D printing. Just as anime characters are repeatedly recreated across different angles and media, I sought to treat Medusa's face not as a fixed portrait but as an image that is continually generated anew."
+      "descriptionEn": "The Medusa series began with the face of Medusa—one of the most widely known icons, yet one whose reality no one has ever directly witnessed. The myth that anyone who looks at her face turns to stone paradoxically presupposes that no one could ever look at her directly. Just as even Perseus faced her only through the reflection in his shield, I saw the Medusa we know as less a reality than an image formed by the layering of other people's gazes, fears, and rumors.\n\nImagining the beauty Medusa may once have possessed, I placed a silver circle reminiscent of a shield's ornament within a square canvas and set her face inside it. Borrowing the lyrical style of 1980s classic anime, I took care to render her blond hair and ornamentally arranged snakes so that they would carry the lines and colors of classic animation. The vivid red blood flowing from her severed neck captures the tragic moment of the myth. The image calls to mind a face before it was named \"monster,\" while also prompting us to reconsider the gazes that have so readily defined others.\n\nThe work did not stop at painting. For the first time, I attempted to translate a 2D image into 3D: I built the painted Medusa as a 3D digital model and then gave it physical form as a tangible sculpture through 3D printing. Just as anime characters are repeatedly recreated across different angles and media, I sought to treat Medusa's face not as a fixed portrait but as an image that is continually generated anew.",
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     },
     {
       "id": "w7",
@@ -3911,7 +3914,7 @@
     "works/torso/index.html": "32add974:51344",
     "works/danae/index.html": "7cf8f085:58952",
     "works/zodiac/index.html": "c8cfa3f0:96976",
-    "works/medusa/index.html": "a9b2af4d:53324",
+    "works/medusa/index.html": "1b8baeeb:53356",
     "works/laocoon/index.html": "ba500da9:57380",
     "works/frames-of-torso/index.html": "3daf7eba:49436",
     "works/works-8/index.html": "ffdfdb9d:26788",
