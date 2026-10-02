@@ -1121,6 +1121,7 @@
           <button type="button" class="pick-site-img" data-pick="item">▦ 홈페이지에 있는 이미지에서 고르기</button>
         </div>
         <div class="field"><label>Title</label><textarea id="itemTitle" class="grow" rows="1" placeholder="시리즈 제목"></textarea></div>
+        <div class="field" id="itemTitleEnField"><label>Title — English</label><textarea id="itemTitleEn" class="grow" rows="1" placeholder="영어 제목 — 비워 두면 영어로 볼 때도 한국어 제목이 보여요"></textarea></div>
         <div class="field">
           <div class="desc-labelrow"><label>Description — 한국어</label>
             <div class="rich-tools"><button type="button" id="itemDescBold" title="굵게 (Ctrl+B) — 글자를 드래그해 고른 뒤 누르세요. 다시 누르면 풀려요."><b>B</b></button></div>
@@ -1616,6 +1617,21 @@
       const b = document.createElement("div"); b.className = "l-en"; b.lang = "en"; setRichText(b, en);
       node.appendChild(a); node.appendChild(b);
     } else setRichText(node, ko || en);
+  }
+  // 제목 한/영: 둘 다 있으면 두 span으로 넣고 KO/EN 스위치로 하나만 보임 (굵게 표시는 쓰지 않음)
+  function setBiTitle(node, ko, en){
+    ko = String(ko || "").trim(); en = String(en || "").trim();
+    node.textContent = "";
+    if(ko && en){
+      const a = document.createElement("span"); a.className = "l-ko"; a.lang = "ko"; a.textContent = ko;
+      const b = document.createElement("span"); b.className = "l-en"; b.lang = "en"; b.textContent = en;
+      node.appendChild(a); node.appendChild(b);
+    } else node.textContent = ko || en;
+  }
+  function biTitleHtml(ko, en){
+    ko = cleanText0(String(ko || "")).trim(); en = cleanText0(String(en || "")).trim();
+    if(ko && en) return '<span class="l-ko" lang="ko">'+esc(ko)+'</span><span class="l-en" lang="en">'+esc(en)+'</span>';
+    return esc(ko || en);
   }
   function bilingualHtml(ko, en){
     ko = cleanText0(String(ko || "")).trim(); en = cleanText0(String(en || "")).trim();
@@ -2306,7 +2322,7 @@
       }
       if(item.title){
         const hov = el("div","hover-title");
-        const span = document.createElement("span"); span.textContent = item.title;
+        const span = document.createElement("span"); setBiTitle(span, item.title, item.titleEn);
         hov.appendChild(span);
         frame.appendChild(hov);
       }
@@ -4249,6 +4265,7 @@
       $("itemCategory").value = shopCategory(item);
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
+      $("itemTitleEn").value = item.titleEn || "";
       $("itemDesc").value = item.description || "";
       $("itemDescEn").value = item.descriptionEn || "";
       setDescLhUi(item.descStyle && item.descStyle.lineHeight ? item.descStyle.lineHeight : null);
@@ -4266,6 +4283,7 @@
       $("itemCategory").value = pendingShopCategory || "edition";
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
       $("itemTitle").value = "";
+      $("itemTitleEn").value = "";
       $("itemDesc").value = "";
       $("itemDescEn").value = "";
       setDescLhUi(null);
@@ -4303,6 +4321,7 @@
     const payload = Object.assign({}, prev || {}, {
       id,
       title: $("itemTitle").value.trim(),
+      titleEn: $("itemTitleEn").value.trim(),
       cover: pendingItemImage || "",
       description: $("itemDesc").value.trim(),
       descriptionEn: $("itemDescEn").value.trim(),
@@ -4310,6 +4329,7 @@
       photoRows: prev ? (prev.photoRows || []) : []
     });
     if(!payload.descriptionEn) delete payload.descriptionEn;
+    if(!payload.titleEn) delete payload.titleEn;
     {
       const ds = Object.assign({}, payload.descStyle || {});
       if(pendingDescLh) ds.lineHeight = Math.round(pendingDescLh * 100) / 100; else delete ds.lineHeight;
@@ -4429,7 +4449,7 @@
     app.appendChild(back);
 
     const head = el("div","detail-head");
-    const h = el("div","detail-title"); h.textContent = item.title || "(Untitled)";
+    const h = el("div","detail-title"); setBiTitle(h, item.title || "(Untitled)", item.titleEn);
     const actions = el("div","detail-actions");
     const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal(key,item.id));
     const delBtn = el("button","danger"); delBtn.textContent="Delete Series"; delBtn.addEventListener("click",()=>deleteItem(key,item.id));
@@ -4558,7 +4578,7 @@
       }
       if(item.title){
         const hov = el("div","hover-title");
-        const span = document.createElement("span"); span.textContent = item.title;
+        const span = document.createElement("span"); setBiTitle(span, item.title, item.titleEn);
         hov.appendChild(span);
         frame.appendChild(hov);
       }
@@ -7018,7 +7038,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       return '        <a class="frame" href="/'+esc(pagePath(kind,x))+'">\n' +
              (x.cover ? '          <img src="'+esc(rootPath(x.cover))+'" alt="'+t+' — '+ARTIST+'" loading="lazy" decoding="async">\n'
                       : '          <div class="placeholder-label"></div>\n') +
-             '          <div class="hover-title"><span>'+t+'</span></div>\n' +
+             '          <div class="hover-title"><span>'+biTitleHtml(cleanText(x.title)||"Untitled", x.titleEn)+'</span></div>\n' +
              '        </a>';
     }).join("\n");
 
@@ -7118,7 +7138,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '  </header>',
 '  <main class="shell">',
 '    <a class="detail-back" href="'+backHref+'">\u2190 Back to '+backLabel+'</a>',
-'    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+esc(title)+'</h1></div>'),
+'    '+(kind==="shop" ? '' : '<div class="detail-head"><h1 class="detail-title"'+styleAttr(item.titleStyle)+'>'+biTitleHtml(title, item.titleEn)+'</h1></div>'),
 (kind!=="shop" && hasDesc(item) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>' : ''),
 shopBlock,
 (rowsHtml ? '    <div class="photo-rows-wrap wide">\n'+rowsHtml+'\n    </div>' : ''),
