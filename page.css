@@ -127,7 +127,7 @@
   .cv-style-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer; color:var(--ink);}
   .cv-style-row button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
   .cv-name{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:1.9; margin:0 0 1.6rem;}
-  .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:min(100%, 38em); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
+  .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:var(--content-max-width); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
   .cv-statement .l-ko,.cv-statement .l-en{white-space:pre-wrap;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
