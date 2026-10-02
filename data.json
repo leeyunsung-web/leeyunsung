@@ -1843,7 +1843,8 @@
       ],
       "descStyle": {
         "lineHeight": 1.5
-      }
+      },
+      "descriptionEn": "PIXEL PROMETHEUS THE THREE GRACES (STANDARD.a + Superellipse Gallery, Seoul, 2019) was an exhibition of paintings made by enlarging small pixel drawings and transferring them to canvas. Each pixel becomes a square plane on the canvas. It consisted of Prometheus' Heart, pixel hearts taken from a game's life bar; Prometheus, a pixel image; and The Three Graces Pixel Props series, parts of the faces and bodies of the Three Graces rendered in pixels.\n\nI have always found drawing on a computer a little difficult, and I think the reason lies in the question of what resolution to set. Thinking about that, this time I tried pixels with the idea of drawing as small as possible instead. A picture drawn on a computer will break down one way or another, so if I drew with an image that is already broken from the start, it could not break any further, and in that case it would be as hard as a diamond.\n\nToday almost everything we see digitally is high resolution, but I grew up seeing a great many pixel images. It is a form and a style that emerged from the limits of hardware, but I think there is a particular beauty that is discovered because of it. Like the black and white of comics and the expressions of animation, it is another case in which a constraint became a style.\n\nPrometheus' Heart (2019, oil on canvas, 18 × 32 cm) is composed of pixel hearts taken from the life bar of Nintendo's game The Legend of Zelda (1986–). The last one is only half filled. In the painting it is stopped at a single moment in which there is no way to tell whether the heart is draining or filling. The body of Prometheus, whose liver is pecked out by an eagle each day and grows back each night, seemed to me like a game's life, worn down and recovered. I am still painting the same image in a number of variations, changing the number and color of the hearts.\n\nPrometheus (2019, oil on canvas, 130 × 162 cm) was the largest work in the exhibition. In the same manner as the other works, it depicts a young Prometheus in pixels of black line and gray plane on a white ground. A heart sits at the lower right of the picture and a flame at the lower left, meant to look like the indicators that appear on a game's loading screen.\n\nThe Three Graces Pixel Props (2019, oil on canvas, 15 × 15 cm, 45 × 45 cm, 53 × 45 cm) is a series in which only parts of the eyes, hair and bodies were enlarged or excerpted from a pixel image of the Three Graces drawn as three bishōjo, and transferred to small canvases. The complete original exists only in digital form. The colors are kept to the minimum number of steps: white, black and the grays between them. Up close a pixel is a square plane; from a distance it becomes a face. Just as a torso makes one imagine the whole from a part of the body, these small fragments are each part of a single scene.\n\nThe exhibition was held at the furniture showroom STANDARD.a, in collaboration with Superellipse Gallery, an intangible gallery project organized by Superellipse. Because the exhibition was planned around the question of how the works should be placed in a space, some works hung on the white walls while others were set on shelves and chests of drawers alongside the showroom's objects. The small canvases looked more natural when they sat among the things in the showroom."
     },
     {
       "id": "w6",
@@ -3948,7 +3949,7 @@
     "page.css": "6df2218b:90216",
     "sitemap.xml": "8562b726:115568",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "20a79f0c:62256"
+    "works/works-9/index.html": "ebc6db70:66804"
   },
   "shopDesign": {
     "mainPct": 56,
