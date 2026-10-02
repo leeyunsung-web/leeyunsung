@@ -386,6 +386,9 @@
   .buy-btn.paypal{background:#111; border-color:#111; color:#fff;}
   .buy-btn[disabled]{background:#fff; color:var(--ink-faint); border-color:var(--line); cursor:not-allowed; opacity:1;}
   .buy-btn.alt{background:transparent; color:var(--ink);}
+  .buy-btn.store{background:#fff; border-color:var(--ink); color:var(--ink);}
+  .buy-btn.store:hover{background:var(--ink); color:#fff; opacity:1;}
+  .buy-btn.store .sub{opacity:.6;}
   .buy-btn .cur{font-size:12px; opacity:.72;}
   .buy-note{font-size:11px; color:var(--ink-faint); margin-top:14px; line-height:1.7;}
   .buy-soldout{
@@ -1175,6 +1178,12 @@
           </div>
           <div class="field"><label>네이버 스토어 주소 <span style="color:#999;font-weight:400;">— 네이버페이 버튼이 이 상품 페이지로 연결돼요 (비우면 버튼 숨김)</span></label><input type="text" id="itemBuyKr" placeholder="https://smartstore.naver.com/…/products/…"></div>
           <input type="hidden" id="itemBuyUs">
+          <div class="field" id="bookLinksField" style="display:none;">
+            <label>온라인 서점 주소 <span style="color:#999;font-weight:400;">— 도록(BOOKS)만. 넣은 서점만 버튼이 생겨요</span></label>
+            <input type="text" id="itemBookAladin" placeholder="알라딘 — https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=…" style="margin-bottom:6px;">
+            <input type="text" id="itemBookKyobo" placeholder="교보문고 — https://product.kyobobook.co.kr/detail/…" style="margin-bottom:6px;">
+            <input type="text" id="itemBookYes24" placeholder="YES24 — https://www.yes24.com/product/goods/…">
+          </div>
           <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (네이버·PayPal 모두 SOLD OUT 표시)</label></div>
           <div class="field orig-field">
             <label>원작 연결 · ORIGINAL WORK <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">— 상품 페이지 맨 아래에 원작을 보여줘요</span></label>
@@ -2400,6 +2409,16 @@
   function numVal(v){ const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
   function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0); }
   function naverUrl(item){ return safeUrl(item.buyKr); }
+  // 도록 — 온라인 서점 버튼 (알라딘·교보문고·YES24). 주소를 넣은 서점만 보입니다.
+  const BOOK_STORES = [
+    { key:"aladin", label:"알라딘",   en:"Aladin" },
+    { key:"kyobo",  label:"교보문고", en:"Kyobo Book" },
+    { key:"yes24",  label:"YES24",   en:"Online Bookstore" }
+  ];
+  function bookLinks(item){
+    const b = (item && item.bookLinks && typeof item.bookLinks === "object") ? item.bookLinks : {};
+    return BOOK_STORES.map(st=>({ key:st.key, label:st.label, en:st.en, url:safeUrl(b[st.key]) })).filter(x=>x.url);
+  }
 
   const shopInv = { items:null, at:0, sig:"", loading:null };
   const ppState = { sdk:null, sdkId:"", config:null, configAt:0, rendered:false };
@@ -3691,9 +3710,10 @@
     const w = window.open(api + "/admin", "lysOrders", "width=1400,height=900");
     if(w) try{ w.opener = null; }catch(e){}
   }
+  function syncBookLinksUi(){ const f = $("bookLinksField"), c = $("itemCategory"); if(f && c) f.style.display = (c.value === "book") ? "" : "none"; }
   (function bindShopUi(){
     const cat = $("itemCategory");
-    if(cat) cat.addEventListener("change", ()=>{ $("itemShipProfile").value = defaultProfileFor(cat.value); });
+    if(cat) cat.addEventListener("change", ()=>{ $("itemShipProfile").value = defaultProfileFor(cat.value); syncBookLinksUi(); });
     const sv = $("ssSave");
     if(sv) sv.addEventListener("click", saveShopSettings);
     const rs = $("ssDesignReset");
@@ -3982,6 +4002,7 @@
     const onSite = canPayOnSite(item);
     const us = onSite ? "" : safeUrl(item.buyUs);
     const txt = shopTexts();
+    const stores = bookLinks(item);
 
     if(kr){
       const a = el("a","buy-btn naver"); a.href = kr; a.target="_blank"; a.rel="noopener";
@@ -4005,7 +4026,14 @@
       a.appendChild(t);
       row.appendChild(a);
     }
-    if(!kr && !onSite && !us){
+    stores.forEach(st=>{
+      const a = el("a","buy-btn store"); a.href = st.url; a.target="_blank"; a.rel="noopener";
+      const t = el("span","lbl"); t.textContent = st.label;
+      const sub = el("span","sub"); sub.textContent = st.en;
+      a.appendChild(t); a.appendChild(sub);
+      row.appendChild(a);
+    });
+    if(!kr && !onSite && !us && !stores.length){
       const sd = el("div","buy-soldout"); sd.textContent = "구매 문의 · Inquire: reyunsung@gmail.com";
       box.appendChild(sd);
       return box;
@@ -4013,7 +4041,7 @@
     box.appendChild(row);
     const note = el("div","buy-note");
     note.textContent = txt.buyNote;
-    if(txt.buyNote) box.appendChild(note);
+    if(txt.buyNote && (kr || onSite || us)) box.appendChild(note);
     return box;
   }
 
@@ -4258,11 +4286,14 @@
       $("itemPriceUsd").value = item.priceUsd || "";
       $("itemBuyKr").value = item.buyKr || "";
       $("itemBuyUs").value = item.buyUs || "";
+      { const bl = (item.bookLinks && typeof item.bookLinks === "object") ? item.bookLinks : {};
+        $("itemBookAladin").value = bl.aladin || ""; $("itemBookKyobo").value = bl.kyobo || ""; $("itemBookYes24").value = bl.yes24 || ""; }
       $("itemSoldOut").checked = !!item.soldOut;
       setItemVisUi(!!item.hidden);
       setItemRowColsUi(shopRowCols(item));
       setupOrigFields(item);
       $("itemCategory").value = shopCategory(item);
+      syncBookLinksUi();
       $("itemShipProfile").value = shopProfile(item);
       $("itemTitle").value = item.title || "";
       $("itemTitleEn").value = item.titleEn || "";
@@ -4275,13 +4306,14 @@
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
-      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs"].forEach(f=>{ $(f).value = ""; });
+      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false;
       setItemVisUi(false);
       setItemRowColsUi(5);
       setupOrigFields(null);
       $("itemCategory").value = pendingShopCategory || "edition";
       $("itemShipProfile").value = defaultProfileFor($("itemCategory").value);
+      syncBookLinksUi();
       $("itemTitle").value = "";
       $("itemTitleEn").value = "";
       $("itemDesc").value = "";
@@ -4344,6 +4376,9 @@
       payload.priceUsd = $("itemPriceUsd").value.replace(/[^0-9.]/g,"");
       payload.buyKr    = $("itemBuyKr").value.trim();
       payload.buyUs    = $("itemBuyUs").value.trim();
+      { const bl = { aladin:$("itemBookAladin").value.trim(), kyobo:$("itemBookKyobo").value.trim(), yes24:$("itemBookYes24").value.trim() };
+        Object.keys(bl).forEach(k=>{ if(!bl[k]) delete bl[k]; });
+        if(Object.keys(bl).length) payload.bookLinks = bl; else delete payload.bookLinks; }
       payload.soldOut  = $("itemSoldOut").checked;
       if(pendingItemHidden) payload.hidden = true; else delete payload.hidden;
       payload.rowCols = pendingRowColsShop;
@@ -7056,15 +7091,16 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       let buy;
       if(item.soldOut){
         buy = '      <div class="buy-soldout">SOLD OUT</div>';
-      } else if(!kr && !us){
+      } else if(!kr && !us && !bookLinks(item).length){
         buy = '      <div class="buy-soldout">구매 문의: reyunsung@gmail.com</div>';
       } else {
         const btns = [];
         const stx = shopTexts();
         if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(stx.naverLabel)+'</span><span class="sub">'+esc(stx.naverSub)+'</span></a>');
         if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+esc(onSite?stx.paypalLabel:'International')+'</span><span class="sub">'+esc(stx.paypalSub)+'</span></a>');
+        bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
-              (stx.buyNote ? '      <div class="buy-note">'+esc(stx.buyNote)+'</div>' : '');
+              ((stx.buyNote && (kr || us)) ? '      <div class="buy-note">'+esc(stx.buyNote)+'</div>' : '');
       }
       // 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 정보 (앱 화면과 같은 구조)
       const gal = [], galF = [];
