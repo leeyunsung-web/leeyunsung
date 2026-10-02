@@ -104,6 +104,8 @@
   html:not([data-lang="en"]) .l-en{display:none;}
 
   @media (max-width:640px){
+    /* 좁은 화면에서는 양쪽 정렬 대신 왼쪽 정렬 (단어 사이가 벌어지는 것 방지) */
+    .detail-desc, .cv-text, .cv-statement, .static-page .detail-desc{text-align:left !important;}
     .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
     .head-spacer{display:none;}
     .head-center{grid-column:1; justify-self:center;}

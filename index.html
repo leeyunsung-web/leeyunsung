@@ -12,8 +12,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://www.paypal.com https://*.paypal.com https://*.paypalobjects.com; frame-src https://*.paypal.com https://www.paypal.com https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://*.paypalobjects.com https://*.paypal.com; font-src 'self' data:; connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev https://*.paypal.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 
 <!-- ===== SEO: 기본값. 실제 값은 라우트가 바뀔 때 updateSeo()가 갱신합니다 ===== -->
-<title>이윤성 작가 Yunsung Lee — 회화 아카이브</title>
-<meta name="description" id="metaDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 Torso, Medusa, Laocoon, Zodiac, Danae, The Annunciation 연작과 비평 텍스트.">
+<title>이윤성 Yunsung Lee — Painter · 회화 작가</title>
+<meta name="description" id="metaDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 공식 홈페이지. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 Torso, Medusa, Laocoon, Zodiac, Danae, The Annunciation 연작과 비평 텍스트.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta name="author" content="이윤성 Yunsung Lee">
 <link rel="canonical" id="linkCanonical" href="https://leeyunsung.com/">
@@ -21,13 +21,13 @@
 <meta property="og:type" content="website" id="ogType">
 <meta property="og:site_name" content="LEE YUNSUNG">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:title" id="ogTitle" content="이윤성 Yunsung Lee — 회화 아카이브">
-<meta property="og:description" id="ogDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브.">
+<meta property="og:title" id="ogTitle" content="이윤성 Yunsung Lee — Painter · 회화 작가">
+<meta property="og:description" id="ogDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 공식 홈페이지 — 회화 작품과 비평 텍스트.">
 <meta property="og:url" id="ogUrl" content="https://leeyunsung.com/">
 <meta property="og:image" id="ogImage" content="https://leeyunsung.com/images/w6-cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" id="twTitle" content="이윤성 Yunsung Lee — 회화 아카이브">
-<meta name="twitter:description" id="twDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브.">
+<meta name="twitter:title" id="twTitle" content="이윤성 Yunsung Lee — Painter · 회화 작가">
+<meta name="twitter:description" id="twDesc" content="화가 이윤성(Yunsung Lee, b.1985)의 공식 홈페이지 — 회화 작품과 비평 텍스트.">
 <meta name="twitter:image" id="twImage" content="https://leeyunsung.com/images/w6-cover.jpg">
 
 <script type="application/ld+json" id="ldJson">{"@context":"https://schema.org","@type":"WebSite","name":"LEE YUNSUNG","url":"https://leeyunsung.com/"}</script>
@@ -137,6 +137,8 @@
   html:not([data-lang="en"]) .l-en{display:none;}
 
   @media (max-width:640px){
+    /* 좁은 화면에서는 양쪽 정렬 대신 왼쪽 정렬 (단어 사이가 벌어지는 것 방지) */
+    .detail-desc, .cv-text, .cv-statement, .static-page .detail-desc{text-align:left !important;}
     .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
     .head-spacer{display:none;}
     .head-center{grid-column:1; justify-self:center;}
@@ -985,7 +987,7 @@
     <noscript>
       <div style="padding:48px 0; line-height:1.8;">
         <h1 style="font-size:20px; margin-bottom:16px;">이윤성 Yunsung Lee</h1>
-        <p>화가 이윤성(b.1985)의 회화 아카이브입니다. 고전 회화와 조각의 도상을
+        <p>화가 이윤성(b.1985)의 공식 홈페이지입니다. 고전 회화와 조각의 도상을
         만화·애니메이션의 시각 언어로 재해석한 연작을 소개합니다.</p>
         <p style="margin-top:12px;">주요 연작: The Annunciation, Torso, Danae, Zodiac,
         Medusa, Laocoon, Frames of Torso</p>
@@ -1603,7 +1605,7 @@
   const SITE_URL  = "https://leeyunsung.com";
   const ARTIST    = "이윤성";
   const ARTIST_EN = "Yunsung Lee";
-  const SITE_DESC = "화가 이윤성(Yunsung Lee, b.1985)의 회화 아카이브. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 연작과 비평 텍스트.";
+  const SITE_DESC = "화가 이윤성(Yunsung Lee, b.1985)의 공식 홈페이지. 고전 회화와 조각의 도상을 만화·애니메이션의 시각 언어로 재해석한 연작과 비평 텍스트.";
 
   // 제목에 섞여 있는 zero-width 문자 등을 털어냅니다
   function cleanText(s){
@@ -1846,7 +1848,7 @@
     const page = route.page, id = route.id;
     // Defaults cover routes whose item no longer exists (old/deleted links),
     // which previously left the tab title reading "undefined".
-    let title = ARTIST + " 작가 Yunsung Lee — 회화 아카이브", desc = SITE_DESC,
+    let title = ARTIST + " Yunsung Lee — Painter · 회화 작가", desc = SITE_DESC,
         image = SITE_URL + "/images/w6-cover.jpg", type = "website", ld = null;
     // 정적 페이지가 있으면 그쪽을 정본(canonical)으로 삼아 중복을 합칩니다
     let canonicalOverride = null;
@@ -1946,7 +1948,7 @@
       title = "CONTACT — " + ARTIST + " Yunsung Lee";
       desc  = "이윤성(Yunsung Lee) 작업 문의 및 연락처.";
     } else {
-      title = ARTIST + " 작가 Yunsung Lee — 회화 아카이브";
+      title = ARTIST + " Yunsung Lee — Painter · 회화 작가";
       desc  = SITE_DESC;
       ld = {
         "@context":"https://schema.org",
