@@ -2691,7 +2691,10 @@
             }
           ]
         }
-      ]
+      ],
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     }
   ],
   "text": [
@@ -3902,7 +3905,7 @@
     "works/medusa/index.html": "a9b2af4d:53324",
     "works/laocoon/index.html": "ba500da9:57380",
     "works/frames-of-torso/index.html": "3daf7eba:49436",
-    "works/works-8/index.html": "f8f5cbc7:26756",
+    "works/works-8/index.html": "ffdfdb9d:26788",
     "text/critical-notes-lim-geunjun/index.html": "95c99d83:47428",
     "text/sections-of-structure-jung-hyun/index.html": "375ca076:47100",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "c4e493f8:36612",
