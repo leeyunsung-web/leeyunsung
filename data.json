@@ -1486,7 +1486,10 @@
         }
       ],
       "slug": "zodiac",
-      "descriptionEn": "The Zodiac series began with the thought that the age-old act of connecting starlight in the night sky into figures and assigning them myths might have been humanity's 'first drawing.' I saw this primordial gesture—imagining invisible orders through points and lines and giving meaning to the cosmos—as closely connected to the ways we produce images today.\n\nThe work combines nine square oil canvases, each measuring 1.1 meters, into a single structure of 3.3 × 3.3 meters. Each canvas is an independent image while also becoming part of the whole, and I found it interesting that the seams where the canvases meet look convincingly like the coordinate lines of a celestial chart.\n\nParadoxically, the universe—despite its infinite depth—comes to us as a vast plane. Leaning on this flatness, I built new icons through the clear lines of anime-style drawing. Along the way, I thought of works that left a deep impression on me when I was young, such as Sailor Moon, Saint Seiya, and The Idolmaster. I came to think that their icons, too, are the result of the same ancient imagination that once looked up at the stars to picture gods and monsters.\n\nRendered in a vividly chromatic palette, the imagery of the twelve zodiac constellations expanded beyond painting into SD-type characters, 3D images, and profile paintings. Through these variations, I came to recognize classical mythology not as a fixed narrative but as an open image—one that can be continuously remade within the visual grammar of the present.\n\nRather than representing myth, Zodiac sets out to reconstruct, in the visual language of today, the very way myth comes into being."
+      "descriptionEn": "The Zodiac series began with the thought that the age-old act of connecting starlight in the night sky into figures and assigning them myths might have been humanity's 'first drawing.' I saw this primordial gesture—imagining invisible orders through points and lines and giving meaning to the cosmos—as closely connected to the ways we produce images today.\n\nThe work combines nine square oil canvases, each measuring 1.1 meters, into a single structure of 3.3 × 3.3 meters. Each canvas is an independent image while also becoming part of the whole, and I found it interesting that the seams where the canvases meet look convincingly like the coordinate lines of a celestial chart.\n\nParadoxically, the universe—despite its infinite depth—comes to us as a vast plane. Leaning on this flatness, I built new icons through the clear lines of anime-style drawing. Along the way, I thought of works that left a deep impression on me when I was young, such as Sailor Moon, Saint Seiya, and The Idolmaster. I came to think that their icons, too, are the result of the same ancient imagination that once looked up at the stars to picture gods and monsters.\n\nRendered in a vividly chromatic palette, the imagery of the twelve zodiac constellations expanded beyond painting into SD-type characters, 3D images, and profile paintings. Through these variations, I came to recognize classical mythology not as a fixed narrative but as an open image—one that can be continuously remade within the visual grammar of the present.\n\nRather than representing myth, Zodiac sets out to reconstruct, in the visual language of today, the very way myth comes into being.",
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     },
     {
       "id": "w-1790766011679-go31v",
@@ -3904,7 +3907,7 @@
     "works/the-annunciation/index.html": "1702f816:29824",
     "works/torso/index.html": "32add974:51344",
     "works/danae/index.html": "7cf8f085:58952",
-    "works/zodiac/index.html": "e33c385d:96944",
+    "works/zodiac/index.html": "c8cfa3f0:96976",
     "works/medusa/index.html": "a9b2af4d:53324",
     "works/laocoon/index.html": "ba500da9:57380",
     "works/frames-of-torso/index.html": "3daf7eba:49436",
