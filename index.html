@@ -160,7 +160,7 @@
   .cv-style-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer; color:var(--ink);}
   .cv-style-row button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
   .cv-name{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:1.9; margin:0 0 1.6rem;}
-  .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:min(100%, 38em); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
+  .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:var(--content-max-width); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
   .cv-statement .l-ko,.cv-statement .l-en{white-space:pre-wrap;}
   .edit-fab{
     display:none; align-items:center; gap:6px; background:var(--ink); color:#fff; border:none;
@@ -2224,7 +2224,7 @@
     const stKo = String(state.data.cv.statement || "").trim(), stEn = String(state.data.cv.statementEn || "").trim();
     if(stKo || stEn){
       const sp = splitCvName(state.data.cv.text);
-      if(sp.name){ const nm = el("div","cv-name"); nm.textContent = sp.name; wrap.appendChild(nm); }
+      if(sp.name){ const nm = el("div","cv-name"); setRichText(nm, sp.name); wrap.appendChild(nm); }
       const st = el("div","cv-statement");
       setBilingual(st, stKo, stEn);
       applyElStyleOverride(st, state.data.cv.statementStyle);
@@ -4194,7 +4194,7 @@
       setItemLink(row, "text", item);
 
       const title = el("span","text-list-title");
-      title.textContent = item.title || "(제목 없음)";
+      setBiTitle(title, item.title || "(제목 없음)", item.titleEn);
       applyElStyleOverride(title, item.titleStyle);
       row.appendChild(title);
 
@@ -6914,7 +6914,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 '  </header>',
 '  <main class="shell">',
 '    <h1 class="detail-title" style="text-align:left">CV</h1>',
-(stKo || stEn ? (splitCvName(text).name ? '    <div class="cv-name">'+esc(splitCvName(text).name)+'</div>\n' : '') + '    <div class="cv-statement"'+styleAttr(d.cv.statementStyle)+'>'+bilingualHtml(stKo, stEn)+'</div>' : ''),
+(stKo || stEn ? (splitCvName(text).name ? '    <div class="cv-name">'+richHtml(esc(splitCvName(text).name))+'</div>\n' : '') + '    <div class="cv-statement"'+styleAttr(d.cv.statementStyle)+'>'+bilingualHtml(stKo, stEn)+'</div>' : ''),
 '    <div class="detail-desc" style="padding:0; width:auto; max-width:var(--content-max-width); margin-left:0; font-size:var(--content-font-size)">'+richHtml(esc(stKo || stEn ? splitCvName(text).rest : text))+'</div>',
 '  </main>',
 '  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
