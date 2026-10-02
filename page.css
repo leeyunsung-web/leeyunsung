@@ -118,6 +118,14 @@
   /* ---------- CV ---------- */
   .cv-wrap{max-width:var(--content-max-width); position:relative; margin-left:auto; margin-right:auto;}
   .cv-text{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); font-weight:var(--content-font-weight); text-align:var(--content-text-align); color:var(--ink); white-space:pre-wrap; line-height:1.9;}
+  .cv-style-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:10px; font-size:12px; color:var(--ink-soft);}
+  .cv-style-row .grp{display:flex; align-items:center; gap:6px; white-space:nowrap;}
+  .cv-style-row span, .cv-style-row button, .cv-style-row b{white-space:nowrap;}
+  .cv-style-row input[type=number]{width:62px; font:inherit; font-size:12px; padding:4px 6px; border:1px solid var(--line-strong); border-radius:5px;}
+  .cv-style-row input[type=range]{width:120px; accent-color:#111;}
+  .cv-style-row b{min-width:40px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .cv-style-row button{font:inherit; font-size:11.5px; padding:5px 9px; border:1px solid var(--line-strong); border-radius:5px; background:#fff; cursor:pointer; color:var(--ink);}
+  .cv-style-row button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
   .cv-name{font-size:var(--content-font-size); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:1.9; margin:0 0 1.6rem;}
   .cv-statement{font-size:calc(var(--content-font-size) * 1.12); letter-spacing:var(--content-letter-spacing); color:var(--ink); line-height:2.05; max-width:min(100%, 38em); white-space:pre-wrap; word-break:keep-all; margin:0 0 3.2rem;}
   .cv-statement .l-ko,.cv-statement .l-en{white-space:pre-wrap;}
@@ -901,5 +909,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.955555419921875px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.622222900390625px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
