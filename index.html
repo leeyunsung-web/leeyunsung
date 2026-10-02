@@ -182,6 +182,13 @@
     display:grid; grid-template-columns:repeat(var(--frame-cols),1fr); gap:var(--frame-gap);
   }
   @media (max-width:640px){ .col-grid{grid-template-columns:1fr;} }
+  /* 마지막 줄에 썸네일이 하나만 남으면 한 줄을 꽉 채웁니다 (높이는 다른 줄과 같게 유지; 맨 뒤의 + 타일은 제외) */
+  @media (min-width:641px){
+    html[data-frame-cols="2"] .col-grid > .frame[data-id]:nth-child(2n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:3/1;}
+    html[data-frame-cols="3"] .col-grid > .frame[data-id]:nth-child(3n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:9/2;}
+    html[data-frame-cols="4"] .col-grid > .frame[data-id]:nth-child(4n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:6/1;}
+    html[data-frame-cols="5"] .col-grid > .frame[data-id]:nth-child(5n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:15/2;}
+  }
 
   .frame{
     position:relative; aspect-ratio:3/2; background:#fafafa; border:1px solid var(--line);
@@ -6056,6 +6063,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     root.setProperty("--page-padding", d.pagePadding + "px");
     root.setProperty("--frame-gap", d.frameGap + "px");
     root.setProperty("--frame-cols", d.frameCols || 2);
+    document.documentElement.dataset.frameCols = String(d.frameCols || 2);
     root.setProperty("--detail-margin", (d.detailMargin!=null ? d.detailMargin : 32) + "px");
     root.setProperty("--active-font-family", SITE_FONTS[siteFontKey(d.fontFamily)][1]);
     root.setProperty("--content-max-width", (d.textWidth!=null ? d.textWidth : 640) + "px");
@@ -6404,6 +6412,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         $("valFrameCols").textContent = b.dataset.val;
         state.data.design.frameCols = parseInt(b.dataset.val,10);
         document.documentElement.style.setProperty("--frame-cols", b.dataset.val);
+        document.documentElement.dataset.frameCols = String(b.dataset.val);
         saveDraft();
       });
     });

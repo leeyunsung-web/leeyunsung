@@ -148,6 +148,13 @@
     display:grid; grid-template-columns:repeat(var(--frame-cols),1fr); gap:var(--frame-gap);
   }
   @media (max-width:640px){ .col-grid{grid-template-columns:1fr;} }
+  /* 마지막 줄에 썸네일이 하나만 남으면 한 줄을 꽉 채웁니다 (높이는 다른 줄과 같게 유지; 맨 뒤의 + 타일은 제외) */
+  @media (min-width:641px){
+    html[data-frame-cols="2"] .col-grid > .frame[data-id]:nth-child(2n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:3/1;}
+    html[data-frame-cols="3"] .col-grid > .frame[data-id]:nth-child(3n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:9/2;}
+    html[data-frame-cols="4"] .col-grid > .frame[data-id]:nth-child(4n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:6/1;}
+    html[data-frame-cols="5"] .col-grid > .frame[data-id]:nth-child(5n+1):nth-last-child(2){grid-column:1 / -1; aspect-ratio:15/2;}
+  }
 
   .frame{
     position:relative; aspect-ratio:3/2; background:#fafafa; border:1px solid var(--line);
