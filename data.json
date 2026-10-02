@@ -2617,6 +2617,26 @@
       "slug": "works-8",
       "photoRows": [
         {
+          "id": "row-1790948148978-zvldj",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790948148978-8zszm",
+              "image": "./images/w-1790628203345-iya5b-p-1790948148978-8zszm-57f59d09.jpg",
+              "caption": "",
+              "pan": {
+                "ratio": "3.5:1",
+                "zoom": 1.15,
+                "x0": 0.538,
+                "y0": 0,
+                "x1": 0.589,
+                "y1": 1,
+                "dur": 100
+              }
+            }
+          ]
+        },
+        {
           "id": "row-1790628224633-rwv0p",
           "cols": 1,
           "photos": [
@@ -3882,7 +3902,7 @@
     "works/medusa/index.html": "67ce4bfe:50696",
     "works/laocoon/index.html": "592b25b7:55120",
     "works/frames-of-torso/index.html": "c59f6d32:46024",
-    "works/works-8/index.html": "a29c6e22:17604",
+    "works/works-8/index.html": "2a8dea6f:19376",
     "text/critical-notes-lim-geunjun/index.html": "95c99d83:47428",
     "text/sections-of-structure-jung-hyun/index.html": "375ca076:47100",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "c4e493f8:36612",
@@ -3890,8 +3910,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "4f86994a:39852",
     "text/exploding-bishojo-baek-jihong/index.html": "75950481:37536",
     "cv/index.html": "f6ae5fdd:8688",
-    "page.css": "2d468952:88400",
-    "sitemap.xml": "7f50d66d:115208",
+    "page.css": "4b25b1e7:88400",
+    "sitemap.xml": "8562b726:115568",
     "robots.txt": "e7785df8:92",
     "works/works-9/index.html": "81b66376:56136"
   },
