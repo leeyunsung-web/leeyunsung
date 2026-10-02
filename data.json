@@ -2825,11 +2825,11 @@
     "works/torso/index.html",
     "works/danae/index.html",
     "works/zodiac/index.html",
-    "works/works-9/index.html",
+    "works/pixel-prometheus/index.html",
     "works/medusa/index.html",
     "works/laocoon/index.html",
     "works/frames-of-torso/index.html",
-    "works/works-8/index.html",
+    "works/digital/index.html",
     "text/critical-notes-lim-geunjun/index.html",
     "text/sections-of-structure-jung-hyun/index.html",
     "text/hybrid-of-reference-jang-seungyeon/index.html",
@@ -3679,7 +3679,13 @@
       "soldOut": false,
       "category": "book",
       "shipProfile": "book",
-      "coverInRows": true
+      "coverInRows": true,
+      "bookLinks": {
+        "aladin": "https://aladin.kr/p/6hVMP",
+        "kyobo": "http://product.kyobobook.co.kr/detail/S000221509649",
+        "yes24": "https://www.yes24.com/product/goods/197212669"
+      },
+      "rowCols": 5
     },
     {
       "id": "s-1790770248545-hgcaz",
@@ -3946,9 +3952,11 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "3394cece:66484",
     "text/exploding-bishojo-baek-jihong/index.html": "fb2e5351:98240",
     "cv/index.html": "27852748:10852",
-    "page.css": "e4137253:90216",
-    "sitemap.xml": "21a61e8d:116064",
-    "robots.txt": "e7785df8:92"
+    "page.css": "36e77780:90460",
+    "sitemap.xml": "2ebfb355:116076",
+    "robots.txt": "e7785df8:92",
+    "works/pixel-prometheus/index.html": "d3d12915:66952",
+    "works/digital/index.html": "409ef7d3:31896"
   },
   "shopDesign": {
     "mainPct": 56,
