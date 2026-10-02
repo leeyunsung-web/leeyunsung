@@ -1834,7 +1834,10 @@
             }
           ]
         }
-      ]
+      ],
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     },
     {
       "id": "w6",
@@ -3922,7 +3925,7 @@
     "page.css": "bac004d7:88404",
     "sitemap.xml": "8562b726:115568",
     "robots.txt": "e7785df8:92",
-    "works/works-9/index.html": "a01e3475:62244"
+    "works/works-9/index.html": "96e052cf:62276"
   },
   "shopDesign": {
     "mainPct": 56,
