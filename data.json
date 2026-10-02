@@ -2622,7 +2622,10 @@
         }
       ],
       "slug": "frames-of-torso",
-      "descriptionEn": "Between the Frames: Fragment of Torso revisits my Torso series—paintings that grew out of ideas drawn from ancient sculpture—through the panel layout of manga. I divided the images of Torso across several shaped canvases of different forms and arranged them like the panels (koma) of a manga page. Cutting, overlapping, and leaving only parts of the image, I came to feel that these surfaces resemble the way we take in the world in fragments today, layering one window over another on our screens.\n\nManga cuts out only the decisive moments of a larger story and frames them in panels to heighten their intensity. Dividing the canvases began from that same approach. The exhibition took place in a tatami room, and I hoped that the room's wooden posts and lattice windows would connect with the gaps between the canvases, so that the entire room might read as one large manga page.\n\nThe gap left between two canvases is both a missing part of the torso's body and a place where the viewer's gaze briefly rests. Standing before figures whose faces have been cut off beyond the edge of the frame, I hoped viewers might pause to reconsider what it means to \"see.\""
+      "descriptionEn": "Between the Frames: Fragment of Torso revisits my Torso series—paintings that grew out of ideas drawn from ancient sculpture—through the panel layout of manga. I divided the images of Torso across several shaped canvases of different forms and arranged them like the panels (koma) of a manga page. Cutting, overlapping, and leaving only parts of the image, I came to feel that these surfaces resemble the way we take in the world in fragments today, layering one window over another on our screens.\n\nManga cuts out only the decisive moments of a larger story and frames them in panels to heighten their intensity. Dividing the canvases began from that same approach. The exhibition took place in a tatami room, and I hoped that the room's wooden posts and lattice windows would connect with the gaps between the canvases, so that the entire room might read as one large manga page.\n\nThe gap left between two canvases is both a missing part of the torso's body and a place where the viewer's gaze briefly rests. Standing before figures whose faces have been cut off beyond the edge of the frame, I hoped viewers might pause to reconsider what it means to \"see.\"",
+      "descStyle": {
+        "lineHeight": 1.5
+      }
     },
     {
       "id": "w-1790628203345-iya5b",
@@ -3919,7 +3922,7 @@
     "works/zodiac/index.html": "c8cfa3f0:96976",
     "works/medusa/index.html": "1b8baeeb:53356",
     "works/laocoon/index.html": "83e55750:57412",
-    "works/frames-of-torso/index.html": "3daf7eba:49436",
+    "works/frames-of-torso/index.html": "25ed5e30:49468",
     "works/works-8/index.html": "ffdfdb9d:26788",
     "text/critical-notes-lim-geunjun/index.html": "95c99d83:47428",
     "text/sections-of-structure-jung-hyun/index.html": "375ca076:47100",
