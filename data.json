@@ -2631,7 +2631,7 @@
                 "y0": 0,
                 "x1": 0.589,
                 "y1": 1,
-                "dur": 100
+                "dur": 80
               }
             }
           ]
@@ -3902,7 +3902,7 @@
     "works/medusa/index.html": "67ce4bfe:50696",
     "works/laocoon/index.html": "592b25b7:55120",
     "works/frames-of-torso/index.html": "c59f6d32:46024",
-    "works/works-8/index.html": "2a8dea6f:19376",
+    "works/works-8/index.html": "6f53e097:19376",
     "text/critical-notes-lim-geunjun/index.html": "95c99d83:47428",
     "text/sections-of-structure-jung-hyun/index.html": "375ca076:47100",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "c4e493f8:36612",
