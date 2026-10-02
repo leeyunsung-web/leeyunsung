@@ -9,7 +9,8 @@
     "statement": "나는 오래된 서사와 현대 시각 문화에서 드러나는 표현에 관심을 두고 있다. 그리스 로마 신화를 비롯한 신화와 전설에서 전해 온 이야기를 모티프로, 망가 또는 모에화로 불리는 서브컬처 이미지에서 연유한 표현 방법을 형식으로 삼고 있다. 그리고 이러한 방법론을 그림의 주제와 형상뿐만 아니라 프레임의 형태와 크기, 조합 모듈과 구성 방식, 색채와 묘법에까지 폭넓게 활용하고 있다.",
     "statementStyle": {
       "align": "justify"
-    }
+    },
+    "statementEn": "My work is concerned with old narratives and with the forms of expression found in contemporary visual culture. I take stories handed down through myth and legend, Greco-Roman mythology above all, as my motifs, and I adopt as my formal language the visual methods of subculture imagery, the kind known as manga or moe. This approach extends beyond subject and figure: it shapes the form and scale of the frame, the way canvases are combined and composed as modules, and the handling of color and paint."
   },
   "works": [
     {
@@ -3943,7 +3944,7 @@
     "text/painting-of-the-cut-konno-yuki/index.html": "5dcbca64:32196",
     "text/taxidermy-of-joy-jo-saemi/index.html": "3394cece:66484",
     "text/exploding-bishojo-baek-jihong/index.html": "f60e80d3:98104",
-    "cv/index.html": "84c738dc:10076",
+    "cv/index.html": "580ce37c:10836",
     "page.css": "1aa6d54b:90204",
     "sitemap.xml": "8562b726:115568",
     "robots.txt": "e7785df8:92",
