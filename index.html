@@ -884,6 +884,14 @@
   .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
+  .coverpos{margin-top:10px; display:none;}
+  .coverpos.on{display:block;}
+  .coverpos-label{font-size:11px; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
+  .coverpos-label button{all:unset; cursor:pointer; font-size:11px; color:var(--ink-faint); text-decoration:underline; text-underline-offset:2px;}
+  .coverpos-box{position:relative; width:100%; aspect-ratio:3/2; background:#f1efeb; overflow:hidden; cursor:crosshair; border:1px solid var(--line); touch-action:none; user-select:none;}
+  .coverpos-box img{width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; -webkit-user-drag:none;}
+  .coverpos-box .dot{position:absolute; width:14px; height:14px; border-radius:50%; border:2px solid #fff; background:rgba(0,0,0,.55); transform:translate(-50%,-50%); box-shadow:0 0 0 1px rgba(0,0,0,.3); pointer-events:none;}
+  .coverpos-hint{font-size:11px; color:var(--ink-faint); margin-top:6px; line-height:1.6;}
   .imgdrop{border:1.5px dashed var(--line-strong); border-radius:6px; padding:18px; text-align:center; cursor:pointer; color:var(--ink-faint); font-size:12.5px; position:relative; overflow:hidden;}
   .imgdrop.hasimg{padding:0; border-style:solid;}
   .imgdrop img{width:100%; max-height:220px; object-fit:cover; display:block;}
@@ -1135,6 +1143,11 @@
           </div>
           <input type="file" id="itemImageFile" accept="image/*" style="display:none;">
           <button type="button" class="pick-site-img" data-pick="item">▦ 홈페이지에 있는 이미지에서 고르기</button>
+          <div class="coverpos" id="coverPosWrap">
+            <div class="coverpos-label"><span>썸네일 표시 위치 — <span id="coverPosVal">50% · 50%</span></span><button type="button" id="coverPosReset">가운데로</button></div>
+            <div class="coverpos-box" id="coverPosBox"><img id="coverPosImg" alt=""><div class="dot" id="coverPosDot"></div></div>
+            <div class="coverpos-hint">미리보기 위를 클릭하거나 끌어서, 목록 썸네일에 꼭 보여야 할 지점을 찍어 주세요. 썸네일은 이 지점을 중심으로 잘려요.</div>
+          </div>
         </div>
         <div class="field"><label>Title</label><textarea id="itemTitle" class="grow" rows="1" placeholder="시리즈 제목"></textarea></div>
         <div class="field" id="itemTitleEnField"><label>Title — English</label><textarea id="itemTitleEn" class="grow" rows="1" placeholder="영어 제목 — 비워 두면 영어로 볼 때도 한국어 제목이 보여요"></textarea></div>
@@ -2345,6 +2358,7 @@
         img.loading = itemIdx < 4 ? "eager" : "lazy";
         img.decoding = "async";
         img.src = imgSrc(item.cover);
+        const cp = coverPosStyle(item); if(cp) img.style.objectPosition = cp;
         frame.appendChild(img);
       } else {
         const ph = el("div","placeholder-label"); ph.textContent = "";
@@ -4300,11 +4314,41 @@
 
   // ---------------- item (series) modal ----------------
   let pendingItemImage = null;
+  let pendingCoverPos = null;   // {x,y} 퍼센트 — 목록 썸네일에서 이미지의 어느 지점을 중심에 둘지
+  function coverPosStyle(item){ const p = item && item.coverPos; return (p && isFinite(p.x) && isFinite(p.y)) ? (Math.round(p.x)+"% "+Math.round(p.y)+"%") : ""; }
+  function syncCoverPosUi(){
+    const wrap = $("coverPosWrap"), key = $("itemCollection").value;
+    const show = !!pendingItemImage && key !== "shop";
+    wrap.classList.toggle("on", show);
+    if(!show) return;
+    const p = pendingCoverPos || {x:50,y:50};
+    const img = $("coverPosImg"); if(img.getAttribute("src") !== pendingItemImage) img.src = imgSrc(pendingItemImage);
+    img.style.objectPosition = p.x+"% "+p.y+"%";
+    $("coverPosDot").style.left = p.x+"%"; $("coverPosDot").style.top = p.y+"%";
+    $("coverPosVal").textContent = Math.round(p.x)+"% · "+Math.round(p.y)+"%";
+  }
+  (function bindCoverPos(){
+    const box = $("coverPosBox"); if(!box) return;
+    let down = false;
+    const setFrom = (e)=>{
+      const r = box.getBoundingClientRect();
+      const x = Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100));
+      const y = Math.min(100, Math.max(0, (e.clientY - r.top) / r.height * 100));
+      pendingCoverPos = {x:Math.round(x), y:Math.round(y)};
+      syncCoverPosUi();
+    };
+    box.addEventListener("pointerdown", (e)=>{ down = true; box.setPointerCapture(e.pointerId); setFrom(e); });
+    box.addEventListener("pointermove", (e)=>{ if(down) setFrom(e); });
+    box.addEventListener("pointerup", ()=>{ down = false; });
+    box.addEventListener("pointercancel", ()=>{ down = false; });
+    $("coverPosReset").addEventListener("click", ()=>{ pendingCoverPos = null; syncCoverPosUi(); });
+  })();
 
   function openItemModal(key,id){
     $("itemCollection").value = key;
     $("itemId").value = id || "";
     pendingItemImage = null;
+    pendingCoverPos = null;
 
     if(id){
       const item = state.data[key].find(x=>x.id===id);
@@ -4334,6 +4378,7 @@
       $("itemSlug").value = item.slug || "";
       if(item.cover){ showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", item.cover); pendingItemImage = item.cover; }
       else { clearImgPreview("itemImgPreview","itemImgDropText","itemImgDrop"); }
+      pendingCoverPos = (item.coverPos && isFinite(item.coverPos.x) && isFinite(item.coverPos.y)) ? {x:+item.coverPos.x, y:+item.coverPos.y} : null;
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
@@ -4360,6 +4405,7 @@
     $("textFields").style.display = key==="text" ? "block" : "none";
     $("itemTitle").placeholder = key==="shop" ? "상품 이름" : "시리즈 제목";
     $("itemDesc").placeholder  = key==="shop" ? "상품 설명 (선택)" : "작품 설명";
+    syncCoverPosUi();
     openModal("itemModal");
     requestAnimationFrame(()=>document.querySelectorAll("#itemModal textarea.grow").forEach(autoGrow));
   }
@@ -4391,6 +4437,7 @@
       authorEn: $("itemAuthorEn").value.trim(),
       year: $("itemYear").value.trim(),
       cover: pendingItemImage || "",
+      coverPos: (pendingCoverPos && pendingItemImage) ? pendingCoverPos : undefined,
       description: $("itemDesc").value.trim(),
       descriptionEn: $("itemDescEn").value.trim(),
       slug: slugify($("itemSlug").value),
@@ -7532,13 +7579,13 @@ shopBlock,
     document.querySelectorAll("#itemVisSeg button").forEach(b=>b.addEventListener("click", ()=>setItemVisUi(b.dataset.v === "hidden")));
     document.querySelectorAll("#itemRowColsSeg button").forEach(b=>b.addEventListener("click", ()=>setItemRowColsUi(b.dataset.val)));
     document.querySelectorAll(".pick-site-img").forEach(btn=>btn.addEventListener("click", ()=>{
-      if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); });
+      if(btn.dataset.pick === "item") openImgPicker(src=>{ pendingItemImage = src; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop", src); syncCoverPosUi(); });
       else openImgPicker(src=>{ pendingPhotoImage = src; pendingPhotoFile = null; pendingPhotoHi = false; setPhotoVideoUi(null); showImgPreview("photoImgPreview","photoImgDropText","photoImgDrop", src); });
     }));
-    $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
+    $("itemImageFile").addEventListener("change",(e)=>{ if(e.target.files[0]) handleFileToDataUrl(e.target.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); syncCoverPosUi(); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
     itemDrop.addEventListener("dragover",(e)=>{ e.preventDefault(); itemDrop.style.borderColor="#111"; });
     itemDrop.addEventListener("dragleave",()=>{ itemDrop.style.borderColor=""; });
-    itemDrop.addEventListener("drop",(e)=>{ e.preventDefault(); itemDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
+    itemDrop.addEventListener("drop",(e)=>{ e.preventDefault(); itemDrop.style.borderColor=""; if(e.dataTransfer.files[0]) handleFileToDataUrl(e.dataTransfer.files[0], d=>{ pendingItemImage=d; showImgPreview("itemImgPreview","itemImgDropText","itemImgDrop",d); syncCoverPosUi(); }, $("itemCollection").value === "shop" ? "photo" : "cover"); });
 
     $("photoSaveBtn").addEventListener("click", savePhoto);
     $("photoDeleteBtn").addEventListener("click", ()=>deletePhoto($("photoCollection").value,$("photoItemId").value,$("photoRowId").value,$("photoId").value));
