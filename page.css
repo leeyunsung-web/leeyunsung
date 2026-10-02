@@ -850,6 +850,14 @@
   .detail-desc strong, .pd-desc strong, .orig-desc strong{font-weight:700; color:var(--ink);}
   .field-hint{font-size:11px; color:var(--ink-faint); margin-top:6px;}
 
+  .coverpos{margin-top:10px; display:none;}
+  .coverpos.on{display:block;}
+  .coverpos-label{font-size:11px; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
+  .coverpos-label button{all:unset; cursor:pointer; font-size:11px; color:var(--ink-faint); text-decoration:underline; text-underline-offset:2px;}
+  .coverpos-box{position:relative; width:100%; aspect-ratio:3/2; background:#f1efeb; overflow:hidden; cursor:crosshair; border:1px solid var(--line); touch-action:none; user-select:none;}
+  .coverpos-box img{width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; -webkit-user-drag:none;}
+  .coverpos-box .dot{position:absolute; width:14px; height:14px; border-radius:50%; border:2px solid #fff; background:rgba(0,0,0,.55); transform:translate(-50%,-50%); box-shadow:0 0 0 1px rgba(0,0,0,.3); pointer-events:none;}
+  .coverpos-hint{font-size:11px; color:var(--ink-faint); margin-top:6px; line-height:1.6;}
   .imgdrop{border:1.5px dashed var(--line-strong); border-radius:6px; padding:18px; text-align:center; cursor:pointer; color:var(--ink-faint); font-size:12.5px; position:relative; overflow:hidden;}
   .imgdrop.hasimg{padding:0; border-style:solid;}
   .imgdrop img{width:100%; max-height:220px; object-fit:cover; display:block;}
@@ -924,5 +932,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 7.2px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 12.4px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
