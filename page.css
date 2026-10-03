@@ -654,6 +654,19 @@
 
   /* ---------- next works (bottom of detail page) ---------- */
   /* 상품 페이지 맨 아래: ORIGINAL WORK (왼쪽 원작 이미지, 오른쪽 설명) */
+  /* 포스터 예시 이미지 (공통 묶음) */
+  .shared-ex{margin:88px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
+  .shared-ex-head{max-width:var(--content-max-width); margin:0 auto 28px; padding:0 var(--detail-margin);}
+  .shared-ex-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px;}
+  .shared-ex-note{font-size:var(--shop-body,14px); line-height:1.8; color:var(--ink-soft); white-space:pre-wrap;}
+  .shared-ex .photo-rows-wrap{margin-top:0;}
+  .shared-ex-edit{display:inline-block; margin-top:10px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); border-bottom:1px solid currentColor;}
+  /* 원작 글: 이미지 높이의 절반까지만 보이고 더보기 */
+  .orig-cap{font-size:12px; letter-spacing:.03em; color:var(--ink-faint); line-height:1.6; margin:0 0 14px; white-space:pre-wrap;}
+  .orig-desc.clamp{overflow:hidden; position:relative;}
+  .orig-desc.clamp::after{content:""; position:absolute; left:0; right:0; bottom:0; height:56px; background:linear-gradient(rgba(255,255,255,0), #fff);}
+  .orig-toggle{all:unset; cursor:pointer; display:inline-block; margin:20px 22px 0 0; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); border-bottom:1px solid currentColor; padding-bottom:2px;}
+  .orig-toggle:hover{color:var(--ink);}
   .orig-work{margin:80px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
   .orig-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:24px;}
   .orig-grid{display:grid; grid-template-columns:minmax(0, var(--shop-main-pct,56%)) minmax(0,1fr); gap:clamp(24px,4vw,64px); align-items:start;}
@@ -932,5 +945,5 @@
   }
   .unpub-dot.show{display:block;}
 
-:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 11.6777783203125px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 5; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
+:root{--content-font-size: 15px; --content-letter-spacing: 0.05em; --content-font-weight: 400; --content-text-align: justify; --page-padding: 30px; --frame-gap: 4px; --frame-cols: 2; --detail-margin: 32px; --active-font-family: 'Pretendard', 'LYS Sans', sans-serif; --content-max-width: 900px; --desc-side: 0.15; --desc-font-k: 0.010409437890353921; --ui-font-style: normal; --caption-font-size: 15px; --cap-gap: 10px; --desc-top: 40px; --detail-title-size: 30px; --frame-title-size: 20px; --text-list-title-size: 15px; --text-list-top-space: 64px; --text-list-item-gap: 16px; --contact-font-size: 17px; --contact-top-space: 120px; --photo-gap: 4px; --vh: 7.2px; --header-height: 83px; --shop-main-pct: 56%; --shop-thumb-cols: 1; --shop-thumb-gap: 8px; --shop-title: 26px; --shop-body: 14px; --shop-price: 17px; --shop-cols: 5; --shop-cols-md: 5; --shop-side: 32px; --shop-cols-sm: 3; --shop-cols-xs: 2; --shop-grid-title: 13px; --shop-grid-price: 12px; --shop-font: inherit; --btn-h: 58px; --btn-w: 100%; --btn-font: 14px; --btn-sub: 10px; --btn-radius: 0px; --btn-gap: 10px;}
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}

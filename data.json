@@ -2871,7 +2871,7 @@
       "slug": "at-the-last-judgment-2010-art-poster-2020-65-50-cm-signed-li",
       "photoRows": [
         {
-          "id": "rowc-s-1790622121911-1dl7b-943a5c",
+          "id": "row-1791037713967-own1",
           "cols": 1,
           "photos": [
             {
@@ -2882,7 +2882,7 @@
           ]
         },
         {
-          "id": "row-1790755593306-cltng",
+          "id": "row-1791037713968-own2",
           "cols": 3,
           "photos": [
             {
@@ -2898,69 +2898,6 @@
             {
               "id": "p-1791036341181-sa2ox",
               "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791036406164-tfhdr",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1791036406164-xq8bl",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036414633-g3ltc",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036420664-mcnnw",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791036462670-tnz0w",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1791036462670-acxve",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036469737-40iyf",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036478669-zx5q9",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791036491554-35z4x",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1791036491554-su6qb",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036491554-su6qb-0c866cd6.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036497483-lxppd",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036503744-xah0d",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036503744-xah0d-844ec0dc.jpg",
               "caption": ""
             }
           ]
@@ -4025,6 +3962,89 @@
       "shipProfile": "flat",
       "coverInRows": true,
       "hidden": true
+    },
+    {
+      "id": "s-shared-poster-examples",
+      "title": "포스터 예시 이미지 묶음 (공통)",
+      "slug": "poster-examples",
+      "sharedSet": true,
+      "category": "edition",
+      "shipProfile": "tube",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "coverInRows": false,
+      "cover": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
+      "photoRows": [
+        {
+          "id": "row-shared-1",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036406164-xq8bl",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036414633-g3ltc",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036420664-mcnnw",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-2",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036462670-acxve",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036469737-40iyf",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036478669-zx5q9",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-3",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036491554-su6qb",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036491554-su6qb-0c866cd6.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036497483-lxppd",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036503744-xah0d",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036503744-xah0d-844ec0dc.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "edition": "",
+      "spec1": "",
+      "spec2": ""
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
@@ -4057,7 +4077,7 @@
   },
   "shopDesign": {
     "mainPct": 56,
-    "thumbCount": 5,
+    "thumbCount": 0,
     "thumbGap": 8,
     "titleSize": 26,
     "bodySize": 14,
