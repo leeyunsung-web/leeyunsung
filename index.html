@@ -1030,7 +1030,7 @@
   <footer>
     <div class="shell">
       <span>&copy; <span id="yearNow"></span> LEE YUNSUNG</span>
-      <a class="foot-link" href="#privacy">Privacy Policy · 개인정보처리방침</a>
+      <a class="foot-link" href="#privacy"><span class="l-ko" lang="ko">개인정보처리방침</span><span class="l-en" lang="en">Privacy Policy</span></a>
     </div>
   </footer>
 
@@ -1675,6 +1675,29 @@
       const b = document.createElement("div"); b.className = "l-en"; b.lang = "en"; setRichText(b, en);
       node.appendChild(a); node.appendChild(b);
     } else setRichText(node, ko || en);
+  }
+  // UI 문구 한/영: 둘이 다르면 span 두 개 (KO/EN 스위치로 하나만 보임)
+  function biText(node, ko, en){
+    ko = String(ko == null ? "" : ko); en = String(en == null ? "" : en);
+    node.textContent = "";
+    if(ko && en && ko !== en){
+      const a = document.createElement("span"); a.className = "l-ko"; a.lang = "ko"; a.textContent = ko;
+      const b = document.createElement("span"); b.className = "l-en"; b.lang = "en"; b.textContent = en;
+      node.appendChild(a); node.appendChild(b);
+    } else node.textContent = ko || en;
+    return node;
+  }
+  function biSpanHtml(ko, en){
+    ko = String(ko == null ? "" : ko); en = String(en == null ? "" : en);
+    if(ko && en && ko !== en) return '<span class="l-ko" lang="ko">'+esc(ko)+'</span><span class="l-en" lang="en">'+esc(en)+'</span>';
+    return esc(ko || en);
+  }
+  // 한 칸에 한국어 줄과 영어 줄이 섞여 있으면 나눔 (한글이 있는 줄 → 한국어, 없는 줄 → 영어)
+  function splitByScript(text){
+    const lines = String(text || "").split(/\n/);
+    const ko = [], en = [];
+    lines.forEach(l=>{ if(!l.trim()) return; (/[\uac00-\ud7a3]/.test(l) ? ko : en).push(l); });
+    return { ko: ko.join("\n"), en: en.join("\n") };
   }
   // 제목 한/영: 둘 다 있으면 두 span으로 넣고 KO/EN 스위치로 하나만 보임 (굵게 표시는 쓰지 않음)
   function setBiTitle(node, ko, en){
@@ -2407,7 +2430,7 @@
     app.appendChild(bleed);
 
     if(!items.length && !state.master){
-      const empty = el("div","empty-collection"); empty.textContent = "아직 등록된 작품이 없습니다.";
+      const empty = el("div","empty-collection"); biText(empty, "아직 등록된 작품이 없습니다.", "No works yet.");
       app.appendChild(empty);
     }
   }
@@ -2716,7 +2739,7 @@
       done.innerHTML = "";
       const o = cart.done;
       const big = el("div","big"); big.textContent = "PAYMENT COMPLETE";
-      const ko = el("div","ko"); ko.textContent = "결제 완료";
+      const ko = el("div","ko l-ko"); ko.textContent = "결제 완료";
       const t1 = el("div"); t1.textContent = "Thank you! Your order has been placed.";
       const t2 = el("div","ord"); t2.textContent = "Order " + o.no;
       const ul = el("div","done-lines");
@@ -2976,7 +2999,7 @@
   function meLoginForm(box, msg){
     const f = el("form","me-login");
     const t = el("div","me-title"); t.textContent = "Order status & messages";
-    const s = el("div","me-sub"); s.textContent = "Enter the email you used at checkout. · 주문할 때 적은 이메일을 입력하세요.";
+    const s = el("div","me-sub"); biText(s, "주문할 때 적은 이메일을 입력하세요.", "Enter the email you used at checkout.");
     const row = el("div","me-row");
     const inp = el("input","me-input"); inp.type = "email"; inp.placeholder = "you@example.com"; inp.autocomplete = "email"; inp.required = true;
     const btn = el("button","me-btn"); btn.type = "submit"; btn.textContent = "View";
@@ -3039,7 +3062,7 @@
 
     // 메시지
     const mh = el("div","me-h"); mh.textContent = "Messages"; box.appendChild(mh);
-    const note = el("div","me-sub"); note.textContent = "Only you and the artist can see these messages. · 이 메시지는 본인과 작가만 볼 수 있어요.";
+    const note = el("div","me-sub"); biText(note, "이 메시지는 본인과 작가만 볼 수 있어요.", "Only you and the artist can see these messages.");
     box.appendChild(note);
     const list = el("div","me-msgs"); box.appendChild(list);
     const drawMsgs = (msgs)=>{
@@ -3094,20 +3117,43 @@
     paypalSoldOut:"International — Sold out",
     myOrderTab:"MY ORDER",
     buyNote:"국내 구매는 네이버 스마트스토어(네이버페이)로 이동해요. · International orders: add to cart and pay with PayPal or card (USD, shipping from Korea).",
-    sharedHeading:"Poster Examples · 포스터 예시 이미지",
+    sharedHeading:"포스터 예시 이미지",
     sharedNote:"다른 포스터들의 예시 사진입니다."
+  };
+  // 영어 화면용 기본 문구 (SHOP 설정에서 "(영문)" 칸으로 바꿀 수 있음)
+  const SHOP_TEXT_EN_DEFAULT = {
+    naverLabel:"Buy with Naver Pay", naverSub:"Korea",
+    paypalLabel:"Buy with PayPal", paypalSub:"International · Card OK",
+    paypalSoldOut:"International — Sold out", myOrderTab:"MY ORDER",
+    buyNote:"International orders: add to cart and pay with PayPal or card (USD, shipping from Korea).",
+    sharedHeading:"Poster Examples", sharedNote:"Example photos of other posters."
   };
   const SHOP_TEXT_FIELDS = [
     ["naverLabel","네이버 버튼 — 큰 글씨"], ["naverSub","네이버 버튼 — 작은 글씨"],
     ["paypalLabel","PayPal 버튼 — 큰 글씨"], ["paypalSub","PayPal 버튼 — 작은 글씨"],
     ["paypalSoldOut","PayPal 버튼 — 해외 품절일 때"], ["myOrderTab","주문조회 탭 이름"], ["buyNote","버튼 아래 안내문"],
-    ["sharedHeading","포스터 예시 이미지 — 소제목"], ["sharedNote","포스터 예시 이미지 — 안내문"]
+    ["sharedHeading","포스터 예시 이미지 — 소제목"], ["sharedNote","포스터 예시 이미지 — 안내문"],
+    ["naverSubEn","네이버 버튼 — 작은 글씨 (영문)"], ["buyNoteEn","버튼 아래 안내문 (영문)"],
+    ["sharedHeadingEn","포스터 예시 이미지 — 소제목 (영문)"], ["sharedNoteEn","포스터 예시 이미지 — 안내문 (영문)"]
   ];
   function shopTexts(){
     const t = Object.assign({}, SHOP_TEXT_DEFAULT);
     const saved = (state.data && state.data.shopTexts) || {};
     Object.keys(t).forEach(k=>{ if(typeof saved[k] === "string") t[k] = saved[k].slice(0, 400); });
+    SHOP_TEXT_FIELDS.forEach(([k])=>{ if(t[k] == null) t[k] = typeof saved[k] === "string" ? saved[k].slice(0, 400) : ""; });
     return t;
+  }
+  // 한 문구의 한국어/영어 짝. 영문 칸이 있으면 그것, 한 칸에 두 언어가 섞여 있으면 나누고, 한글이 없으면 그대로, 아니면 영문 기본값
+  function shopTextPair(k){
+    const saved = (state.data && state.data.shopTexts) || {};
+    const ko0 = typeof saved[k] === "string" ? saved[k] : (SHOP_TEXT_DEFAULT[k] || "");
+    const enSaved = typeof saved[k+"En"] === "string" && saved[k+"En"].trim() ? saved[k+"En"] : "";
+    const sp = splitByScript(ko0);
+    const hasKo = /[\uac00-\ud7a3]/.test(ko0);
+    let ko = hasKo && sp.ko ? sp.ko : ko0;
+    let en = enSaved || (!hasKo ? ko0 : (sp.en || SHOP_TEXT_EN_DEFAULT[k] || ko0));
+    if(hasKo && !sp.ko) ko = ko0;
+    return { ko, en };
   }
   // 포스터 예시 이미지 묶음: "예시 묶음" 체크된 상품 하나의 사진을 에디션(포스터) 상품 페이지마다 아래에 붙입니다
   function sharedExampleItem(){ return ((state.data && state.data.shop) || []).find(it=>it && it.sharedSet) || null; }
@@ -3204,7 +3250,7 @@
       const t = el("span","l"); t.textContent = label;
       const inp = el(k === "buyNote" ? "textarea" : "input");
       if(k !== "buyNote") inp.type = "text";
-      inp.value = texts[k]; inp.placeholder = SHOP_TEXT_DEFAULT[k]; inp.maxLength = 300;
+      inp.value = texts[k] || ""; inp.placeholder = SHOP_TEXT_DEFAULT[k] || SHOP_TEXT_EN_DEFAULT[k.replace(/En$/,"")] || ""; inp.maxLength = 300;
       inp.addEventListener("input", ()=>{
         const cur = Object.assign({}, (state.data.shopTexts || {}));
         const v = inp.value.trim();
@@ -3296,7 +3342,7 @@
         ["shopDesign","btnGap","range","버튼 사이 간격 (px)", {min:0,max:30,step:1}]
       ]},
       { title:"SHOP 문구", note:"비우면 기본 문구로 돌아가요.", items:
-        SHOP_TEXT_FIELDS.map(([k,label])=>["shopTexts",k, (k==="buyNote"||k==="sharedNote") ? "textarea" : "text", label, {placeholder:SHOP_TEXT_DEFAULT[k]}])
+        SHOP_TEXT_FIELDS.map(([k,label])=>["shopTexts",k, /^(buyNote|sharedNote)/.test(k) ? "textarea" : "text", label, {placeholder:(SHOP_TEXT_DEFAULT[k] != null ? SHOP_TEXT_DEFAULT[k] : (SHOP_TEXT_EN_DEFAULT[k.replace(/En$/,"")] || ""))}])
       },
       { title:"SHOP 운영 정보", note:"결제 서버 주소는 비밀 정보가 아니에요. 사업자 정보는 SHOP 맨 아래에 표시돼요.", items:[
         ["shop","shopApi","text","결제 서버 주소 (Cloudflare Worker)", {placeholder:"https://leeyunsung-shop.○○○.workers.dev"}],
@@ -3677,18 +3723,13 @@
   let privacyLang = null;
   function renderPrivacy(app){
     const wrap = el("div","privacy-wrap");
-    const h = el("h1","privacy-title"); h.textContent = "개인정보처리방침 · Privacy Policy";
+    const h = el("h1","privacy-title"); biText(h, "개인정보처리방침", "Privacy Policy");
     wrap.appendChild(h);
-    const sw = el("div","privacy-lang");
-    const lang = privacyLang || ((navigator.language || "ko").toLowerCase().startsWith("ko") ? "ko" : "en");
-    [["ko","한국어"],["en","English"]].forEach(([k,l])=>{
-      const b = el("button"); b.type = "button"; b.textContent = l;
-      if(k === lang) b.classList.add("on");
-      b.addEventListener("click", ()=>{ privacyLang = k; const a = $("app"); a.innerHTML = ""; renderPrivacy(a); });
-      sw.appendChild(b);
-    });
-    wrap.appendChild(sw);
-    const body = el("div","privacy-body"); body.textContent = privacyText(lang);
+    // 사이트 오른쪽 위 KO / EN 스위치를 따릅니다
+    const body = el("div","privacy-body");
+    const bk = el("div","l-ko"); bk.lang = "ko"; bk.textContent = privacyText("ko");
+    const be = el("div","l-en"); be.lang = "en"; be.textContent = privacyText("en");
+    body.appendChild(bk); body.appendChild(be);
     wrap.appendChild(body);
     if(state.master){
       const n = el("div","privacy-note");
@@ -3702,19 +3743,22 @@
     const b = state.data.business || {};
     const box = el("div","shop-biz");
     const parts = [
-      ["상호", b.name], ["대표", b.owner], ["사업자등록번호", b.regNo], ["통신판매업 신고", b.mailOrderNo],
-      ["주소", b.address], ["연락처", b.phone], ["이메일", b.email]
-    ].filter(x=>cleanText(x[1]));
+      ["상호", "Business", b.name], ["대표", "Representative", b.owner], ["사업자등록번호", "Business Reg. No.", b.regNo], ["통신판매업 신고", "Mail-order Reg. No.", b.mailOrderNo],
+      ["주소", "Address", b.address], ["연락처", "Phone", b.phone], ["이메일", "Email", b.email]
+    ].filter(x=>cleanText(x[2]));
     if(parts.length){
-      const d = el("div"); d.textContent = parts.map(x=>x[0] + " " + cleanText(x[1])).join("  ·  ");
+      const d = el("div");
+      biText(d, parts.map(x=>x[0] + " " + cleanText(x[2])).join("  ·  "), parts.map(x=>x[1] + " " + cleanText(x[2])).join("  ·  "));
       box.appendChild(d);
     } else if(state.master){
       const d = el("div"); d.textContent = "(마스터 모드에서만 보임) SHOP 설정에서 사업자 정보를 입력해 주세요 — 온라인 판매 시 표시 의무가 있어요.";
       box.appendChild(d);
     }
-    const pol = el("div","policy"); pol.textContent = cleanText(state.data.shopPolicy) ? state.data.shopPolicy : SHOP_POLICY_DEFAULT;
+    const pol = el("div","policy");
+    const polSp = splitByScript(cleanText(state.data.shopPolicy) ? state.data.shopPolicy : SHOP_POLICY_DEFAULT);
+    biText(pol, polSp.ko, polSp.en);
     box.appendChild(pol);
-    const pl = el("a","policy-link"); pl.href = "#privacy"; pl.textContent = "개인정보처리방침 · Privacy Policy";
+    const pl = el("a","policy-link"); pl.href = "#privacy"; biText(pl, "개인정보처리방침", "Privacy Policy");
     box.appendChild(pl);
     app.appendChild(box);
   }
@@ -3809,7 +3853,7 @@
   function renderShopComingSoon(app){
     const wrap = el("div","shop-coming-soon");
     const t = el("div","shop-coming-title"); t.textContent = "SHOP";
-    const s = el("div","shop-coming-sub"); s.textContent = "준비중입니다 · Coming soon";
+    const s = el("div","shop-coming-sub"); biText(s, "준비중입니다", "Coming soon");
     wrap.appendChild(t); wrap.appendChild(s);
     app.appendChild(wrap);
   }
@@ -3871,9 +3915,8 @@
     const items = (state.master ? (state.data.shop || []) : publicShopItems()).filter(it=>shopCategory(it) === tab.cat);
     if(!items.length && !state.master){
       const cs = el("div","shop-tab-empty");
-      const t1 = el("div","t"); t1.textContent = "Coming soon";
-      const t2 = el("div","s"); t2.textContent = "준비중입니다";
-      cs.appendChild(t1); cs.appendChild(t2);
+      const t1 = el("div","t"); biText(t1, "준비중입니다", "Coming soon");
+      cs.appendChild(t1);
       wrap.appendChild(cs);
     }
 
@@ -4062,16 +4105,16 @@
 
     if(kr){
       const a = el("a","buy-btn naver"); a.href = kr; a.target="_blank"; a.rel="noopener";
-      const t = el("span","lbl"); t.textContent = txt.naverLabel;
-      const sub = el("span","sub"); sub.textContent = txt.naverSub;
+      const t = el("span","lbl"); const nl = shopTextPair("naverLabel"); biText(t, nl.ko, nl.en);
+      const sub = el("span","sub"); const ns = shopTextPair("naverSub"); biText(sub, ns.ko, ns.en);
       a.appendChild(t); a.appendChild(sub);
       row.appendChild(a);
     }
     if(onSite){
       const avail = paypalAvailable(item);
       const b = el("button","buy-btn paypal"); b.type = "button";
-      const t = el("span","lbl"); t.textContent = avail ? txt.paypalLabel : txt.paypalSoldOut;
-      const sub = el("span","sub"); sub.textContent = txt.paypalSub;
+      const t = el("span","lbl"); const pl_ = shopTextPair(avail ? "paypalLabel" : "paypalSoldOut"); biText(t, pl_.ko, pl_.en);
+      const sub = el("span","sub"); const ps_ = shopTextPair("paypalSub"); biText(sub, ps_.ko, ps_.en);
       b.appendChild(t); b.appendChild(sub);
       b.disabled = !avail;
       b.addEventListener("click", ()=> addToCart(item));
@@ -4090,13 +4133,13 @@
       row.appendChild(a);
     });
     if(!kr && !onSite && !us && !stores.length){
-      const sd = el("div","buy-soldout"); sd.textContent = "구매 문의 · Inquire: reyunsung@gmail.com";
+      const sd = el("div","buy-soldout"); biText(sd, "구매 문의: reyunsung@gmail.com", "Inquire: reyunsung@gmail.com");
       box.appendChild(sd);
       return box;
     }
     box.appendChild(row);
     const note = el("div","buy-note");
-    note.textContent = txt.buyNote;
+    const bn = shopTextPair("buyNote"); biText(note, bn.ko, bn.en);
     if(txt.buyNote && (kr || onSite || us)) box.appendChild(note);
     return box;
   }
@@ -4107,7 +4150,7 @@
     const found = (state.data.shop||[]).find(x=>x.id===id);
     const item = (found && (state.master || !isItemHidden(found))) ? found : null;
     if(!item){
-      const p = el("div","empty-collection"); p.textContent = "상품을 찾을 수 없습니다.";
+      const p = el("div","empty-collection"); biText(p, "상품을 찾을 수 없습니다.", "Item not found.");
       app.appendChild(p); return;
     }
     const tabSlug = tabForCategory(shopCategory(item));
@@ -4279,8 +4322,8 @@
     const txt = shopTexts();
     const sec = el("section","shared-ex");
     const head = el("div","shared-ex-head");
-    const lab = el("div","shared-ex-label"); lab.textContent = txt.sharedHeading; head.appendChild(lab);
-    if(txt.sharedNote){ const note = el("div","shared-ex-note"); note.textContent = txt.sharedNote; head.appendChild(note); }
+    const lab = el("div","shared-ex-label"); const sh_ = shopTextPair("sharedHeading"); biText(lab, sh_.ko, sh_.en); head.appendChild(lab);
+    if(txt.sharedNote){ const note = el("div","shared-ex-note"); const sn_ = shopTextPair("sharedNote"); biText(note, sn_.ko, sn_.en); head.appendChild(note); }
     if(state.master){ const ed = el("a","shared-ex-edit"); ed.href = "#shop/" + src.id; ed.textContent = "예시 이미지 묶음 편집 →"; head.appendChild(ed); }
     sec.appendChild(head);
     const wrap = el("div","photo-rows-wrap wide");
@@ -4367,7 +4410,7 @@
     app.appendChild(wrap);
 
     if(!items.length && !state.master){
-      const empty = el("div","empty-collection"); empty.textContent = "아직 등록된 글이 없습니다.";
+      const empty = el("div","empty-collection"); biText(empty, "아직 등록된 글이 없습니다.", "No texts yet.");
       app.appendChild(empty);
     }
   }
@@ -4624,7 +4667,7 @@
   function renderCollectionDetail(app, key, id){
     const item = state.data[key].find(x=>x.id===id);
     if(!item){
-      const p = el("div","empty-collection"); p.textContent = "항목을 찾을 수 없습니다.";
+      const p = el("div","empty-collection"); biText(p, "항목을 찾을 수 없습니다.", "Not found.");
       app.appendChild(p);
       return;
     }
@@ -5324,7 +5367,7 @@
       });
     }
     if(!hasAny){
-      const empty = el("div","contact-empty"); empty.textContent = "아직 등록된 연락처가 없습니다.";
+      const empty = el("div","contact-empty"); biText(empty, "아직 등록된 연락처가 없습니다.", "No contact information yet.");
       wrap.appendChild(empty);
     }
     app.appendChild(wrap);
@@ -5610,7 +5653,7 @@
     const o = resolveOriginal(item);
     if(!o) return;
     const sec = el("section","orig-work");
-    const lab = el("div","orig-label"); lab.textContent = "Original Work"; sec.appendChild(lab);
+    const lab = el("div","orig-label"); biText(lab, "원작", "Original Work"); sec.appendChild(lab);
     const grid = el("div","orig-grid");
     const a = el("a","orig-img"); setItemLink(a, "works", o.work); a.title = o.title + " — WORKS";
     // 누르면 WORKS 페이지에서 바로 이 그림 위치로
@@ -5626,37 +5669,37 @@
     if(o.caption){ const c = el("div","orig-cap"); c.textContent = o.caption; info.appendChild(c); }
     let d = null;
     if(o.text || o.textEn){ d = el("div","orig-desc"); setBilingual(d, o.text, o.textEn); info.appendChild(d); }
-    const more = el("a","orig-more"); setItemLink(more, "works", o.work); linkToImg(more); more.textContent = "View work →"; info.appendChild(more);
+    const more = el("a","orig-more"); setItemLink(more, "works", o.work); linkToImg(more); biText(more, "작품 보기 →", "View work →"); info.appendChild(more);
     grid.appendChild(info);
     sec.appendChild(grid);
     app.appendChild(sec);
     if(d) setupOrigClamp(d, a, more);
   }
-  // 원작 글은 왼쪽 이미지 높이의 절반까지만 보이고, "더보기"로 펼칩니다
+  // 원작 글: 제목·캡션·글·더보기·작품 보기까지 합친 높이가 왼쪽 이미지 높이와 같아지도록 글을 줄이고, "더보기"로 펼칩니다
   function setupOrigClamp(desc, imgBox, beforeEl){
+    let open = false;
+    const info = desc.parentNode;
+    const t = el("button","orig-toggle"); t.type = "button";
+    const label = ()=>biText(t, open ? "접기" : "더보기", open ? "Show less" : "Read more");
+    t.addEventListener("click", ()=>{ open = !open; apply(); });
     const apply = ()=>{
       const img = imgBox.querySelector("img");
       const h = img ? img.getBoundingClientRect().height : 0;
-      if(!h || window.innerWidth <= 760){ desc.classList.remove("clamp"); desc.style.maxHeight = ""; const old = desc.parentNode.querySelector(".orig-toggle"); if(old) old.remove(); return; }
-      const limit = Math.max(120, Math.round(h * 0.5));
-      desc.style.maxHeight = "";
-      const full = desc.scrollHeight;
-      const old = desc.parentNode.querySelector(".orig-toggle"); if(old) old.remove();
-      if(full <= limit + 24){ desc.classList.remove("clamp"); return; }
+      desc.classList.remove("clamp"); desc.style.maxHeight = "";
+      if(t.parentNode) t.remove();
+      if(!h || window.innerWidth <= 760) return;
+      if(info.getBoundingClientRect().height <= h + 2) return;
+      label();
+      info.insertBefore(t, beforeEl);
+      if(open) return;
+      const others = info.getBoundingClientRect().height - desc.getBoundingClientRect().height;
+      const limit = Math.max(80, Math.floor(h - others));
       desc.classList.add("clamp"); desc.style.maxHeight = limit + "px";
-      const t = el("button","orig-toggle"); t.type = "button";
-      const setLabel = open=>{ t.textContent = open ? "접기 · Show less" : "더보기 · Read more"; };
-      setLabel(false);
-      t.addEventListener("click", ()=>{
-        const open = desc.classList.toggle("clamp") === false;
-        desc.style.maxHeight = open ? "" : limit + "px";
-        setLabel(open);
-      });
-      desc.parentNode.insertBefore(t, beforeEl);
     };
     const img = imgBox.querySelector("img");
     if(img && !img.complete) img.addEventListener("load", apply, {once:true}); else requestAnimationFrame(apply);
     window.addEventListener("resize", apply);
+    document.addEventListener("click", e=>{ if(e.target.closest && e.target.closest("[data-setlang]")) requestAnimationFrame(apply); });
   }
 
   /* ================= 문구 일괄 바꾸기 =================
@@ -7133,7 +7176,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 (stKo || stEn ? (splitCvName(text).name ? '    <div class="cv-name">'+richHtml(esc(splitCvName(text).name))+'</div>\n' : '') + '    <div class="cv-statement"'+styleAttr(d.cv.statementStyle)+'>'+bilingualHtml(stKo, stEn)+'</div>' : ''),
 '    <div class="detail-desc" style="padding:0; width:auto; max-width:var(--content-max-width); margin-left:0; font-size:var(--content-font-size)">'+richHtml(esc(stKo || stEn ? splitCvName(text).rest : text))+'</div>',
 '  </main>',
-'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
+'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy"><span class="l-ko" lang="ko">개인정보처리방침</span><span class="l-en" lang="en">Privacy Policy</span></a></div></footer>',
 '</body>',
 '</html>'
     ].join("\n");
@@ -7144,14 +7187,14 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     if(!o) return "";
     const href = "/" + pagePath("works", o.work) + (o.photoId ? "#p-" + o.photoId : "");
     return '    <section class="orig-work">\n' +
-           '      <div class="orig-label">Original Work</div>\n' +
+           '      <div class="orig-label">'+biSpanHtml("원작","Original Work")+'</div>\n' +
            '      <div class="orig-grid">\n' +
            '        <a class="orig-img" href="'+esc(href)+'">' + (o.image ? '<img src="'+esc(rootPath(o.image))+'" alt="'+esc(o.title+" — "+ARTIST+" "+ARTIST_EN)+'" loading="lazy" decoding="async">' : '') + '</a>\n' +
            '        <div class="orig-info">\n' +
            '          <h2 class="orig-title"><a href="'+esc(href)+'">'+esc(o.title)+'</a></h2>\n' +
            (o.caption ? '          <div class="orig-cap">'+esc(o.caption)+'</div>\n' : '') +
            (o.text || o.textEn ? '          <div class="orig-desc">'+bilingualHtml(o.text, o.textEn)+'</div>\n' : '') +
-           '          <a class="orig-more" href="'+esc(href)+'">View work →</a>\n' +
+           '          <a class="orig-more" href="'+esc(href)+'">'+biSpanHtml("작품 보기 →","View work →")+'</a>\n' +
            '        </div>\n' +
            '      </div>\n' +
            '    </section>';
@@ -7220,7 +7263,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
     const sharedSrc = (kind === "shop" && usesSharedExamples(item)) ? sharedExampleItem() : null;
     const sharedRows = sharedSrc ? staticRowsHtml(sharedSrc.photoRows, shopTexts().sharedHeading, 99) : "";
     const sharedHtml = sharedRows
-      ? '    <section class="shared-ex">\n      <div class="shared-ex-head">\n        <div class="shared-ex-label">'+esc(shopTexts().sharedHeading)+'</div>\n'+(shopTexts().sharedNote ? '        <div class="shared-ex-note">'+esc(shopTexts().sharedNote)+'</div>\n' : '')+'      </div>\n      <div class="photo-rows-wrap wide">\n'+sharedRows+'\n      </div>\n    </section>'
+      ? '    <section class="shared-ex">\n      <div class="shared-ex-head">\n        <div class="shared-ex-label">'+(x=>biSpanHtml(x.ko,x.en))(shopTextPair("sharedHeading"))+'</div>\n'+(shopTexts().sharedNote ? '        <div class="shared-ex-note">'+(x=>biSpanHtml(x.ko,x.en))(shopTextPair("sharedNote"))+'</div>\n' : '')+'      </div>\n      <div class="photo-rows-wrap wide">\n'+sharedRows+'\n      </div>\n    </section>'
       : "";
     const others = staticOthersHtml(kind, item, siblings);
     const backHref  = kind === "works" ? "/" : (kind === "shop" ? "/#shop/" + tabForCategory(shopCategory(item)) : "/#text");
@@ -7289,15 +7332,16 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       if(item.soldOut){
         buy = '      <div class="buy-soldout">SOLD OUT</div>';
       } else if(!kr && !us && !bookLinks(item).length){
-        buy = '      <div class="buy-soldout">구매 문의: reyunsung@gmail.com</div>';
+        buy = '      <div class="buy-soldout">'+biSpanHtml("구매 문의: reyunsung@gmail.com","Inquire: reyunsung@gmail.com")+'</div>';
       } else {
         const btns = [];
         const stx = shopTexts();
-        if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(stx.naverLabel)+'</span><span class="sub">'+esc(stx.naverSub)+'</span></a>');
-        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+esc(onSite?stx.paypalLabel:'International')+'</span><span class="sub">'+esc(stx.paypalSub)+'</span></a>');
+        const P = k=>{ const x = shopTextPair(k); return biSpanHtml(x.ko, x.en); };
+        if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+P("naverLabel")+'</span><span class="sub">'+P("naverSub")+'</span></a>');
+        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
         bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
-              ((stx.buyNote && (kr || us)) ? '      <div class="buy-note">'+esc(stx.buyNote)+'</div>' : '');
+              ((stx.buyNote && (kr || us)) ? '      <div class="buy-note">'+P("buyNote")+'</div>' : '');
       }
       // 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 정보 (앱 화면과 같은 구조)
       const gal = [], galF = [];
@@ -7379,7 +7423,7 @@ sharedHtml || '',
 (kind==="shop" ? staticOriginalHtml(item) : ''),
 (others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),
 '  </main>',
-'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy">Privacy Policy · 개인정보처리방침</a></div></footer>',
+'  <footer><div class="shell"><span>&copy; '+new Date().getFullYear()+' LEE YUNSUNG</span> <a class="foot-link" href="/#privacy"><span class="l-ko" lang="ko">개인정보처리방침</span><span class="l-en" lang="en">Privacy Policy</span></a></div></footer>',
 '<script>'+JUSTIFY_JS+'<\/script>',
 '</body>',
 '</html>',
