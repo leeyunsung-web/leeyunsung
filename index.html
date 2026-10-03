@@ -688,6 +688,21 @@
 
   /* ---------- next works (bottom of detail page) ---------- */
   /* 상품 페이지 맨 아래: ORIGINAL WORK (왼쪽 원작 이미지, 오른쪽 설명) */
+  /* 상품 크기 표시: 대표 이미지 + 치수선 + 사양 캡션 */
+  .dim-fig{margin:72px auto 0; width:min(50%, 640px); font-family:var(--shop-font,inherit);}
+  .dim-box{position:relative; padding:0 0 44px 52px;}
+  .dim-box img{display:block; width:100%; height:auto;}
+  .dim-v{position:absolute; left:18px; top:0; bottom:44px; border-left:1px solid var(--ink-soft);}
+  .dim-v::before,.dim-v::after{content:""; position:absolute; left:-6px; width:11px; border-top:1px solid var(--ink-soft);}
+  .dim-v::before{top:0;} .dim-v::after{bottom:0;}
+  .dim-h{position:absolute; left:52px; right:0; bottom:18px; border-top:1px solid var(--ink-soft);}
+  .dim-h::before,.dim-h::after{content:""; position:absolute; top:-6px; height:11px; border-left:1px solid var(--ink-soft);}
+  .dim-h::before{left:0;} .dim-h::after{right:0;}
+  .dim-lab{position:absolute; background:var(--bg,#fff); padding:2px 6px; font-size:12px; letter-spacing:.06em; color:var(--ink-soft); white-space:nowrap;}
+  .dim-v .dim-lab{left:0; top:50%; transform:translate(-50%,-50%) rotate(-90deg);}
+  .dim-h .dim-lab{left:50%; top:0; transform:translate(-50%,-50%);}
+  .dim-cap{margin-top:18px; padding-left:52px; text-align:center; font-size:var(--shop-body,14px); line-height:1.8; color:var(--ink-soft);}
+  @media (max-width:760px){ .dim-fig{width:calc(100% - 32px);} }
   /* 포스터 예시 이미지 (공통 묶음) */
   .shared-ex{margin:88px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
   .shared-ex-head{max-width:var(--content-max-width); margin:0 auto 28px; padding:0 var(--detail-margin);}
@@ -4307,11 +4322,45 @@
     app.appendChild(rowsWrap);
     observeJustifyContainer(rowsWrap);
     scheduleJustifyLayout();
+    renderDimFigure(app, item);
     renderSharedExamples(app, item);
     renderOriginalWork(app, item);
     renderShopBiz(app);
   }
 
+  // 사양 첫 줄 "65 × 50 cm"(세로 × 가로)에서 치수를 읽습니다
+  function parseDims(item){
+    const m = String((item && item.spec1) || "").match(/(\d+(?:\.\d+)?)\s*[×xX*]\s*(\d+(?:\.\d+)?)\s*cm/);
+    return m ? { h:m[1], w:m[2] } : null;
+  }
+  function dimImage(item){
+    if(item.cover) return item.cover;
+    let f = ""; (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(!f && p.image && !isVideoPhoto(p)) f = p.image; }));
+    return f;
+  }
+  function renderDimFigure(app, item){
+    const d = parseDims(item), src = dimImage(item);
+    if(!d || !src || item.sharedSet) return;
+    const fig = el("figure","dim-fig");
+    const box = el("div","dim-box");
+    const im = el("img"); im.src = imgSrc(src); im.alt = (cleanText(item.title) || "") + " — " + d.h + " × " + d.w + " cm"; im.loading = "lazy"; im.decoding = "async";
+    box.appendChild(im);
+    const v = el("div","dim-v"); const vl = el("span","dim-lab"); vl.textContent = d.h + " cm"; v.appendChild(vl); box.appendChild(v);
+    const h = el("div","dim-h"); const hl = el("span","dim-lab"); hl.textContent = d.w + " cm"; h.appendChild(hl); box.appendChild(h);
+    fig.appendChild(box);
+    const specs = [multiLine(item.spec1), multiLine(item.spec2), multiLine(item.edition)].filter(Boolean);
+    if(specs.length){ const cap = el("figcaption","dim-cap"); specs.forEach(x=>{ const ln = el("div","ml"); ln.textContent = x; cap.appendChild(ln); }); fig.appendChild(cap); }
+    app.appendChild(fig);
+  }
+  function dimFigureHtml(item){
+    const d = parseDims(item), src = dimImage(item);
+    if(!d || !src || item.sharedSet) return "";
+    const specs = [multiLine(item.spec1), multiLine(item.spec2), multiLine(item.edition)].filter(Boolean);
+    return '    <figure class="dim-fig">\n      <div class="dim-box"><img src="'+esc(rootPath(src))+'" alt="'+esc((cleanText(item.title)||"")+" — "+d.h+" × "+d.w+" cm")+'" loading="lazy" decoding="async">' +
+           '<div class="dim-v"><span class="dim-lab">'+esc(d.h)+' cm</span></div><div class="dim-h"><span class="dim-lab">'+esc(d.w)+' cm</span></div></div>\n' +
+           (specs.length ? '      <figcaption class="dim-cap">'+specs.map(x=>'<div class="ml">'+esc(x)+'</div>').join("")+'</figcaption>\n' : '') +
+           '    </figure>';
+  }
   // 포스터 예시 이미지 — 공통 묶음을 상품 사진 아래에 붙입니다 (보기 전용; 편집은 묶음 상품 페이지에서)
   function renderSharedExamples(app, item){
     if(!usesSharedExamples(item)) return;
@@ -7419,6 +7468,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
 (kind!=="shop" && hasDesc(item) ? '    <div class="detail-desc"'+styleAttr(item.descStyle)+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>' : ''),
 shopBlock,
 (rowsHtml ? '    <div class="photo-rows-wrap wide">\n'+rowsHtml+'\n    </div>' : ''),
+(kind==="shop" ? dimFigureHtml(item) : ''),
 sharedHtml || '',
 (kind==="shop" ? staticOriginalHtml(item) : ''),
 (others ? '    <div class="next-works-section">\n      <div class="next-works-label">'+(kind==="works"?"Next":(kind==="shop"?"More":"More text"))+'</div>\n      <div class="next-works-grid">\n'+others+'\n      </div>\n    </div>' : ''),

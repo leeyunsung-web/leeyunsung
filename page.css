@@ -654,6 +654,21 @@
 
   /* ---------- next works (bottom of detail page) ---------- */
   /* 상품 페이지 맨 아래: ORIGINAL WORK (왼쪽 원작 이미지, 오른쪽 설명) */
+  /* 상품 크기 표시: 대표 이미지 + 치수선 + 사양 캡션 */
+  .dim-fig{margin:72px auto 0; width:min(50%, 640px); font-family:var(--shop-font,inherit);}
+  .dim-box{position:relative; padding:0 0 44px 52px;}
+  .dim-box img{display:block; width:100%; height:auto;}
+  .dim-v{position:absolute; left:18px; top:0; bottom:44px; border-left:1px solid var(--ink-soft);}
+  .dim-v::before,.dim-v::after{content:""; position:absolute; left:-6px; width:11px; border-top:1px solid var(--ink-soft);}
+  .dim-v::before{top:0;} .dim-v::after{bottom:0;}
+  .dim-h{position:absolute; left:52px; right:0; bottom:18px; border-top:1px solid var(--ink-soft);}
+  .dim-h::before,.dim-h::after{content:""; position:absolute; top:-6px; height:11px; border-left:1px solid var(--ink-soft);}
+  .dim-h::before{left:0;} .dim-h::after{right:0;}
+  .dim-lab{position:absolute; background:var(--bg,#fff); padding:2px 6px; font-size:12px; letter-spacing:.06em; color:var(--ink-soft); white-space:nowrap;}
+  .dim-v .dim-lab{left:0; top:50%; transform:translate(-50%,-50%) rotate(-90deg);}
+  .dim-h .dim-lab{left:50%; top:0; transform:translate(-50%,-50%);}
+  .dim-cap{margin-top:18px; padding-left:52px; text-align:center; font-size:var(--shop-body,14px); line-height:1.8; color:var(--ink-soft);}
+  @media (max-width:760px){ .dim-fig{width:calc(100% - 32px);} }
   /* 포스터 예시 이미지 (공통 묶음) */
   .shared-ex{margin:88px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
   .shared-ex-head{max-width:var(--content-max-width); margin:0 auto 28px; padding:0 var(--detail-margin);}
