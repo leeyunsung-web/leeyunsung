@@ -3733,7 +3733,10 @@
       "author": "이윤성",
       "soldOutExempt": true,
       "bookInfo": {
+        "publisher": "초타원형",
+        "pubDate": "2026-09-30",
         "pages": "45",
+        "weight": "86",
         "size": "188 x 262 mm",
         "isbn13": "9791197318948"
       }
