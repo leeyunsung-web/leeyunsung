@@ -2804,6 +2804,11 @@
   function removeFromCart(id){
     cart.items = cart.items.filter(l=>l.id!==id); saveCart(); renderCart();
   }
+  // 결제 실패: 이유 + "청구되지 않았어요, 다시 시도해 주세요"를 항상 붙여서 크게 보여줌
+  function payFailMsg(reason){
+    const r = String(reason || "Payment could not be completed.").trim();
+    cartMsg(r + (/try again/i.test(r) ? "" : " Please try again.") + " · 결제가 완료되지 않았어요(청구되지 않음). 다시 시도해 주세요.", true);
+  }
   function cartMsg(t, err, loud){
     const m = $("cartMsg"); if(!m) return;
     m.textContent = t || ""; m.classList.toggle("err", !!err);
@@ -3161,7 +3166,7 @@
               ship: SHIP_FIELDS.reduce((o,k)=>{ o[k] = (cart.ship[k]||"").trim(); return o; }, {}) })
           }).then(r=>r.json().then(j=>({ok:r.ok, j}))).then(({ok, j})=>{
             if(!ok || !j.id){
-              cartMsg(j && j.message ? j.message : "Could not start checkout.", true);
+              payFailMsg(j && j.message ? j.message : "Could not start checkout. You have not been charged.");
               if(j && j.error === "SOLD_OUT"){ loadShopInventory(true); }
               if(j && j.error === "SHIP_INFO" && Array.isArray(j.fields)) markMissing(j.fields);
               throw new Error(j && j.error || "create failed");
@@ -3192,12 +3197,12 @@
               }
               if(j && j.restart) return actions.restart();
               if(j && j.error === "SOLD_OUT") loadShopInventory(true);
-              cartMsg((j && j.message) || "Payment could not be completed. You have not been charged.", true);
+              payFailMsg((j && j.message) || "Payment could not be completed. You have not been charged.");
             })
-            .catch(()=>{ unbusy(); cartMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true); });
+            .catch(()=>{ unbusy(); cartMsg("Connection lost while confirming the payment — it may or may not have gone through. Please check MY ORDER or your PayPal account before trying again, or email reyunsung@gmail.com. · 확인 중 연결이 끊겼어요. 다시 결제하기 전에 MY ORDER나 PayPal 내역을 먼저 확인해 주세요.", true); });
         },
         onCancel: ()=> cartMsg("Payment canceled — you have not been charged. · 결제를 취소했어요 (청구되지 않았어요).", false, true),
-        onError: (err)=>{ const m = $("cartMsg"); if(!m || !m.classList.contains("err")) cartMsg("Something went wrong with PayPal. Please try again, or email reyunsung@gmail.com.", true); console.warn(err); }
+        onError: (err)=>{ const m = $("cartMsg"); if(!m || !m.classList.contains("err")) payFailMsg("Something went wrong with PayPal. You have not been charged. If it keeps happening, email reyunsung@gmail.com."); console.warn(err); }
       }).render("#cartPayButtons");
     }).catch(e=>{
       ppState.rendered = false;
