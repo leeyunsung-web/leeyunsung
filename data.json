@@ -2931,7 +2931,8 @@
         "size": "165 x 230mm",
         "isbn13": "9788994027531"
       },
-      "toc": "NU-FRAME\n9 정현 - 구조의 단면\n23 장승연 - ‘참조’의 하이브리드: 여러 ‘전형성’이 한 기표에 섞일 때\n33 작품 목록\nNU-TYPE\n84 임근준 - 이윤성의 회화에 관한 비평적 메모\n101 작품 목록"
+      "toc": "NU-FRAME\n9 정현 - 구조의 단면\n23 장승연 - ‘참조’의 하이브리드: 여러 ‘전형성’이 한 기표에 섞일 때\n33 작품 목록\nNU-TYPE\n84 임근준 - 이윤성의 회화에 관한 비평적 메모\n101 작품 목록",
+      "soldOutExempt": true
     },
     {
       "id": "s-1790623313493-6o5cs",
@@ -3705,7 +3706,7 @@
           ]
         }
       ],
-      "spec1": "45쪽188*262mm86gISBN : 9791197318948",
+      "spec1": "",
       "spec2": "",
       "edition": "",
       "priceKrw": "30000",
@@ -3728,7 +3729,14 @@
         "workId": "w7",
         "image": "./images/w7-cover.jpg"
       },
-      "toc": "1. 완전히 충전된 공간, 불완전한 창문\n2. 시점과 렌더링\n3. 전시전경\n4. 작품\n5. 기쁨을 박제하라"
+      "toc": "1. 완전히 충전된 공간, 불완전한 창문\n2. 시점과 렌더링\n3. 전시전경\n4. 작품\n5. 기쁨을 박제하라",
+      "author": "이윤성",
+      "soldOutExempt": true,
+      "bookInfo": {
+        "pages": "45",
+        "size": "188 x 262 mm",
+        "isbn13": "9791197318948"
+      }
     },
     {
       "id": "s-1790770248545-hgcaz",
@@ -4131,7 +4139,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "90a72bcb:66992",
     "text/exploding-bishojo-baek-jihong/index.html": "ced59ff7:98748",
     "cv/index.html": "c6abe496:10944",
-    "page.css": "443701ae:102308",
+    "page.css": "278f4b29:102624",
     "sitemap.xml": "cce9c7c0:114380",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "79314cca:67424",
