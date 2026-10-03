@@ -3962,8 +3962,8 @@
           "cols": 3,
           "photos": [
             {
-              "id": "p-1790755593306-p3id9",
-              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
+              "id": "p-1791036420664-mcnnw",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
               "caption": ""
             },
             {
@@ -3972,8 +3972,8 @@
               "caption": ""
             },
             {
-              "id": "p-1791036341181-sa2ox",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
+              "id": "p-1791036503744-xah0d",
+              "image": "./images/s-shared-poster-examples-p-1791036503744-xah0d-db154bcd.jpg",
               "caption": ""
             }
           ]
@@ -3983,18 +3983,18 @@
           "cols": 3,
           "photos": [
             {
+              "id": "p-1791036341181-sa2ox",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036462670-acxve",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
+              "caption": ""
+            },
+            {
               "id": "p-1791036406164-xq8bl",
               "image": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036414633-g3ltc",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036420664-mcnnw",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
               "caption": ""
             }
           ]
@@ -4004,18 +4004,18 @@
           "cols": 3,
           "photos": [
             {
-              "id": "p-1791036462670-acxve",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
+              "id": "p-1790755593306-p3id9",
+              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
               "caption": ""
             },
             {
-              "id": "p-1791036469737-40iyf",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
+              "id": "p-1791036497483-lxppd",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
               "caption": ""
             },
             {
-              "id": "p-1791036478669-zx5q9",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
+              "id": "p-1791036414633-g3ltc",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
               "caption": ""
             }
           ]
@@ -4025,18 +4025,18 @@
           "cols": 3,
           "photos": [
             {
+              "id": "p-1791036469737-40iyf",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036478669-zx5q9",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
+              "caption": ""
+            },
+            {
               "id": "p-1791036491554-su6qb",
               "image": "./images/s-1790622121911-1dl7b-p-1791036491554-su6qb-0c866cd6.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036497483-lxppd",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036503744-xah0d",
-              "image": "./images/s-shared-poster-examples-p-1791036503744-xah0d-db154bcd.jpg",
               "caption": ""
             }
           ]
@@ -4055,25 +4055,25 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "c6563b44:31644",
-    "works/torso/index.html": "43acfac:55344",
-    "works/danae/index.html": "8edf60d3:61416",
-    "works/zodiac/index.html": "82e0dd3b:101000",
-    "works/medusa/index.html": "a518d383:56332",
-    "works/laocoon/index.html": "f2540eb0:59924",
-    "works/frames-of-torso/index.html": "553a8b74:51996",
-    "text/critical-notes-lim-geunjun/index.html": "d09776fe:48144",
-    "text/sections-of-structure-jung-hyun/index.html": "7ccebef:47828",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "74fa368b:37260",
-    "text/painting-of-the-cut-konno-yuki/index.html": "f15c0815:32300",
-    "text/taxidermy-of-joy-jo-saemi/index.html": "779139a4:66608",
-    "text/exploding-bishojo-baek-jihong/index.html": "db87db18:98368",
+    "works/the-annunciation/index.html": "4c398b62:31004",
+    "works/torso/index.html": "63f93181:55696",
+    "works/danae/index.html": "e2d8988a:61716",
+    "works/zodiac/index.html": "c6302196:101348",
+    "works/medusa/index.html": "267ff093:56688",
+    "works/laocoon/index.html": "252c8e9c:60304",
+    "works/frames-of-torso/index.html": "e9efe4bb:52380",
+    "text/critical-notes-lim-geunjun/index.html": "19be2ff9:48528",
+    "text/sections-of-structure-jung-hyun/index.html": "ce6006c4:48212",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "32e71298:37644",
+    "text/painting-of-the-cut-konno-yuki/index.html": "cf126a06:32684",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "90a72bcb:66992",
+    "text/exploding-bishojo-baek-jihong/index.html": "ced59ff7:98748",
     "cv/index.html": "c6abe496:10944",
-    "page.css": "7107c2eb:97140",
-    "sitemap.xml": "cd74ba3e:116088",
+    "page.css": "5f0b59ff:98244",
+    "sitemap.xml": "cce9c7c0:114380",
     "robots.txt": "e7785df8:92",
-    "works/pixel-prometheus/index.html": "226e0979:67044",
-    "works/digital/index.html": "775dd29f:31988"
+    "works/pixel-prometheus/index.html": "79314cca:67424",
+    "works/digital/index.html": "e9b68c0f:31300"
   },
   "shopDesign": {
     "mainPct": 56,
