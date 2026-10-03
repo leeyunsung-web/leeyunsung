@@ -5830,13 +5830,16 @@
       const h = img ? img.getBoundingClientRect().height : 0;
       desc.classList.remove("clamp"); desc.style.maxHeight = "";
       if(t.parentNode) t.remove();
-      if(!h || window.innerWidth <= 760) return;
-      if(info.getBoundingClientRect().height <= h + 2) return;
+      const mobile = window.innerWidth <= 760;
+      if(!mobile && !h) return;
+      // 모바일(세로로 쌓임)은 이미지 높이 대신 약 12줄로 줄임
+      const mobileLimit = 330;
+      if(mobile ? desc.getBoundingClientRect().height <= mobileLimit + 60 : info.getBoundingClientRect().height <= h + 2) return;
       label();
       info.insertBefore(t, beforeEl);
       if(open) return;
       const others = info.getBoundingClientRect().height - desc.getBoundingClientRect().height;
-      const limit = Math.max(80, Math.floor(h - others));
+      const limit = mobile ? mobileLimit : Math.max(80, Math.floor(h - others));
       desc.classList.add("clamp"); desc.style.maxHeight = limit + "px";
     };
     const img = imgBox.querySelector("img");
