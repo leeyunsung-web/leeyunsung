@@ -468,6 +468,12 @@
   .cart-label span{color:#b3261e;} .cart-label .opt{color:var(--ink-faint); text-transform:none; letter-spacing:.02em;}
   .cart-input{width:100%; border:1px solid var(--line-strong); border-radius:5px; padding:9px 10px; font:inherit; font-size:13px; background:#fff; color:var(--ink);}
   textarea.cart-input{resize:vertical; min-height:54px;}
+  .cc{position:relative;}
+  .cc-in{background-image:linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%); background-position:calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size:5px 5px; background-repeat:no-repeat; padding-right:28px;}
+  .cc-list{position:absolute; z-index:30; left:0; right:0; top:calc(100% + 2px); max-height:260px; overflow-y:auto; margin:0; padding:4px 0; list-style:none; background:#fff; border:1px solid var(--line-strong); border-radius:5px; box-shadow:0 8px 24px rgba(0,0,0,.12);}
+  .cc-opt{padding:7px 10px; font-size:13px; cursor:pointer; line-height:1.35;}
+  .cc-opt.on{background:#f0f0ee;} .cc-opt.sel{font-weight:600;}
+  .cc-opt.cc-kr, .cc-opt.cc-none{cursor:default; color:var(--ink-soft); font-size:12px; background:#fafaf8;}
   .cart-kr{font-size:11px; line-height:1.6; color:#8a5a14; background:#fff8ec; border:1px solid #f0d9b0; padding:8px 10px; margin-top:8px; border-radius:4px;}
   .cart-sum{margin:16px 0 14px; padding-top:12px; border-top:1px solid var(--line); font-size:13px; line-height:2; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
   .cart-sum div{display:flex; justify-content:space-between;}
@@ -2531,9 +2537,10 @@
   // 재고 수량은 서버(/admin)에만 있고, 여기에는 "구매 가능 / Sold out" 만 옵니다.
   const SHOP_POLICY_DEFAULT =
     "· 국내 주문은 '네이버페이로 구매'를 누르면 네이버 스마트스토어에서 결제·배송됩니다.\n" +
-    "· 해외 주문(PayPal)은 결제 후 영업일 3~5일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다. 수입 관세·세금은 구매자 부담이며, 미국 주문은 관세를 발송 시 선납하고 결제 금액에 포함합니다.\n" +
+    "· 작가가 직접 포장해 일주일에 한 번 모아서 발송합니다. 결제 후 보통 7~10일 안에 발송되며, 발송 후 송장번호를 안내드립니다.\n" +
+    "· 해외 주문(PayPal)은 우체국 EMS(배송 추적 가능)로 보냅니다. 수입 관세·세금은 받는 나라 기준으로 구매자 부담입니다. 미국은 우체국이 발송 때 통관을 미리 처리(DDP)해 받으실 때 따로 내실 금액이 없으며, 포스터·도록은 일반적으로 미국 관세 면제 대상(정보 자료)입니다.\n" +
     "· 작품 수령 후 7일 이내 반품을 요청하실 수 있습니다. 단순 변심 반품은 왕복 배송비를 구매자가 부담하며, 배송 중 파손은 사진과 함께 연락 주시면 전액 환불해 드립니다.\n" +
-    "· International orders (PayPal) ship from Korea via EMS with tracking within 3–5 business days. Import duties and taxes are the buyer's responsibility, except US orders, where import duty is prepaid and included at checkout. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
+    "· Every order is packed by hand and shipped once a week — usually within 7–10 days of payment. You'll receive a tracking number when it ships. International orders (PayPal) ship from Korea via EMS with tracking. Import duties and taxes are the buyer's responsibility, except for US orders, which are cleared duty-paid (DDP) at dispatch, so there is nothing to pay on delivery; prints and books are generally duty-free in the US as informational materials. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
 
   const SHOP_TABS = [
     { slug:"originals", cat:"original", label:"ORIGINALS" },
@@ -2813,7 +2820,11 @@
           '<div class="cart-form" id="cartForm">' +
             '<div class="cart-sec">Shipping details <span class="opt">· 배송 정보 (English)</span></div>' +
             '<label class="cart-label" for="cartCountry">Country <span>*</span></label>' +
-            '<select id="cartCountry" class="cart-input"><option value="">Loading…</option></select>' +
+            '<div class="cc" id="cartCountryBox">' +
+              '<input id="cartCountryQ" class="cart-input cc-in" type="text" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="cartCountryList" placeholder="Type to search — e.g. J for Japan">' +
+              '<ul class="cc-list" id="cartCountryList" role="listbox" hidden></ul>' +
+            '</div>' +
+            '<select id="cartCountry" class="cart-input" hidden aria-hidden="true" tabindex="-1"><option value="">Loading…</option></select>' +
             '<div class="cart-kr" id="cartKrNote" hidden>Korean PayPal accounts may not be able to pay a Korean seller. · 한국 PayPal 계정은 결제가 안 될 수 있어요. 국내 구매는 네이버페이를 이용해 주세요.</div>' +
             '<div class="cart-kr" id="cartDutyNote" hidden></div>' +
             '<label class="cart-label" for="shipName">Full name <span>*</span></label>' +
@@ -2846,13 +2857,14 @@
           '<div class="cart-sum" id="cartSum"></div>' +
           '<div id="cartPayButtons" class="cart-pay"></div>' +
           '<div class="cart-msg" id="cartMsg"></div>' +
-          '<div class="cart-fine">Your shipping details are sent with your PayPal order. Credit/debit cards accepted. Ships from Korea via EMS with tracking. Import duties/taxes are the buyer\'s responsibility, except US orders where duty is prepaid and included above. By paying you agree to our <a href="#privacy">Privacy Policy</a>.</div>' +
+          '<div class="cart-fine">Your shipping details are sent with your PayPal order. Credit/debit cards accepted. Packed by hand and shipped once a week — usually within 7–10 days — from Korea via EMS with tracking. Import duties/taxes are the buyer\'s responsibility, except US orders, which ship duty-paid (nothing to pay on delivery). By paying you agree to our <a href="#privacy">Privacy Policy</a>.</div>' +
         '</div>' +
         '<div class="cart-done" id="cartDone" hidden></div>' +
       '</div>';
     document.body.appendChild(d);
     $("cartTab").addEventListener("click", ()=>{ cart.collapsed = false; saveCart(); renderCart(); });
     $("cartFold").addEventListener("click", ()=>{ cart.collapsed = true; saveCart(); renderCart(); });
+    setupCountryCombo();
     $("cartCountry").addEventListener("change", ()=>{ cart.country = $("cartCountry").value; $("cartCountry").classList.remove("invalid"); saveCart(); cartMsg(""); renderCart(); });
     $("cartNote").addEventListener("input", ()=>{ cart.note = $("cartNote").value.slice(0,300); saveCart(); });
     d.querySelectorAll("[data-f]").forEach(inp=>{
@@ -2896,7 +2908,7 @@
       const ul = el("div","done-lines");
       (o.lines||[]).forEach(l=>{ const r = el("div"); r.textContent = l.title + (l.qty>1 ? " × " + l.qty : ""); ul.appendChild(r); });
       const t3 = el("div"); t3.textContent = "Total $" + o.total + " (incl. shipping $" + o.ship + (Number(o.duty) > 0 ? ", US duty $" + o.duty : "") + ")";
-      const t4 = el("div","fine"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". I'll ship within a few days and send you the tracking number.";
+      const t4 = el("div","fine"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". Orders are packed by hand and shipped once a week — usually within 7–10 days. I'll email you the tracking number.";
       const close = el("button","cart-close-done"); close.type = "button"; close.textContent = "Close";
       close.addEventListener("click", ()=>{ cart.done = null; saveCart(); renderCart(); });
       [big,ko,t1,t2,ul,t3,t4,close].forEach(x=>done.appendChild(x));
@@ -2947,12 +2959,13 @@
     if(cfg && sel.dataset.filled !== "1"){
       sel.innerHTML = "";
       const o0 = el("option"); o0.value = ""; o0.textContent = "Select country…"; sel.appendChild(o0);
-      cfg.countries.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
+      cfg.countries.filter(x=>x.code !== "KR").sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
         const o = el("option"); o.value = x.code; o.textContent = x.name; sel.appendChild(o);
       });
       sel.dataset.filled = "1";
     }
-    if(sel.dataset.filled === "1") sel.value = cfg.countries.some(x=>x.code===cart.country) ? cart.country : "";
+    if(sel.dataset.filled === "1") sel.value = cfg.countries.some(x=>x.code===cart.country && x.code !== "KR") ? cart.country : "";
+    syncCountryInput();
     if(document.activeElement !== $("cartNote")) $("cartNote").value = cart.note || "";
     $("cartKrNote").hidden = cart.country !== "KR";
     renderShipFields(cfg);
@@ -3041,11 +3054,75 @@
     if(cfg.taxId && cfg.taxId[c] && (s.taxId||"").trim().length < 4) miss.push("taxId");
     return miss;
   }
+  /* 나라 고르기 — 글자를 치면 바로 걸러지고(J → Japan, Jamaica…), ↑↓·Enter로 고름.
+     실제 값은 숨긴 <select id="cartCountry">에 넣어서 기존 계산·검사는 그대로 씀 */
+  const COUNTRY_ALIAS = { US:"usa america united states", GB:"uk britain england great britain", AE:"uae emirates", NL:"holland", CZ:"czechia", KR:"korea" };
+  function countryOptions(){
+    return Array.from($("cartCountry").options).filter(o=>o.value).map(o=>({ code:o.value, name:o.textContent }));
+  }
+  function syncCountryInput(){
+    const q = $("cartCountryQ"); if(!q || document.activeElement === q) return;
+    const o = countryOptions().find(x=>x.code === $("cartCountry").value);
+    q.value = o ? o.name : "";
+  }
+  function setupCountryCombo(){
+    const q = $("cartCountryQ"), list = $("cartCountryList"), sel = $("cartCountry");
+    if(!q || q.dataset.ready) return; q.dataset.ready = "1";
+    let items = [], active = 0;
+    const norm = t=>String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+    const draw = ()=>{
+      const t = norm(q.value);
+      const all = countryOptions();
+      if(!t) items = all;
+      else {
+        const starts = all.filter(x=>norm(x.name).startsWith(t) || norm(x.code) === t);
+        const words = all.filter(x=>!starts.includes(x) && (norm(x.name).split(/[\s-]+/).some(w=>w.startsWith(t)) || (COUNTRY_ALIAS[x.code]||"").split(" ").some(w=>w.startsWith(t))));
+        const inside = all.filter(x=>!starts.includes(x) && !words.includes(x) && norm(x.name).includes(t));
+        items = starts.concat(words, inside);
+      }
+      list.innerHTML = "";
+      items.forEach((x, i)=>{
+        const li = el("li","cc-opt" + (i === active ? " on" : "") + (x.code === sel.value ? " sel" : ""));
+        li.setAttribute("role","option"); li.textContent = x.name; li.dataset.code = x.code;
+        li.addEventListener("mousedown", e=>{ e.preventDefault(); choose(x.code); });
+        list.appendChild(li);
+      });
+      if(t && /^(k|ko|kor|kore|korea|south k|south ko|대|한|한국|대한)/.test(t)){
+        const li = el("li","cc-opt cc-kr"); li.textContent = "South Korea — please use Naver Pay · 국내 구매는 네이버페이로";
+        list.appendChild(li);
+      }
+      if(!items.length && !list.children.length){ const li = el("li","cc-opt cc-none"); li.textContent = "No matching country"; list.appendChild(li); }
+      const on = list.querySelector(".on"); if(on) on.scrollIntoView({block:"nearest"});
+    };
+    const open = ()=>{ list.hidden = false; q.setAttribute("aria-expanded","true"); };
+    const close = ()=>{ list.hidden = true; q.setAttribute("aria-expanded","false"); };
+    const choose = code=>{
+      sel.value = code; sel.dispatchEvent(new Event("change"));
+      q.classList.remove("invalid"); close();
+      const o = countryOptions().find(x=>x.code === code); q.value = o ? o.name : "";
+      q.blur();
+    };
+    q.addEventListener("focus", ()=>{
+      active = Math.max(0, countryOptions().findIndex(x=>x.code === sel.value));
+      q.select(); q.value = ""; draw(); open();
+      // 이미 고른 나라가 있으면 목록에서 그 위치를 보여줌
+      const s0 = list.querySelector(".sel"); if(s0) s0.scrollIntoView({block:"center"});
+    });
+    q.addEventListener("input", ()=>{ active = 0; draw(); open(); });
+    q.addEventListener("keydown", e=>{
+      if(e.key === "ArrowDown"){ e.preventDefault(); active = Math.min(items.length-1, active+1); draw(); }
+      else if(e.key === "ArrowUp"){ e.preventDefault(); active = Math.max(0, active-1); draw(); }
+      else if(e.key === "Enter"){ e.preventDefault(); if(items[active]) choose(items[active].code); }
+      else if(e.key === "Escape"){ close(); q.blur(); }
+    });
+    q.addEventListener("blur", ()=>{ setTimeout(()=>{ close(); syncCountryInput(); }, 120); });
+  }
+
   function markMissing(fields){
     document.querySelectorAll("#cartDrawer .invalid").forEach(x=>x.classList.remove("invalid"));
     let first = null;
     fields.forEach(f=>{
-      const nodes = f === "country" ? [$("cartCountry")] : Array.from(document.querySelectorAll('#cartDrawer [data-f="'+f+'"]')).filter(n=>!n.hidden);
+      const nodes = f === "country" ? [$("cartCountryQ")] : Array.from(document.querySelectorAll('#cartDrawer [data-f="'+f+'"]')).filter(n=>!n.hidden);
       nodes.forEach(n=>{ n.classList.add("invalid"); if(!first) first = n; });
     });
     if(first){ first.focus(); first.scrollIntoView({block:"center", behavior:"smooth"}); }
