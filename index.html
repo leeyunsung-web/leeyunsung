@@ -3372,11 +3372,15 @@
       { title:"SHOP 운영 정보", note:"결제 서버 주소는 비밀 정보가 아니에요. 사업자 정보는 SHOP 맨 아래에 표시돼요.", items:[
         ["shop","shopApi","text","결제 서버 주소 (Cloudflare Worker)", {placeholder:"https://leeyunsung-shop.○○○.workers.dev"}],
         ["biz","name","text","상호", {}],
+        ["biz","nameEn","text","상호 (영문)", {}],
         ["biz","owner","text","대표자", {}],
+        ["biz","ownerEn","text","대표자 (영문)", {placeholder:"Yunsung Lee"}],
         ["biz","regNo","text","사업자등록번호", {placeholder:"000-00-00000"}],
         ["biz","mailOrderNo","text","통신판매업 신고번호 (면제면 비워두기)", {}],
         ["biz","address","text","사업장 주소", {}],
+        ["biz","addressEn","text","사업장 주소 (영문)", {}],
         ["biz","phone","text","연락처", {}],
+        ["biz","phoneEn","text","연락처 (해외 표기)", {placeholder:"+82 ..."}],
         ["biz","email","text","이메일", {}],
         ["shop","shopPolicy","textarea","교환·환불 / 배송 안내", {placeholder:SHOP_POLICY_DEFAULT, rows:8}]
       ]},
@@ -3631,8 +3635,9 @@
     const email = cleanText(b.email) || "reyunsung@gmail.com";
     return {
       name: cleanText(b.name) || "LEE YUNSUNG",
+      nameEn: cleanText(b.nameEn) || cleanText(b.name) || "LEE YUNSUNG",
       owner: cleanText(b.owner) || "이윤성",
-      ownerEn: "Yunsung Lee",
+      ownerEn: cleanText(b.ownerEn) || "Yunsung Lee",
       email,
       date: cleanText(state.data && state.data.privacyDate) || PRIVACY_DATE_DEFAULT
     };
@@ -3705,7 +3710,7 @@
   function privacyDefaultEn(){
     const v = privacyVars();
     return [
-      "This Privacy Policy explains how " + v.name + " (\"we\") handles personal information collected through leeyunsung.com.",
+      "This Privacy Policy explains how " + v.nameEn + " (\"we\") handles personal information collected through leeyunsung.com.",
       "",
       "1. What we collect",
       "· International orders (PayPal): recipient name, email, phone number, shipping address, tax ID where required (e.g. Brazil CPF), your order note, order details and payment reference.",
@@ -3768,12 +3773,14 @@
     const b = state.data.business || {};
     const box = el("div","shop-biz");
     const parts = [
-      ["상호", "Business", b.name], ["대표", "Representative", b.owner], ["사업자등록번호", "Business Reg. No.", b.regNo], ["통신판매업 신고", "Mail-order Reg. No.", b.mailOrderNo],
-      ["주소", "Address", b.address], ["연락처", "Phone", b.phone], ["이메일", "Email", b.email]
-    ].filter(x=>cleanText(x[2]));
+      ["상호", "Business", b.name, b.nameEn], ["대표", "Representative", b.owner, b.ownerEn], ["사업자등록번호", "Business Reg. No.", b.regNo], ["통신판매업 신고", "Mail-order Reg. No.", b.mailOrderNo],
+      ["주소", "Address", b.address, b.addressEn], ["연락처", "Phone", b.phone, b.phoneEn], ["이메일", "Email", b.email]
+    ].filter(x=>cleanText(x[2]) || cleanText(x[3]));
     if(parts.length){
       const d = el("div");
-      biText(d, parts.map(x=>x[0] + " " + cleanText(x[2])).join("  ·  "), parts.map(x=>x[1] + " " + cleanText(x[2])).join("  ·  "));
+      const ko = parts.filter(x=>cleanText(x[2])).map(x=>x[0] + " " + cleanText(x[2]));
+      const en = parts.map(x=>x[1] + " " + (cleanText(x[3]) || cleanText(x[2])));
+      biText(d, ko.join("  ·  "), en.join("  ·  "));
       box.appendChild(d);
     } else if(state.master){
       const d = el("div"); d.textContent = "(마스터 모드에서만 보임) SHOP 설정에서 사업자 정보를 입력해 주세요 — 온라인 판매 시 표시 의무가 있어요.";
