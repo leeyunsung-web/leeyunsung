@@ -2904,7 +2904,7 @@
       "id": "s-1790622337229-hzfwn",
       "title": "NU",
       "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
-      "description": "Yunsung Lee \n\n\n미디어버스 / 165 x 230mm / 132P디자인: 신신(신해옥, 신동혁)2016ISBN 978-89-94027-53-1 03600\n(절판)",
+      "description": "2015년 11월 두산갤러리에서 있었던 이윤성 작가 개인전 「NU-FRAME」의 일환으로 발행된 책이다. 전시의 주요 작품인 '다나에' 연작을 여러 페이지를 통해 보여주고 있으며 동시에 2014년 메이크샵아트스페이스에서 있었던 개인전 「NU-TYPE」의 '토르소' 연작도 함께 소개한다. 건축가 정현, 아트인컬쳐 장승연 편집장, 미술 디자인 평론가 임근준의 글도 수록되어 작가의 작품 세계와 작품 이해를 돕는다.",
       "slug": "shop-2",
       "photoRows": [
         {
@@ -2941,13 +2941,20 @@
       "category": "book",
       "shipProfile": "book",
       "coverInRows": true,
-      "author": "",
-      "authorEn": "",
+      "author": "이윤성",
       "year": "",
       "bookLinks": {
         "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=81889394"
       },
-      "rowCols": 5
+      "rowCols": 5,
+      "bookInfo": {
+        "publisher": "미디어버스",
+        "pubDate": "2016-03-20",
+        "weight": "251g",
+        "size": "165 x 230mm",
+        "isbn13": "9788994027531"
+      },
+      "toc": "NU-FRAME\n9 정현 - 구조의 단면\n23 장승연 - ‘참조’의 하이브리드: 여러 ‘전형성’이 한 기표에 섞일 때\n33 작품 목록\nNU-TYPE\n84 임근준 - 이윤성의 회화에 관한 비평적 메모\n101 작품 목록"
     },
     {
       "id": "s-1790623313493-6o5cs",
@@ -4156,7 +4163,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "90a72bcb:66992",
     "text/exploding-bishojo-baek-jihong/index.html": "ced59ff7:98748",
     "cv/index.html": "c6abe496:10944",
-    "page.css": "ba1d0e54:98248",
+    "page.css": "5c84b819:101096",
     "sitemap.xml": "cce9c7c0:114380",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "79314cca:67424",
