@@ -2906,30 +2906,7 @@
       "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
       "description": "2015년 11월 두산갤러리에서 있었던 이윤성 작가 개인전 「NU-FRAME」의 일환으로 발행된 책이다. 전시의 주요 작품인 '다나에' 연작을 여러 페이지를 통해 보여주고 있으며 동시에 2014년 메이크샵아트스페이스에서 있었던 개인전 「NU-TYPE」의 '토르소' 연작도 함께 소개한다. 건축가 정현, 아트인컬쳐 장승연 편집장, 미술 디자인 평론가 임근준의 글도 수록되어 작가의 작품 세계와 작품 이해를 돕는다.",
       "slug": "shop-2",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790622337229-hzfwn-680ff6",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790622337229-hzfwn-680ff6",
-              "image": "./images/s-1790622337229-hzfwn-cover.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1790627691166-z4a6o",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790627691166-bhyrs",
-              "image": "./images/s-1790622337229-hzfwn-p-1790627691166-bhyrs.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
+      "photoRows": [],
       "spec1": "",
       "spec2": "",
       "edition": "",
