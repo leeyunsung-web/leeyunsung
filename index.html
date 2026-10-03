@@ -481,6 +481,9 @@
   .cart-pay{min-height:44px;}
   .cart-msg{font-size:12px; line-height:1.6; margin-top:10px; color:var(--ink-soft);}
   .cart-msg.err{color:#b3261e;}
+  .cart-msg.loud{font-size:13px; font-weight:600; padding:10px 12px; border-radius:5px; background:#f6f6f2; color:var(--ink);}
+  .cart-msg.loud.err{background:#fdf0ef; color:#b3261e;}
+  .cart-pay.busy{opacity:.35; pointer-events:none;}
   .cart-fine{font-size:10.5px; line-height:1.6; color:var(--ink-faint); margin-top:12px;}
   .cart-done{padding:36px 22px; text-align:center; line-height:1.9; font-size:13px; color:var(--ink-soft);}
   .cart-done .big{font-size:15px; letter-spacing:.2em; color:#1f5a1f;}
@@ -2801,9 +2804,16 @@
   function removeFromCart(id){
     cart.items = cart.items.filter(l=>l.id!==id); saveCart(); renderCart();
   }
-  function cartMsg(t, err){
+  function cartMsg(t, err, loud){
     const m = $("cartMsg"); if(!m) return;
     m.textContent = t || ""; m.classList.toggle("err", !!err);
+    // 결제 진행·결과처럼 중요한 메시지는 크게 보여주고, 장바구니를 펼쳐 그 자리로 스크롤
+    m.classList.toggle("loud", !!(t && (loud || err)));
+    if(t && (loud || err)){
+      const d = $("cartDrawer");
+      if(d && d.classList.contains("collapsed")){ cart.collapsed = false; d.classList.remove("collapsed"); }
+      try{ m.scrollIntoView({block:"center", behavior:"smooth"}); }catch(e){}
+    }
   }
 
   function ensureCartDom(){
@@ -3159,10 +3169,14 @@
             return j.id;
           }),
         onApprove: (data, actions)=>{
-          cartMsg("Completing payment… · 결제 확인 중…");
+          cartMsg("Completing payment — please don't close this page… · 결제 확인 중이에요. 창을 닫지 마세요…", false, true);
+          const pb = $("cartPayButtons"); if(pb) pb.classList.add("busy");
+          const slow = setTimeout(()=>cartMsg("Still confirming with PayPal… · PayPal 확인이 조금 걸리고 있어요…", false, true), 12000);
+          const unbusy = ()=>{ clearTimeout(slow); if(pb) pb.classList.remove("busy"); };
           return fetch(api + "/api/orders/" + encodeURIComponent(data.orderID) + "/capture", {method:"POST"})
             .then(r=>r.json().then(j=>({ok:r.ok, j})))
             .then(({ok, j})=>{
+              unbusy();
               if(ok && j.ok){
                 const o = j.order;
                 cart.done = { no:o.no, total:o.total, ship:o.ship, duty:o.duty, email:o.email, lines:o.lines };
@@ -3180,9 +3194,9 @@
               if(j && j.error === "SOLD_OUT") loadShopInventory(true);
               cartMsg((j && j.message) || "Payment could not be completed. You have not been charged.", true);
             })
-            .catch(()=> cartMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true));
+            .catch(()=>{ unbusy(); cartMsg("Network error while confirming the payment. Please check your PayPal account or email reyunsung@gmail.com before trying again.", true); });
         },
-        onCancel: ()=> cartMsg("Payment canceled. · 결제를 취소했어요."),
+        onCancel: ()=> cartMsg("Payment canceled — you have not been charged. · 결제를 취소했어요 (청구되지 않았어요).", false, true),
         onError: (err)=>{ const m = $("cartMsg"); if(!m || !m.classList.contains("err")) cartMsg("Something went wrong with PayPal. Please try again, or email reyunsung@gmail.com.", true); console.warn(err); }
       }).render("#cartPayButtons");
     }).catch(e=>{
