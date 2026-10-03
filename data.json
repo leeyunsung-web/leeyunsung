@@ -2880,27 +2880,6 @@
               "caption": ""
             }
           ]
-        },
-        {
-          "id": "row-1791037713968-own2",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1790755593306-p3id9",
-              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036333099-7e7l2",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036333099-7e7l2-ce959e0c.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036341181-sa2ox",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
-              "caption": ""
-            }
-          ]
         }
       ],
       "spec1": "65 × 50 cm",
@@ -3976,10 +3955,31 @@
       "buyUs": "",
       "soldOut": false,
       "coverInRows": false,
-      "cover": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
+      "cover": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
       "photoRows": [
         {
           "id": "row-shared-1",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1790755593306-p3id9",
+              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036333099-7e7l2",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036333099-7e7l2-ce959e0c.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036341181-sa2ox",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-2",
           "cols": 3,
           "photos": [
             {
@@ -4000,7 +4000,7 @@
           ]
         },
         {
-          "id": "row-shared-2",
+          "id": "row-shared-3",
           "cols": 3,
           "photos": [
             {
@@ -4021,7 +4021,7 @@
           ]
         },
         {
-          "id": "row-shared-3",
+          "id": "row-shared-4",
           "cols": 3,
           "photos": [
             {
