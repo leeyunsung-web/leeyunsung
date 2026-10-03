@@ -447,6 +447,9 @@
   .cart-pay{min-height:44px;}
   .cart-msg{font-size:12px; line-height:1.6; margin-top:10px; color:var(--ink-soft);}
   .cart-msg.err{color:#b3261e;}
+  .cart-msg.loud{font-size:13px; font-weight:600; padding:10px 12px; border-radius:5px; background:#f6f6f2; color:var(--ink);}
+  .cart-msg.loud.err{background:#fdf0ef; color:#b3261e;}
+  .cart-pay.busy{opacity:.35; pointer-events:none;}
   .cart-fine{font-size:10.5px; line-height:1.6; color:var(--ink-faint); margin-top:12px;}
   .cart-done{padding:36px 22px; text-align:center; line-height:1.9; font-size:13px; color:var(--ink-soft);}
   .cart-done .big{font-size:15px; letter-spacing:.2em; color:#1f5a1f;}
