@@ -2780,7 +2780,8 @@
     const count = {flat:0, tube:0, book:0};
     lines.forEach(l=>{ count[shopProfile(l.item)] += l.qty; });
     let t = 0;
-    Object.keys(count).forEach(p=>{ if(count[p]) t += numVal(z[p]) + numVal(z.add) * (count[p]-1); });
+    // 포스터는 지관통 하나에 3장까지 같이 넣음 → 지관통 수가 늘 때만 추가 금액 (서버와 같은 규칙)
+    Object.keys(count).forEach(p=>{ if(count[p]){ const units = p === "tube" ? Math.ceil(count[p] / 3) : count[p]; t += numVal(z[p]) + numVal(z.add) * (units-1); } });
     return Math.round(t*100)/100;
   }
 
