@@ -2940,7 +2940,14 @@
       "soldOut": false,
       "category": "book",
       "shipProfile": "book",
-      "coverInRows": true
+      "coverInRows": true,
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "bookLinks": {
+        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=81889394"
+      },
+      "rowCols": 5
     },
     {
       "id": "s-1790623313493-6o5cs",
