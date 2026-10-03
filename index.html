@@ -296,6 +296,26 @@
   .pd-info{padding-top:4px; min-width:0;}
   .pd-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
   .pd-title{font-size:var(--shop-title,26px); line-height:1.25; font-weight:600; letter-spacing:.005em; margin:0;}
+  .book-meta{margin-top:10px; font-size:calc(var(--shop-body,14px) - 1px); color:var(--ink-soft); line-height:1.6;}
+  .book-secs{max-width:1320px; margin:64px auto 0; padding:0 clamp(16px,3vw,40px); font-family:var(--shop-font,inherit);}
+  .book-sec{border-top:1px solid var(--ink); padding:22px 0 40px;}
+  .book-h{font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; margin:0 0 18px; color:var(--ink);}
+  html[data-lang="ko"] .book-h{letter-spacing:.04em; font-size:15px;}
+  .book-desc{font-size:var(--shop-body,14px); line-height:1.85; color:var(--ink); white-space:pre-line; max-width:820px;}
+  .book-toc{font-size:var(--shop-body,14px); line-height:1.9; color:var(--ink); white-space:pre-line; max-width:820px;}
+  .book-toc.clamp{max-height:calc(1.9em * 14); overflow:hidden; position:relative;}
+  .book-toc.clamp::after{content:""; position:absolute; left:0; right:0; bottom:0; height:60px; background:linear-gradient(rgba(255,255,255,0), var(--bg,#fff));}
+  .book-more{margin-top:12px; background:none; border:1px solid var(--line); padding:8px 16px; font:inherit; font-size:12px; letter-spacing:.06em; cursor:pointer; color:var(--ink);}
+  .book-more .m2{display:none;} .book-more.open .m1{display:none;} .book-more.open .m2{display:inline;}
+  .book-info{border-collapse:collapse; width:100%; max-width:820px; font-size:var(--shop-body,14px);}
+  .book-info th, .book-info td{border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:11px 14px; text-align:left; vertical-align:top; line-height:1.6;}
+  .book-info th{width:150px; background:#f6f6f4; font-weight:500; color:var(--ink-soft); white-space:nowrap;}
+  .book-info td{font-variant-numeric:tabular-nums;}
+  @media (max-width:640px){ .book-info th{width:96px; padding:10px;} .book-info td{padding:10px;} .book-secs{margin-top:44px;} }
+  .shop-author{font-size:calc(var(--shop-grid-title,13px) - 1px); color:var(--ink-soft); margin-top:3px;}
+  .bookinfo-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 10px;}
+  .bi-lab{display:block; font-size:11px; color:#888; margin:0 0 3px;}
+  #bookInfoField textarea{width:100%;}
   .pd-specs{margin-top:14px; font-size:calc(var(--shop-body,14px) - 1px); line-height:1.7; color:var(--ink-soft);}
   .pd-price{margin-top:18px; font-size:var(--shop-price,17px); letter-spacing:.02em; font-variant-numeric:tabular-nums;}
   .pd-price.sold{color:var(--ink-faint);}
@@ -1256,7 +1276,28 @@
             <input type="text" id="itemBookKyobo" placeholder="교보문고 — https://product.kyobobook.co.kr/detail/…" style="margin-bottom:6px;">
             <input type="text" id="itemBookYes24" placeholder="YES24 — https://www.yes24.com/product/goods/…">
           </div>
+          <div class="field" id="bookInfoField" style="display:none;">
+            <label>도서 정보 <span style="color:#999;font-weight:400;">— 도록(BOOKS)만. 서점처럼 저자·품목정보·목차로 보여요 (빈 칸은 안 보임)</span></label>
+            <div class="bookinfo-grid">
+              <div><span class="bi-lab">저자 — 한국어</span><input type="text" id="itemBookAuthor" placeholder="예: 이윤성"></div>
+              <div><span class="bi-lab">Author — English</span><input type="text" id="itemBookAuthorEn" placeholder="e.g. Yunsung Lee"></div>
+              <div><span class="bi-lab">출판사 — 한국어</span><input type="text" id="itemBookPublisher" placeholder="예: 미디어버스"></div>
+              <div><span class="bi-lab">Publisher — English</span><input type="text" id="itemBookPublisherEn" placeholder="e.g. Mediabus"></div>
+              <div><span class="bi-lab">발행일</span><input type="text" id="itemBookPubDate" placeholder="2016-05-20"></div>
+              <div><span class="bi-lab">쪽수</span><input type="text" id="itemBookPages" placeholder="132" inputmode="numeric"></div>
+              <div><span class="bi-lab">무게 (g)</span><input type="text" id="itemBookWeight" placeholder="450" inputmode="numeric"></div>
+              <div><span class="bi-lab">크기</span><input type="text" id="itemBookSize" placeholder="165 × 230 mm"></div>
+              <div><span class="bi-lab">ISBN13</span><input type="text" id="itemBookIsbn13" placeholder="9788994027531" inputmode="numeric"></div>
+              <div><span class="bi-lab">ISBN10</span><input type="text" id="itemBookIsbn10" placeholder="8994027535"></div>
+            </div>
+            <span class="bi-lab" style="margin-top:10px;">목차 — 한국어 <span style="color:#aaa;">(한 줄에 한 항목)</span></span>
+            <textarea id="itemBookToc" rows="6" placeholder="서문&#10;1부 …&#10;작품 목록"></textarea>
+            <span class="bi-lab" style="margin-top:8px;">Contents — English <span style="color:#aaa;">(비우면 한국어 목차를 그대로 보여줘요)</span></span>
+            <textarea id="itemBookTocEn" rows="4" placeholder="Foreword&#10;Part 1 …"></textarea>
+          </div>
           <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (네이버·PayPal 모두 SOLD OUT 표시)</label></div>
+          <div class="field"><label><input type="checkbox" id="itemSoldOutExempt" style="width:auto;margin-right:8px;vertical-align:middle;">솔드아웃 예외 — 재고를 안 넣어도 Sold out이 뜨지 않아요</label>
+            <div class="field-hint">서점·외부 링크로만 파는 상품용. 홈페이지 PayPal 재고가 0이면 PayPal 버튼만 숨기고, 외부 링크 버튼은 그대로 보여요. (위 '판매 완료'를 체크하면 그게 우선)</div></div>
           <div class="field"><label><input type="checkbox" id="itemSharedSet" style="width:auto;margin-right:8px;vertical-align:middle;">포스터 예시 이미지 묶음으로 쓰기</label>
             <div class="field-hint">이 상품의 사진들이 모든 포스터(에디션) 상품 페이지 아래에 "포스터 예시 이미지"로 붙어요. 이 상품 자체는 목록에 안 보이고, 마스터 모드에서만 열어서 사진을 관리해요. 소제목·안내문은 SHOP 설정에서 바꿔요. (한 상품만 체크)</div></div>
           <div class="field orig-field">
@@ -1924,6 +1965,16 @@
     if(cleanText(item.spec2)) ld.material = cleanText(item.spec2);
     if(cleanText(item.spec1)) ld.size = cleanText(item.spec1);
     if(offers.length) ld.offers = offers.length===1 ? offers[0] : offers;
+    if(isBookItem(item)){
+      const b = bookInfo(item);
+      ld["@type"] = ["Product","Book"];
+      if(cleanText(item.author) || cleanText(item.authorEn)) ld.author = {"@type":"Person","name": cleanText(item.authorEn) || cleanText(item.author)};
+      if(cleanText(b.publisher) || cleanText(b.publisherEn)) ld.publisher = {"@type":"Organization","name": cleanText(b.publisherEn) || cleanText(b.publisher)};
+      if(cleanText(b.pubDate)) ld.datePublished = cleanText(b.pubDate);
+      const pg = parseInt(String(b.pages||"").replace(/[^0-9]/g,""),10); if(pg > 0) ld.numberOfPages = pg;
+      if(cleanText(b.isbn13) || cleanText(b.isbn10)) ld.isbn = cleanText(b.isbn13) || cleanText(b.isbn10);
+      if(cleanText(b.size)) ld.size = cleanText(b.size);
+    }
     return ld;
   }
 
@@ -2518,6 +2569,58 @@
     return BOOK_STORES.map(st=>({ key:st.key, label:st.label, en:st.en, url:safeUrl(b[st.key]) })).filter(x=>x.url);
   }
 
+  // 도록 — 서점식 정보 (저자·출판사·품목정보·목차)
+  const BOOK_INFO_FIELDS = [
+    ["pubDate","발행일","Publication Date"], ["pages","쪽수","Pages"], ["weight","무게","Weight"],
+    ["size","크기","Dimensions"], ["isbn13","ISBN13","ISBN-13"], ["isbn10","ISBN10","ISBN-10"]
+  ];
+  function bookInfo(item){ return (item && item.bookInfo && typeof item.bookInfo === "object") ? item.bookInfo : {}; }
+  function isBookItem(item){ return shopCategory(item) === "book"; }
+  // 숫자만 넣었으면 단위를 붙여 보여줌 (132 → 132쪽 / 132 pages, 450 → 450g)
+  function bookInfoValue(k, v){
+    v = cleanText(v); if(!v) return null;
+    const n = /^\d[\d,]*$/.test(v);
+    if(k === "pages" && n) return [v + "쪽", v + " pages"];
+    if(k === "weight" && n) return [v + "g", v + " g"];
+    return [v, v];
+  }
+  function bookMetaHtml(item){
+    const b = bookInfo(item);
+    const au = cleanText(item.author), auEn = cleanText(item.authorEn) || au;
+    const pub = cleanText(b.publisher), pubEn = cleanText(b.publisherEn) || pub;
+    const date = cleanText(b.pubDate);
+    const ko = [au ? au + " 저" : "", pub, date].filter(Boolean).join("  ·  ");
+    const en = [auEn ? "by " + auEn : "", pubEn, date].filter(Boolean).join("  ·  ");
+    return (ko || en) ? '<div class="book-meta">' + biSpanHtml(ko, en) + '</div>' : "";
+  }
+  // 상세페이지 아래 — 책 소개 / 목차 / 품목정보 (앱 화면과 정적 페이지가 같은 HTML을 씀)
+  function bookSectionsHtml(item){
+    const out = [];
+    const H = (ko, en)=>'<h2 class="book-h">' + biSpanHtml(ko, en) + '</h2>';
+    if(hasDesc(item)){
+      out.push('<section class="book-sec">' + H("책 소개", "About the Book") +
+        '<div class="book-desc"' + (item.descStyle && item.descStyle.lineHeight ? ' style="line-height:' + item.descStyle.lineHeight + '"' : '') + '>' +
+        bilingualHtml(item.description, item.descriptionEn) + '</div></section>');
+    }
+    const toc = String(item.toc || "").trim(), tocEn = String(item.tocEn || "").trim();
+    if(toc || tocEn){
+      const lines = Math.max(toc.split("\n").length, tocEn.split("\n").length);
+      const long = lines > 14;
+      const body = (toc && tocEn) ? '<div class="l-ko" lang="ko">' + esc(toc) + '</div><div class="l-en" lang="en">' + esc(tocEn) + '</div>' : esc(toc || tocEn);
+      out.push('<section class="book-sec">' + H("목차", "Contents") +
+        '<div class="book-toc' + (long ? ' clamp' : '') + '">' + body + '</div>' +
+        (long ? '<button type="button" class="book-more" onclick="var t=this.previousElementSibling;var o=t.classList.toggle(\'clamp\');this.classList.toggle(\'open\',!o);">' +
+                '<span class="m1">' + biSpanHtml("목차 더보기", "Show all") + '</span><span class="m2">' + biSpanHtml("접기", "Show less") + '</span></button>' : '') +
+        '</section>');
+    }
+    const b = bookInfo(item);
+    const rows = BOOK_INFO_FIELDS.map(([k, ko, en])=>{ const v = bookInfoValue(k, b[k]); return v ? '<tr><th>' + biSpanHtml(ko, en) + '</th><td>' + biSpanHtml(v[0], v[1]) + '</td></tr>' : ""; }).filter(Boolean);
+    if(rows.length){
+      out.push('<section class="book-sec">' + H("품목정보", "Product Details") + '<table class="book-info">' + rows.join("") + '</table></section>');
+    }
+    return out.length ? '<div class="book-secs">' + out.join("") + '</div>' : "";
+  }
+
   const shopInv = { items:null, at:0, sig:"", loading:null };
   const ppState = { sdk:null, sdkId:"", config:null, configAt:0, rendered:false };
 
@@ -2531,7 +2634,8 @@
   // 목록에 "Sold out" 을 붙일지: 판매완료 체크했거나, 살 수 있는 경로가 하나도 없을 때
   function isSoldOut(item){
     if(item.soldOut) return true;
-    if(naverUrl(item)) return false;
+    if(item.soldOutExempt) return false;             // 솔드아웃 예외: 재고와 상관없이 표시 안 함
+    if(naverUrl(item) || bookLinks(item).length) return false;   // 네이버·서점 링크가 있으면 거기서 살 수 있음
     if(!canPayOnSite(item)) return false;          // 아무 경로도 없으면 "문의"
     const v = invOf(item);
     return v ? !v.available : false;
@@ -3842,7 +3946,10 @@
     const w = window.open(api + "/admin", "lysOrders", "width=1400,height=900");
     if(w) try{ w.opener = null; }catch(e){}
   }
-  function syncBookLinksUi(){ const f = $("bookLinksField"), c = $("itemCategory"); if(f && c) f.style.display = (c.value === "book") ? "" : "none"; }
+  function syncBookLinksUi(){
+    const c = $("itemCategory"); if(!c) return;
+    ["bookLinksField","bookInfoField"].forEach(id=>{ const f = $(id); if(f) f.style.display = (c.value === "book") ? "" : "none"; });
+  }
   (function bindShopUi(){
     const cat = $("itemCategory");
     if(cat) cat.addEventListener("change", ()=>{ $("itemShipProfile").value = defaultProfileFor(cat.value); syncBookLinksUi(); });
@@ -3992,6 +4099,9 @@
       const info = el("div","shop-info");
       const nm = el("div","shop-name ml"); nm.textContent = multiLine(item.title) || "(Untitled)";
       info.appendChild(nm);
+      if(isBookItem(item) && (cleanText(item.author) || cleanText(item.authorEn))){
+        const au = el("div","shop-author"); biText(au, cleanText(item.author) || cleanText(item.authorEn), cleanText(item.authorEn) || cleanText(item.author)); info.appendChild(au);
+      }
       // 목록에서는 사양·에디션을 숨기고 상세페이지에서만 보여줌
       // 목록에서는 가격을 숨기고 상세페이지에서만 보여줌 (품절만 표시)
       if(soldNow){ const pr = el("div","shop-price sold"); pr.textContent = "Sold out"; info.appendChild(pr); }
@@ -4142,7 +4252,7 @@
       a.appendChild(t); a.appendChild(sub);
       row.appendChild(a);
     }
-    if(onSite){
+    if(onSite && !(item.soldOutExempt && !paypalAvailable(item))){
       const avail = paypalAvailable(item);
       const b = el("button","buy-btn paypal"); b.type = "button";
       const t = el("span","lbl"); const pl_ = shopTextPair(avail ? "paypalLabel" : "paypalSoldOut"); biText(t, pl_.ko, pl_.en);
@@ -4164,7 +4274,7 @@
       a.appendChild(t); a.appendChild(sub);
       row.appendChild(a);
     });
-    if(!kr && !onSite && !us && !stores.length){
+    if(!kr && !row.querySelector(".paypal") && !us && !stores.length){
       const sd = el("div","buy-soldout"); biText(sd, "구매 문의: reyunsung@gmail.com", "Inquire: reyunsung@gmail.com");
       box.appendChild(sd);
       return box;
@@ -4264,6 +4374,8 @@
     actions.appendChild(arrBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
     head.appendChild(h); head.appendChild(actions);
     info.appendChild(head);
+    const isBook = isBookItem(item);
+    if(isBook){ const mh = bookMetaHtml(item); if(mh){ const m = el("div"); m.innerHTML = mh; info.appendChild(m.firstChild); } }
 
     const specs = [multiLine(item.spec1), multiLine(item.spec2), multiLine(item.edition)].filter(Boolean);
     if(specs.length){
@@ -4273,13 +4385,14 @@
     }
     const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
     if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
-    if(hasDesc(item)){
+    if(hasDesc(item) && !isBook){
       const desc = el("div","pd-desc"); setBilingual(desc, item.description, item.descriptionEn); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
       info.appendChild(desc);
     }
     info.appendChild(buyRow(item));
     pd.appendChild(info);
     app.appendChild(pd);
+    if(isBook){ const bs = bookSectionsHtml(item); if(bs){ const w = el("div"); w.innerHTML = bs; app.appendChild(w.firstChild); } }
 
     const rowsWrap = el("div","photo-rows-wrap wide");   // 작품 상세와 똑같이 화면 폭 기준 (크기 %도 화면 폭 대비)
     rowsWrap.style.marginTop = "72px";
@@ -4604,6 +4717,13 @@
       { const bl = (item.bookLinks && typeof item.bookLinks === "object") ? item.bookLinks : {};
         $("itemBookAladin").value = bl.aladin || ""; $("itemBookKyobo").value = bl.kyobo || ""; $("itemBookYes24").value = bl.yes24 || ""; }
       $("itemSoldOut").checked = !!item.soldOut;
+      $("itemSoldOutExempt").checked = !!item.soldOutExempt;
+      { const b = bookInfo(item);
+        $("itemBookAuthor").value = item.author || ""; $("itemBookAuthorEn").value = item.authorEn || "";
+        $("itemBookPublisher").value = b.publisher || ""; $("itemBookPublisherEn").value = b.publisherEn || "";
+        $("itemBookPubDate").value = b.pubDate || ""; $("itemBookPages").value = b.pages || ""; $("itemBookWeight").value = b.weight || "";
+        $("itemBookSize").value = b.size || ""; $("itemBookIsbn13").value = b.isbn13 || ""; $("itemBookIsbn10").value = b.isbn10 || "";
+        $("itemBookToc").value = item.toc || ""; $("itemBookTocEn").value = item.tocEn || ""; }
       $("itemSharedSet").checked = !!item.sharedSet;
       setItemVisUi(!!item.hidden);
       setItemRowColsUi(shopRowCols(item));
@@ -4624,8 +4744,8 @@
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
-      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24"].forEach(f=>{ $(f).value = ""; });
-      $("itemSoldOut").checked = false; $("itemSharedSet").checked = false;
+      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
+      $("itemSoldOut").checked = false; $("itemSoldOutExempt").checked = false; $("itemSharedSet").checked = false;
       setItemVisUi(false);
       setItemRowColsUi(5);
       setupOrigFields(null);
@@ -4705,6 +4825,19 @@
         Object.keys(bl).forEach(k=>{ if(!bl[k]) delete bl[k]; });
         if(Object.keys(bl).length) payload.bookLinks = bl; else delete payload.bookLinks; }
       payload.soldOut  = $("itemSoldOut").checked;
+      if($("itemSoldOutExempt").checked) payload.soldOutExempt = true; else delete payload.soldOutExempt;
+      if($("itemCategory").value === "book"){
+        const v = id=>$(id).value.trim();
+        payload.author = v("itemBookAuthor"); payload.authorEn = v("itemBookAuthorEn");
+        if(!payload.author) delete payload.author; if(!payload.authorEn) delete payload.authorEn;
+        const b = { publisher:v("itemBookPublisher"), publisherEn:v("itemBookPublisherEn"), pubDate:v("itemBookPubDate"), pages:v("itemBookPages"),
+                    weight:v("itemBookWeight"), size:v("itemBookSize"), isbn13:v("itemBookIsbn13").replace(/[^0-9Xx]/g,""), isbn10:v("itemBookIsbn10").replace(/[^0-9Xx]/g,"") };
+        Object.keys(b).forEach(k=>{ if(!b[k]) delete b[k]; });
+        if(Object.keys(b).length) payload.bookInfo = b; else delete payload.bookInfo;
+        const toc = $("itemBookToc").value.replace(/\s+$/,""), tocEn = $("itemBookTocEn").value.replace(/\s+$/,"");
+        if(toc.trim()) payload.toc = toc; else delete payload.toc;
+        if(tocEn.trim()) payload.tocEn = tocEn; else delete payload.tocEn;
+      }
       if($("itemSharedSet").checked){
         payload.sharedSet = true;
         (state.data.shop||[]).forEach(o=>{ if(o.id !== id && o.sharedSet) delete o.sharedSet; });   // 한 묶음만
@@ -7485,16 +7618,17 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       const onSite = canPayOnSite(item);
       const us = onSite ? "/#shop/" + encodeURIComponent(item.id) : safeUrl(item.buyUs);
       let buy;
+      const usShow = us && !(onSite && item.soldOutExempt && !paypalAvailable(item));
       if(item.soldOut){
         buy = '      <div class="buy-soldout">SOLD OUT</div>';
-      } else if(!kr && !us && !bookLinks(item).length){
+      } else if(!kr && !usShow && !bookLinks(item).length){
         buy = '      <div class="buy-soldout">'+biSpanHtml("구매 문의: reyunsung@gmail.com","Inquire: reyunsung@gmail.com")+'</div>';
       } else {
         const btns = [];
         const stx = shopTexts();
         const P = k=>{ const x = shopTextPair(k); return biSpanHtml(x.ko, x.en); };
         if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+P("naverLabel")+'</span><span class="sub">'+P("naverSub")+'</span></a>');
-        if(us) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
+        if(usShow) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
         bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
               ((stx.buyNote && (kr || us)) ? '      <div class="buy-note">'+P("buyNote")+'</div>' : '');
@@ -7517,12 +7651,14 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         '      </div>\n' +
         '      <div class="pd-info">\n' +
         '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
+        (isBookItem(item) ? '        ' + bookMetaHtml(item) + '\n' : '') +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
         (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+esc(item.soldOut ? "Sold out" : priceTxt)+'</div>\n' : '') +
-        (hasDesc(item) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>\n' : '') +
+        (hasDesc(item) && !isBookItem(item) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>\n' : '') +
         '        <div class="buy-box">\n'+buy+'\n        </div>\n' +
         '      </div>\n' +
-        '    </div>';
+        '    </div>' +
+        (isBookItem(item) ? '\n    ' + bookSectionsHtml(item) : '');
     }
 
     return [
