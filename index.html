@@ -2332,7 +2332,18 @@
     }
     return false;
   }
+  // 마스터 로그인 창 열기 — PC: Ctrl+Alt+Enter / 휴대폰: 주소 끝에 #master, 또는 맨 아래 © 문구를 빠르게 5번 탭
+  function openMasterLogin(){
+    if(state.master) return;
+    $("pwInput").value = "";
+    openModal("pwModal");
+    setTimeout(()=>$("pwInput").focus(), 50);
+  }
   function renderRoute(){
+    if(location.hash === "#master"){
+      history.replaceState(null, "", location.pathname + location.search + "#works");
+      setTimeout(openMasterLogin, 60);
+    }
     const r = parseHash();
     const routeKey = r.page + "/" + (r.id || "");
     const changedRoute = routeKey !== lastRouteKey;
@@ -8088,10 +8099,7 @@ sharedHtml || '',
     document.addEventListener("keydown",(e)=>{
       if(e.ctrlKey && e.altKey && e.key==="Enter"){
         e.preventDefault();
-        if(state.master) return;
-        $("pwInput").value = "";
-        openModal("pwModal");
-        setTimeout(()=>$("pwInput").focus(),50);
+        openMasterLogin();
       }
       if(e.key==="Escape" && $("imgPickModal").classList.contains("show")){ closeModal("imgPickModal"); return; }
       if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>closeModal(o.id)); activeStyleTarget = null; }
@@ -8105,6 +8113,17 @@ sharedHtml || '',
     $("lightboxNext").addEventListener("click", ()=>lightboxNav(1));
     bindLightboxSwipe();
 
+    // 맨 아래 © 문구를 3초 안에 5번 탭하면 마스터 로그인 (휴대폰용, 방문자에게는 안 보임)
+    { const foot = $("yearNow") && $("yearNow").parentNode; let taps = [];
+      if(foot) foot.addEventListener("click", ()=>{
+        const now = Date.now(); taps = taps.filter(t=>now - t < 3000); taps.push(now);
+        if(taps.length >= 5){ taps = []; openMasterLogin(); }
+      }); }
+    // 브라우저가 자동으로 채운 비밀번호 뒤에 이어 붙지 않게: 첫 글자를 치면 기존 값 지우고 새로 입력
+    { let typed = false; const pi = $("pwInput");
+      pi.addEventListener("focus", ()=>{ typed = false; setTimeout(()=>pi.select(), 0); });
+      pi.addEventListener("keydown", e=>{ if(!typed && e.key && e.key.length === 1 && !e.ctrlKey && !e.metaKey){ typed = true; pi.value = ""; } });
+      pi.addEventListener("paste", ()=>{ if(!typed){ typed = true; pi.value = ""; } }); }
     $("pwSubmit").addEventListener("click", ()=>tryMasterUnlock($("pwInput").value.trim()));
     $("pwInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") tryMasterUnlock($("pwInput").value.trim()); });
 
