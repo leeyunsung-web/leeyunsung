@@ -2543,6 +2543,13 @@
   ];
   const SHOP_DEFAULT_TAB = "editions";
   const CART_MAX_QTY = 10;
+  // 한 상품을 장바구니에 담을 수 있는 최대 수 = min(남은 재고, 10). 서버가 재고 정보를 아직 안 줬으면 10.
+  function maxQtyFor(item){
+    if(shopCategory(item) === "original") return 1;
+    const v = invOf(item);
+    if(v && typeof v.max === "number" && isFinite(v.max)) return Math.max(0, Math.min(CART_MAX_QTY, Math.floor(v.max)));
+    return CART_MAX_QTY;
+  }
   let pendingShopCategory = null;
 
   function shopCategory(item){
@@ -2735,7 +2742,12 @@
     const shop = publicShopItems();
     return cart.items.map(l=>{
       const item = shop.find(x=>x.id===l.id);
-      return item ? { item, qty: shopCategory(item) === "original" ? 1 : l.qty } : null;
+      if(!item) return null;
+      if(shopCategory(item) === "original") return { item, qty:1 };
+      // 남은 재고보다 많이 담겨 있으면 재고만큼으로 줄임 (품절이면 그대로 두고 'Sold out' 표시)
+      const mx = maxQtyFor(item);
+      if(mx > 0 && l.qty > mx){ l.qty = mx; saveCart(); cartMsg("Quantity adjusted to what's available.", true); }
+      return { item, qty: l.qty };
     }).filter(Boolean);
   }
   function cartZone(){
@@ -2759,7 +2771,7 @@
     const line = cart.items.find(l=>l.id===item.id);
     if(line){
       if(cat === "original"){ /* 한 점뿐 — 이미 담겨 있음 */ }
-      else if(line.qty >= CART_MAX_QTY){ cartMsg("Maximum " + CART_MAX_QTY + " per item.", true); }
+      else if(line.qty >= maxQtyFor(item)){ cartMsg(maxQtyFor(item) < CART_MAX_QTY ? "No more available for this item." : "Maximum " + CART_MAX_QTY + " per item.", true); }
       else line.qty++;
     } else {
       cart.items.push({ id:item.id, qty:1 });
@@ -2774,7 +2786,9 @@
     const line = cart.items.find(l=>l.id===id); if(!line) return;
     q = Math.floor(q);
     if(q < 1) return removeFromCart(id);
-    if(q > CART_MAX_QTY){ q = CART_MAX_QTY; cartMsg("Maximum " + CART_MAX_QTY + " per item.", true); }
+    const it = (state.data.shop||[]).find(x=>x.id===id);
+    const mx = it ? maxQtyFor(it) : CART_MAX_QTY;
+    if(q > mx){ q = Math.max(1, mx); cartMsg(mx < CART_MAX_QTY ? "No more available for this item." : "Maximum " + CART_MAX_QTY + " per item.", true); }
     line.qty = q; saveCart(); renderCart();
   }
   function removeFromCart(id){
@@ -2911,7 +2925,7 @@
         const minus = el("button","q"); minus.type="button"; minus.textContent = "−"; minus.setAttribute("aria-label","Decrease");
         const n = el("span","n"); n.textContent = qty;
         const plus = el("button","q"); plus.type="button"; plus.textContent = "+"; plus.setAttribute("aria-label","Increase");
-        plus.disabled = qty >= CART_MAX_QTY;
+        plus.disabled = qty >= maxQtyFor(item);
         minus.addEventListener("click", ()=>setCartQty(item.id, qty-1));
         plus.addEventListener("click", ()=>setCartQty(item.id, qty+1));
         ctl.appendChild(minus); ctl.appendChild(n); ctl.appendChild(plus);
