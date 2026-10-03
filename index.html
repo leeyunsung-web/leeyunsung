@@ -1286,6 +1286,10 @@
             <input type="text" id="itemBookKyobo" placeholder="교보문고 — https://product.kyobobook.co.kr/detail/…" style="margin-bottom:6px;">
             <input type="text" id="itemBookYes24" placeholder="YES24 — https://www.yes24.com/product/goods/…">
           </div>
+          <div class="field" id="bookStoreOnlyField" style="display:none;">
+            <label><input type="checkbox" id="itemStoreOnly" style="width:auto;margin-right:8px;vertical-align:middle;">서점·외부 링크로만 판매 — 직접 판매 안 함</label>
+            <div class="field-hint">체크하면 PayPal(해외 직접 판매) 버튼과 $ 가격을 숨기고, 재고·Sold out 판단을 하지 않아요. 알라딘·교보·YES24(와 네이버 주소를 넣었으면 그 링크) 버튼만 보여요. 절판이면 아래 '판매 완료'를 체크하세요.</div>
+          </div>
           <div class="field" id="bookInfoField" style="display:none;">
             <label>도서 정보 <span style="color:#999;font-weight:400;">— 도록(BOOKS)만. 서점처럼 저자·품목정보·목차로 보여요 (빈 칸은 안 보임)</span></label>
             <div class="bookinfo-grid">
@@ -1959,7 +1963,7 @@
     const us = parseFloat(String(item.priceUsd||"").replace(/[^0-9.]/g,""));
     const avail = item.soldOut ? "https://schema.org/SoldOut" : "https://schema.org/InStock";
     if(isFinite(kr) && kr>0) offers.push({"@type":"Offer","price":String(kr),"priceCurrency":"KRW","availability":avail,"url":item.buyKr||url});
-    if(isFinite(us) && us>0) offers.push({"@type":"Offer","price":String(us),"priceCurrency":"USD","availability":avail,"url":item.buyUs||url});
+    if(isFinite(us) && us>0 && !isStoreOnly(item)) offers.push({"@type":"Offer","price":String(us),"priceCurrency":"USD","availability":avail,"url":item.buyUs||url});
     const imgs = [];
     if(item.cover) imgs.push(absUrl(item.cover));
     (item.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) imgs.push(absUrl(p.image)); }));
@@ -2577,7 +2581,10 @@
     return /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(:\d+)?$/i.test(u) ? u : "";
   }
   function numVal(v){ const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
-  function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0); }
+  // 도록 "서점에서만 판매": 직접 판매(PayPal)·재고·품절 판단을 하지 않고, 서점·외부 링크 버튼만 보여줌
+  function isStoreOnly(item){ return !!(item && item.storeOnly && shopCategory(item) === "book"); }
+  function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0 && !isStoreOnly(item)); }
+  function usdShown(item){ return isStoreOnly(item) ? "" : fmtUsd(item.priceUsd); }
   function naverUrl(item){ return safeUrl(item.buyKr); }
   // 도록 — 온라인 서점 버튼 (알라딘·교보문고·YES24). 주소를 넣은 서점만 보입니다.
   const BOOK_STORES = [
@@ -2659,7 +2666,7 @@
   // 목록에 "Sold out" 을 붙일지: 판매완료 체크했거나, 살 수 있는 경로가 하나도 없을 때
   function isSoldOut(item){
     if(item.soldOut) return true;
-    if(item.soldOutExempt) return false;             // 솔드아웃 예외: 재고와 상관없이 표시 안 함
+    if(item.soldOutExempt || isStoreOnly(item)) return false;             // 솔드아웃 예외: 재고와 상관없이 표시 안 함
     if(naverUrl(item) || bookLinks(item).length) return false;   // 네이버·서점 링크가 있으면 거기서 살 수 있음
     if(!canPayOnSite(item)) return false;          // 아무 경로도 없으면 "문의"
     const v = invOf(item);
@@ -2667,7 +2674,7 @@
   }
   function priceLabel(item){
     if(isSoldOut(item)) return "Sold out";
-    const p = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean);
+    const p = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean);
     return p.join("  ·  ") || "Inquire";
   }
 
@@ -4066,7 +4073,7 @@
   }
   function syncBookLinksUi(){
     const c = $("itemCategory"); if(!c) return;
-    ["bookLinksField","bookInfoField"].forEach(id=>{ const f = $(id); if(f) f.style.display = (c.value === "book") ? "" : "none"; });
+    ["bookLinksField","bookStoreOnlyField","bookInfoField"].forEach(id=>{ const f = $(id); if(f) f.style.display = (c.value === "book") ? "" : "none"; });
   }
   (function bindShopUi(){
     const cat = $("itemCategory");
@@ -4501,7 +4508,7 @@
       specs.forEach(x=>{ const d = el("div","ml"); d.textContent = x; sp.appendChild(d); });
       info.appendChild(sp);
     }
-    const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
+    const priceTxt = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean).join("  ·  ");
     if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
     if(hasDesc(item) && !isBook){
       const desc = el("div","pd-desc"); setBilingual(desc, item.description, item.descriptionEn); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
@@ -4836,6 +4843,7 @@
         $("itemBookAladin").value = bl.aladin || ""; $("itemBookKyobo").value = bl.kyobo || ""; $("itemBookYes24").value = bl.yes24 || ""; }
       $("itemSoldOut").checked = !!item.soldOut;
       $("itemSoldOutExempt").checked = !!item.soldOutExempt;
+      $("itemStoreOnly").checked = !!item.storeOnly;
       { const b = bookInfo(item);
         $("itemBookAuthor").value = item.author || ""; $("itemBookAuthorEn").value = item.authorEn || "";
         $("itemBookDesigner").value = b.designer || ""; $("itemBookDesignerEn").value = b.designerEn || "";
@@ -4865,6 +4873,7 @@
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookDesigner","itemBookDesignerEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false; $("itemSoldOutExempt").checked = false; $("itemSharedSet").checked = false;
+      $("itemStoreOnly").checked = true;   // 새 도록은 기본 "서점에서만 판매"
       setItemVisUi(false);
       setItemRowColsUi(5);
       setupOrigFields(null);
@@ -4945,6 +4954,7 @@
         if(Object.keys(bl).length) payload.bookLinks = bl; else delete payload.bookLinks; }
       payload.soldOut  = $("itemSoldOut").checked;
       if($("itemSoldOutExempt").checked) payload.soldOutExempt = true; else delete payload.soldOutExempt;
+      if($("itemCategory").value === "book" && $("itemStoreOnly").checked) payload.storeOnly = true; else delete payload.storeOnly;
       if($("itemCategory").value === "book"){
         const v = id=>$(id).value.trim();
         payload.author = v("itemBookAuthor"); payload.authorEn = v("itemBookAuthorEn");
@@ -7761,7 +7771,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         ? '        <div class="pd-thumbs">' + gal.slice(0, sdz.thumbCount).map((u,i)=>
             '<button type="button" class="pd-thumb'+(i===0?' on':'')+'" onclick="var m=document.getElementById(\'pdMain\');m.src=this.firstChild.src;var b=this.parentNode.children;for(var k=0;k<b.length;k++)b[k].className=\'pd-thumb\';this.className=\'pd-thumb on\';"><img src="'+esc(u)+'" alt="" loading="lazy"></button>').join('') + '</div>\n'
         : '';
-      const priceTxt = [fmtKrw(item.priceKrw), fmtUsd(item.priceUsd)].filter(Boolean).join("  ·  ");
+      const priceTxt = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean).join("  ·  ");
       shopBlock =
         '    <div class="pd">\n' +
         '      <div class="pd-media">\n' +
