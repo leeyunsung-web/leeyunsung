@@ -297,6 +297,7 @@
   .pd-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
   .pd-title{font-size:var(--shop-title,26px); line-height:1.25; font-weight:600; letter-spacing:.005em; margin:0;}
   .book-meta{margin-top:10px; font-size:calc(var(--shop-body,14px) - 1px); color:var(--ink-soft); line-height:1.6;}
+  .book-meta .bm{white-space:nowrap;} .book-meta .bm-sep{color:var(--line2,#bbb);}
   .book-secs{max-width:1320px; margin:64px auto 0; padding:0 clamp(16px,3vw,40px); font-family:var(--shop-font,inherit);}
   .book-sec{border-top:1px solid var(--ink); padding:22px 0 40px;}
   .book-h{font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; margin:0 0 18px; color:var(--ink);}
@@ -1281,6 +1282,8 @@
             <div class="bookinfo-grid">
               <div><span class="bi-lab">저자 — 한국어</span><input type="text" id="itemBookAuthor" placeholder="예: 이윤성"></div>
               <div><span class="bi-lab">Author — English</span><input type="text" id="itemBookAuthorEn" placeholder="e.g. Yunsung Lee"></div>
+              <div><span class="bi-lab">디자인 — 한국어</span><input type="text" id="itemBookDesigner" placeholder="예: 신신(신해옥, 신동혁)"></div>
+              <div><span class="bi-lab">Design — English</span><input type="text" id="itemBookDesignerEn" placeholder="e.g. Shin Shin (Haeok Shin, Donghyeok Shin)"></div>
               <div><span class="bi-lab">출판사 — 한국어</span><input type="text" id="itemBookPublisher" placeholder="예: 미디어버스"></div>
               <div><span class="bi-lab">Publisher — English</span><input type="text" id="itemBookPublisherEn" placeholder="e.g. Mediabus"></div>
               <div><span class="bi-lab">발행일</span><input type="text" id="itemBookPubDate" placeholder="2016-05-20"></div>
@@ -1969,6 +1972,7 @@
       const b = bookInfo(item);
       ld["@type"] = ["Product","Book"];
       if(cleanText(item.author) || cleanText(item.authorEn)) ld.author = {"@type":"Person","name": cleanText(item.authorEn) || cleanText(item.author)};
+      if(cleanText(b.designer) || cleanText(b.designerEn)) ld.contributor = {"@type":"Person","name": cleanText(b.designerEn) || cleanText(b.designer), "roleName":"Designer"};
       if(cleanText(b.publisher) || cleanText(b.publisherEn)) ld.publisher = {"@type":"Organization","name": cleanText(b.publisherEn) || cleanText(b.publisher)};
       if(cleanText(b.pubDate)) ld.datePublished = cleanText(b.pubDate);
       const pg = parseInt(String(b.pages||"").replace(/[^0-9]/g,""),10); if(pg > 0) ld.numberOfPages = pg;
@@ -2587,11 +2591,15 @@
   function bookMetaHtml(item){
     const b = bookInfo(item);
     const au = cleanText(item.author), auEn = cleanText(item.authorEn) || au;
+    const ds = cleanText(b.designer), dsEn = cleanText(b.designerEn) || ds;
     const pub = cleanText(b.publisher), pubEn = cleanText(b.publisherEn) || pub;
     const date = cleanText(b.pubDate);
-    const ko = [au ? au + " 저" : "", pub, date].filter(Boolean).join("  ·  ");
-    const en = [auEn ? "by " + auEn : "", pubEn, date].filter(Boolean).join("  ·  ");
-    return (ko || en) ? '<div class="book-meta">' + biSpanHtml(ko, en) + '</div>' : "";
+    // 항목 하나(예: 날짜)가 중간에서 줄바꿈되지 않도록 항목마다 묶음
+    const J = arr=>arr.filter(Boolean).map(x=>'<span class="bm">' + esc(x) + '</span>').join('<span class="bm-sep"> · </span>');
+    const ko = J([au ? au + " 저" : "", ds ? ds + " 디자인" : "", pub, date]);
+    const en = J([auEn ? "by " + auEn : "", dsEn ? "designed by " + dsEn : "", pubEn, date]);
+    if(!ko && !en) return "";
+    return '<div class="book-meta">' + (ko === en ? ko : '<span class="l-ko" lang="ko">' + ko + '</span><span class="l-en" lang="en">' + en + '</span>') + '</div>';
   }
   // 상세페이지 아래 — 책 소개 / 목차 / 품목정보 (앱 화면과 정적 페이지가 같은 HTML을 씀)
   function bookSectionsHtml(item){
@@ -4720,6 +4728,7 @@
       $("itemSoldOutExempt").checked = !!item.soldOutExempt;
       { const b = bookInfo(item);
         $("itemBookAuthor").value = item.author || ""; $("itemBookAuthorEn").value = item.authorEn || "";
+        $("itemBookDesigner").value = b.designer || ""; $("itemBookDesignerEn").value = b.designerEn || "";
         $("itemBookPublisher").value = b.publisher || ""; $("itemBookPublisherEn").value = b.publisherEn || "";
         $("itemBookPubDate").value = b.pubDate || ""; $("itemBookPages").value = b.pages || ""; $("itemBookWeight").value = b.weight || "";
         $("itemBookSize").value = b.size || ""; $("itemBookIsbn13").value = b.isbn13 || ""; $("itemBookIsbn10").value = b.isbn10 || "";
@@ -4744,7 +4753,7 @@
       $("itemDeleteBtn").style.display = "inline-block";
     } else {
       $("itemModalTitle").textContent = key==="text" ? "Add Essay" : (key==="shop" ? "Add Product" : "Add Series");
-      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
+      ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookDesigner","itemBookDesignerEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false; $("itemSoldOutExempt").checked = false; $("itemSharedSet").checked = false;
       setItemVisUi(false);
       setItemRowColsUi(5);
@@ -4830,7 +4839,7 @@
         const v = id=>$(id).value.trim();
         payload.author = v("itemBookAuthor"); payload.authorEn = v("itemBookAuthorEn");
         if(!payload.author) delete payload.author; if(!payload.authorEn) delete payload.authorEn;
-        const b = { publisher:v("itemBookPublisher"), publisherEn:v("itemBookPublisherEn"), pubDate:v("itemBookPubDate"), pages:v("itemBookPages"),
+        const b = { designer:v("itemBookDesigner"), designerEn:v("itemBookDesignerEn"), publisher:v("itemBookPublisher"), publisherEn:v("itemBookPublisherEn"), pubDate:v("itemBookPubDate"), pages:v("itemBookPages"),
                     weight:v("itemBookWeight"), size:v("itemBookSize"), isbn13:v("itemBookIsbn13").replace(/[^0-9Xx]/g,""), isbn10:v("itemBookIsbn10").replace(/[^0-9Xx]/g,"") };
         Object.keys(b).forEach(k=>{ if(!b[k]) delete b[k]; });
         if(Object.keys(b).length) payload.bookInfo = b; else delete payload.bookInfo;
