@@ -2548,10 +2548,10 @@
   const SHOP_POLICY_DEFAULT =
     "· 모든 주문은 작가가 직접 포장해 보냅니다.\n" +
     "· 국내 주문은 '네이버페이로 구매'를 누르면 네이버 스마트스토어에서 결제·배송되며, 매주 월·목요일에 발송합니다.\n" +
-    "· 포스터는 지관통에 말아서 보내며, 지관통 하나에 3장까지 함께 넣습니다.\n" +
-    "· 해외 주문(PayPal)은 결제 후 일주일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다. 포스터가 3장을 넘으면 지관통 하나당 $1이 추가됩니다. 수입 관세·세금은 받는 나라 기준으로 구매자 부담입니다. 미국은 우체국이 발송 때 통관을 미리 처리(DDP)해 받으실 때 따로 내실 금액이 없으며, 포스터·도록은 일반적으로 미국 관세 면제 대상(정보 자료)입니다.\n" +
+    "· 포스터는 보호지로 감싸 지관통에 말아서 보내며, 지관통 하나에 3장까지 함께 넣습니다.\n" +
+    "· 해외 주문(PayPal)은 결제 후 일주일 안에 우체국 EMS(배송 추적 가능)로 발송하며, 발송 후 송장번호를 안내드립니다. 해외 배송비에는 지관통·포장재 비용(지관통 하나당 $1.50)이 포함됩니다. 수입 관세·세금은 받는 나라 기준으로 구매자 부담입니다. 미국은 우체국이 발송 때 통관을 미리 처리(DDP)해 받으실 때 따로 내실 금액이 없으며, 포스터·도록은 일반적으로 미국 관세 면제 대상(정보 자료)입니다.\n" +
     "· 작품 수령 후 7일 이내 반품을 요청하실 수 있습니다. 단순 변심 반품은 왕복 배송비를 구매자가 부담하며, 배송 중 파손은 사진과 함께 연락 주시면 전액 환불해 드립니다.\n" +
-    "· Every order is packed by hand. Posters are shipped rolled in a tube, up to three per tube. International orders (PayPal) ship from Korea via EMS with tracking within a week of payment, and you'll receive a tracking number when it ships; each additional tube (beyond three posters) adds $1. Import duties and taxes are the buyer's responsibility, except for US orders, which are cleared duty-paid (DDP) at dispatch, so there is nothing to pay on delivery; prints and books are generally duty-free in the US as informational materials. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
+    "· Every order is packed by hand. Posters are wrapped and shipped rolled in a tube, up to three per tube. International orders (PayPal) ship from Korea via EMS with tracking within a week of payment, and you'll receive a tracking number when it ships. International shipping includes $1.50 per tube for packaging. Import duties and taxes are the buyer's responsibility, except for US orders, which are cleared duty-paid (DDP) at dispatch, so there is nothing to pay on delivery; prints and books are generally duty-free in the US as informational materials. Returns are accepted within 7 days of delivery; return shipping is paid by the buyer unless the item arrived damaged.";
 
   const SHOP_TABS = [
     { slug:"originals", cat:"original", label:"ORIGINALS" },
@@ -2777,14 +2777,14 @@
     return c && cfg.zones[c.zone] ? cfg.zones[c.zone] : null;
   }
   // 서버와 같은 규칙: 포장 종류마다 소포 1개 = 기본 + (개수-1)×추가
-  const TUBE_CAP = 3, TUBE_EXTRA_USD = 1;   // 지관통 하나에 포스터 3장, 지관통 1개 추가 = $1 (서버와 같은 값)
+  const TUBE_CAP = 3, TUBE_PRICE_USD = 1.5;   // 지관통 하나에 포스터 3장, 지관통+포장재 1개 = $1.50 (서버와 같은 값)
   function cartShipping(lines){
     const z = cartZone(); if(!z) return null;
     const count = {flat:0, tube:0, book:0};
     lines.forEach(l=>{ count[shopProfile(l.item)] += l.qty; });
     let t = 0;
     // 포스터는 지관통 하나에 3장까지 같이 넣음 → 지관통 수가 늘 때만 추가 금액 (서버와 같은 규칙)
-    Object.keys(count).forEach(p=>{ if(count[p]){ const units = p === "tube" ? Math.ceil(count[p] / TUBE_CAP) : count[p]; t += numVal(z[p]) + (p === "tube" ? TUBE_EXTRA_USD : numVal(z.add)) * (units-1); } });
+    Object.keys(count).forEach(p=>{ if(count[p]){ const units = p === "tube" ? Math.ceil(count[p] / TUBE_CAP) : count[p]; t += p === "tube" ? numVal(z[p]) + TUBE_PRICE_USD * units : numVal(z[p]) + numVal(z.add) * (units-1); } });
     return Math.round(t*100)/100;
   }
 
@@ -3011,7 +3011,7 @@
       if(posters > 0){
         const tubes = Math.ceil(posters / TUBE_CAP);
         const n = el("div","cart-tube");
-        n.textContent = "Posters ship rolled in a tube — up to " + TUBE_CAP + " per tube" + (tubes > 1 ? " (" + tubes + " tubes, +$" + TUBE_EXTRA_USD + " each extra tube)." : ".");
+        n.textContent = "Posters ship rolled in a tube with protective wrap — up to " + TUBE_CAP + " per tube. Shipping includes $" + TUBE_PRICE_USD.toFixed(2) + " per tube for packaging" + (tubes > 1 ? " (" + tubes + " tubes)." : ".");
         sum.appendChild(n);
       } }
     line("Total (USD)", ship == null ? "—" : "$" + (itemTotal + ship + duty).toFixed(2), "tot");
