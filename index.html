@@ -2908,7 +2908,7 @@
       const ul = el("div","done-lines");
       (o.lines||[]).forEach(l=>{ const r = el("div"); r.textContent = l.title + (l.qty>1 ? " × " + l.qty : ""); ul.appendChild(r); });
       const t3 = el("div"); t3.textContent = "Total $" + o.total + " (incl. shipping $" + o.ship + (Number(o.duty) > 0 ? ", US duty $" + o.duty : "") + ")";
-      const t4 = el("div","fine"); t4.textContent = "PayPal has sent a receipt" + (o.email ? " to " + o.email : "") + ". Orders are packed by hand and shipped once a week — usually within 7–10 days. I'll email you the tracking number.";
+      const t4 = el("div","fine"); t4.textContent = "PayPal will email your receipt to your PayPal account address. Orders are packed by hand and shipped once a week — usually within 7–10 days. I'll email you the tracking number.";
       const close = el("button","cart-close-done"); close.type = "button"; close.textContent = "Close";
       close.addEventListener("click", ()=>{ cart.done = null; saveCart(); renderCart(); });
       [big,ko,t1,t2,ul,t3,t4,close].forEach(x=>done.appendChild(x));
