@@ -3954,7 +3954,7 @@
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "coverInRows": false,
+      "coverInRows": true,
       "cover": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
       "photoRows": [
         {
@@ -4036,7 +4036,7 @@
             },
             {
               "id": "p-1791036503744-xah0d",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036503744-xah0d-844ec0dc.jpg",
+              "image": "./images/s-shared-poster-examples-p-1791036503744-xah0d-db154bcd.jpg",
               "caption": ""
             }
           ]
@@ -4055,25 +4055,25 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "c5ba8e5b:31548",
-    "works/torso/index.html": "aa64f324:55248",
-    "works/danae/index.html": "178bc6b:61324",
-    "works/zodiac/index.html": "474bac7:100908",
-    "works/medusa/index.html": "2894c1dc:56236",
-    "works/laocoon/index.html": "535213af:59828",
-    "works/frames-of-torso/index.html": "36626ac0:51904",
-    "text/critical-notes-lim-geunjun/index.html": "b2a82229:48052",
-    "text/sections-of-structure-jung-hyun/index.html": "8016d997:47736",
-    "text/hybrid-of-reference-jang-seungyeon/index.html": "e8a577dd:37168",
-    "text/painting-of-the-cut-konno-yuki/index.html": "548f8086:32208",
-    "text/taxidermy-of-joy-jo-saemi/index.html": "70d29cb3:66516",
-    "text/exploding-bishojo-baek-jihong/index.html": "88ffbc37:98276",
-    "cv/index.html": "7006399e:10852",
-    "page.css": "80dd336f:93436",
+    "works/the-annunciation/index.html": "c6563b44:31644",
+    "works/torso/index.html": "43acfac:55344",
+    "works/danae/index.html": "8edf60d3:61416",
+    "works/zodiac/index.html": "82e0dd3b:101000",
+    "works/medusa/index.html": "a518d383:56332",
+    "works/laocoon/index.html": "f2540eb0:59924",
+    "works/frames-of-torso/index.html": "553a8b74:51996",
+    "text/critical-notes-lim-geunjun/index.html": "d09776fe:48144",
+    "text/sections-of-structure-jung-hyun/index.html": "7ccebef:47828",
+    "text/hybrid-of-reference-jang-seungyeon/index.html": "74fa368b:37260",
+    "text/painting-of-the-cut-konno-yuki/index.html": "f15c0815:32300",
+    "text/taxidermy-of-joy-jo-saemi/index.html": "779139a4:66608",
+    "text/exploding-bishojo-baek-jihong/index.html": "db87db18:98368",
+    "cv/index.html": "c6abe496:10944",
+    "page.css": "7107c2eb:97140",
     "sitemap.xml": "cd74ba3e:116088",
     "robots.txt": "e7785df8:92",
-    "works/pixel-prometheus/index.html": "d3d12915:66952",
-    "works/digital/index.html": "409ef7d3:31896"
+    "works/pixel-prometheus/index.html": "226e0979:67044",
+    "works/digital/index.html": "775dd29f:31988"
   },
   "shopDesign": {
     "mainPct": 56,
