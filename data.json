@@ -2925,8 +2925,10 @@
       },
       "rowCols": 5,
       "bookInfo": {
+        "designer": "신신(신해옥, 신동혁)",
         "publisher": "미디어버스",
         "pubDate": "2016-03-20",
+        "pages": "132",
         "weight": "251g",
         "size": "165 x 230mm",
         "isbn13": "9788994027531"
