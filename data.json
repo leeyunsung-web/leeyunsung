@@ -3143,7 +3143,7 @@
       "edition": "Signed and numbered, edition of 300",
       "priceKrw": "40000",
       "priceUsd": "30",
-      "buyKr": "",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782597255",
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
@@ -3154,7 +3154,10 @@
         "image": "./images/w3-p-1787464255794-6t81e.jpg"
       },
       "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 02 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+      "descriptionEn": "A poster edition of Torso 02 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "s-1790624943259-8qxbq",
