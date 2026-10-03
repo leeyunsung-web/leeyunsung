@@ -1312,6 +1312,8 @@
             <textarea id="itemBookTocEn" rows="4" placeholder="Foreword&#10;Part 1 …"></textarea>
           </div>
           <div class="field"><label><input type="checkbox" id="itemSoldOut" style="width:auto;margin-right:8px;vertical-align:middle;">판매 완료 (네이버·PayPal 모두 SOLD OUT 표시)</label></div>
+          <div class="field"><label><input type="checkbox" id="itemHideBuyNote" style="width:auto;margin-right:8px;vertical-align:middle;">구매 버튼 아래 안내문 숨기기</label>
+            <div class="field-hint">"국내 구매는 네이버 스마트스토어로…", "International orders…" 문장을 이 상품에서는 안 보이게 해요. (체크 안 해도 네이버·PayPal 버튼이 없는 상품에서는 해당 문장이 자동으로 빠져요)</div></div>
           <div class="field"><label><input type="checkbox" id="itemSoldOutExempt" style="width:auto;margin-right:8px;vertical-align:middle;">솔드아웃 예외 — 재고를 안 넣어도 Sold out이 뜨지 않아요</label>
             <div class="field-hint">서점·외부 링크로만 파는 상품용. 홈페이지 PayPal 재고가 0이면 PayPal 버튼만 숨기고, 외부 링크 버튼은 그대로 보여요. (위 '판매 완료'를 체크하면 그게 우선)</div></div>
           <div class="field"><label><input type="checkbox" id="itemSharedSet" style="width:auto;margin-right:8px;vertical-align:middle;">포스터 예시 이미지 묶음으로 쓰기</label>
@@ -3398,6 +3400,29 @@
     return t;
   }
   // 한 문구의 한국어/영어 짝. 영문 칸이 있으면 그것, 한 칸에 두 언어가 섞여 있으면 나누고, 한글이 없으면 그대로, 아니면 영문 기본값
+  // 구매 버튼 아래 안내문: 실제로 있는 구매 경로(네이버 / 해외 PayPal)에 해당하는 문장만 남김
+  const BUY_NOTE_ROUTE = {
+    naver:  { ko:"국내 구매는 네이버 스마트스토어(네이버페이)로 이동합니다.", en:"Orders within Korea go to Naver Smart Store (Naver Pay)." },
+    paypal: { ko:"해외 구매는 장바구니에 담아 PayPal 또는 카드로 결제합니다 (USD, 한국에서 발송).", en:"International orders: add to cart and pay with PayPal or card (USD, shipping from Korea)." }
+  };
+  function buyNotePair(item, hasNaver, hasPayPal){
+    if(item && item.hideBuyNote) return { ko:"", en:"" };
+    const bn = shopTextPair("buyNote");
+    const isN = t=>/네이버|naver|국내|within korea|domestic/i.test(t);
+    const isP = t=>/paypal|international|해외|card|카드|usd/i.test(t);
+    const pick = (text, lang)=>{
+      const segs = String(text || "").split(/\n+|\s+·\s+/).map(x=>x.trim()).filter(Boolean).filter(t=>{
+        const n = isN(t), pp = isP(t);
+        if(n && !pp) return hasNaver;
+        if(pp && !n) return hasPayPal;
+        return hasNaver || hasPayPal;
+      });
+      if(hasNaver && !segs.some(isN)) segs.unshift(BUY_NOTE_ROUTE.naver[lang]);
+      if(hasPayPal && !segs.some(isP)) segs.push(BUY_NOTE_ROUTE.paypal[lang]);
+      return segs.join(" ");
+    };
+    return { ko: pick(bn.ko, "ko"), en: pick(bn.en, "en") };
+  }
   function shopTextPair(k){
     const saved = (state.data && state.data.shopTexts) || {};
     const ko0 = typeof saved[k] === "string" ? saved[k] : (SHOP_TEXT_DEFAULT[k] || "");
@@ -4405,9 +4430,8 @@
       return box;
     }
     box.appendChild(row);
-    const note = el("div","buy-note");
-    const bn = shopTextPair("buyNote"); biText(note, bn.ko, bn.en);
-    if(txt.buyNote && (kr || onSite || us)) box.appendChild(note);
+    const bn = buyNotePair(item, !!kr, !!(row.querySelector(".paypal")));
+    if(txt.buyNote && (bn.ko || bn.en)){ const note = el("div","buy-note"); biText(note, bn.ko, bn.en); box.appendChild(note); }
     return box;
   }
 
@@ -4844,6 +4868,7 @@
       $("itemSoldOut").checked = !!item.soldOut;
       $("itemSoldOutExempt").checked = !!item.soldOutExempt;
       $("itemStoreOnly").checked = !!item.storeOnly;
+      $("itemHideBuyNote").checked = !!item.hideBuyNote;
       { const b = bookInfo(item);
         $("itemBookAuthor").value = item.author || ""; $("itemBookAuthorEn").value = item.authorEn || "";
         $("itemBookDesigner").value = b.designer || ""; $("itemBookDesignerEn").value = b.designerEn || "";
@@ -4874,6 +4899,7 @@
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookDesigner","itemBookDesignerEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false; $("itemSoldOutExempt").checked = false; $("itemSharedSet").checked = false;
       $("itemStoreOnly").checked = true;   // 새 도록은 기본 "서점에서만 판매"
+      $("itemHideBuyNote").checked = false;
       setItemVisUi(false);
       setItemRowColsUi(5);
       setupOrigFields(null);
@@ -4955,6 +4981,7 @@
       payload.soldOut  = $("itemSoldOut").checked;
       if($("itemSoldOutExempt").checked) payload.soldOutExempt = true; else delete payload.soldOutExempt;
       if($("itemCategory").value === "book" && $("itemStoreOnly").checked) payload.storeOnly = true; else delete payload.storeOnly;
+      if($("itemHideBuyNote").checked) payload.hideBuyNote = true; else delete payload.hideBuyNote;
       if($("itemCategory").value === "book"){
         const v = id=>$(id).value.trim();
         payload.author = v("itemBookAuthor"); payload.authorEn = v("itemBookAuthorEn");
@@ -7760,7 +7787,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         if(usShow) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
         bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
-              ((stx.buyNote && (kr || us)) ? '      <div class="buy-note">'+P("buyNote")+'</div>' : '');
+              (()=>{ const bn = buyNotePair(item, !!kr, !!usShow); return (stx.buyNote && (bn.ko || bn.en)) ? '      <div class="buy-note">'+biSpanHtml(bn.ko, bn.en)+'</div>' : ''; })();
       }
       // 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 정보 (앱 화면과 같은 구조)
       const gal = [], galF = [];
