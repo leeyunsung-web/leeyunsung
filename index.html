@@ -633,6 +633,10 @@
     transform:translate(var(--tx0, 0px), var(--ty0, 0px)); animation:lysPan var(--pd, 24s) ease-in-out infinite alternate; will-change:transform;}
   @keyframes lysPan{ from{transform:translate(var(--tx0, 0px), var(--ty0, 0px));} to{transform:translate(var(--tx1, 0px), var(--ty1, 0px));} }
   @media (prefers-reduced-motion: reduce){ .pan-wrap > img.pan-img{animation:none;} }
+  /* 팬(고화질) 사진: 저장 막기 — 우클릭·끌기·길게 누르기 차단 */
+  .pan-wrap, .pan-wrap img, #photoLightbox.is-protected img{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; -webkit-user-drag:none;}
+  .pan-wrap img{pointer-events:none;}
+  .pan-wrap::after{content:""; position:absolute; inset:0; z-index:1;}
   /* ---------- YouTube 영상 칸 ---------- */
   .photo-cell.is-video{background:transparent; border:0; cursor:default;}
   .yt-wrap{position:relative; aspect-ratio:var(--ar,1.7778); width:min(100%, calc(85vh * var(--ar,1.7778))); margin:0 auto; background:#111; overflow:hidden;}
@@ -704,6 +708,12 @@
   .dim-cap{margin-top:18px; padding-left:52px; text-align:center; font-size:var(--shop-body,14px); line-height:1.8; color:var(--ink-soft);}
   @media (max-width:760px){ .dim-fig{width:calc(100% - 32px);} }
   /* 포스터 예시 이미지 (공통 묶음) */
+  body.master-on .shared-ex .photo-cell.shared-drag{cursor:grab;}
+  .shared-ex .photo-cell.dragging{opacity:.35;}
+  .shared-ex .photo-cell.drop-before{box-shadow:-4px 0 0 0 var(--ink);}
+  .shared-ex .photo-cell.drop-after{box-shadow:4px 0 0 0 var(--ink);}
+  .shared-ghost{position:fixed; left:0; top:0; z-index:2000; pointer-events:none; opacity:.85; box-shadow:0 8px 24px rgba(0,0,0,.25); overflow:hidden;}
+  .shared-ghost img{width:100%; height:100%; object-fit:cover;}
   .shared-ex{margin:88px 0 0; padding-top:36px; border-top:1px solid var(--line); font-family:var(--shop-font,inherit);}
   .shared-ex-head{max-width:var(--content-max-width); margin:0 auto 28px; padding:0 var(--detail-margin);}
   .shared-ex-label{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px;}
@@ -4328,6 +4338,76 @@
     renderShopBiz(app);
   }
 
+  // 포스터 예시 이미지: 마스터 모드에서 사진을 끌어 순서 바꾸기 (마우스·터치 모두)
+  let sharedDragJustEnded = false;
+  function reorderShared(src, fromId, toId, after){
+    const cols = (src.photoRows && src.photoRows[0] && src.photoRows[0].cols) || 3;
+    const flat = []; (src.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>flat.push(p)));
+    const from = flat.findIndex(p=>p.id===fromId); if(from < 0) return;
+    const [moved] = flat.splice(from, 1);
+    let to = flat.findIndex(p=>p.id===toId); if(to < 0) to = flat.length; else if(after) to += 1;
+    flat.splice(to, 0, moved);
+    const old = src.photoRows || [];
+    const rows = [];
+    for(let i=0;i<flat.length;i+=cols){
+      const prev = old[rows.length] || {};
+      rows.push(Object.assign({}, prev, { id: prev.id || ("row-shared-" + (rows.length+1) + "-" + Date.now()), cols, photos: flat.slice(i, i+cols) }));
+    }
+    src.photoRows = rows;
+    saveDraft();
+    renderRoute();
+  }
+  function enableSharedDrag(cell, photoId, src){
+    cell.classList.add("shared-drag");
+    let start = null, ghost = null, moved = false;
+    const targetAt = (x, y)=>{
+      if(ghost) ghost.style.visibility = "hidden";
+      const t = document.elementFromPoint(x, y);
+      if(ghost) ghost.style.visibility = "";
+      const c = t && t.closest ? t.closest(".shared-ex .photo-cell") : null;
+      return c && c !== cell ? c : null;
+    };
+    const clearMarks = ()=>document.querySelectorAll(".shared-ex .drop-before,.shared-ex .drop-after").forEach(x=>x.classList.remove("drop-before","drop-after"));
+    cell.addEventListener("pointerdown", e=>{
+      if(e.button !== 0 && e.pointerType === "mouse") return;
+      start = {x:e.clientX, y:e.clientY, id:e.pointerId}; moved = false;
+      if(e.pointerType === "mouse") e.preventDefault();
+      try{ cell.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    cell.addEventListener("pointermove", e=>{
+      if(!start || e.pointerId !== start.id) return;
+      if(!moved && Math.hypot(e.clientX-start.x, e.clientY-start.y) < 8) return;
+      if(!moved){
+        moved = true;
+        const r = cell.getBoundingClientRect();
+        ghost = cell.cloneNode(true); ghost.className = "shared-ghost";
+        Object.assign(ghost.style, {width: r.width + "px", height: r.height + "px"});
+        document.body.appendChild(ghost);
+        cell.classList.add("dragging");
+      }
+      e.preventDefault();
+      ghost.style.transform = "translate(" + (e.clientX - 40) + "px," + (e.clientY - 40) + "px)";
+      clearMarks();
+      const t = targetAt(e.clientX, e.clientY);
+      if(t){ const r = t.getBoundingClientRect(); t.classList.add(e.clientX > r.left + r.width/2 ? "drop-after" : "drop-before"); }
+    }, {passive:false});
+    cell.addEventListener("pointerup", e=>{
+      if(!start || e.pointerId !== start.id) return;
+      start = null;
+      if(!moved) return;
+      const t = targetAt(e.clientX, e.clientY);
+      const after = t && t.classList.contains("drop-after");
+      clearMarks(); cell.classList.remove("dragging");
+      if(ghost){ ghost.remove(); ghost = null; }
+      sharedDragJustEnded = true; setTimeout(()=>{ sharedDragJustEnded = false; }, 50);
+      if(t && t.dataset.pid) reorderShared(src, photoId, t.dataset.pid, after);
+    });
+    cell.dataset.pid = photoId;
+    cell.style.touchAction = "none";
+    cell.addEventListener("dragstart", e=>e.preventDefault());           // 브라우저 기본 이미지 끌기 끄기
+    cell.querySelectorAll("img").forEach(im=>{ im.draggable = false; });
+    cell.addEventListener("pointercancel", ()=>{ start = null; moved = false; clearMarks(); cell.classList.remove("dragging"); if(ghost){ ghost.remove(); ghost = null; } });
+  }
   // 사양 첫 줄 "65 × 50 cm"(세로 × 가로)에서 치수를 읽습니다
   function parseDims(item){
     const m = String((item && item.spec1) || "").match(/(\d+(?:\.\d+)?)\s*[×xX*]\s*(\d+(?:\.\d+)?)\s*cm/);
@@ -4373,7 +4453,8 @@
     const head = el("div","shared-ex-head");
     const lab = el("div","shared-ex-label"); const sh_ = shopTextPair("sharedHeading"); biText(lab, sh_.ko, sh_.en); head.appendChild(lab);
     if(txt.sharedNote){ const note = el("div","shared-ex-note"); const sn_ = shopTextPair("sharedNote"); biText(note, sn_.ko, sn_.en); head.appendChild(note); }
-    if(state.master){ const ed = el("a","shared-ex-edit"); ed.href = "#shop/" + src.id; ed.textContent = "예시 이미지 묶음 편집 →"; head.appendChild(ed); }
+    if(state.master){ const ed = el("a","shared-ex-edit"); ed.href = "#shop/" + src.id; ed.textContent = "예시 이미지 묶음 편집 →"; head.appendChild(ed);
+      const hn = el("div","shared-ex-note"); hn.style.fontSize = "11px"; hn.textContent = "(마스터 모드) 사진을 끌어서 순서를 바꿀 수 있어요."; head.appendChild(hn); }
     sec.appendChild(head);
     const wrap = el("div","photo-rows-wrap wide");
     let flatIdx = 0;
@@ -4388,7 +4469,8 @@
         const isVid = fillPhotoCell(cell, photo, cleanText(photo.caption) || (txt.sharedHeading+" — "+ARTIST), false);
         const myIdx = isVid ? -1 : flatIdx++;
         if(photo.caption){ const cap = el("div","photo-caption"); cap.textContent = photo.caption; cell.appendChild(cap); }
-        if(!isVid) cell.addEventListener("click", ()=>openPhotoLightbox("shop", src.id, myIdx));
+        if(!isVid) cell.addEventListener("click", ()=>{ if(sharedDragJustEnded) return; openPhotoLightbox("shop", src.id, myIdx); });
+        if(state.master) enableSharedDrag(cell, photo.id, src);
         rowGrid.appendChild(cell);
       });
       wrap.appendChild(rowGrid);
@@ -5206,6 +5288,7 @@
     const i = lightboxState.index;
     const photo = flat[i];
 
+    $("photoLightbox").classList.toggle("is-protected", !!panOf(photo));
     $("lightboxImg").src = imgSrc(photo.image);
     $("lightboxImg").style.filter = adjFilter(photo);
     $("lightboxImg").alt = photo.caption || "";
@@ -5585,6 +5668,17 @@
     return o;
   }
   function panOf(p){ return p && p.pan && !isVideoPhoto(p) ? normPan(p.pan) : null; }
+  // 팬 사진은 우클릭 저장·끌어서 저장을 막습니다 (방문자 화면; 마스터 모드는 그대로)
+  (function protectPan(){
+    const hit = e=>{
+      if(state.master) return false;
+      const t = e.target;
+      if(!t || !t.closest) return false;
+      return !!(t.closest(".pan-wrap") || t.closest(".photo-cell.is-pan") || t.closest("#photoLightbox.is-protected"));
+    };
+    document.addEventListener("contextmenu", e=>{ if(hit(e)) e.preventDefault(); });
+    document.addEventListener("dragstart", e=>{ if(hit(e)) e.preventDefault(); });
+  })();
   function panRatio(pan){ const r = parseRatio(pan.ratio); return r ? Math.max(0.2, Math.min(8, r)) : 16/9; }
   function panDur(pan){ const n = parseFloat(pan.dur); return Math.max(3, Math.min(180, n || 24)); }
   // 이미지 비율(a)과 창 비율로 크기·이동값 계산 — 모두 창 폭(cqw) 기준이라 창 크기가 바뀌어도 그대로 맞음
@@ -7120,6 +7214,8 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
   // 여러 장이 한 줄에 들어간 경우 높이를 맞추는 계산 (본체와 동일한 방식)
   const JUSTIFY_JS = [
     "(function(){",
+    "document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.pan-wrap,.photo-cell.is-pan'))e.preventDefault();});",
+    "document.addEventListener('dragstart',function(e){if(e.target.closest&&e.target.closest('.pan-wrap,.photo-cell.is-pan'))e.preventDefault();});",
     "function L(){document.querySelectorAll('.photo-grid.multi .photo-cell').forEach(function(c){",
     "var a=c.getAttribute('data-ar'),r=0;if(a)r=parseFloat(a)||1.7778;else{var m=c.querySelector('img');if(m&&m.naturalWidth&&m.naturalHeight)r=m.naturalWidth/m.naturalHeight;}",
     "if(r)c.style.setProperty('--r',r.toFixed(5));});}",
@@ -7275,7 +7371,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
       const m = parseCaption(bestCap);
       // Each image becomes a full ImageObject with its own creator/caption,
       // which is what Google Images actually reads to attribute a picture.
-      const imageObjects = photos.slice(0,20).map(p=>{
+      const imageObjects = photos.filter(p=>!panOf(p)).slice(0,20).map(p=>{
         const cap = cleanText(p.caption);
         return {
           "@type":"ImageObject",
@@ -7344,11 +7440,12 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         const pan = panOf(p);
         const imgTagHtml = '<img'+(pan ? ' class="pan-img"' : '')+' src="'+esc(rootPath(p.image))+'" alt="'+esc(alt)+'"'+(adjFilter(p) ? ' style="filter:'+adjFilter(p)+'"' : '')+
                (i < 2 ? '' : ' loading="lazy"')+' decoding="async">';
-        return '        <a class="photo-cell'+(pan ? ' is-pan' : '')+'" id="p-'+esc(p.id)+'" href="'+esc(rootPath(p.image))+'"'+(pan ? ' data-ar="'+panRatio(pan).toFixed(5)+'"' : '')+'>\n' +
+        const tag = pan ? 'div' : 'a';
+        return '        <'+tag+' class="photo-cell'+(pan ? ' is-pan' : '')+'" id="p-'+esc(p.id)+'"'+(pan ? '' : ' href="'+esc(rootPath(p.image))+'"')+(pan ? ' data-ar="'+panRatio(pan).toFixed(5)+'"' : '')+'>\n' +
                (pan ? '          <div class="pan-wrap" data-pan="'+esc(JSON.stringify({r:+panRatio(pan).toFixed(5),z:pan.zoom,x0:pan.x0,y0:pan.y0,x1:pan.x1,y1:pan.y1}))+'" style="--pr:'+panRatio(pan).toFixed(5)+';--pd:'+panDur(pan)+'s">'+imgTagHtml+'</div>\n'
                     : '          '+imgTagHtml+'\n') +
                (cap ? '          <div class="photo-caption">'+esc(cap)+'</div>\n' : '') +
-               '        </a>';
+               '        </'+tag+'>';
       }).join("\n");
       if(!cells) return "";
       const sized = row.size && row.size < 100;
@@ -7501,7 +7598,7 @@ sharedHtml || '',
       const byline = " — " + ARTIST + " (" + ARTIST_EN + ")";
       const imgs = [];
       if(it.cover) imgs.push({image:it.cover, caption:title});
-      (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image) imgs.push(p); }));
+      (it.photoRows||[]).forEach(r=>(r.photos||[]).forEach(p=>{ if(p.image && !panOf(p)) imgs.push(p); }));   // 팬(고화질) 사진은 이미지 검색에 내보내지 않음
       rows.push('  <url>');
       rows.push('    <loc>'+pageUrl("works",it)+'</loc>');
       rows.push('    <lastmod>'+today+'</lastmod><priority>0.9</priority>');
