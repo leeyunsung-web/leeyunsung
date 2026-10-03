@@ -4108,7 +4108,8 @@
         "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?itemid=269438738&srsltid=au7gw4vyzu6aknyavy5hc3b8oglaoryh8osfiba3hlz19_5zxulgq3s8",
         "kyobo": "https://product.kyobobook.co.kr/detail/S000001985736",
         "yes24": "https://www.yes24.com/product/goods/99309397"
-      }
+      },
+      "soldOutExempt": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
