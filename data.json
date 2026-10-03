@@ -4114,7 +4114,16 @@
         "kyobo": "https://product.kyobobook.co.kr/detail/S000001985736",
         "yes24": "https://www.yes24.com/product/goods/99309397"
       },
-      "soldOutExempt": true
+      "soldOutExempt": true,
+      "author": "정현/윤원화/김일림/최정윤/콘노유키",
+      "bookInfo": {
+        "publisher": "초타원형",
+        "pubDate": "2020-12-24",
+        "pages": "1,026",
+        "size": "200 x 200 x 70mm",
+        "isbn13": "9791197318900"
+      },
+      "toc": "INDEX III\nINTRO 1\nIMAGES 5\nTEXTS 863\nYES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000-2020 921\nOUTRO 983\nINDEX XXI"
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
