@@ -2688,6 +2688,11 @@
     const v = invOf(item);
     return v ? !v.available : false;
   }
+  // 가격 표시: 한국어 화면은 원화(네이버), 영어 화면은 달러(PayPal) 하나만. 한쪽만 있으면 그걸 양쪽에 보여줌
+  function pricePair(item){
+    const krw = fmtKrw(item.priceKrw), usd = usdShown(item);
+    return { ko: krw || usd, en: usd || krw };
+  }
   function priceLabel(item){
     if(isSoldOut(item)) return "Sold out";
     const p = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean);
@@ -4555,8 +4560,8 @@
       specs.forEach(x=>{ const d = el("div","ml"); d.textContent = x; sp.appendChild(d); });
       info.appendChild(sp);
     }
-    const priceTxt = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean).join("  ·  ");
-    if(priceTxt){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); pr.textContent = isSoldOut(item) ? "Sold out" : priceTxt; info.appendChild(pr); }
+    const pp = pricePair(item);
+    if(pp.ko || pp.en){ const pr = el("div","pd-price" + (isSoldOut(item) ? " sold" : "")); if(isSoldOut(item)) pr.textContent = "Sold out"; else biText(pr, pp.ko, pp.en); info.appendChild(pr); }
     if(hasDesc(item) && !isBook){
       const desc = el("div","pd-desc"); setBilingual(desc, item.description, item.descriptionEn); if(item.descStyle && item.descStyle.lineHeight) desc.style.lineHeight = item.descStyle.lineHeight;
       info.appendChild(desc);
@@ -7821,7 +7826,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         ? '        <div class="pd-thumbs">' + gal.slice(0, sdz.thumbCount).map((u,i)=>
             '<button type="button" class="pd-thumb'+(i===0?' on':'')+'" onclick="var m=document.getElementById(\'pdMain\');m.src=this.firstChild.src;var b=this.parentNode.children;for(var k=0;k<b.length;k++)b[k].className=\'pd-thumb\';this.className=\'pd-thumb on\';"><img src="'+esc(u)+'" alt="" loading="lazy"></button>').join('') + '</div>\n'
         : '';
-      const priceTxt = [fmtKrw(item.priceKrw), usdShown(item)].filter(Boolean).join("  ·  ");
+      const ppx = pricePair(item), priceTxt = ppx.ko || ppx.en;
       shopBlock =
         '    <div class="pd">\n' +
         '      <div class="pd-media">\n' +
@@ -7832,7 +7837,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
         (isBookItem(item) ? '        ' + bookMetaHtml(item) + '\n' : '') +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
-        (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+esc(item.soldOut ? "Sold out" : priceTxt)+'</div>\n' : '') +
+        (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+(item.soldOut ? "Sold out" : biSpanHtml(ppx.ko, ppx.en))+'</div>\n' : '') +
         (hasDesc(item) && !isBookItem(item) ? '        <div class="pd-desc"'+(item.descStyle && item.descStyle.lineHeight ? ' style="line-height:'+item.descStyle.lineHeight+'"' : '')+'>'+bilingualHtml(item.description, item.descriptionEn)+'</div>\n' : '') +
         '        <div class="buy-box">\n'+buy+'\n        </div>\n' +
         '      </div>\n' +
