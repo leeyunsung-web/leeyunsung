@@ -135,6 +135,7 @@
   html:not([data-lang="en"]) .lang-switch [data-setlang="ko"], html[data-lang="en"] .lang-switch [data-setlang="en"]{color:var(--ink); font-weight:600;}
   /* 한/영 설명: 두 언어가 다 있을 때만 하나를 숨김 */
   html[data-lang="en"] .l-ko{display:none;}
+  html[data-lang="en"] .only-ko, html:not([data-lang="en"]) .only-en{display:none !important;}
   html:not([data-lang="en"]) .l-en{display:none;}
 
   @media (max-width:640px){
@@ -1289,7 +1290,8 @@
           </div>
           <div class="field" id="bookStoreOnlyField" style="display:none;">
             <label><input type="checkbox" id="itemStoreOnly" style="width:auto;margin-right:8px;vertical-align:middle;">서점·외부 링크로만 판매 — 직접 판매 안 함</label>
-            <div class="field-hint">체크하면 PayPal(해외 직접 판매) 버튼과 $ 가격을 숨기고, 재고·Sold out 판단을 하지 않아요. 알라딘·교보·YES24(와 네이버 주소를 넣었으면 그 링크) 버튼만 보여요. 절판이면 아래 '판매 완료'를 체크하세요.</div>
+            <label style="margin-top:8px;"><input type="checkbox" id="itemIntlDirect" style="width:auto;margin-right:8px;vertical-align:middle;">단, 해외(영어 화면)는 PayPal로 직접 판매 — 영어 화면엔 $ 가격·PayPal만, 한국어 화면엔 서점 버튼만</label>
+            <div class="field-hint">해외 직접 판매를 켜면 주문관리 → 재고(BOOKS)에서 가진 권수만큼 재고를 넣어 주세요. 위 체크만 하면 PayPal(해외 직접 판매) 버튼과 $ 가격을 숨기고, 재고·Sold out 판단을 하지 않아요. 알라딘·교보·YES24(와 네이버 주소를 넣었으면 그 링크) 버튼만 보여요. 절판이면 아래 '판매 완료'를 체크하세요.</div>
           </div>
           <div class="field" id="bookInfoField" style="display:none;">
             <label>도서 정보 <span style="color:#999;font-weight:400;">— 도록(BOOKS)만. 서점처럼 저자·품목정보·목차로 보여요 (빈 칸은 안 보임)</span></label>
@@ -2599,8 +2601,10 @@
   function numVal(v){ const n = parseFloat(String(v==null?"":v).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
   // 도록 "서점에서만 판매": 직접 판매(PayPal)·재고·품절 판단을 하지 않고, 서점·외부 링크 버튼만 보여줌
   function isStoreOnly(item){ return !!(item && item.storeOnly && shopCategory(item) === "book"); }
-  function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0 && !isStoreOnly(item)); }
-  function usdShown(item){ return isStoreOnly(item) ? "" : fmtUsd(item.priceUsd); }
+  // 도록: 국내(한국어 화면)는 서점 링크만, 해외(영어 화면)는 PayPal 직접 판매
+  function isIntlDirect(item){ return isStoreOnly(item) && !!item.intlDirect; }
+  function canPayOnSite(item){ return !!(shopApiBase() && numVal(item.priceUsd) > 0 && (!isStoreOnly(item) || isIntlDirect(item))); }
+  function usdShown(item){ return (isStoreOnly(item) && !isIntlDirect(item)) ? "" : fmtUsd(item.priceUsd); }
   function naverUrl(item){ return safeUrl(item.buyKr); }
   // 도록 — 온라인 서점 버튼 (알라딘·교보문고·YES24). 주소를 넣은 서점만 보입니다.
   const BOOK_STORES = [
@@ -4438,6 +4442,7 @@
       b.appendChild(t); b.appendChild(sub);
       b.disabled = !avail;
       b.addEventListener("click", ()=> addToCart(item));
+      if(isIntlDirect(item)) b.classList.add("only-en");
       row.appendChild(b);
     } else if(us){
       const a = el("a","buy-btn paypal"); a.href = us; a.target="_blank"; a.rel="noopener";
@@ -4446,7 +4451,7 @@
       row.appendChild(a);
     }
     stores.forEach(st=>{
-      const a = el("a","buy-btn store"); a.href = st.url; a.target="_blank"; a.rel="noopener";
+      const a = el("a","buy-btn store" + (isIntlDirect(item) ? " only-ko" : "")); a.href = st.url; a.target="_blank"; a.rel="noopener";
       const t = el("span","lbl"); t.textContent = st.label;
       const sub = el("span","sub"); sub.textContent = st.en;
       a.appendChild(t); a.appendChild(sub);
@@ -4459,7 +4464,8 @@
     }
     box.appendChild(row);
     const bn = buyNotePair(item, !!kr, !!(row.querySelector(".paypal")));
-    if(txt.buyNote && (bn.ko || bn.en)){ const note = el("div","buy-note"); biText(note, bn.ko, bn.en); box.appendChild(note); }
+    // 해외 직접 판매 도록: 한국어 화면엔 PayPal 버튼이 없으니 안내문도 영어 화면에만
+    if(txt.buyNote && (bn.ko || bn.en)){ const note = el("div","buy-note" + (isIntlDirect(item) ? " only-en" : "")); if(isIntlDirect(item)) note.textContent = bn.en; else biText(note, bn.ko, bn.en); box.appendChild(note); }
     return box;
   }
 
@@ -4896,6 +4902,7 @@
       $("itemSoldOut").checked = !!item.soldOut;
       $("itemSoldOutExempt").checked = !!item.soldOutExempt;
       $("itemStoreOnly").checked = !!item.storeOnly;
+      $("itemIntlDirect").checked = !!item.intlDirect;
       $("itemHideBuyNote").checked = !!item.hideBuyNote;
       { const b = bookInfo(item);
         $("itemBookAuthor").value = item.author || ""; $("itemBookAuthorEn").value = item.authorEn || "";
@@ -4927,6 +4934,7 @@
       ["itemSpec1","itemSpec2","itemEdition","itemPriceKrw","itemPriceUsd","itemBuyKr","itemBuyUs","itemBookAladin","itemBookKyobo","itemBookYes24","itemBookAuthor","itemBookAuthorEn","itemBookDesigner","itemBookDesignerEn","itemBookPublisher","itemBookPublisherEn","itemBookPubDate","itemBookPages","itemBookWeight","itemBookSize","itemBookIsbn13","itemBookIsbn10","itemBookToc","itemBookTocEn"].forEach(f=>{ $(f).value = ""; });
       $("itemSoldOut").checked = false; $("itemSoldOutExempt").checked = false; $("itemSharedSet").checked = false;
       $("itemStoreOnly").checked = true;   // 새 도록은 기본 "서점에서만 판매"
+      $("itemIntlDirect").checked = false;
       $("itemHideBuyNote").checked = false;
       setItemVisUi(false);
       setItemRowColsUi(5);
@@ -5009,6 +5017,7 @@
       payload.soldOut  = $("itemSoldOut").checked;
       if($("itemSoldOutExempt").checked) payload.soldOutExempt = true; else delete payload.soldOutExempt;
       if($("itemCategory").value === "book" && $("itemStoreOnly").checked) payload.storeOnly = true; else delete payload.storeOnly;
+      if(payload.storeOnly && $("itemIntlDirect").checked) payload.intlDirect = true; else delete payload.intlDirect;
       if($("itemHideBuyNote").checked) payload.hideBuyNote = true; else delete payload.hideBuyNote;
       if($("itemCategory").value === "book"){
         const v = id=>$(id).value.trim();
@@ -7812,10 +7821,10 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         const stx = shopTexts();
         const P = k=>{ const x = shopTextPair(k); return biSpanHtml(x.ko, x.en); };
         if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+P("naverLabel")+'</span><span class="sub">'+P("naverSub")+'</span></a>');
-        if(usShow) btns.push('        <a class="buy-btn paypal" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
-        bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
+        if(usShow) btns.push('        <a class="buy-btn paypal'+(isIntlDirect(item)?' only-en':'')+'" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
+        bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store'+(isIntlDirect(item)?' only-ko':'')+'" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
-              (()=>{ const bn = buyNotePair(item, !!kr, !!usShow); return (stx.buyNote && (bn.ko || bn.en)) ? '      <div class="buy-note">'+biSpanHtml(bn.ko, bn.en)+'</div>' : ''; })();
+              (()=>{ const bn = buyNotePair(item, !!kr, !!usShow); if(!(stx.buyNote && (bn.ko || bn.en))) return ''; return isIntlDirect(item) ? '      <div class="buy-note only-en">'+esc(bn.en)+'</div>' : '      <div class="buy-note">'+biSpanHtml(bn.ko, bn.en)+'</div>'; })();
       }
       // 상단: 왼쪽 대표 이미지 + 작은 썸네일 / 오른쪽 정보 (앱 화면과 같은 구조)
       const gal = [], galF = [];
