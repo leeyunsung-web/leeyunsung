@@ -512,6 +512,10 @@
   .pp-done .ord{font-family:var(--mono); font-size:13px;}
   .shop-biz{max-width:var(--content-max-width); margin:70px auto 0; padding:18px var(--detail-margin) 0; border-top:1px solid var(--line); font-size:11px; line-height:1.9; color:var(--ink-faint);}
   .shop-biz .policy{white-space:pre-line; margin-top:10px;}
+  /* SHOP: 본문이 짧은 페이지(BOOKS, MY ORDER 등)에서도 사업자 정보가 화면 맨 아래 같은 자리에 오도록 */
+  #app.has-biz{display:flex; flex-direction:column;}
+  #app.has-biz > .biz-spacer{flex:1 0 0;}
+  #app.has-biz > .shop-biz{width:100%;}
   .shop-biz .policy-link{display:inline-block; margin-top:10px; color:var(--ink-soft); text-decoration:underline;}
   .foot-link{margin-left:14px; color:inherit; opacity:.75; text-decoration:underline; font-size:inherit;}
   .foot-link:hover{opacity:1;}
@@ -2369,6 +2373,7 @@
 
     const app = $("app");
     app.innerHTML = "";
+    app.classList.remove("has-biz"); app.style.minHeight = "";
     if(changedRoute){
       window.scrollTo(0, 0);
       if(pendingScrollImg){
@@ -4054,7 +4059,23 @@
     app.appendChild(wrap);
   }
 
+  // 본문이 짧으면 빈 공간을 넣어 사업자 정보가 첫 화면 맨 아래에 붙게 함 (BOOKS·MY ORDER 등을 오가도 같은 자리)
+  function fitShopBiz(){
+    const app = $("app");
+    if(!app || !app.classList.contains("has-biz")) return;
+    const top = app.getBoundingClientRect().top + window.scrollY;
+    // 사업자 정보가 화면의 40%를 넘게 차지하면(휴대폰) 첫 화면 바로 아래에서 시작 — 짧은 탭에서 화면을 가리지 않게
+    const biz = app.querySelector(":scope > .shop-biz");
+    const bh = biz ? biz.offsetHeight : 0;
+    const vh = window.innerHeight;
+    const bizTop = bh > vh * 0.4 ? vh : vh - bh;
+    app.style.minHeight = Math.max(0, Math.round(bizTop - top + bh)) + "px";
+  }
+  window.addEventListener("resize", ()=>requestAnimationFrame(fitShopBiz));
   function renderShopBiz(app){
+    app.classList.add("has-biz");
+    app.appendChild(el("div","biz-spacer"));
+    requestAnimationFrame(fitShopBiz);
     const b = state.data.business || {};
     const box = el("div","shop-biz");
     const parts = [
