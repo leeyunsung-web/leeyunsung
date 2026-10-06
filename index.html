@@ -516,6 +516,11 @@
   #app.has-biz{display:flex; flex-direction:column;}
   #app.has-biz > .biz-spacer{flex:1 0 0;}
   #app.has-biz > .shop-biz{width:100%;}
+  /* MY ORDER: 이메일 입력 칸을 탭과 사업자 정보 사이 가운데에 */
+  #app.has-biz > .shop-fill{flex:1 0 auto; display:flex; flex-direction:column;}
+  #app.has-biz > .shop-fill ~ .biz-spacer{flex:0 0 0;}
+  .shop-fill > .me.me-center{flex:1; display:flex; flex-direction:column; justify-content:center;}
+  .shop-fill > .me.me-center .me-login{margin:0 auto; padding:40px 0 calc(40px + 4vh);}
   .shop-biz .policy-link{display:inline-block; margin-top:10px; color:var(--ink-soft); text-decoration:underline;}
   .foot-link{margin-left:14px; color:inherit; opacity:.75; text-decoration:underline; font-size:inherit;}
   .foot-link:hover{opacity:1;}
@@ -3289,6 +3294,7 @@
     } else meLoginForm(box);
   }
   function meLoginForm(box, msg){
+    box.classList.add("me-center");
     const f = el("form","me-login");
     const t = el("div","me-title"); t.textContent = "Order status & messages";
     const s = el("div","me-sub"); biText(s, "주문할 때 적은 이메일을 입력하세요.", "Enter the email you used at checkout.");
@@ -3312,6 +3318,7 @@
     setTimeout(()=>inp.focus(), 50);
   }
   function meDashboard(box, data){
+    box.classList.remove("me-center");
     const top = el("div","me-top");
     const who = el("div","me-who"); who.textContent = data.email || "";
     const out = el("button","me-out"); out.type = "button"; out.textContent = "Sign out";
@@ -4247,6 +4254,7 @@
     });
     wrap.appendChild(nav);
     if(tab.special){
+      wrap.classList.add("shop-fill");
       renderMyOrder(wrap);
       app.appendChild(wrap);
       renderShopBiz(app);
