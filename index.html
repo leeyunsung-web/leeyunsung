@@ -154,7 +154,8 @@
   body{display:flex; flex-direction:column; min-height:100vh; min-height:100dvh;}
   body > main{flex:1 0 auto; display:flex; flex-direction:column; width:100%;}
   body > footer{flex-shrink:0;}
-  #app{flex:1 0 auto;}
+  #app{flex:1 0 auto; min-width:0;}
+  body > main{min-width:0;}
   /* 짧은 페이지(CONTACT 등)는 본문을 화면 가운데에 */
   #app.center-page{display:flex; flex-direction:column; justify-content:center; padding-bottom:56px;}
   #app.center-page > .contact-wrap{padding-top:0;}
@@ -521,12 +522,13 @@
   .shop-biz{max-width:var(--content-max-width); margin:70px auto 0; padding:18px var(--detail-margin) 0; border-top:1px solid var(--line); font-size:11px; line-height:1.9; color:var(--ink-faint);}
   .shop-biz .policy{white-space:pre-line; margin-top:10px;}
   /* SHOP: 본문이 짧은 페이지(BOOKS, MY ORDER 등)에서도 사업자 정보가 화면 맨 아래 같은 자리에 오도록 */
+  /* 본문은 .app-body 한 덩어리(원래처럼 블록 배치)로 묶고, 남는 높이를 채워 사업자 정보를 아래로 밀어냄 */
   #app.has-biz{display:flex; flex-direction:column;}
-  #app.has-biz > .biz-spacer{flex:1 0 0;}
+  #app.has-biz > .app-body{flex:1 0 auto; min-width:0;}
   #app.has-biz > .shop-biz{width:100%;}
+  #app.has-biz > .app-body.fill{display:flex; flex-direction:column;}
   /* MY ORDER: 이메일 입력 칸을 탭과 사업자 정보 사이 가운데에 */
-  #app.has-biz > .shop-fill{flex:1 0 auto; display:flex; flex-direction:column;}
-  #app.has-biz > .shop-fill ~ .biz-spacer{flex:0 0 0;}
+  .app-body.fill > .shop-fill{flex:1 0 auto; display:flex; flex-direction:column; width:100%; min-width:0;}
   .shop-fill > .me.me-center{flex:1; display:flex; flex-direction:column; justify-content:center;}
   .shop-fill > .me.me-center .me-login{margin:0 auto; padding:40px 0 calc(40px + 4vh);}
   .shop-biz .policy-link{display:inline-block; margin-top:10px; color:var(--ink-soft); text-decoration:underline;}
@@ -4089,7 +4091,10 @@
   }
   function renderShopBiz(app){
     app.classList.add("has-biz");
-    app.appendChild(el("div","biz-spacer"));
+    const body = el("div","app-body");
+    while(app.firstChild) body.appendChild(app.firstChild);
+    if(body.querySelector(":scope > .shop-fill")) body.classList.add("fill");
+    app.appendChild(body);
     const b = state.data.business || {};
     const box = el("div","shop-biz");
     const parts = [
