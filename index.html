@@ -149,7 +149,15 @@
   }
 
   /* ---------- page ---------- */
-  main{min-height:60vh; padding:64px 0 120px;}
+  main{padding:64px 0 120px;}
+  /* 적응형 세로 배치: 본문이 짧아도 아래 © 줄은 항상 화면 맨 아래, 본문 영역은 남는 높이를 채움 (창 크기를 바꾸면 따라 움직임) */
+  body{display:flex; flex-direction:column; min-height:100vh; min-height:100dvh;}
+  body > main{flex:1 0 auto; display:flex; flex-direction:column; width:100%;}
+  body > footer{flex-shrink:0;}
+  #app{flex:1 0 auto;}
+  /* 짧은 페이지(CONTACT 등)는 본문을 화면 가운데에 */
+  #app.center-page{display:flex; flex-direction:column; justify-content:center; padding-bottom:56px;}
+  #app.center-page > .contact-wrap{padding-top:0;}
   .page-title{font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:36px;}
 
   /* ---------- CV ---------- */
@@ -2378,7 +2386,7 @@
 
     const app = $("app");
     app.innerHTML = "";
-    app.classList.remove("has-biz"); app.style.minHeight = "";
+    app.classList.remove("has-biz", "center-page"); app.style.minHeight = "";
     if(changedRoute){
       window.scrollTo(0, 0);
       if(pendingScrollImg){
@@ -4066,8 +4074,9 @@
     app.appendChild(wrap);
   }
 
-  // 본문이 짧으면 빈 공간을 넣어 사업자 정보가 첫 화면 맨 아래에 붙게 함 (BOOKS·MY ORDER 등을 오가도 같은 자리)
+  // (예전) JS로 높이를 맞추던 방식 — 이제는 CSS(body/main/#app flex)로 처리. 호출부 호환용으로만 남김
   function fitShopBiz(){
+    return;
     const app = $("app");
     if(!app || !app.classList.contains("has-biz")) return;
     const top = app.getBoundingClientRect().top + window.scrollY;
@@ -4078,11 +4087,9 @@
     const bizTop = bh > vh * 0.4 ? vh : vh - bh;
     app.style.minHeight = Math.max(0, Math.round(bizTop - top + bh)) + "px";
   }
-  window.addEventListener("resize", ()=>requestAnimationFrame(fitShopBiz));
   function renderShopBiz(app){
     app.classList.add("has-biz");
     app.appendChild(el("div","biz-spacer"));
-    requestAnimationFrame(fitShopBiz);
     const b = state.data.business || {};
     const box = el("div","shop-biz");
     const parts = [
@@ -4199,6 +4206,7 @@
   function isShopVisible(){ return isShopPublic() || state.master; }
 
   function renderShopComingSoon(app){
+    app.classList.add("center-page");
     const wrap = el("div","shop-coming-soon");
     const t = el("div","shop-coming-title"); t.textContent = "SHOP";
     const s = el("div","shop-coming-sub"); biText(s, "준비중입니다", "Coming soon");
@@ -5825,6 +5833,7 @@
     editBtn.addEventListener("click", openContactModal);
     app.appendChild(editBtn);
 
+    app.classList.add("center-page");
     const wrap = el("div","contact-wrap align-"+(state.data.design.contactAlign||"center"));
     const c = state.data.contact;
     let hasAny = false;
