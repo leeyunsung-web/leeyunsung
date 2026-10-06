@@ -2610,7 +2610,7 @@
   const BOOK_STORES = [
     { key:"aladin", label:"알라딘",   en:"Aladin" },
     { key:"kyobo",  label:"교보문고", en:"Kyobo Book" },
-    { key:"yes24",  label:"YES24",   en:"Online Bookstore" }
+    { key:"yes24",  label:"YES24",   en:"YES24" }
   ];
   function bookLinks(item){
     const b = (item && item.bookLinks && typeof item.bookLinks === "object") ? item.bookLinks : {};
@@ -2974,7 +2974,7 @@
       const th = el("div","cart-thumb");
       if(item.cover){ const im = el("img"); im.src = item.cover; im.alt = ""; im.loading = "lazy"; th.appendChild(im); }
       const info = el("div","cart-info");
-      const nm = el("a","cart-name"); nm.textContent = cleanText(item.title) || "Untitled"; nm.href = "#shop/" + item.id;
+      const nm = el("a","cart-name"); nm.textContent = cleanText(item.titleEn) || cleanText(item.title) || "Untitled"; nm.href = "#shop/" + item.id;
       const meta = el("div","cart-meta");
       const cat = shopCategory(item);
       meta.textContent = (cat === "original" ? "Original" : (cat === "book" ? "Book" : "Edition")) + " · " + fmtUsd(item.priceUsd);
@@ -4278,7 +4278,7 @@
 
       const soldNow = isSoldOut(item);
       const info = el("div","shop-info");
-      const nm = el("div","shop-name ml"); nm.textContent = multiLine(item.title) || "(Untitled)";
+      const nm = el("div","shop-name ml"); setBiTitle(nm, multiLine(item.title) || "(Untitled)", multiLine(item.titleEn || ""));
       info.appendChild(nm);
       if(isBookItem(item) && (cleanText(item.author) || cleanText(item.authorEn))){
         const au = el("div","shop-author"); biText(au, cleanText(item.author) || cleanText(item.authorEn), cleanText(item.authorEn) || cleanText(item.author)); info.appendChild(au);
@@ -4451,8 +4451,8 @@
     }
     stores.forEach(st=>{
       const a = el("a","buy-btn store" + (isIntlDirect(item) ? " only-ko" : "")); a.href = st.url; a.target="_blank"; a.rel="noopener";
-      const t = el("span","lbl"); t.textContent = st.label;
-      const sub = el("span","sub"); sub.textContent = st.en;
+      const t = el("span","lbl"); biText(t, st.label, st.en);
+      const sub = el("span","sub"); biText(sub, st.en === st.label ? "Online Bookstore" : st.en, "Korea");
       a.appendChild(t); a.appendChild(sub);
       row.appendChild(a);
     });
@@ -4548,7 +4548,7 @@
 
     const info = el("div","pd-info");
     const head = el("div","pd-head");
-    const h = el("h1","pd-title ml"); h.textContent = multiLine(item.title) || "(Untitled)";
+    const h = el("h1","pd-title ml"); setBiTitle(h, multiLine(item.title) || "(Untitled)", multiLine(item.titleEn || ""));
     const actions = el("div","detail-actions");
     const editBtn = el("button"); editBtn.textContent="Edit Info"; editBtn.addEventListener("click",()=>openItemModal("shop",item.id));
     const delBtn = el("button","danger"); delBtn.textContent="Delete"; delBtn.addEventListener("click",()=>deleteItem("shop",item.id));
@@ -7821,7 +7821,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         const P = k=>{ const x = shopTextPair(k); return biSpanHtml(x.ko, x.en); };
         if(kr) btns.push('        <a class="buy-btn naver" href="'+esc(kr)+'" target="_blank" rel="noopener"><span class="lbl">'+P("naverLabel")+'</span><span class="sub">'+P("naverSub")+'</span></a>');
         if(usShow) btns.push('        <a class="buy-btn paypal'+(isIntlDirect(item)?' only-en':'')+'" href="'+esc(us)+'"'+(onSite?'':' target="_blank" rel="noopener"')+'><span class="lbl">'+(onSite?P("paypalLabel"):'International')+'</span><span class="sub">'+P("paypalSub")+'</span></a>');
-        bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store'+(isIntlDirect(item)?' only-ko':'')+'" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+esc(st.label)+'</span><span class="sub">'+esc(st.en)+'</span></a>'));
+        bookLinks(item).forEach(st=>btns.push('        <a class="buy-btn store'+(isIntlDirect(item)?' only-ko':'')+'" href="'+esc(st.url)+'" target="_blank" rel="noopener"><span class="lbl">'+biTitleHtml(st.label, st.en === st.label ? "" : st.en)+'</span><span class="sub">'+biTitleHtml(st.en === st.label ? "Online Bookstore" : st.en, "Korea")+'</span></a>'));
         buy = '      <div class="buy-row">\n'+btns.join("\n")+'\n      </div>\n' +
               (()=>{ const bn = buyNotePair(item, !!kr, !!usShow); if(!(stx.buyNote && (bn.ko || bn.en))) return ''; return isIntlDirect(item) ? '      <div class="buy-note only-en">'+esc(bn.en)+'</div>' : '      <div class="buy-note">'+biSpanHtml(bn.ko, bn.en)+'</div>'; })();
       }
@@ -7842,7 +7842,7 @@ window.addEventListener('focus',function(){ if(!dragId&&dragRow<0) render(false)
         thumbs +
         '      </div>\n' +
         '      <div class="pd-info">\n' +
-        '        <div class="pd-head"><h1 class="pd-title">'+(esc(multiLine(item.title)) || esc(title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
+        '        <div class="pd-head"><h1 class="pd-title">'+(cleanText(item.titleEn) ? biTitleHtml(multiLine(item.title) || title, multiLine(item.titleEn)) : esc(multiLine(item.title) || title)).replace(/\n/g,'<br>')+'</h1></div>\n' +
         (isBookItem(item) ? '        ' + bookMetaHtml(item) + '\n' : '') +
         (specs.length ? '        <div class="pd-specs">'+specs.map(x=>'<div>'+esc(x).replace(/\n/g,'<br>')+'</div>').join('')+'</div>\n' : '') +
         (priceTxt ? '        <div class="pd-price'+(item.soldOut?' sold':'')+'">'+(item.soldOut ? "Sold out" : biSpanHtml(ppx.ko, ppx.en))+'</div>\n' : '') +
