@@ -159,6 +159,15 @@
     nav.site-nav{grid-column:1; justify-self:center; gap:16px; flex-wrap:wrap; justify-content:center;}
     .lang-switch{position:absolute; top:12px; right:16px; padding:0; margin:0; border-left:0;}
   }
+  
+  @media (pointer:coarse){
+    input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea{font-size:16px;}
+    
+    nav.site-nav a{position:relative;}
+    nav.site-nav a::after{content:""; position:absolute; left:-7px; right:-7px; top:-12px; bottom:-10px;}
+    .lang-switch button{position:relative;}
+    .lang-switch button::after{content:""; position:absolute; left:-8px; right:-8px; top:-12px; bottom:-12px;}
+  }
 
   
   main{padding:calc(64px + var(--fx) * 0.033333) 0 calc(120px + var(--fx) * 0.062500);}
