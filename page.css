@@ -1077,7 +1077,7 @@
 a.photo-cell{display:block;}.photo-cell{cursor:zoom-in;}.static-page .detail-desc{margin-top:var(--desc-top, 20px);}.static-page .frame{cursor:pointer;}@media print{header.site-head,footer{display:none}}
 
 @media (pointer:coarse){
-  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea{font-size:16px;}
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea{font-size:16px !important;}
   nav.site-nav a{position:relative;}
   nav.site-nav a::after{content:""; position:absolute; left:-7px; right:-7px; top:-12px; bottom:-10px;}
   .lang-switch button{position:relative;}
