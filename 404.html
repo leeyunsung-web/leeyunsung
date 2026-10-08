@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var l;try{l=localStorage.getItem("lysLang")}catch(e){}if(l!=="ko"&&l!=="en")l=/^ko/i.test(navigator.language||"")?"ko":"en";document.documentElement.setAttribute("data-lang",l);})();</script>
+<title>페이지를 찾을 수 없습니다 — 이윤성 Lee Yunsung</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/page.css">
+<style>
+  .nf{min-height:50vh;display:flex;flex-direction:column;justify-content:center;max-width:var(--content-max-width,900px);margin:0 auto;padding:calc(var(--header-height,83px) + 60px) var(--page-padding,30px) 80px;font-size:var(--content-font-size,15px);letter-spacing:var(--content-letter-spacing,0.05em);line-height:1.8}
+  .nf h1{font-size:var(--detail-title-size,30px);font-weight:400;margin:0 0 24px}
+  .nf p{margin:0 0 12px}
+  .nf a{text-decoration:underline;text-underline-offset:3px}
+  .nf .links{margin-top:28px;display:flex;gap:24px;flex-wrap:wrap}
+  .nf code{font-family:inherit;opacity:.6;word-break:break-all}
+  html[data-lang="ko"] .l-en, html[data-lang="en"] .l-ko{display:none}
+</style>
+<script>
+(function(){
+  // 옛 주소 → 새 주소 (슬러그를 바꾼 페이지)
+  var MOVED={"/works/works-9/":"/works/pixel-prometheus/","/works/works-8/":"/works/digital/"};
+  var p=location.pathname.replace(/\/?$/,"/").replace(/\/index\.html\/$/,"/");
+  if(MOVED[p]){location.replace(MOVED[p]+location.hash);return;}
+  // /works/슬러그 처럼 끝 슬래시만 빠진 경우
+  if(!/\/$/.test(location.pathname)&&!/\.[a-z0-9]+$/i.test(location.pathname)){location.replace(location.pathname+"/"+location.search+location.hash);}
+})();
+</script>
+</head>
+<body class="static-page">
+  <header class="site-head">
+    <div class="shell head-grid">
+      <div class="head-spacer"></div>
+      <div class="head-center"><a href="/" class="site-name">LEE YUNSUNG</a></div>
+      <nav class="site-nav">
+        <a href="/cv/">CV</a>
+        <a href="/">WORKS</a>
+        <a href="/#text">TEXT</a>
+        <a href="/#shop">SHOP</a>
+        <a href="/#contact">CONTACT</a>
+        <span class="lang-switch" role="group" aria-label="Language"><button type="button" data-setlang="ko">KO</button><i>/</i><button type="button" data-setlang="en">EN</button></span>
+      </nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="nf">
+      <h1><span class="l-ko">페이지를 찾을 수 없습니다</span><span class="l-en">Page not found</span></h1>
+      <p class="l-ko">주소가 바뀌었거나 삭제된 페이지입니다. <code id="path"></code></p>
+      <p class="l-en">This page has moved or no longer exists. <code id="path2"></code></p>
+      <div class="links">
+        <a href="/">WORKS</a>
+        <a href="/#text">TEXT</a>
+        <a href="/cv/">CV</a>
+        <a href="/#contact">CONTACT</a>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell"><span>&copy; 2026 LEE YUNSUNG</span> <a class="foot-link" href="/#privacy"><span class="l-ko" lang="ko">개인정보처리방침</span><span class="l-en" lang="en">Privacy Policy</span></a></div></footer>
+<script>
+document.getElementById("path").textContent=location.pathname;document.getElementById("path2").textContent=location.pathname;
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-setlang]');if(!b)return;var l=b.getAttribute('data-setlang');document.documentElement.setAttribute('data-lang',l);try{localStorage.setItem('lysLang',l);}catch(x){}});
+</script>
+</body>
+</html>
