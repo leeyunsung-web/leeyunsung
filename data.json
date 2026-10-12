@@ -328,353 +328,6 @@
       }
     },
     {
-      "id": "w2",
-      "title": "The Annunciation",
-      "cover": "./images/w2-cover.jpg",
-      "description": "〈수태고지〉는 서양 회화가 자주 다루어 온 수태고지를 토르소 연작에서 이어 그린 작업이다. 가브리엘과 마리아를 두 인물로 그리고, 그 주위를 백합과 별, 분홍색 피가 터져 나오는 소용돌이로 채웠다.\n\n오시이 마모루의 극장판 애니메이션 〈공각기동대〉(1995)의 마지막 장면에서 천사의 환영이 내려오고 주인공과 인형사가 하나의 새로운 존재가 된다. 그 장면이 내게는 수태고지처럼 보였고, 그것이 예수의 탄생이 아니라 무언가가 태어나는 순간 자체를 그린 것일 수 있다고 그때 생각했다.\n\n토르소 연작을 이어 가면서 그보다 큰 화면이 필요했고, 첫 개인전 《NU-TYPE》의 중심 작업으로 어울리는 주제라고 생각했다. 네 개의 캔버스를 썼지만 가운데 두 폭이 하나의 이미지로 이어져 세 개의 화면으로 보인다. 종교화의 삼면화 구조를 따르면서, 펼쳐진 만화책의 양면처럼 보이기를 바랐다. 캔버스에 유채로, 중앙 두 폭은 194×261cm, 좌우 패널은 각각 117×91cm다. 《NU-TYPE》(메이크샵 아트스페이스, 파주, 2014)에서 선보였다.\n\n중앙 화면의 왼쪽, 날개가 있는 인물이 가브리엘이고 오른쪽이 마리아다. 두 인물은 서로 닮았고, 날개 하나만이 누가 가브리엘인지 알려 준다. 속성 하나로 인물을 식별하는 것은 종교화의 도상학이 오래 써 온 방식이고, 애니메이션이 머리색이나 소품으로 캐릭터를 구분하는 방식이기도 하다. 두 인물은 팔과 다리가 하나씩 없고, 화면 가운데의 폭발을 사이에 두고 마주 보며 빙글 돌고 있다.\n\n전통적인 수태고지에서는 빛이 하늘에서 내려온다. 내가 그린 수태고지에서는 빛이 가운데에서 터져 나온다. 화면 전체가 하나의 큰 폭발이기도 하고, 둘 사이의 관계에서 생긴 것일 수도 있고, 내적인 폭발일 수도 있다. 위에서 내려오지 않고 중심에서 나온다는 것이 내게는 중요했다.\n\n인물에서 분홍색 피가 퍼져 나가고, 그 주위로 백합이 만개하고 별이 반짝이고 액체가 터진다. 무언가가 폭발하면서 동시에 만들어지는 순간을 그려 보려 했다.\n\n작품의 인물들은 누드로 등장한다. 애니메이션의 클라이맥스에서 주인공이 맨몸으로 빛나며 각성하고 변신 장면에서 순간 빛을 발하며 맨몸이 되는 것처럼, 결정적인 사건임을 드러내면서도 세속에 속하지 않은 순간으로 그려내고 싶었다.\n\n금발의 여성 캐릭터는 일본 만화에 자주 등장하는 전형적인 미형의 이미지다. 서양인도 동양인도 아닌 무국적의 상태이고, 고전 조각 역시 이상화된 미의 전형이라는 점에서 같다. 좌우의 천사들은 머리색과 피부색을 다르게 그렸다. 전형적인 미소녀 캐릭터 이외의 유형도 가능한 한 다양하게 그려 보고 싶었다. 배경은 약간의 미색이 섞인 흰색으로, 그림 전체가 순수하고 밝게 보이기를 바랐다.\n\n백합은 서양 회화에서 순결의 상징이다. 만화의 맥락에서는 다른 뜻으로 읽힌다. 같은 도상이 시대와 문화에 따라 다르게 읽히고, 그 해석들이 한 화면에서 부딪히는 상태에 관심이 있다.\n\n이 그림이 어떤 탄생을 그린 것인지는 정하지 않았다. 폭발의 한가운데서 두 사람은 천천히 돌며, 그 회전 속에서 무언가가 지금 막 탄생하고 있다. 그 순간만이 화면에 남는다.",
-      "titleStyle": {
-        "align": "left",
-        "bold": true
-      },
-      "descStyle": {
-        "align": "left",
-        "bold": false,
-        "letterSpacing": 0,
-        "lineHeight": 1.5
-      },
-      "photoRows": [
-        {
-          "id": "row-1790811056102-4q9j3",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790811056102-subcx",
-              "image": "./images/w2-p-1790811056102-subcx-389c44cb.jpg",
-              "caption": "",
-              "pan": {
-                "ratio": "21:9",
-                "zoom": 3,
-                "x0": 0.654,
-                "y0": 0.025,
-                "x1": 0.319,
-                "y1": 0.855,
-                "dur": "40"
-              }
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-mbv3q",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787220387297-es97k",
-              "image": "./images/w2-p-1787220387297-es97k.jpg",
-              "caption": "2014, NU-TYPE, Makeshop Art Space, Paju, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-c86mx",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787383683408-o4qw7",
-              "image": "./images/w2-p-1787383683408-o4qw7.jpg",
-              "caption": "The Annunciation (right panel), 2014, Oil on canvas, 117 × 91 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-6yhlg",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787384720915-eoxdq",
-              "image": "./images/w2-p-1787384720915-eoxdq.jpg",
-              "caption": "The Annunciation (left panel), 2014, Oil on canvas, 117 × 91 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-cgpxr",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787384904997-pmnc5",
-              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-              "caption": "The Annunciation (central panels), 2014, Oil on canvas, 2 panels, 194 × 261 cm overall"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-ahdh4",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385167980-pilgo",
-              "image": "./images/w2-p-1787385167980-pilgo.jpg",
-              "caption": "The Annunciation, 2014, Oil on canvas, 4 panels: 117 × 91 cm (left), 194 × 261 cm overall (center, 2 panels), 117 × 91 cm (right)"
-            }
-          ]
-        },
-        {
-          "id": "row-1791348325235-sty9y",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791348325235-hjagl",
-              "image": "./images/w2-p-1791348325235-hjagl-5ffc61ed.jpg",
-              "caption": "The Annunciation, 2026, Oil on canvas, 227 × 182 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1791348354954-yvjp5",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791348354954-hr0vo",
-              "image": "./images/w2-p-1791348354954-hr0vo-2783c096.jpg",
-              "caption": "The Annunciation, 2026, Oil on canvas, 227 × 182 cm"
-            }
-          ]
-        }
-      ],
-      "slug": "the-annunciation",
-      "descriptionEn": "The Annunciation continues the Torso series into a subject Western painting has returned to again and again. Gabriel and Mary are painted as two figures, and the space around them is filled with lilies, stars and a vortex of bursting pink blood.\n\nIn the final scene of Mamoru Oshii's animated feature Ghost in the Shell (1995), the vision of an angel descends and the protagonist and the Puppet Master merge into a single new being. To me that scene looked like an Annunciation, and I thought at the time that the Annunciation itself might be a picture not of the birth of Jesus but of the moment something is born.\n\nAs the Torso series went on I needed a larger picture plane than the torsos allowed, and this seemed the right subject for the central work of my first solo exhibition, NU-TYPE. Four canvases are used, but the two central panels join into a single image, so the work reads as three. It follows the triptych structure of religious painting while, I hoped, also looking like the open spread of a comic book. Oil on canvas; the two central panels measure 194 × 261 cm together, the side panels 117 × 91 cm each. It was shown at NU-TYPE (Makeshop Art Space, Paju, 2014).\n\nOn the left of the central image, the winged figure is Gabriel; on the right is Mary. The two resemble each other, and the wing alone tells us which one is Gabriel. Identifying a figure by one attribute is a method the iconography of religious painting has used for centuries, and it is also how animation tells its characters apart, by hair color or a prop. Each figure is missing one arm and one leg, and the two face each other, turning, with the explosion at the center of the picture between them.\n\nIn a traditional Annunciation the light comes down from heaven. In mine it bursts out from the center. The whole picture may be one great explosion; it may be something generated between the two figures; it may be an explosion from within. What mattered to me was that it comes from the center, not from above.\n\nPink blood spreads out from the figures, and around it lilies bloom, stars glitter and liquid bursts. I wanted to paint a moment in which something explodes and is made at the same time.\n\nThe figures in the work appear nude. Just as the protagonist of an anime glows naked at the climax as she awakens, and just as a transformation sequence flashes with light and the body is bared for an instant, I wanted to paint it as a decisive event, yet a moment not of this world.\n\nThe blonde female character is a conventional image of beauty that recurs in Japanese comics. She belongs to no nation, neither Western nor Asian, and in that respect she is like classical sculpture, which is also an idealized type of beauty. The angels on the side panels are painted with different hair and skin colors; I wanted to paint as many types as I could beyond the standard bishōjo character. The ground is white with a hint of cream, so that the whole painting would read as pure and bright.\n\nIn Western painting the lily is a symbol of purity. In the context of manga it is read to mean something else. I am interested in the way the same iconographic motif is read differently across periods and cultures, and in the state in which those readings collide within a single picture.\n\nI have not decided what kind of birth this painting depicts. At the heart of the explosion the two figures turn slowly, and within that turning something is being born at this very moment. Only that moment remains on the canvas.",
-      "author": "",
-      "authorEn": "",
-      "year": ""
-    },
-    {
-      "id": "w3",
-      "title": "Torso",
-      "cover": "./images/w3-cover.jpg",
-      "description": "〈토르소〉 연작은 팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 재구성한 작업이다. 1990년대 일본 마법소녀 만화 속 변신 장면의 클라이맥스를 참조하며, 소용돌이치는 움직임과 팔다리가 없는 신체, 분출하는 피가 휘몰아치는 시공간을 그려낸다.\n\n미술사를 처음 배우던 때, 밀로의 비너스로 비례와 조형을 배웠다. 학자들이 사라진 두 팔을 여러 방식으로 복원해 보았지만 결국 없는 편이 낫다는 결론에 이르렀다는 이야기가 오래 남았다. 훼손된 것을 되돌리는 대신 남겨진 형태를 받아들이고 그 안에서 새로운 관점을 찾아내는 것. 그것이 현대적인 시선이라고 생각했다.\n\n오시이 마모루의 극장판 애니메이션 〈공각기동대〉(1995)의 마지막 전투에서 전차의 해치를 열다 주인공의 팔이 뜯겨 나가는 장면을 인상 깊게 보았다. 어릴 때는 조금 충격적인 이미지였지만, 시간이 흐른 뒤 다시 보았을 때 부서질 수밖에 없는 신체의 한계와 그것을 넘어서려는 의지가 함께 보였고, 그 연출이 숭고하게 느껴졌다.\n\n팔다리를 잃은 고대 조각, 마법소녀의 변신, 합체 로봇이 분해되고 조각이 되어 다시 하나가 되는 장면. 서로 다른 시대와 문화에서 온 장면들이지만, 불완전한 상태에서 다음 단계로 넘어가는 순간이라는 점에서 같다. 파괴되고 충돌하며 다시 생성되는 지점들이다.\n\n토르소 연작의 시작은 〈공각기동대〉의 그 장면에서 아이디어를 얻은 디지털 드로잉 〈Torso〉(2011, 디지털 프린트, 116×92cm)였다. 끊임없이 뿜어져 나오는 것들, 폭발하면서 빛이 되는 순간을 생각했다. 원작의 느낌에 가까운 그림이었다.\n\n캔버스에 유화로 옮겨 그리면서부터는 마법소녀물의 변신 장면을 참조해 그리기 시작했다. 반짝이는 별과 소용돌이치는 공간 속에서 머리카락이 흩날리는, 다양한 표정과 포즈의 역동적인 이미지를 그리려고 했다. 이렇게 그린 작품들을 개인전 《NU-TYPE》(메이크샵 아트스페이스, 파주, 2014)에서 선보였고, 지금도 연작을 이어 가고 있다.\n\n밑그림은 컴퓨터 드로잉으로 완성한 뒤 캔버스로 옮겨 그리면서 발전시키는 편이다. 애니메이션의 셀 채색 방식으로 신체를 표현하되, 어두운 부분에도 최대한 선명한 색을 사용하려 한다. 만화나 애니메이션의 화면에서 보던 것과 다른, 회화 앞에 서는 느낌을 위해 되도록 인물은 실제 사람보다 크게 그리려고 한다. 주요 작품은 캔버스에 유채, 162×130cm다.\n\n대부분의 인물은 여성의 누드다. 여성의 신체는 미술에서 가장 오래 다루어진 주제이고, 그 축적된 역사 위에서 그릴 때 비로소 지금의 맥락이 생긴다고 본다. 다만 내가 그리는 것은 몸 자체라기보다 몸에 어떤 사건이 일어나는 순간이다.\n\n얼굴이 있는 토르소에서 분홍색 피가 분출하며, 다양한 별빛들과 함께 새로운 공간을 열어 간다. 생명의 원천이자 죽음의 상징인 피는 젤리처럼 반짝이는 방울이 되어 그 순간을 채운다.\n\n배경은 무중력 상태의 액체와 휘몰아치는 애니메이션의 이펙트들로 이루어진다. 평면의 이미지에서 인물만이 주인공은 아니다.\n\n토르소의 첫 작품은 원작의 장면을 따라 몸이 뒤틀리고 눈을 감은, 고통과 황홀을 가르지 않는 모습이었다. 캔버스에 다시 그리면서 토르소는 만화적 상상력을 거쳐 밝은 표정을 갖게 되었다. 팔다리가 없는 몸은 잘려 나간 것일 수도, 아직 생성되지 않은 것일 수도 있다. 안에서 무언가를 표출하는 순간이라는 것만 남는다.\n\n불완전한 형태의 고대 조각을 이미 완결된 형식으로 받아들이듯, 나는 하위문화였기에 가능했던 만화와 애니메이션의 과감한 표현을 회화의 언어로 옮긴다. 고전의 형식을 현재로 가져오는 것이 목적이라기보다, 내 안에 쌓인 이미지들을 회화 안에서 부딪히게 해 새로운 의미가 생성되는 지점을 찾는 것에 가깝다.",
-      "photoRows": [
-        {
-          "id": "row-1790812986242-joi6p",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790812986242-qtlkt",
-              "image": "./images/w3-p-1790812986242-qtlkt-a7bb5ed6.jpg",
-              "caption": "",
-              "pan": {
-                "ratio": "3:1",
-                "zoom": 2.5,
-                "x0": 0,
-                "y0": 0.493,
-                "x1": 1,
-                "y1": 0.488,
-                "dur": 90
-              }
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-os0nq",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385394174-6v6xw",
-              "image": "./images/w3-p-1787385394174-6v6xw.jpg",
-              "caption": "2016, NU, DOOSAN Gallery New York, New York, USA"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-t5afw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385440355-bk6qr",
-              "image": "./images/w3-p-1787385440355-bk6qr.jpg",
-              "caption": "2020, Torso, YK Presents, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-d6l8k",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385482604-y14g4",
-              "image": "./images/w3-p-1787385482604-y14g4.jpg",
-              "caption": "2020, Torso, YK Presents, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-5cy7x",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385504736-ngqqh",
-              "image": "./images/w3-p-1787385504736-ngqqh.jpg",
-              "caption": "2020, Torso, YK Presents, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1790756583254-rjy3x",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790756583255-pfr1t",
-              "image": "./images/w3-p-1790756583255-pfr1t-9057863c.jpg",
-              "caption": "2020, Torso, YK Presents, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464162725-hzch0",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1787385568997-d3x3y",
-              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464242838-tur9n",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787464242838-rtg3t",
-              "image": "./images/w3-p-1787464242838-rtg3t.jpg",
-              "caption": "Torso 01, 2012, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787464255794-6t81e",
-              "image": "./images/w3-p-1787464255794-6t81e.jpg",
-              "caption": "Torso 02, 2012, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787464576033-74fl2",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787464576033-gohda",
-              "image": "./images/w3-p-1787464576033-gohda.jpg",
-              "caption": "Torso 03, 2013, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787464596295-v0chu",
-              "image": "./images/w3-p-1787464596295-v0chu.jpg",
-              "caption": "Torso 04, 2013, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787465231077-5y20c",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787465231077-kzbxf",
-              "image": "./images/w3-p-1787465231077-kzbxf.jpg",
-              "caption": "Torso 05, 2013, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787465287347-94coq",
-              "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg",
-              "caption": "Torso 06, 2016, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787465325523-hr4v0",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787465325523-bc1ig",
-              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
-              "caption": "Torso 07, 2013, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787465388849-mlqhg",
-              "image": "./images/w3-p-1787465388849-mlqhg.jpg",
-              "caption": "Torso 08, 2014, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787465558711-go7ge",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787465558711-9hdxm",
-              "image": "./images/w3-p-1787465558711-9hdxm.jpg",
-              "caption": "Torso 09, 2013, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787465590493-13mdp",
-              "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
-              "caption": "Torso 10, 2020, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787592502932-ph1wh",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787592502932-69qpr",
-              "image": "./images/w3-p-1787592502932-69qpr.jpg",
-              "caption": "Torso 11, 2023, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787592524596-xvwug",
-              "image": "./images/w3-p-1787592524596-xvwug.jpg",
-              "caption": "Torso 12, 2023, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787592964596-q7p22",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787592964596-nhm78",
-              "image": "./images/w3-p-1787592964596-nhm78.jpg",
-              "caption": "Torso 13, 2024, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787592985513-1e47g",
-              "image": "./images/w3-p-1787592985513-1e47g.jpg",
-              "caption": "Torso 14, 2023, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1787593009615-rg46s",
-          "cols": 2,
-          "photos": [
-            {
-              "id": "p-1787593009615-p5ijq",
-              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
-              "caption": "Torso 16, 2023, Oil on canvas, 162 × 130 cm"
-            },
-            {
-              "id": "p-1787593029600-54rtv",
-              "image": "./images/w3-p-1787593029600-54rtv.jpg",
-              "caption": "Torso 18, 2024, Oil on canvas, 162 × 130 cm"
-            }
-          ]
-        }
-      ],
-      "slug": "torso",
-      "descriptionEn": "The Torso series takes the torso of classical sculpture, a body without arms or legs, as its basis and reconfigures it in the visual language of animation and subculture. Drawing on the climactic transformation scenes of 1990s Japanese magical-girl anime and manga, the paintings depict a space and a time swept up in whirling motion, limbless bodies and spurting blood.\n\nWhen I first studied art history, I learned proportion and form from the Venus de Milo. Scholars had tried to reconstruct the missing arms in various ways, and the conclusion, that she was better off without them, stayed with me for a long time. Rather than restoring what was damaged, to accept the form that remains and find a new way of seeing within it: that, I thought, was a contemporary way of looking.\n\nIn the final battle of Mamoru Oshii's animated feature Ghost in the Shell (1995), as the protagonist strains to pry open the hatch of a tank, her arms are torn from her body. The scene stayed with me. As a child I found the image somewhat shocking, but when I saw it again years later I saw both the limit of a body that cannot help but break and the will to go beyond it, and the staging struck me as sublime.\n\nAn ancient sculpture that has lost its limbs, a magical girl's transformation, a combining robot that breaks into pieces and becomes one again. The scenes come from different periods and cultures, but they are alike in being the moment when an incomplete state passes into the next stage. They are points of destruction, collision and regeneration.\n\nThe Torso series began with a digital drawing, Torso (2011, digital print, 116 × 92 cm), that took its idea from that scene in Ghost in the Shell. I was thinking of things that keep pouring out, of the moment when an explosion turns into light. The picture stayed close to the feel of the original.\n\nOnce I began painting the torsos in oil on canvas, I started drawing on the transformation scenes of the magical-girl genre. I wanted dynamic images, with a range of expressions and poses, hair streaming amid glittering stars and whirling space. These paintings were shown in my solo exhibition NU-TYPE (Makeshop Art Space, Paju, 2014), and the series continues today.\n\nI usually complete the underdrawing on the computer, then transfer it to the canvas and develop it as I paint. The bodies are rendered in the flat, cel-style coloring of animation, but I try to keep the color as vivid as possible even in the dark areas. To give the sense of standing before a painting rather than a comic or an animation screen, I tend to paint the figures larger than life-size. The main works are oil on canvas, 162 × 130 cm.\n\nMost of the figures are female nudes. The female body is the subject art has treated longest, and I believe a painting acquires its present context only when it is made on top of that accumulated history. What I paint, though, is not so much the body itself as the moment some event happens to it.\n\nFrom a torso with a face, pink blood spurts out and, together with starlight of many kinds, opens up a new space. Blood, the source of life and the sign of death, becomes glittering, jelly-like drops that fill that moment.\n\nThe background is made of weightless liquid and the whirling effects of animation. In a flat image, the figure is not the only protagonist.\n\nThe first torso, following the original scene, had a twisted body and closed eyes, a look that did not separate pain from ecstasy. Repainted on canvas, the torso passed through the imagination of comics and took on a cheerful expression. A body without limbs may have had them cut away, or may not yet have grown them. All that remains is the moment something is released from within.\n\nJust as the incomplete form of an ancient sculpture is accepted as a finished one, I carry the bold expressions of manga and animation, possible precisely because they were subculture, into the language of painting. The aim is not so much to bring classical form into the present as to let the images that have accumulated in me collide within painting, and to find the point at which new meaning is generated.",
-      "descStyle": {
-        "lineHeight": 1.5
-      }
-    },
-    {
       "id": "w4",
       "title": "Danae",
       "cover": "./images/w4-cover.jpg",
@@ -986,6 +639,353 @@
       "descStyle": {
         "lineHeight": 1.5
       }
+    },
+    {
+      "id": "w3",
+      "title": "Torso",
+      "cover": "./images/w3-cover.jpg",
+      "description": "〈토르소〉 연작은 팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 재구성한 작업이다. 1990년대 일본 마법소녀 만화 속 변신 장면의 클라이맥스를 참조하며, 소용돌이치는 움직임과 팔다리가 없는 신체, 분출하는 피가 휘몰아치는 시공간을 그려낸다.\n\n미술사를 처음 배우던 때, 밀로의 비너스로 비례와 조형을 배웠다. 학자들이 사라진 두 팔을 여러 방식으로 복원해 보았지만 결국 없는 편이 낫다는 결론에 이르렀다는 이야기가 오래 남았다. 훼손된 것을 되돌리는 대신 남겨진 형태를 받아들이고 그 안에서 새로운 관점을 찾아내는 것. 그것이 현대적인 시선이라고 생각했다.\n\n오시이 마모루의 극장판 애니메이션 〈공각기동대〉(1995)의 마지막 전투에서 전차의 해치를 열다 주인공의 팔이 뜯겨 나가는 장면을 인상 깊게 보았다. 어릴 때는 조금 충격적인 이미지였지만, 시간이 흐른 뒤 다시 보았을 때 부서질 수밖에 없는 신체의 한계와 그것을 넘어서려는 의지가 함께 보였고, 그 연출이 숭고하게 느껴졌다.\n\n팔다리를 잃은 고대 조각, 마법소녀의 변신, 합체 로봇이 분해되고 조각이 되어 다시 하나가 되는 장면. 서로 다른 시대와 문화에서 온 장면들이지만, 불완전한 상태에서 다음 단계로 넘어가는 순간이라는 점에서 같다. 파괴되고 충돌하며 다시 생성되는 지점들이다.\n\n토르소 연작의 시작은 〈공각기동대〉의 그 장면에서 아이디어를 얻은 디지털 드로잉 〈Torso〉(2011, 디지털 프린트, 116×92cm)였다. 끊임없이 뿜어져 나오는 것들, 폭발하면서 빛이 되는 순간을 생각했다. 원작의 느낌에 가까운 그림이었다.\n\n캔버스에 유화로 옮겨 그리면서부터는 마법소녀물의 변신 장면을 참조해 그리기 시작했다. 반짝이는 별과 소용돌이치는 공간 속에서 머리카락이 흩날리는, 다양한 표정과 포즈의 역동적인 이미지를 그리려고 했다. 이렇게 그린 작품들을 개인전 《NU-TYPE》(메이크샵 아트스페이스, 파주, 2014)에서 선보였고, 지금도 연작을 이어 가고 있다.\n\n밑그림은 컴퓨터 드로잉으로 완성한 뒤 캔버스로 옮겨 그리면서 발전시키는 편이다. 애니메이션의 셀 채색 방식으로 신체를 표현하되, 어두운 부분에도 최대한 선명한 색을 사용하려 한다. 만화나 애니메이션의 화면에서 보던 것과 다른, 회화 앞에 서는 느낌을 위해 되도록 인물은 실제 사람보다 크게 그리려고 한다. 주요 작품은 캔버스에 유채, 162×130cm다.\n\n대부분의 인물은 여성의 누드다. 여성의 신체는 미술에서 가장 오래 다루어진 주제이고, 그 축적된 역사 위에서 그릴 때 비로소 지금의 맥락이 생긴다고 본다. 다만 내가 그리는 것은 몸 자체라기보다 몸에 어떤 사건이 일어나는 순간이다.\n\n얼굴이 있는 토르소에서 분홍색 피가 분출하며, 다양한 별빛들과 함께 새로운 공간을 열어 간다. 생명의 원천이자 죽음의 상징인 피는 젤리처럼 반짝이는 방울이 되어 그 순간을 채운다.\n\n배경은 무중력 상태의 액체와 휘몰아치는 애니메이션의 이펙트들로 이루어진다. 평면의 이미지에서 인물만이 주인공은 아니다.\n\n토르소의 첫 작품은 원작의 장면을 따라 몸이 뒤틀리고 눈을 감은, 고통과 황홀을 가르지 않는 모습이었다. 캔버스에 다시 그리면서 토르소는 만화적 상상력을 거쳐 밝은 표정을 갖게 되었다. 팔다리가 없는 몸은 잘려 나간 것일 수도, 아직 생성되지 않은 것일 수도 있다. 안에서 무언가를 표출하는 순간이라는 것만 남는다.\n\n불완전한 형태의 고대 조각을 이미 완결된 형식으로 받아들이듯, 나는 하위문화였기에 가능했던 만화와 애니메이션의 과감한 표현을 회화의 언어로 옮긴다. 고전의 형식을 현재로 가져오는 것이 목적이라기보다, 내 안에 쌓인 이미지들을 회화 안에서 부딪히게 해 새로운 의미가 생성되는 지점을 찾는 것에 가깝다.",
+      "photoRows": [
+        {
+          "id": "row-1790812986242-joi6p",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790812986242-qtlkt",
+              "image": "./images/w3-p-1790812986242-qtlkt-a7bb5ed6.jpg",
+              "caption": "",
+              "pan": {
+                "ratio": "3:1",
+                "zoom": 2.5,
+                "x0": 0,
+                "y0": 0.493,
+                "x1": 1,
+                "y1": 0.488,
+                "dur": 90
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-os0nq",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385394174-6v6xw",
+              "image": "./images/w3-p-1787385394174-6v6xw.jpg",
+              "caption": "2016, NU, DOOSAN Gallery New York, New York, USA"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-t5afw",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385440355-bk6qr",
+              "image": "./images/w3-p-1787385440355-bk6qr.jpg",
+              "caption": "2020, Torso, YK Presents, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-d6l8k",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385482604-y14g4",
+              "image": "./images/w3-p-1787385482604-y14g4.jpg",
+              "caption": "2020, Torso, YK Presents, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-5cy7x",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385504736-ngqqh",
+              "image": "./images/w3-p-1787385504736-ngqqh.jpg",
+              "caption": "2020, Torso, YK Presents, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1790756583254-rjy3x",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790756583255-pfr1t",
+              "image": "./images/w3-p-1790756583255-pfr1t-9057863c.jpg",
+              "caption": "2020, Torso, YK Presents, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-hzch0",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385568997-d3x3y",
+              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464242838-tur9n",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787464242838-rtg3t",
+              "image": "./images/w3-p-1787464242838-rtg3t.jpg",
+              "caption": "Torso 01, 2012, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787464255794-6t81e",
+              "image": "./images/w3-p-1787464255794-6t81e.jpg",
+              "caption": "Torso 02, 2012, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464576033-74fl2",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787464576033-gohda",
+              "image": "./images/w3-p-1787464576033-gohda.jpg",
+              "caption": "Torso 03, 2013, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787464596295-v0chu",
+              "image": "./images/w3-p-1787464596295-v0chu.jpg",
+              "caption": "Torso 04, 2013, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787465231077-5y20c",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787465231077-kzbxf",
+              "image": "./images/w3-p-1787465231077-kzbxf.jpg",
+              "caption": "Torso 05, 2013, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787465287347-94coq",
+              "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg",
+              "caption": "Torso 06, 2016, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787465325523-hr4v0",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787465325523-bc1ig",
+              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
+              "caption": "Torso 07, 2013, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787465388849-mlqhg",
+              "image": "./images/w3-p-1787465388849-mlqhg.jpg",
+              "caption": "Torso 08, 2014, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787465558711-go7ge",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787465558711-9hdxm",
+              "image": "./images/w3-p-1787465558711-9hdxm.jpg",
+              "caption": "Torso 09, 2013, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787465590493-13mdp",
+              "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
+              "caption": "Torso 10, 2020, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787592502932-ph1wh",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787592502932-69qpr",
+              "image": "./images/w3-p-1787592502932-69qpr.jpg",
+              "caption": "Torso 11, 2023, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787592524596-xvwug",
+              "image": "./images/w3-p-1787592524596-xvwug.jpg",
+              "caption": "Torso 12, 2023, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787592964596-q7p22",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787592964596-nhm78",
+              "image": "./images/w3-p-1787592964596-nhm78.jpg",
+              "caption": "Torso 13, 2024, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787592985513-1e47g",
+              "image": "./images/w3-p-1787592985513-1e47g.jpg",
+              "caption": "Torso 14, 2023, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787593009615-rg46s",
+          "cols": 2,
+          "photos": [
+            {
+              "id": "p-1787593009615-p5ijq",
+              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
+              "caption": "Torso 16, 2023, Oil on canvas, 162 × 130 cm"
+            },
+            {
+              "id": "p-1787593029600-54rtv",
+              "image": "./images/w3-p-1787593029600-54rtv.jpg",
+              "caption": "Torso 18, 2024, Oil on canvas, 162 × 130 cm"
+            }
+          ]
+        }
+      ],
+      "slug": "torso",
+      "descriptionEn": "The Torso series takes the torso of classical sculpture, a body without arms or legs, as its basis and reconfigures it in the visual language of animation and subculture. Drawing on the climactic transformation scenes of 1990s Japanese magical-girl anime and manga, the paintings depict a space and a time swept up in whirling motion, limbless bodies and spurting blood.\n\nWhen I first studied art history, I learned proportion and form from the Venus de Milo. Scholars had tried to reconstruct the missing arms in various ways, and the conclusion, that she was better off without them, stayed with me for a long time. Rather than restoring what was damaged, to accept the form that remains and find a new way of seeing within it: that, I thought, was a contemporary way of looking.\n\nIn the final battle of Mamoru Oshii's animated feature Ghost in the Shell (1995), as the protagonist strains to pry open the hatch of a tank, her arms are torn from her body. The scene stayed with me. As a child I found the image somewhat shocking, but when I saw it again years later I saw both the limit of a body that cannot help but break and the will to go beyond it, and the staging struck me as sublime.\n\nAn ancient sculpture that has lost its limbs, a magical girl's transformation, a combining robot that breaks into pieces and becomes one again. The scenes come from different periods and cultures, but they are alike in being the moment when an incomplete state passes into the next stage. They are points of destruction, collision and regeneration.\n\nThe Torso series began with a digital drawing, Torso (2011, digital print, 116 × 92 cm), that took its idea from that scene in Ghost in the Shell. I was thinking of things that keep pouring out, of the moment when an explosion turns into light. The picture stayed close to the feel of the original.\n\nOnce I began painting the torsos in oil on canvas, I started drawing on the transformation scenes of the magical-girl genre. I wanted dynamic images, with a range of expressions and poses, hair streaming amid glittering stars and whirling space. These paintings were shown in my solo exhibition NU-TYPE (Makeshop Art Space, Paju, 2014), and the series continues today.\n\nI usually complete the underdrawing on the computer, then transfer it to the canvas and develop it as I paint. The bodies are rendered in the flat, cel-style coloring of animation, but I try to keep the color as vivid as possible even in the dark areas. To give the sense of standing before a painting rather than a comic or an animation screen, I tend to paint the figures larger than life-size. The main works are oil on canvas, 162 × 130 cm.\n\nMost of the figures are female nudes. The female body is the subject art has treated longest, and I believe a painting acquires its present context only when it is made on top of that accumulated history. What I paint, though, is not so much the body itself as the moment some event happens to it.\n\nFrom a torso with a face, pink blood spurts out and, together with starlight of many kinds, opens up a new space. Blood, the source of life and the sign of death, becomes glittering, jelly-like drops that fill that moment.\n\nThe background is made of weightless liquid and the whirling effects of animation. In a flat image, the figure is not the only protagonist.\n\nThe first torso, following the original scene, had a twisted body and closed eyes, a look that did not separate pain from ecstasy. Repainted on canvas, the torso passed through the imagination of comics and took on a cheerful expression. A body without limbs may have had them cut away, or may not yet have grown them. All that remains is the moment something is released from within.\n\nJust as the incomplete form of an ancient sculpture is accepted as a finished one, I carry the bold expressions of manga and animation, possible precisely because they were subculture, into the language of painting. The aim is not so much to bring classical form into the present as to let the images that have accumulated in me collide within painting, and to find the point at which new meaning is generated.",
+      "descStyle": {
+        "lineHeight": 1.5
+      }
+    },
+    {
+      "id": "w2",
+      "title": "The Annunciation",
+      "cover": "./images/w2-cover.jpg",
+      "description": "〈수태고지〉는 서양 회화가 자주 다루어 온 수태고지를 토르소 연작에서 이어 그린 작업이다. 가브리엘과 마리아를 두 인물로 그리고, 그 주위를 백합과 별, 분홍색 피가 터져 나오는 소용돌이로 채웠다.\n\n오시이 마모루의 극장판 애니메이션 〈공각기동대〉(1995)의 마지막 장면에서 천사의 환영이 내려오고 주인공과 인형사가 하나의 새로운 존재가 된다. 그 장면이 내게는 수태고지처럼 보였고, 그것이 예수의 탄생이 아니라 무언가가 태어나는 순간 자체를 그린 것일 수 있다고 그때 생각했다.\n\n토르소 연작을 이어 가면서 그보다 큰 화면이 필요했고, 첫 개인전 《NU-TYPE》의 중심 작업으로 어울리는 주제라고 생각했다. 네 개의 캔버스를 썼지만 가운데 두 폭이 하나의 이미지로 이어져 세 개의 화면으로 보인다. 종교화의 삼면화 구조를 따르면서, 펼쳐진 만화책의 양면처럼 보이기를 바랐다. 캔버스에 유채로, 중앙 두 폭은 194×261cm, 좌우 패널은 각각 117×91cm다. 《NU-TYPE》(메이크샵 아트스페이스, 파주, 2014)에서 선보였다.\n\n중앙 화면의 왼쪽, 날개가 있는 인물이 가브리엘이고 오른쪽이 마리아다. 두 인물은 서로 닮았고, 날개 하나만이 누가 가브리엘인지 알려 준다. 속성 하나로 인물을 식별하는 것은 종교화의 도상학이 오래 써 온 방식이고, 애니메이션이 머리색이나 소품으로 캐릭터를 구분하는 방식이기도 하다. 두 인물은 팔과 다리가 하나씩 없고, 화면 가운데의 폭발을 사이에 두고 마주 보며 빙글 돌고 있다.\n\n전통적인 수태고지에서는 빛이 하늘에서 내려온다. 내가 그린 수태고지에서는 빛이 가운데에서 터져 나온다. 화면 전체가 하나의 큰 폭발이기도 하고, 둘 사이의 관계에서 생긴 것일 수도 있고, 내적인 폭발일 수도 있다. 위에서 내려오지 않고 중심에서 나온다는 것이 내게는 중요했다.\n\n인물에서 분홍색 피가 퍼져 나가고, 그 주위로 백합이 만개하고 별이 반짝이고 액체가 터진다. 무언가가 폭발하면서 동시에 만들어지는 순간을 그려 보려 했다.\n\n작품의 인물들은 누드로 등장한다. 애니메이션의 클라이맥스에서 주인공이 맨몸으로 빛나며 각성하고 변신 장면에서 순간 빛을 발하며 맨몸이 되는 것처럼, 결정적인 사건임을 드러내면서도 세속에 속하지 않은 순간으로 그려내고 싶었다.\n\n금발의 여성 캐릭터는 일본 만화에 자주 등장하는 전형적인 미형의 이미지다. 서양인도 동양인도 아닌 무국적의 상태이고, 고전 조각 역시 이상화된 미의 전형이라는 점에서 같다. 좌우의 천사들은 머리색과 피부색을 다르게 그렸다. 전형적인 미소녀 캐릭터 이외의 유형도 가능한 한 다양하게 그려 보고 싶었다. 배경은 약간의 미색이 섞인 흰색으로, 그림 전체가 순수하고 밝게 보이기를 바랐다.\n\n백합은 서양 회화에서 순결의 상징이다. 만화의 맥락에서는 다른 뜻으로 읽힌다. 같은 도상이 시대와 문화에 따라 다르게 읽히고, 그 해석들이 한 화면에서 부딪히는 상태에 관심이 있다.\n\n이 그림이 어떤 탄생을 그린 것인지는 정하지 않았다. 폭발의 한가운데서 두 사람은 천천히 돌며, 그 회전 속에서 무언가가 지금 막 탄생하고 있다. 그 순간만이 화면에 남는다.",
+      "titleStyle": {
+        "align": "left",
+        "bold": true
+      },
+      "descStyle": {
+        "align": "left",
+        "bold": false,
+        "letterSpacing": 0,
+        "lineHeight": 1.5
+      },
+      "photoRows": [
+        {
+          "id": "row-1790811056102-4q9j3",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790811056102-subcx",
+              "image": "./images/w2-p-1790811056102-subcx-389c44cb.jpg",
+              "caption": "",
+              "pan": {
+                "ratio": "21:9",
+                "zoom": 3,
+                "x0": 0.654,
+                "y0": 0.025,
+                "x1": 0.319,
+                "y1": 0.855,
+                "dur": "40"
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-mbv3q",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787220387297-es97k",
+              "image": "./images/w2-p-1787220387297-es97k.jpg",
+              "caption": "2014, NU-TYPE, Makeshop Art Space, Paju, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-c86mx",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787383683408-o4qw7",
+              "image": "./images/w2-p-1787383683408-o4qw7.jpg",
+              "caption": "The Annunciation (right panel), 2014, Oil on canvas, 117 × 91 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-6yhlg",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787384720915-eoxdq",
+              "image": "./images/w2-p-1787384720915-eoxdq.jpg",
+              "caption": "The Annunciation (left panel), 2014, Oil on canvas, 117 × 91 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-cgpxr",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787384904997-pmnc5",
+              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
+              "caption": "The Annunciation (central panels), 2014, Oil on canvas, 2 panels, 194 × 261 cm overall"
+            }
+          ]
+        },
+        {
+          "id": "row-1787464162725-ahdh4",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1787385167980-pilgo",
+              "image": "./images/w2-p-1787385167980-pilgo.jpg",
+              "caption": "The Annunciation, 2014, Oil on canvas, 4 panels: 117 × 91 cm (left), 194 × 261 cm overall (center, 2 panels), 117 × 91 cm (right)"
+            }
+          ]
+        },
+        {
+          "id": "row-1791348325235-sty9y",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791348325235-hjagl",
+              "image": "./images/w2-p-1791348325235-hjagl-5ffc61ed.jpg",
+              "caption": "The Annunciation, 2026, Oil on canvas, 227 × 182 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1791348354954-yvjp5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791348354954-hr0vo",
+              "image": "./images/w2-p-1791348354954-hr0vo-2783c096.jpg",
+              "caption": "The Annunciation, 2026, Oil on canvas, 227 × 182 cm"
+            }
+          ]
+        }
+      ],
+      "slug": "the-annunciation",
+      "descriptionEn": "The Annunciation continues the Torso series into a subject Western painting has returned to again and again. Gabriel and Mary are painted as two figures, and the space around them is filled with lilies, stars and a vortex of bursting pink blood.\n\nIn the final scene of Mamoru Oshii's animated feature Ghost in the Shell (1995), the vision of an angel descends and the protagonist and the Puppet Master merge into a single new being. To me that scene looked like an Annunciation, and I thought at the time that the Annunciation itself might be a picture not of the birth of Jesus but of the moment something is born.\n\nAs the Torso series went on I needed a larger picture plane than the torsos allowed, and this seemed the right subject for the central work of my first solo exhibition, NU-TYPE. Four canvases are used, but the two central panels join into a single image, so the work reads as three. It follows the triptych structure of religious painting while, I hoped, also looking like the open spread of a comic book. Oil on canvas; the two central panels measure 194 × 261 cm together, the side panels 117 × 91 cm each. It was shown at NU-TYPE (Makeshop Art Space, Paju, 2014).\n\nOn the left of the central image, the winged figure is Gabriel; on the right is Mary. The two resemble each other, and the wing alone tells us which one is Gabriel. Identifying a figure by one attribute is a method the iconography of religious painting has used for centuries, and it is also how animation tells its characters apart, by hair color or a prop. Each figure is missing one arm and one leg, and the two face each other, turning, with the explosion at the center of the picture between them.\n\nIn a traditional Annunciation the light comes down from heaven. In mine it bursts out from the center. The whole picture may be one great explosion; it may be something generated between the two figures; it may be an explosion from within. What mattered to me was that it comes from the center, not from above.\n\nPink blood spreads out from the figures, and around it lilies bloom, stars glitter and liquid bursts. I wanted to paint a moment in which something explodes and is made at the same time.\n\nThe figures in the work appear nude. Just as the protagonist of an anime glows naked at the climax as she awakens, and just as a transformation sequence flashes with light and the body is bared for an instant, I wanted to paint it as a decisive event, yet a moment not of this world.\n\nThe blonde female character is a conventional image of beauty that recurs in Japanese comics. She belongs to no nation, neither Western nor Asian, and in that respect she is like classical sculpture, which is also an idealized type of beauty. The angels on the side panels are painted with different hair and skin colors; I wanted to paint as many types as I could beyond the standard bishōjo character. The ground is white with a hint of cream, so that the whole painting would read as pure and bright.\n\nIn Western painting the lily is a symbol of purity. In the context of manga it is read to mean something else. I am interested in the way the same iconographic motif is read differently across periods and cultures, and in the state in which those readings collide within a single picture.\n\nI have not decided what kind of birth this painting depicts. At the heart of the explosion the two figures turn slowly, and within that turning something is being born at this very moment. Only that moment remains on the canvas.",
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "w5",
@@ -1648,6 +1648,301 @@
       "coverPos": {
         "x": 46,
         "y": 2
+      }
+    },
+    {
+      "id": "w6",
+      "title": "Medusa",
+      "cover": "./images/w6-cover.jpg",
+      "description": "〈메두사〉는 그리스 신화의 메두사를 애니메이션의 얼굴로 그린 연작이다. 방패의 장식처럼 은색 원 안에 금발과 뱀, 날개에 둘러싸인 얼굴을 넣었다. 같은 얼굴을 색과 표정을 바꾸어 여러 번 그렸고, 회화에서 시작해 3D 조각으로 이어졌다.\n\n두상 조각을 하나 만들고 싶었다. 그에 맞는 주제를 찾다가 메두사의 머리에 이르렀다. 메두사는 머리만 남아서도 힘을 갖는 묘한 존재다. 잘린 머리는 아테나의 방패에 붙어 신의 무기가 되었다. 고대 그리스에서 메두사의 얼굴은 방패와 문에 새기는 액막이였다. 보면 돌이 된다는 설정은 누구도 그 얼굴을 정면으로 볼 수 없었다는 뜻이고, 페르세우스조차 방패에 비친 상으로만 보았다.\n\n메두사는 본래 아름다운 여인이었고, 아테나의 저주로 머리카락이 뱀이 되었다. 나는 뱀이 된 뒤에도 그녀가 아름다웠을 거라고 생각했다. 괴물로 만든 것은 그 얼굴이 아니라 보지도 않고 판단한 사람들의 소문이었다. 아무 잘못 없이 괴물로 취급되는 일은 지금도 흔하다. 그래서 이 신화가 현대에도 유의미하다고 보았다.\n\n카라바조는 〈메두사〉(1597~1598)에서 방패 위에 잘린 머리를 그렸고, 루벤스는 〈메두사의 머리〉(1617~1618)에서 땅에 놓인 머리와 피에서 태어나는 뱀들을 그렸고, 베르니니는 〈메두사 흉상〉(1644~1648)에서 머리카락이 뱀으로 변하는 순간의 고통스러운 얼굴을 대리석으로 깎았다. 그 작품들을 참고해, 사각 캔버스 안에 방패의 장식처럼 은색 원을 두고 그 안에 얼굴을 넣었다. 금발과 장식처럼 배열된 뱀, 날개가 얼굴을 둘러싸고, 잘린 목에서는 붉은 피가 흐른다. 토르소의 분홍이 아니라 붉은색으로 둔 것은 귀여움보다 짙고 아름다운 쪽을 살리고 싶어서였다.\n\n그림체는 1980~90년대 일본 애니메이션과 게임의 작화를 떠올리며 그렸다. 머리카락 한 올마다 빛이 들어가고 결이 살아 있는 것이 그 시절의 특징이라고 생각한다. 2000년대 이후의 만화와 애니메이션이 단순하고 귀여워졌다면, 그 이전에는 상대적으로 굵직하고 짙은 느낌이 있다. 메두사에는 그쪽이 맞는다고 보았다.\n\n같은 캐릭터를 여러 번 반복해서 그린 적은 거의 없었다. 메두사는 하나의 이미지를 반복하면서 얻어지는 것을 보기에 맞는 주제라고 생각했다. 〈Head of Medusa〉(2021, 캔버스에 유채, 162×162cm)를 중심으로, 〈Head of Medusa - Gold〉(2022, 80×80cm)와 〈Head of Medusa - Pink〉(2022, 73×91cm), 〈Medusa's Smile〉과 〈Medusa's Wrath〉(2021, 각 80×80cm), 선으로만 그린 흑백의 〈Head of Medusa〉(2021, 73×73cm)까지 같은 얼굴을 여러 번 그렸다. 《Nu Collection》(유아트스페이스, 서울, 2021)에서 처음 선보였고 《Odd&Nu》(뮤지엄 웨이브, 서울, 2024)에서 이어졌다.\n\n처음의 목적대로 조각도 만들었다. 스케치를 그리고, 3D 프로그램으로 모델을 만들고, 3D 프린터로 출력한 〈Head of Medusa〉(2021, 레진, 24×24×30cm)다. 그 과정에서 많은 것이 변했고 원본이라는 개념은 희미해졌다. 가상의 3D 이미지는 아무리 확대해도 끝이 없을 만큼 날카롭지만, 실물로 나온 조각은 그보다 열화된다. 그런데도 실물이 주는 존재감이 다르다는 것을 작품이 완성되는 순간 느낄 수 있었다.",
+      "photoRows": [
+        {
+          "id": "row-1790819610658-57jm5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790819610658-d5d2h",
+              "image": "./images/w6-p-1790819610658-d5d2h-8333afe7.jpg",
+              "caption": "",
+              "pan": {
+                "ratio": "3:1",
+                "zoom": 1.4,
+                "x0": 0,
+                "y0": 0.674,
+                "x1": 1,
+                "y1": 0.675
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1788797562303-xq297",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788797562303-7x9rg",
+              "image": "./images/w6-p-1788797562303-7x9rg-4ac1693b.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788797798959-8j51t",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788797798959-pkq1i",
+              "image": "./images/w6-p-1788797798959-pkq1i.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788797822652-qi8s5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788797822652-5zkqu",
+              "image": "./images/w6-p-1788797822652-5zkqu.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788798267314-wmgqa",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788798267314-usjvx",
+              "image": "./images/w6-p-1788798267314-usjvx.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788798457271-8pr2e",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788798457271-p6hiy",
+              "image": "./images/w6-p-1788798457271-p6hiy.jpg",
+              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788798672869-w7w6l",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788798672869-b2jgf",
+              "image": "./images/w6-p-1788798672869-b2jgf.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1788799263853-52fvh",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1788799263853-8ccbj",
+              "image": "./images/w6-p-1788799263853-8ccbj.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789626919381-kpleq",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789626919381-0rhyr",
+              "image": "./images/w6-p-1789626919381-0rhyr.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627025783-3oqad",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627025783-7nxfy",
+              "image": "./images/w6-p-1789627025783-7nxfy.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627049012-g6fgt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627049012-dg8ag",
+              "image": "./images/w6-p-1789627049012-dg8ag.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627141820-cec5e",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627141820-7wzqy",
+              "image": "./images/w6-p-1789627141820-7wzqy.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627155520-xpug9",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627155520-15g4s",
+              "image": "./images/w6-p-1789627155520-15g4s.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627205787-bs20a",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627205787-9xvms",
+              "image": "./images/w6-p-1789627205787-9xvms.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627504614-xdss3",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627504614-gwj21",
+              "image": "./images/w6-p-1789627504614-gwj21.jpg",
+              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627788295-hbx2u",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627788295-7yrab",
+              "image": "./images/w6-p-1789627788295-7yrab.jpg",
+              "caption": "Head of Medusa - Gold, 2022, Oil on canvas, 80 × 80 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789627925880-1lcj2",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789627925880-2vw7g",
+              "image": "./images/w6-p-1789627925880-2vw7g.jpg",
+              "caption": "Head of Medusa - Gold, 2022, Oil on canvas, 80 × 80 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629177582-rk74k",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629177582-pu05m",
+              "image": "./images/w6-p-1789629177582-pu05m.jpg",
+              "caption": "Head of Medusa - Pink, 2022, Oil on canvas, 73 × 91 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629220673-i4igi",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629220673-tzg7x",
+              "image": "./images/w6-p-1789629220673-tzg7x.jpg",
+              "caption": "Head of Medusa - Pink, 2022, Oil on canvas, 73 × 91 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629315021-voeuf",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629315021-h77ns",
+              "image": "./images/w6-p-1789629315021-h77ns.jpg",
+              "caption": "Head of Medusa, 2021, Oil on canvas, 73 × 73 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629391438-u46le",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629391438-q5qx4",
+              "image": "./images/w6-p-1789629391438-q5qx4.jpg",
+              "caption": "Medusa's Smile, 2021, Oil on canvas, 80 × 80 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789629401165-0y24k",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789629401165-lcjrz",
+              "image": "./images/w6-p-1789629401165-lcjrz.jpg",
+              "caption": "Medusa's Wrath, 2021, Oil on canvas, 80 × 80 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789630419727-on7vy",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1789630419727-gt5d4",
+              "image": "./images/w6-p-1789630419727-gt5d4.jpg",
+              "caption": "Head of Medusa, 2021, Oil on canvas, 162 × 162 cm"
+            }
+          ]
+        },
+        {
+          "id": "row-1789630533357-8im96",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1789630533357-ja9jj",
+              "image": "./images/w6-p-1789630533357-ja9jj.jpg",
+              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
+            },
+            {
+              "id": "p-1789630543552-aqba3",
+              "image": "./images/w6-p-1789630543552-aqba3.jpg",
+              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
+            },
+            {
+              "id": "p-1789630552738-vw36k",
+              "image": "./images/w6-p-1789630552738-vw36k.jpg",
+              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
+            }
+          ]
+        }
+      ],
+      "slug": "medusa",
+      "descriptionEn": "Medusa is a series that paints the Medusa of Greek myth with the face of an animation character. Like the device on a shield, the face is set inside a silver circle, surrounded by blond hair, snakes and wings. I painted the same face many times, changing its colors and expressions, and the series moved from painting into 3D sculpture.\n\nI wanted to make a sculpted head. Searching for a subject that suited it, I arrived at the head of Medusa. Medusa is a strange being who keeps her power even when only her head remains. The severed head was fixed to Athena's shield and became a god's weapon. In ancient Greece, Medusa's face was an apotropaic image carved on shields and doors. The premise that anyone who looked at her turned to stone means that no one could ever look at that face directly; even Perseus saw it only as a reflection in his shield.\n\nMedusa was originally a beautiful woman, and Athena's curse turned her hair into snakes. I thought she must have remained beautiful even after her hair had turned to snakes. What made her a monster was not her face but the rumors of people who judged her without ever looking. Being treated as a monster without having done anything wrong is still common today. That is why I thought this myth still had meaning in the present.\n\nCaravaggio painted the severed head on a shield in Medusa (1597–1598); Rubens painted the head lying on the ground and the snakes being born from its blood in Head of Medusa (1617–1618); and Bernini carved in marble the anguished face at the moment her hair turns to snakes in Bust of Medusa (1644–1648). With those works in mind, I placed a silver circle inside a square canvas, like the device on a shield, and set the face within it. Blond hair, snakes arranged like ornament, and wings surround the face, and red blood flows from the severed neck. I made the blood red rather than the pink of Torso because I wanted to bring out something deep and beautiful rather than cute.\n\nThe drawing style recalls Japanese animation and game art of the 1980s and '90s. I think the mark of that period is that every strand of hair catches the light and keeps its texture. If comics and animation since the 2000s have become simpler and cuter, what came before has a relatively bolder, deeper feel. I thought that was the right fit for Medusa.\n\nI had almost never painted the same character over and over. Medusa seemed the right subject for seeing what is gained by repeating a single image. Around Head of Medusa (2021, oil on canvas, 162 × 162 cm), I painted the same face again and again: Head of Medusa - Gold (2022, 80 × 80 cm) and Head of Medusa - Pink (2022, 73 × 91 cm); Medusa's Smile and Medusa's Wrath (2021, 80 × 80 cm each); and a black-and-white Head of Medusa (2021, 73 × 73 cm) drawn in line alone. They were first shown in Nu Collection (UARTSPACE, Seoul, 2021) and continued in Odd&Nu (Museum Wave, Seoul, 2024).\n\nAs I had first intended, I also made the sculpture: Head of Medusa (2021, resin, 24 × 24 × 30 cm), made by drawing a sketch, building a model in a 3D program, and printing it on a 3D printer. Much changed along the way, and the notion of an original grew faint. A virtual 3D image stays infinitely sharp however far it is enlarged, while the sculpture that comes out as a physical object is degraded by comparison. And yet, the moment the work was finished, I could feel that the presence of the physical object was something different.",
+      "descStyle": {
+        "lineHeight": 1.5
       }
     },
     {
@@ -2330,301 +2625,6 @@
       ]
     },
     {
-      "id": "w6",
-      "title": "Medusa",
-      "cover": "./images/w6-cover.jpg",
-      "description": "〈메두사〉는 그리스 신화의 메두사를 애니메이션의 얼굴로 그린 연작이다. 방패의 장식처럼 은색 원 안에 금발과 뱀, 날개에 둘러싸인 얼굴을 넣었다. 같은 얼굴을 색과 표정을 바꾸어 여러 번 그렸고, 회화에서 시작해 3D 조각으로 이어졌다.\n\n두상 조각을 하나 만들고 싶었다. 그에 맞는 주제를 찾다가 메두사의 머리에 이르렀다. 메두사는 머리만 남아서도 힘을 갖는 묘한 존재다. 잘린 머리는 아테나의 방패에 붙어 신의 무기가 되었다. 고대 그리스에서 메두사의 얼굴은 방패와 문에 새기는 액막이였다. 보면 돌이 된다는 설정은 누구도 그 얼굴을 정면으로 볼 수 없었다는 뜻이고, 페르세우스조차 방패에 비친 상으로만 보았다.\n\n메두사는 본래 아름다운 여인이었고, 아테나의 저주로 머리카락이 뱀이 되었다. 나는 뱀이 된 뒤에도 그녀가 아름다웠을 거라고 생각했다. 괴물로 만든 것은 그 얼굴이 아니라 보지도 않고 판단한 사람들의 소문이었다. 아무 잘못 없이 괴물로 취급되는 일은 지금도 흔하다. 그래서 이 신화가 현대에도 유의미하다고 보았다.\n\n카라바조는 〈메두사〉(1597~1598)에서 방패 위에 잘린 머리를 그렸고, 루벤스는 〈메두사의 머리〉(1617~1618)에서 땅에 놓인 머리와 피에서 태어나는 뱀들을 그렸고, 베르니니는 〈메두사 흉상〉(1644~1648)에서 머리카락이 뱀으로 변하는 순간의 고통스러운 얼굴을 대리석으로 깎았다. 그 작품들을 참고해, 사각 캔버스 안에 방패의 장식처럼 은색 원을 두고 그 안에 얼굴을 넣었다. 금발과 장식처럼 배열된 뱀, 날개가 얼굴을 둘러싸고, 잘린 목에서는 붉은 피가 흐른다. 토르소의 분홍이 아니라 붉은색으로 둔 것은 귀여움보다 짙고 아름다운 쪽을 살리고 싶어서였다.\n\n그림체는 1980~90년대 일본 애니메이션과 게임의 작화를 떠올리며 그렸다. 머리카락 한 올마다 빛이 들어가고 결이 살아 있는 것이 그 시절의 특징이라고 생각한다. 2000년대 이후의 만화와 애니메이션이 단순하고 귀여워졌다면, 그 이전에는 상대적으로 굵직하고 짙은 느낌이 있다. 메두사에는 그쪽이 맞는다고 보았다.\n\n같은 캐릭터를 여러 번 반복해서 그린 적은 거의 없었다. 메두사는 하나의 이미지를 반복하면서 얻어지는 것을 보기에 맞는 주제라고 생각했다. 〈Head of Medusa〉(2021, 캔버스에 유채, 162×162cm)를 중심으로, 〈Head of Medusa - Gold〉(2022, 80×80cm)와 〈Head of Medusa - Pink〉(2022, 73×91cm), 〈Medusa's Smile〉과 〈Medusa's Wrath〉(2021, 각 80×80cm), 선으로만 그린 흑백의 〈Head of Medusa〉(2021, 73×73cm)까지 같은 얼굴을 여러 번 그렸다. 《Nu Collection》(유아트스페이스, 서울, 2021)에서 처음 선보였고 《Odd&Nu》(뮤지엄 웨이브, 서울, 2024)에서 이어졌다.\n\n처음의 목적대로 조각도 만들었다. 스케치를 그리고, 3D 프로그램으로 모델을 만들고, 3D 프린터로 출력한 〈Head of Medusa〉(2021, 레진, 24×24×30cm)다. 그 과정에서 많은 것이 변했고 원본이라는 개념은 희미해졌다. 가상의 3D 이미지는 아무리 확대해도 끝이 없을 만큼 날카롭지만, 실물로 나온 조각은 그보다 열화된다. 그런데도 실물이 주는 존재감이 다르다는 것을 작품이 완성되는 순간 느낄 수 있었다.",
-      "photoRows": [
-        {
-          "id": "row-1790819610658-57jm5",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790819610658-d5d2h",
-              "image": "./images/w6-p-1790819610658-d5d2h-8333afe7.jpg",
-              "caption": "",
-              "pan": {
-                "ratio": "3:1",
-                "zoom": 1.4,
-                "x0": 0,
-                "y0": 0.674,
-                "x1": 1,
-                "y1": 0.675
-              }
-            }
-          ]
-        },
-        {
-          "id": "row-1788797562303-xq297",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788797562303-7x9rg",
-              "image": "./images/w6-p-1788797562303-7x9rg-4ac1693b.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788797798959-8j51t",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788797798959-pkq1i",
-              "image": "./images/w6-p-1788797798959-pkq1i.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788797822652-qi8s5",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788797822652-5zkqu",
-              "image": "./images/w6-p-1788797822652-5zkqu.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788798267314-wmgqa",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788798267314-usjvx",
-              "image": "./images/w6-p-1788798267314-usjvx.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788798457271-8pr2e",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788798457271-p6hiy",
-              "image": "./images/w6-p-1788798457271-p6hiy.jpg",
-              "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788798672869-w7w6l",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788798672869-b2jgf",
-              "image": "./images/w6-p-1788798672869-b2jgf.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1788799263853-52fvh",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1788799263853-8ccbj",
-              "image": "./images/w6-p-1788799263853-8ccbj.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789626919381-kpleq",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789626919381-0rhyr",
-              "image": "./images/w6-p-1789626919381-0rhyr.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627025783-3oqad",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627025783-7nxfy",
-              "image": "./images/w6-p-1789627025783-7nxfy.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627049012-g6fgt",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627049012-dg8ag",
-              "image": "./images/w6-p-1789627049012-dg8ag.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627141820-cec5e",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627141820-7wzqy",
-              "image": "./images/w6-p-1789627141820-7wzqy.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627155520-xpug9",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627155520-15g4s",
-              "image": "./images/w6-p-1789627155520-15g4s.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627205787-bs20a",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627205787-9xvms",
-              "image": "./images/w6-p-1789627205787-9xvms.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627504614-xdss3",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627504614-gwj21",
-              "image": "./images/w6-p-1789627504614-gwj21.jpg",
-              "caption": "2021, Nu Collection, UARTSPACE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627788295-hbx2u",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627788295-7yrab",
-              "image": "./images/w6-p-1789627788295-7yrab.jpg",
-              "caption": "Head of Medusa - Gold, 2022, Oil on canvas, 80 × 80 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789627925880-1lcj2",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789627925880-2vw7g",
-              "image": "./images/w6-p-1789627925880-2vw7g.jpg",
-              "caption": "Head of Medusa - Gold, 2022, Oil on canvas, 80 × 80 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789629177582-rk74k",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789629177582-pu05m",
-              "image": "./images/w6-p-1789629177582-pu05m.jpg",
-              "caption": "Head of Medusa - Pink, 2022, Oil on canvas, 73 × 91 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789629220673-i4igi",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789629220673-tzg7x",
-              "image": "./images/w6-p-1789629220673-tzg7x.jpg",
-              "caption": "Head of Medusa - Pink, 2022, Oil on canvas, 73 × 91 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789629315021-voeuf",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789629315021-h77ns",
-              "image": "./images/w6-p-1789629315021-h77ns.jpg",
-              "caption": "Head of Medusa, 2021, Oil on canvas, 73 × 73 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789629391438-u46le",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789629391438-q5qx4",
-              "image": "./images/w6-p-1789629391438-q5qx4.jpg",
-              "caption": "Medusa's Smile, 2021, Oil on canvas, 80 × 80 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789629401165-0y24k",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789629401165-lcjrz",
-              "image": "./images/w6-p-1789629401165-lcjrz.jpg",
-              "caption": "Medusa's Wrath, 2021, Oil on canvas, 80 × 80 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789630419727-on7vy",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1789630419727-gt5d4",
-              "image": "./images/w6-p-1789630419727-gt5d4.jpg",
-              "caption": "Head of Medusa, 2021, Oil on canvas, 162 × 162 cm"
-            }
-          ]
-        },
-        {
-          "id": "row-1789630533357-8im96",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1789630533357-ja9jj",
-              "image": "./images/w6-p-1789630533357-ja9jj.jpg",
-              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
-            },
-            {
-              "id": "p-1789630543552-aqba3",
-              "image": "./images/w6-p-1789630543552-aqba3.jpg",
-              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
-            },
-            {
-              "id": "p-1789630552738-vw36k",
-              "image": "./images/w6-p-1789630552738-vw36k.jpg",
-              "caption": "Head of Medusa, 2021, Resin sculpture, 24 × 24 × 30 cm"
-            }
-          ]
-        }
-      ],
-      "slug": "medusa",
-      "descriptionEn": "Medusa is a series that paints the Medusa of Greek myth with the face of an animation character. Like the device on a shield, the face is set inside a silver circle, surrounded by blond hair, snakes and wings. I painted the same face many times, changing its colors and expressions, and the series moved from painting into 3D sculpture.\n\nI wanted to make a sculpted head. Searching for a subject that suited it, I arrived at the head of Medusa. Medusa is a strange being who keeps her power even when only her head remains. The severed head was fixed to Athena's shield and became a god's weapon. In ancient Greece, Medusa's face was an apotropaic image carved on shields and doors. The premise that anyone who looked at her turned to stone means that no one could ever look at that face directly; even Perseus saw it only as a reflection in his shield.\n\nMedusa was originally a beautiful woman, and Athena's curse turned her hair into snakes. I thought she must have remained beautiful even after her hair had turned to snakes. What made her a monster was not her face but the rumors of people who judged her without ever looking. Being treated as a monster without having done anything wrong is still common today. That is why I thought this myth still had meaning in the present.\n\nCaravaggio painted the severed head on a shield in Medusa (1597–1598); Rubens painted the head lying on the ground and the snakes being born from its blood in Head of Medusa (1617–1618); and Bernini carved in marble the anguished face at the moment her hair turns to snakes in Bust of Medusa (1644–1648). With those works in mind, I placed a silver circle inside a square canvas, like the device on a shield, and set the face within it. Blond hair, snakes arranged like ornament, and wings surround the face, and red blood flows from the severed neck. I made the blood red rather than the pink of Torso because I wanted to bring out something deep and beautiful rather than cute.\n\nThe drawing style recalls Japanese animation and game art of the 1980s and '90s. I think the mark of that period is that every strand of hair catches the light and keeps its texture. If comics and animation since the 2000s have become simpler and cuter, what came before has a relatively bolder, deeper feel. I thought that was the right fit for Medusa.\n\nI had almost never painted the same character over and over. Medusa seemed the right subject for seeing what is gained by repeating a single image. Around Head of Medusa (2021, oil on canvas, 162 × 162 cm), I painted the same face again and again: Head of Medusa - Gold (2022, 80 × 80 cm) and Head of Medusa - Pink (2022, 73 × 91 cm); Medusa's Smile and Medusa's Wrath (2021, 80 × 80 cm each); and a black-and-white Head of Medusa (2021, 73 × 73 cm) drawn in line alone. They were first shown in Nu Collection (UARTSPACE, Seoul, 2021) and continued in Odd&Nu (Museum Wave, Seoul, 2024).\n\nAs I had first intended, I also made the sculpture: Head of Medusa (2021, resin, 24 × 24 × 30 cm), made by drawing a sketch, building a model in a 3D program, and printing it on a 3D printer. Much changed along the way, and the notion of an original grew faint. A virtual 3D image stays infinitely sharp however far it is enlarged, while the sculpture that comes out as a physical object is degraded by comparison. And yet, the moment the work was finished, I could feel that the presence of the physical object was something different.",
-      "descStyle": {
-        "lineHeight": 1.5
-      }
-    },
-    {
       "id": "w8",
       "title": "Frames of Torso",
       "cover": "./images/w8-cover.jpg",
@@ -3056,12 +3056,12 @@
   "publishedPages": [
     "works/laocoon/index.html",
     "en/works/laocoon/index.html",
+    "works/danae/index.html",
+    "en/works/danae/index.html",
     "works/the-annunciation/index.html",
     "en/works/the-annunciation/index.html",
     "works/torso/index.html",
     "en/works/torso/index.html",
-    "works/danae/index.html",
-    "en/works/danae/index.html",
     "works/zodiac/index.html",
     "en/works/zodiac/index.html",
     "works/sd-zodiac/index.html",
@@ -4829,13 +4829,13 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "673265fb:42288",
-    "works/torso/index.html": "d1942228:67796",
+    "works/the-annunciation/index.html": "82ca95ac:42288",
+    "works/torso/index.html": "5caa40:67796",
     "works/danae/index.html": "47420d59:76600",
-    "works/zodiac/index.html": "620920db:115032",
-    "works/medusa/index.html": "b2ae657b:69260",
-    "works/laocoon/index.html": "ed7666ee:74768",
-    "works/frames-of-torso/index.html": "117d6fab:64876",
+    "works/zodiac/index.html": "a2deaa76:115032",
+    "works/medusa/index.html": "1a323726:69260",
+    "works/laocoon/index.html": "4e9be193:74768",
+    "works/frames-of-torso/index.html": "e4393b96:64876",
     "text/critical-notes-lim-geunjun/index.html": "71fd01ee:53276",
     "text/sections-of-structure-jung-hyun/index.html": "35da52ce:52980",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "c84773ad:42424",
@@ -4843,11 +4843,11 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "1f6f36d7:71736",
     "text/exploding-bishojo-baek-jihong/index.html": "ca600416:103508",
     "cv/index.html": "3c26c8a:15268",
-    "page.css": "bb1a7716:117476",
-    "sitemap.xml": "3f2454aa:135808",
+    "page.css": "a6bece9e:117476",
+    "sitemap.xml": "61f35721:135808",
     "robots.txt": "e7785df8:92",
-    "works/pixel-prometheus/index.html": "c046fbc4:82168",
-    "works/digital/index.html": "4c7678a3:38528",
+    "works/pixel-prometheus/index.html": "99d5a4f9:82168",
+    "works/digital/index.html": "414fe17e:38528",
     "shop/at-the-last-judgment-art-poster/index.html": "45655cdd:44060",
     "shop/nu/index.html": "3d232eac:38160",
     "shop/laocoon-art-poster/index.html": "8aff2ee:43680",
@@ -4873,15 +4873,15 @@
     "shop/yes-no-like-dislike-2000-2020/index.html": "877a29f3:31492",
     "shop/torso-10/index.html": "97718f2f:33872",
     "shop/torso-18/index.html": "405d3d28:33620",
-    "en/works/the-annunciation/index.html": "5b7eee1f:35572",
-    "en/works/torso/index.html": "f9ffdd35:59612",
+    "en/works/the-annunciation/index.html": "1bd528bf:35572",
+    "en/works/torso/index.html": "12d8fdfd:59612",
     "en/works/danae/index.html": "7d4836a9:68644",
-    "en/works/zodiac/index.html": "f25fe020:105912",
-    "en/works/pixel-prometheus/index.html": "69790657:75832",
-    "en/works/medusa/index.html": "1216b1af:62084",
-    "en/works/laocoon/index.html": "b7128f35:66744",
-    "en/works/frames-of-torso/index.html": "7bbf5bf3:58480",
-    "en/works/digital/index.html": "19cc397a:31560",
+    "en/works/zodiac/index.html": "f91cdf89:105912",
+    "en/works/pixel-prometheus/index.html": "48fce71a:75832",
+    "en/works/medusa/index.html": "7ad8db25:62084",
+    "en/works/laocoon/index.html": "d3bb72d:66744",
+    "en/works/frames-of-torso/index.html": "db0caf3e:58480",
+    "en/works/digital/index.html": "614dc36c:31560",
     "en/text/critical-notes-lim-geunjun/index.html": "3b9dc918:31856",
     "en/text/sections-of-structure-jung-hyun/index.html": "8add42f8:32324",
     "en/text/hybrid-of-reference-jang-seungyeon/index.html": "941c7ca:26624",
@@ -4915,12 +4915,12 @@
     "en/shop/torso-18/index.html": "66637d65:26252",
     "en/cv/index.html": "db0ae767:14028",
     "en/shipping/index.html": "587400a4:12620",
-    "works/prometheus-and-the-three-graces/index.html": "51a9891f:28676",
-    "en/works/prometheus-and-the-three-graces/index.html": "bfd1a87b:28456",
+    "works/prometheus-and-the-three-graces/index.html": "17d3f73a:28676",
+    "en/works/prometheus-and-the-three-graces/index.html": "52182373:28456",
     "shop/the-drawing-book-torso-100/index.html": "88823d40:34620",
     "en/shop/the-drawing-book-torso-100/index.html": "9dc90e10:29992",
-    "works/sd-zodiac/index.html": "ccb6be0b:56892",
-    "en/works/sd-zodiac/index.html": "a737a62:55408"
+    "works/sd-zodiac/index.html": "39d83736:56892",
+    "en/works/sd-zodiac/index.html": "ba93ac96:55408"
   },
   "shopDesign": {
     "mainPct": 56,
