@@ -1653,7 +1653,7 @@
     {
       "id": "w-1791792414299-sdzod",
       "title": "SD Zodiac",
-      "cover": "./images/w5-p-1788444574510-maztm.jpg",
+      "cover": "./images/w5-p-1788446965109-jlofs.jpg",
       "description": "〈SD Zodiac〉과 〈SD Constellation〉(2022, 캔버스에 유채)은 만화·애니메이션에서 캐릭터를 2등신으로 줄여 그리는 SD(슈퍼 데포르메) 스타일을 빌린 조디악 연작이다. 《SD ZODIAC》(EDIT HANNAM, 서울, 2022)에서 선보였다.",
       "photoRows": [
         {
@@ -1865,7 +1865,10 @@
       "descriptionEn": "SD Zodiac and SD Constellation (2022, oil on canvas) are Zodiac works that borrow the SD (super deformed) style of manga and anime, in which characters are redrawn two heads tall. They were shown in SD ZODIAC (EDIT HANNAM, Seoul, 2022).",
       "descStyle": {
         "lineHeight": 1.5
-      }
+      },
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "w-1790766011679-go31v",
@@ -4841,7 +4844,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "ca600416:103508",
     "cv/index.html": "3c26c8a:15268",
     "page.css": "bb1a7716:117476",
-    "sitemap.xml": "33ac7f67:137988",
+    "sitemap.xml": "88e57c36:137976",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "af697fab:85116",
     "works/digital/index.html": "4c7678a3:38528",
@@ -4916,8 +4919,8 @@
     "en/works/prometheus-and-the-three-graces/index.html": "bfd1a87b:28456",
     "shop/the-drawing-book-torso-100/index.html": "88823d40:34620",
     "en/shop/the-drawing-book-torso-100/index.html": "9dc90e10:29992",
-    "works/sd-zodiac/index.html": "153a31c1:56892",
-    "en/works/sd-zodiac/index.html": "331c382:55408"
+    "works/sd-zodiac/index.html": "ccb6be0b:56892",
+    "en/works/sd-zodiac/index.html": "a737a62:55408"
   },
   "shopDesign": {
     "mainPct": 56,
