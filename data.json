@@ -2763,7 +2763,7 @@
           "photos": [
             {
               "id": "p-1789632367141-7e3se",
-              "image": "./images/w8-p-1789632367141-7e3se.jpg",
+              "image": "./images/w8-p-1789632367141-7e3se-f03dd8f3.jpg",
               "caption": "Between the Frames: Fragment of Torso 01, 2025, Oil on canvas, 2 panels, 40 × 90 cm each"
             }
           ]
@@ -3031,6 +3031,8 @@
     "detailTitleSize": 30
   },
   "publishedPages": [
+    "works/laocoon/index.html",
+    "en/works/laocoon/index.html",
     "works/the-annunciation/index.html",
     "en/works/the-annunciation/index.html",
     "works/torso/index.html",
@@ -3045,8 +3047,6 @@
     "en/works/prometheus-and-the-three-graces/index.html",
     "works/medusa/index.html",
     "en/works/medusa/index.html",
-    "works/laocoon/index.html",
-    "en/works/laocoon/index.html",
     "works/frames-of-torso/index.html",
     "en/works/frames-of-torso/index.html",
     "works/digital/index.html",
@@ -4810,7 +4810,7 @@
     "works/zodiac/index.html": "d61acb2:134880",
     "works/medusa/index.html": "b2ae657b:69260",
     "works/laocoon/index.html": "ed7666ee:74768",
-    "works/frames-of-torso/index.html": "68b3b99:64204",
+    "works/frames-of-torso/index.html": "85cde951:64288",
     "text/critical-notes-lim-geunjun/index.html": "71fd01ee:53276",
     "text/sections-of-structure-jung-hyun/index.html": "35da52ce:52980",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "c84773ad:42424",
@@ -4818,8 +4818,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "1f6f36d7:71736",
     "text/exploding-bishojo-baek-jihong/index.html": "ca600416:103508",
     "cv/index.html": "3c26c8a:15268",
-    "page.css": "a0fb7f5:117324",
-    "sitemap.xml": "1bec698f:137780",
+    "page.css": "7bc66530:117476",
+    "sitemap.xml": "23fb7451:137792",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "af697fab:85116",
     "works/digital/index.html": "4c7678a3:38528",
@@ -4855,7 +4855,7 @@
     "en/works/pixel-prometheus/index.html": "5b009ff9:78784",
     "en/works/medusa/index.html": "1216b1af:62084",
     "en/works/laocoon/index.html": "b7128f35:66744",
-    "en/works/frames-of-torso/index.html": "d22180d1:57808",
+    "en/works/frames-of-torso/index.html": "69b74831:57892",
     "en/works/digital/index.html": "19cc397a:31560",
     "en/text/critical-notes-lim-geunjun/index.html": "3b9dc918:31856",
     "en/text/sections-of-structure-jung-hyun/index.html": "8add42f8:32324",
