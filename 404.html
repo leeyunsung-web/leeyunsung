@@ -19,9 +19,13 @@
 <script>
 (function(){
   // 옛 주소 → 새 주소 (슬러그를 바꾼 페이지)
-  var MOVED={"/works/works-9/":"/works/pixel-prometheus/","/works/works-8/":"/works/digital/"};
+  var MOVED={"/works/works-9/":"/works/pixel-prometheus/","/works/works-8/":"/works/digital/",
+    // 예전(Cargo 시절) 주소 — 검색 결과에 아직 남아 있는 것들
+    "/artwork-1/":"/","/artwork/":"/","/text/":"/#text","/books/":"/#shop","/cv/":"/cv/","/contact/":"/#contact"};
   var p=location.pathname.replace(/\/?$/,"/").replace(/\/index\.html\/$/,"/");
+  var pl=p.toLowerCase();
   if(MOVED[p]){location.replace(MOVED[p]+location.hash);return;}
+  if(MOVED[pl]&&MOVED[pl]!==p){location.replace(MOVED[pl]+location.hash);return;}
   // /works/슬러그 처럼 끝 슬래시만 빠진 경우
   if(!/\/$/.test(location.pathname)&&!/\.[a-z0-9]+$/i.test(location.pathname)){location.replace(location.pathname+"/"+location.search+location.hash);}
 })();
