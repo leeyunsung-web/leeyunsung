@@ -3494,10 +3494,10 @@
     },
     {
       "id": "s-1790625066588-fg7t1",
-      "title": "",
+      "title": "Torso – Art Poster",
       "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
-      "description": "",
-      "slug": "shop-16",
+      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.",
+      "slug": "torso-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1790625066588-fg7t1-646eab",
@@ -3512,8 +3512,8 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
-      "edition": "",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
@@ -3522,7 +3522,15 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso (2011).",
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790625066588-fg7t1-cover.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "s-1790624929547-vad9p",
@@ -3905,10 +3913,10 @@
     },
     {
       "id": "s-1790625359809-iikzl",
-      "title": "",
+      "title": "Torso 14 – Art Poster",
       "cover": "./images/w3-p-1787592985513-1e47g.jpg",
-      "description": "",
-      "slug": "shop-21",
+      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.",
+      "slug": "torso-14-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1790625359809-iikzl-5b8dcc",
@@ -3923,8 +3931,8 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
-      "edition": "",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
@@ -3933,14 +3941,22 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso 14 (2023).",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787592985513-1e47g.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "s-1790625368565-3m6dk",
-      "title": "",
+      "title": "Torso 16 – Art Poster",
       "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
-      "description": "",
-      "slug": "shop-22",
+      "description": "2023년작 〈Torso 16〉의 포스터 에디션입니다.",
+      "slug": "torso-16-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1790625368565-3m6dk-95aaa9",
@@ -3955,8 +3971,8 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
-      "edition": "",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
@@ -3965,14 +3981,22 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso 16 (2023).",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "s-1790625378337-5f333",
-      "title": "",
+      "title": "Torso 18 – Art Poster",
       "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "",
-      "slug": "shop-23",
+      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.",
+      "slug": "torso-18-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1790625378337-5f333-4c698c",
@@ -3987,8 +4011,8 @@
         }
       ],
       "spec1": "",
-      "spec2": "",
-      "edition": "",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
@@ -3997,7 +4021,15 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso 18 (2024).",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593029600-54rtv.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": ""
     },
     {
       "id": "s-1790623636184-2mg2s",
