@@ -356,9 +356,9 @@
   <url><loc>https://leeyunsung.com/en/text/exploding-bishojo-baek-jihong/</loc><lastmod>2026-10-20</lastmod><priority>0.6</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/at-the-last-judgment-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/nu/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/the-drawing-book-torso-100/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/laocoon-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/cronos-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
-  <url><loc>https://leeyunsung.com/en/shop/the-drawing-book-torso-100/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-01-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-02-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-03-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
@@ -392,6 +392,11 @@
     <image:image><image:loc>https://leeyunsung.com/images/s-1790622337229-hzfwn-cover.jpg</image:loc><image:title>NU — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
+    <loc>https://leeyunsung.com/shop/the-drawing-book-torso-100/</loc>
+    <lastmod>2026-10-20</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1790625685891-fny4m-cover-ef271752.jpg</image:loc><image:title>Yunsung Lee The Drawing Book Torso 100 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
     <loc>https://leeyunsung.com/shop/laocoon-art-poster/</loc>
     <lastmod>2026-10-20</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623313493-6o5cs-cover.jpg</image:loc><image:title>Laocoon – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
@@ -400,11 +405,6 @@
     <loc>https://leeyunsung.com/shop/cronos-art-poster/</loc>
     <lastmod>2026-10-20</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623028311-pavmn-cover.jpg</image:loc><image:title>Cronos – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
-  </url>
-  <url>
-    <loc>https://leeyunsung.com/shop/the-drawing-book-torso-100/</loc>
-    <lastmod>2026-10-20</lastmod><priority>0.8</priority>
-    <image:image><image:loc>https://leeyunsung.com/images/s-1790625685891-fny4m-cover-ef271752.jpg</image:loc><image:title>Yunsung Lee The Drawing Book Torso 100 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-01-art-poster/</loc>
