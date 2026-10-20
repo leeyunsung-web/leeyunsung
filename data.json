@@ -4758,13 +4758,13 @@
     },
     {
       "id": "s-1792489283261-h6hij",
-      "title": "",
+      "title": "The Annunciation (central panels) – Art Poster (2026)",
       "author": "",
       "authorEn": "",
       "year": "",
       "cover": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-      "description": "",
-      "slug": "shop-32",
+      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "annunciation-central-panels-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1792489283261-h6hij-e9edc8",
@@ -4778,11 +4778,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "67 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -4790,17 +4790,22 @@
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014), a four-panel work, newly produced and released as a limited edition in 2026.",
+      "original": {
+        "workId": "w2",
+        "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg"
+      }
     },
     {
       "id": "s-1792489302614-f6t8c",
-      "title": "",
+      "title": "Danae Blue – Art Poster (2026)",
       "author": "",
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
-      "description": "",
-      "slug": "shop-33",
+      "description": "2015년작 〈Danae Blue〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "danae-blue-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1792489302614-f6t8c-6338d6",
@@ -4814,11 +4819,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "50 × 67 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -4826,17 +4831,22 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true
+      "hidden": true,
+      "descriptionEn": "A poster edition of Danae Blue (2015), newly produced and released as a limited edition in 2026.",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg"
+      }
     },
     {
       "id": "s-1792489319925-j2ldo",
-      "title": "",
+      "title": "Danae Pink – Art Poster (2026)",
       "author": "",
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
-      "description": "",
-      "slug": "shop-34",
+      "description": "2015년작 〈Danae Pink〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "danae-pink-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1792489319925-j2ldo-aa0940",
@@ -4850,11 +4860,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "50 × 67 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -4862,17 +4872,22 @@
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of Danae Pink (2015), newly produced and released as a limited edition in 2026.",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg"
+      }
     },
     {
       "id": "s-1792489341201-sstw5",
-      "title": "",
+      "title": "Danae Yellow – Art Poster (2026)",
       "author": "",
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-      "description": "",
-      "slug": "shop-35",
+      "description": "2015년작 〈Danae Yellow〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "danae-yellow-art-poster",
       "photoRows": [
         {
           "id": "rowc-s-1792489341201-sstw5-97cb6b",
@@ -4886,11 +4901,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "50 × 67 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -4898,7 +4913,12 @@
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of Danae Yellow (2015), newly produced and released as a limited edition in 2026.",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg"
+      }
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
