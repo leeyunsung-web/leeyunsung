@@ -3337,7 +3337,7 @@
       "id": "s-1790625066588-fg7t1",
       "title": "Torso Digital – Art Poster (2026)",
       "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
-      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2011년작 〈Torso〉의 2026년 포스터 에디션입니다.",
       "slug": "torso-digital-art-poster",
       "photoRows": [
         {
@@ -3364,7 +3364,7 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Torso (2011), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Torso (2011).",
       "original": {
         "workId": "w-1790628203345-iya5b",
         "image": "./images/s-1790625066588-fg7t1-cover.jpg"
@@ -3378,7 +3378,7 @@
       "id": "s-1790625359809-iikzl",
       "title": "Torso 14 – Art Poster (2026)",
       "cover": "./images/w3-p-1787592985513-1e47g.jpg",
-      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2023년작 〈Torso 14〉의 2026년 포스터 에디션입니다.",
       "slug": "torso-14-art-poster",
       "photoRows": [
         {
@@ -3405,7 +3405,7 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Torso 14 (2023), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Torso 14 (2023).",
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787592985513-1e47g.jpg"
@@ -3504,7 +3504,7 @@
       "id": "s-1790625368565-3m6dk",
       "title": "Torso 16 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
-      "description": "2023년작 〈Torso 16〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2023년작 〈Torso 16〉의 2026년 포스터 에디션입니다.",
       "slug": "torso-16-art-poster",
       "photoRows": [
         {
@@ -3531,7 +3531,7 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Torso 16 (2023), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Torso 16 (2023).",
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787593009615-p5ijq.jpg"
@@ -3545,7 +3545,7 @@
       "id": "s-1790625378337-5f333",
       "title": "Torso 18 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2024년작 〈Torso 18〉의 2026년 포스터 에디션입니다.",
       "slug": "torso-18-art-poster",
       "photoRows": [
         {
@@ -3572,7 +3572,7 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Torso 18 (2024), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Torso 18 (2024).",
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787593029600-54rtv.jpg"
@@ -3589,7 +3589,7 @@
       "authorEn": "",
       "year": "",
       "cover": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 2026년 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.",
       "slug": "annunciation-central-panels-art-poster",
       "photoRows": [
         {
@@ -3617,7 +3617,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014), a four-panel work, first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of the two central panels of The Annunciation (2014), a four-panel work.",
       "original": {
         "workId": "w2",
         "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg"
@@ -3630,7 +3630,7 @@
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
-      "description": "2015년작 〈Danae Blue〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2015년작 〈Danae Blue〉의 2026년 포스터 에디션입니다.",
       "slug": "danae-blue-art-poster",
       "photoRows": [
         {
@@ -3658,7 +3658,7 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Danae Blue (2015), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Danae Blue (2015).",
       "original": {
         "workId": "w4",
         "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg"
@@ -3671,7 +3671,7 @@
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-      "description": "2015년작 〈Danae Yellow〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2015년작 〈Danae Yellow〉의 2026년 포스터 에디션입니다.",
       "slug": "danae-yellow-art-poster",
       "photoRows": [
         {
@@ -3699,7 +3699,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "descriptionEn": "A poster edition of Danae Yellow (2015), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Danae Yellow (2015).",
       "original": {
         "workId": "w4",
         "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg"
@@ -3712,7 +3712,7 @@
       "authorEn": "",
       "year": "",
       "cover": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
-      "description": "2015년작 〈Danae Pink〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "description": "2015년작 〈Danae Pink〉의 2026년 포스터 에디션입니다.",
       "slug": "danae-pink-art-poster",
       "photoRows": [
         {
@@ -3740,7 +3740,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "descriptionEn": "A poster edition of Danae Pink (2015), first presented in 2026.",
+      "descriptionEn": "A 2026 poster edition of Danae Pink (2015).",
       "original": {
         "workId": "w4",
         "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg"
