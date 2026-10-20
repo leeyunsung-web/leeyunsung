@@ -3501,47 +3501,6 @@
       "descriptionEn": "This book collects the drawings Lee Yunsung posted as YouTube videos between August 22, 2019 and March 11, 2020. The 100 digital drawings, each made at 300 × 300 pixels, were completed through a process opposite to that of the classical torso. If the torso is a myth built over centuries as parts of a sculpture were lost by chance, his torso drawings are the result of selectively reproducing images he had gathered at random. Fixed at this absolute size, the drawings shift with every digital device—smartphone, PC, tablet—and are destined, like the lost fragments of a sculpture, to lose their resolution.\n\nMoved into the book, however, the images become far larger than on a website or a phone. Paradoxically, in print they become high-resolution images, precisely because the pixel served as the digital brush. In the artist's words, the pixel is the smallest unit of visualization, as unbreakable as a diamond. Its resolution is so low that it is no longer bound by the limits of resolution.\n\nAnd unlike pointillism, whose edges and colors blur as the viewer steps back, pixel drawing reveals an orderly figure from a distance and the tragedy of chaos up close. The longer one looks, the deeper the reading of its image and meaning becomes. For Lee Yunsung, the pixel stands for the incompleteness of the conditions, concepts, and practices that the designers and artists of his time confront."
     },
     {
-      "id": "s-1790625378337-5f333",
-      "title": "Torso 18 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
-      "slug": "torso-18-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625378337-5f333-4c698c",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625378337-5f333-4c698c",
-              "image": "./images/w3-p-1787593029600-54rtv.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": true,
-      "descriptionEn": "A poster edition of Torso 18 (2024), first presented in 2026.",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787593029600-54rtv.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
       "id": "s-1790625368565-3m6dk",
       "title": "Torso 16 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
@@ -3576,6 +3535,47 @@
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
+    },
+    {
+      "id": "s-1790625378337-5f333",
+      "title": "Torso 18 – Art Poster (2026)",
+      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
+      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.\n2026년에 처음 선보이는 포스터 에디션입니다.",
+      "slug": "torso-18-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790625378337-5f333-4c698c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790625378337-5f333-4c698c",
+              "image": "./images/w3-p-1787593029600-54rtv.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso 18 (2024), first presented in 2026.",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593029600-54rtv.jpg"
       },
       "author": "",
       "authorEn": "",
@@ -4949,7 +4949,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "c5ce0ddb:119632",
+    "page.css": "538ef574:119632",
     "sitemap.xml": "17ff571b:138400",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
