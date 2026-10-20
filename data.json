@@ -3598,7 +3598,7 @@
       "authorEn": "",
       "year": "",
       "cover": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.",
+      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.",
       "slug": "annunciation-central-panels-art-poster",
       "photoRows": [
         {
@@ -3626,7 +3626,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014), a four-panel work.",
+      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014).",
       "original": {
         "workId": "w2",
         "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg"
