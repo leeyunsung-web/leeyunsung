@@ -3095,10 +3095,10 @@
     "en/shop/nu/index.html",
     "shop/laocoon-art-poster/index.html",
     "en/shop/laocoon-art-poster/index.html",
-    "shop/cronos-art-poster/index.html",
-    "en/shop/cronos-art-poster/index.html",
     "shop/the-drawing-book-torso-100/index.html",
     "en/shop/the-drawing-book-torso-100/index.html",
+    "shop/cronos-art-poster/index.html",
+    "en/shop/cronos-art-poster/index.html",
     "shop/torso-01-art-poster/index.html",
     "en/shop/torso-01-art-poster/index.html",
     "shop/torso-02-art-poster/index.html",
@@ -3334,78 +3334,86 @@
       "tocEn": "NU-FRAME\n9 Hyun Jung - The Cross Section of Structure\n23 Seung-yeon Jang - A Hybrid of ‘References’: One Signifier with Multiple ‘Archetypes’\n33 List of Works\nNU-TYPE\n84 Geun-joon Lim - A Critical Note on Paintings by Yunsung Lee\n101 List of Works"
     },
     {
-      "id": "s-1790623313493-6o5cs",
-      "title": "Laocoon – Art Poster (2021)",
-      "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
-      "description": "2010년작 〈Laocoon〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "laocoon-art-poster",
+      "id": "s-1790625066588-fg7t1",
+      "title": "Torso – Art Poster (2026)",
+      "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
+      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "torso-art-poster",
       "photoRows": [
         {
-          "id": "rowc-s-1790623313493-6o5cs-305ea5",
+          "id": "rowc-s-1790625066588-fg7t1-646eab",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790623313493-6o5cs-305ea5",
-              "image": "./images/s-1790623313493-6o5cs-cover.jpg",
+              "id": "pc-s-1790625066588-fg7t1-646eab",
+              "image": "./images/s-1790625066588-fg7t1-cover.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "50 × 64 cm",
+      "spec1": "62 × 50 cm",
       "spec2": "Digital Print on Paper",
       "edition": "Signed and numbered, edition of 300",
       "priceKrw": "35000",
       "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782577593",
+      "buyKr": "",
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso (2011), newly produced and released as a limited edition in 2026.",
       "original": {
         "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790623313493-6o5cs-cover.jpg"
+        "image": "./images/s-1790625066588-fg7t1-cover.jpg"
       },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Laocoon (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
     },
     {
-      "id": "s-1790623028311-pavmn",
-      "title": "Cronos – Art Poster (2021)",
-      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
-      "description": "2011년작 〈Cronos〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "cronos-art-poster",
+      "id": "s-1790625359809-iikzl",
+      "title": "Torso 14 – Art Poster (2026)",
+      "cover": "./images/w3-p-1787592985513-1e47g.jpg",
+      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "torso-14-art-poster",
       "photoRows": [
         {
-          "id": "rowc-s-1790623028311-pavmn-774362",
+          "id": "rowc-s-1790625359809-iikzl-5b8dcc",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790623028311-pavmn-774362",
-              "image": "./images/s-1790623028311-pavmn-cover.jpg",
+              "id": "pc-s-1790625359809-iikzl-5b8dcc",
+              "image": "./images/w3-p-1787592985513-1e47g.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "72 × 50 cm",
+      "spec1": "62 × 50 cm",
       "spec2": "Digital Print on Paper",
       "edition": "Signed and numbered, edition of 300",
       "priceKrw": "35000",
       "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782589448",
+      "buyKr": "",
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
+      "hidden": true,
+      "descriptionEn": "A poster edition of Torso 14 (2023), newly produced and released as a limited edition in 2026.",
       "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790623028311-pavmn-cover.jpg"
+        "workId": "w3",
+        "image": "./images/w3-p-1787592985513-1e47g.jpg"
       },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Cronos (2011), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
     },
     {
       "id": "s-1790625685891-fny4m",
@@ -3493,19 +3501,19 @@
       "descriptionEn": "This book collects the drawings Lee Yunsung posted as YouTube videos between August 22, 2019 and March 11, 2020. The 100 digital drawings, each made at 300 × 300 pixels, were completed through a process opposite to that of the classical torso. If the torso is a myth built over centuries as parts of a sculpture were lost by chance, his torso drawings are the result of selectively reproducing images he had gathered at random. Fixed at this absolute size, the drawings shift with every digital device—smartphone, PC, tablet—and are destined, like the lost fragments of a sculpture, to lose their resolution.\n\nMoved into the book, however, the images become far larger than on a website or a phone. Paradoxically, in print they become high-resolution images, precisely because the pixel served as the digital brush. In the artist's words, the pixel is the smallest unit of visualization, as unbreakable as a diamond. Its resolution is so low that it is no longer bound by the limits of resolution.\n\nAnd unlike pointillism, whose edges and colors blur as the viewer steps back, pixel drawing reveals an orderly figure from a distance and the tragedy of chaos up close. The longer one looks, the deeper the reading of its image and meaning becomes. For Lee Yunsung, the pixel stands for the incompleteness of the conditions, concepts, and practices that the designers and artists of his time confront."
     },
     {
-      "id": "s-1790625066588-fg7t1",
-      "title": "Torso – Art Poster (2026)",
-      "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
-      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
-      "slug": "torso-art-poster",
+      "id": "s-1790625378337-5f333",
+      "title": "Torso 18 – Art Poster (2026)",
+      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
+      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
+      "slug": "torso-18-art-poster",
       "photoRows": [
         {
-          "id": "rowc-s-1790625066588-fg7t1-646eab",
+          "id": "rowc-s-1790625378337-5f333-4c698c",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790625066588-fg7t1-646eab",
-              "image": "./images/s-1790625066588-fg7t1-cover.jpg",
+              "id": "pc-s-1790625378337-5f333-4c698c",
+              "image": "./images/w3-p-1787593029600-54rtv.jpg",
               "caption": ""
             }
           ]
@@ -3523,15 +3531,89 @@
       "shipProfile": "tube",
       "coverInRows": true,
       "hidden": true,
-      "descriptionEn": "A poster edition of Torso (2011), newly produced and released as a limited edition in 2026.",
+      "descriptionEn": "A poster edition of Torso 18 (2024), newly produced and released as a limited edition in 2026.",
       "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790625066588-fg7t1-cover.jpg"
+        "workId": "w3",
+        "image": "./images/w3-p-1787593029600-54rtv.jpg"
       },
       "author": "",
       "authorEn": "",
       "year": "",
       "rowCols": 5
+    },
+    {
+      "id": "s-1790623313493-6o5cs",
+      "title": "Laocoon – Art Poster (2021)",
+      "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
+      "description": "2010년작 〈Laocoon〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "laocoon-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623313493-6o5cs-305ea5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623313493-6o5cs-305ea5",
+              "image": "./images/s-1790623313493-6o5cs-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "50 × 64 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782577593",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790623313493-6o5cs-cover.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Laocoon (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790623028311-pavmn",
+      "title": "Cronos – Art Poster (2021)",
+      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
+      "description": "2011년작 〈Cronos〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "cronos-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623028311-pavmn-774362",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623028311-pavmn-774362",
+              "image": "./images/s-1790623028311-pavmn-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "72 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782589448",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790623028311-pavmn-cover.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Cronos (2011), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
       "id": "s-1790624929547-vad9p",
@@ -3913,47 +3995,6 @@
       "descriptionEn": "A poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
-      "id": "s-1790625359809-iikzl",
-      "title": "Torso 14 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787592985513-1e47g.jpg",
-      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
-      "slug": "torso-14-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625359809-iikzl-5b8dcc",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625359809-iikzl-5b8dcc",
-              "image": "./images/w3-p-1787592985513-1e47g.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": true,
-      "descriptionEn": "A poster edition of Torso 14 (2023), newly produced and released as a limited edition in 2026.",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787592985513-1e47g.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
       "id": "s-1790625368565-3m6dk",
       "title": "Torso 16 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
@@ -3988,47 +4029,6 @@
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787593009615-p5ijq.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
-      "id": "s-1790625378337-5f333",
-      "title": "Torso 18 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.\n2026년 한정 에디션으로 새로 제작·출시되었습니다.",
-      "slug": "torso-18-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625378337-5f333-4c698c",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625378337-5f333-4c698c",
-              "image": "./images/w3-p-1787593029600-54rtv.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": true,
-      "descriptionEn": "A poster edition of Torso 18 (2024), newly produced and released as a limited edition in 2026.",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787593029600-54rtv.jpg"
       },
       "author": "",
       "authorEn": "",
@@ -4929,14 +4929,14 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "2423841e:118652",
-    "sitemap.xml": "6c15f92b:138400",
+    "page.css": "fbb2ea8c:119636",
+    "sitemap.xml": "afdea100:138400",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
-    "shop/at-the-last-judgment-art-poster/index.html": "b7ae215b:45856",
-    "shop/nu/index.html": "6ced781e:38624",
-    "shop/laocoon-art-poster/index.html": "bdb6118e:45476",
+    "shop/at-the-last-judgment-art-poster/index.html": "131fda78:45944",
+    "shop/nu/index.html": "4167293:38708",
+    "shop/laocoon-art-poster/index.html": "3ce6a463:45560",
     "shop/cronos-art-poster/index.html": "f388fecc:45444",
     "shop/torso-01-art-poster/index.html": "79b59d8d:45644",
     "shop/torso-02-art-poster/index.html": "3512d4c8:45644",
@@ -4974,9 +4974,9 @@
     "en/text/painting-of-the-cut-konno-yuki/index.html": "3ab164f3:25480",
     "en/text/taxidermy-of-joy-jo-saemi/index.html": "5abe8f4e:41356",
     "en/text/exploding-bishojo-baek-jihong/index.html": "9253cfc4:57388",
-    "en/shop/at-the-last-judgment-art-poster/index.html": "c89655d9:38120",
-    "en/shop/nu/index.html": "67018756:35632",
-    "en/shop/laocoon-art-poster/index.html": "c3d0a92a:37792",
+    "en/shop/at-the-last-judgment-art-poster/index.html": "727dfdf:38208",
+    "en/shop/nu/index.html": "5ebbcb40:35720",
+    "en/shop/laocoon-art-poster/index.html": "155b7319:37876",
     "en/shop/cronos-art-poster/index.html": "9cddb22d:37760",
     "en/shop/torso-01-art-poster/index.html": "a5e81f3:37792",
     "en/shop/torso-02-art-poster/index.html": "bed64bb5:37792",
@@ -5000,7 +5000,7 @@
     "en/shop/torso-10/index.html": "196684eb:27400",
     "en/shop/torso-18/index.html": "62f22b87:27148",
     "en/cv/index.html": "11bdd6e2:16784",
-    "en/shipping/index.html": "f9dbe788:13064",
+    "en/shipping/index.html": "38f88ca5:13808",
     "works/prometheus-and-the-three-graces/index.html": "34fecd7f:38132",
     "en/works/prometheus-and-the-three-graces/index.html": "423d6985:32264",
     "shop/the-drawing-book-torso-100/index.html": "34a7bc1c:35076",
