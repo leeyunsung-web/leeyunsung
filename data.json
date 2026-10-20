@@ -3093,8 +3093,18 @@
     "en/shop/at-the-last-judgment-art-poster/index.html",
     "shop/nu/index.html",
     "en/shop/nu/index.html",
+    "shop/torso-digital-art-poster/index.html",
+    "en/shop/torso-digital-art-poster/index.html",
+    "shop/torso-14-art-poster/index.html",
+    "en/shop/torso-14-art-poster/index.html",
     "shop/the-drawing-book-torso-100/index.html",
     "en/shop/the-drawing-book-torso-100/index.html",
+    "shop/torso-16-art-poster/index.html",
+    "en/shop/torso-16-art-poster/index.html",
+    "shop/torso-18-art-poster/index.html",
+    "en/shop/torso-18-art-poster/index.html",
+    "shop/annunciation-central-panels-art-poster/index.html",
+    "en/shop/annunciation-central-panels-art-poster/index.html",
     "shop/laocoon-art-poster/index.html",
     "en/shop/laocoon-art-poster/index.html",
     "shop/cronos-art-poster/index.html",
@@ -3335,7 +3345,7 @@
     },
     {
       "id": "s-1790625066588-fg7t1",
-      "title": "Torso Digital – Art Poster (2026)",
+      "title": "Torso  – Art Poster (2026)",
       "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
       "description": "2011년작 〈Torso〉의 포스터 에디션입니다.",
       "slug": "torso-digital-art-poster",
@@ -3363,7 +3373,6 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true,
       "descriptionEn": "A poster edition of Torso (2011).",
       "original": {
         "workId": "w-1790628203345-iya5b",
@@ -3404,7 +3413,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true,
+      "hidden": false,
       "descriptionEn": "A poster edition of Torso 14 (2023).",
       "original": {
         "workId": "w3",
@@ -3530,7 +3539,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true,
+      "hidden": false,
       "descriptionEn": "A poster edition of Torso 16 (2023).",
       "original": {
         "workId": "w3",
@@ -3571,7 +3580,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true,
+      "hidden": false,
       "descriptionEn": "A poster edition of Torso 18 (2024).",
       "original": {
         "workId": "w3",
@@ -3612,7 +3621,7 @@
       "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823683948",
       "buyUs": "",
       "soldOut": false,
-      "hidden": true,
+      "hidden": false,
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
@@ -3657,7 +3666,7 @@
       "category": "edition",
       "shipProfile": "tube",
       "coverInRows": true,
-      "hidden": true,
+      "hidden": false,
       "descriptionEn": "A poster edition of Danae Blue (2015).",
       "original": {
         "workId": "w4",
@@ -3694,7 +3703,7 @@
       "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823686516",
       "buyUs": "",
       "soldOut": false,
-      "hidden": true,
+      "hidden": false,
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
@@ -3735,7 +3744,7 @@
       "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823687158",
       "buyUs": "",
       "soldOut": false,
-      "hidden": true,
+      "hidden": false,
       "rowCols": 5,
       "category": "edition",
       "shipProfile": "tube",
@@ -3745,6 +3754,43 @@
         "workId": "w4",
         "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg"
       }
+    },
+    {
+      "id": "s-1790624996756-xnr3j",
+      "title": "Torso 10 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465590493-13mdp.jpg",
+      "description": "2020년작 〈Torso 10〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-10-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624996756-xnr3j-cf7e55",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624996756-xnr3j-cf7e55",
+              "image": "./images/w3-p-1787465590493-13mdp.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782620391",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465590493-13mdp.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
       "id": "s-1790623313493-6o5cs",
@@ -4013,43 +4059,6 @@
       },
       "rowCols": 5,
       "descriptionEn": "A poster edition of Torso 05 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790624960499-n3l60",
-      "title": "Torso 06 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465287347-94coq.jpg",
-      "description": "2016년작 〈Torso 06〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-06-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624960499-n3l60-15a490",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624960499-n3l60-15a490",
-              "image": "./images/w3-p-1787465287347-94coq.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618201",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 06 (2016), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
       "id": "s-1790623636184-2mg2s",
@@ -4523,19 +4532,19 @@
       "authorEn": ""
     },
     {
-      "id": "s-1790624979413-mam24",
-      "title": "Torso 07 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465325523-bc1ig.jpg",
-      "description": "2013년작 〈Torso 07〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-07-art-poster",
+      "id": "s-1790624960499-n3l60",
+      "title": "Torso 06 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465287347-94coq.jpg",
+      "description": "2016년작 〈Torso 06〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-06-art-poster",
       "photoRows": [
         {
-          "id": "rowc-s-1790624979413-mam24-dd62e7",
+          "id": "rowc-s-1790624960499-n3l60-15a490",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790624979413-mam24-dd62e7",
-              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
+              "id": "pc-s-1790624960499-n3l60-15a490",
+              "image": "./images/w3-p-1787465287347-94coq.jpg",
               "caption": ""
             }
           ]
@@ -4546,7 +4555,7 @@
       "edition": "Signed and numbered, edition of 300",
       "priceKrw": "35000",
       "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618547",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618201",
       "buyUs": "",
       "soldOut": false,
       "category": "edition",
@@ -4554,10 +4563,10 @@
       "coverInRows": true,
       "original": {
         "workId": "w3",
-        "image": "./images/w3-p-1787465325523-bc1ig.jpg"
+        "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg"
       },
       "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 07 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+      "descriptionEn": "A poster edition of Torso 06 (2016), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
       "id": "s-1791045430344-i1yns",
@@ -4706,6 +4715,43 @@
       "inquiryOnly": true
     },
     {
+      "id": "s-1790624979413-mam24",
+      "title": "Torso 07 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465325523-bc1ig.jpg",
+      "description": "2013년작 〈Torso 07〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-07-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624979413-mam24-dd62e7",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624979413-mam24-dd62e7",
+              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618547",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465325523-bc1ig.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 07 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
       "id": "s-1790624985943-p3hci",
       "title": "Torso 08 – Art Poster (2021)",
       "cover": "./images/w3-p-1787465388849-mlqhg.jpg",
@@ -4778,43 +4824,6 @@
       },
       "rowCols": 5,
       "descriptionEn": "A poster edition of Torso 09 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790624996756-xnr3j",
-      "title": "Torso 10 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465590493-13mdp.jpg",
-      "description": "2020년작 〈Torso 10〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-10-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624996756-xnr3j-cf7e55",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624996756-xnr3j-cf7e55",
-              "image": "./images/w3-p-1787465590493-13mdp.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782620391",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465590493-13mdp.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
     },
     {
       "id": "s-shared-poster-examples",
@@ -4950,35 +4959,35 @@
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
     "page.css": "538ef574:119632",
-    "sitemap.xml": "17ff571b:138400",
+    "sitemap.xml": "84d40bb5:143548",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
-    "shop/at-the-last-judgment-art-poster/index.html": "febcc4ff:45944",
-    "shop/nu/index.html": "6e4e34ff:38708",
-    "shop/laocoon-art-poster/index.html": "3ce6a463:45560",
-    "shop/cronos-art-poster/index.html": "b6bba367:45528",
-    "shop/torso-01-art-poster/index.html": "c1f9846e:45728",
-    "shop/torso-02-art-poster/index.html": "13a65723:45728",
-    "shop/torso-03-art-poster/index.html": "6e19705:45728",
-    "shop/torso-04-art-poster/index.html": "b1189ce:45728",
-    "shop/torso-05-art-poster/index.html": "ab9c1bbf:45728",
-    "shop/torso-06-art-poster/index.html": "3fafde90:45776",
-    "shop/torso-07-art-poster/index.html": "e46a2597:45728",
-    "shop/torso-08-art-poster/index.html": "78ea3126:45728",
-    "shop/torso-09-art-poster/index.html": "ccee5d20:45728",
-    "shop/torso-10-art-poster/index.html": "6de3ccc0:45436",
-    "shop/fragmentary/index.html": "add1ba6e:49924",
-    "shop/the-three-graces-pixel-props-05/index.html": "5eccaa75:35404",
-    "shop/the-three-graces-pixel-props-08/index.html": "d5f0a27c:34392",
-    "shop/the-three-graces-pixel-props-09/index.html": "ac21e034:34392",
-    "shop/the-three-graces-pixel-props-07/index.html": "3b17e335:34392",
-    "shop/sd-zodiac-helios/index.html": "27e4a06e:30056",
-    "shop/sd-zodiac-aries/index.html": "74092cf5:30032",
-    "shop/sd-zodiac-pisces/index.html": "1ce07671:30056",
-    "shop/yes-no-like-dislike-2000-2020/index.html": "3a01b3d:32484",
-    "shop/torso-10/index.html": "d2071bf9:35152",
-    "shop/torso-18/index.html": "55f33a42:34900",
+    "shop/at-the-last-judgment-art-poster/index.html": "70b6f736:45872",
+    "shop/nu/index.html": "c09c742b:38640",
+    "shop/laocoon-art-poster/index.html": "b7063bfc:45504",
+    "shop/cronos-art-poster/index.html": "f7126c5:45468",
+    "shop/torso-01-art-poster/index.html": "1e249cd4:45668",
+    "shop/torso-02-art-poster/index.html": "dc27f629:45668",
+    "shop/torso-03-art-poster/index.html": "ae2edb53:45668",
+    "shop/torso-04-art-poster/index.html": "effe5974:45668",
+    "shop/torso-05-art-poster/index.html": "adb1837d:45668",
+    "shop/torso-06-art-poster/index.html": "bc1c7b0e:45716",
+    "shop/torso-07-art-poster/index.html": "b2ba4b15:45668",
+    "shop/torso-08-art-poster/index.html": "32d8cf4c:45668",
+    "shop/torso-09-art-poster/index.html": "43a3f0be:45668",
+    "shop/torso-10-art-poster/index.html": "621cd39e:45376",
+    "shop/fragmentary/index.html": "e84432d4:49864",
+    "shop/the-three-graces-pixel-props-05/index.html": "3c525490:35344",
+    "shop/the-three-graces-pixel-props-08/index.html": "871a0549:34332",
+    "shop/the-three-graces-pixel-props-09/index.html": "a2efa6f1:34332",
+    "shop/the-three-graces-pixel-props-07/index.html": "4ba4650:34332",
+    "shop/sd-zodiac-helios/index.html": "7b4f9bdf:29996",
+    "shop/sd-zodiac-aries/index.html": "e085ff10:29972",
+    "shop/sd-zodiac-pisces/index.html": "bcaea6a4:29996",
+    "shop/yes-no-like-dislike-2000-2020/index.html": "3e2b0fc8:32424",
+    "shop/torso-10/index.html": "f64f18f:35092",
+    "shop/torso-18/index.html": "ddd244d0:34840",
     "en/works/the-annunciation/index.html": "405d59c4:35472",
     "en/works/torso/index.html": "d2f5b588:53748",
     "en/works/danae/index.html": "92ba6b79:61632",
@@ -4994,40 +5003,50 @@
     "en/text/painting-of-the-cut-konno-yuki/index.html": "3ab164f3:25480",
     "en/text/taxidermy-of-joy-jo-saemi/index.html": "5abe8f4e:41356",
     "en/text/exploding-bishojo-baek-jihong/index.html": "9253cfc4:57388",
-    "en/shop/at-the-last-judgment-art-poster/index.html": "45f5f9eb:38208",
-    "en/shop/nu/index.html": "6a304334:35720",
-    "en/shop/laocoon-art-poster/index.html": "155b7319:37876",
-    "en/shop/cronos-art-poster/index.html": "6570a505:37844",
-    "en/shop/torso-01-art-poster/index.html": "ce130837:37872",
-    "en/shop/torso-02-art-poster/index.html": "4453aee1:37872",
-    "en/shop/torso-03-art-poster/index.html": "ec3e1ac8:37872",
-    "en/shop/torso-04-art-poster/index.html": "9ec502b5:37872",
-    "en/shop/torso-05-art-poster/index.html": "1bd35702:37872",
-    "en/shop/torso-06-art-poster/index.html": "a81c1e3f:37920",
-    "en/shop/torso-07-art-poster/index.html": "d429a696:37872",
-    "en/shop/torso-08-art-poster/index.html": "35f3961c:37872",
-    "en/shop/torso-09-art-poster/index.html": "84152881:37872",
-    "en/shop/torso-10-art-poster/index.html": "e4dbda95:37580",
-    "en/shop/fragmentary/index.html": "23969021:38880",
-    "en/shop/the-three-graces-pixel-props-05/index.html": "eb11d1fe:29292",
-    "en/shop/the-three-graces-pixel-props-08/index.html": "f7c3a8b:28296",
-    "en/shop/the-three-graces-pixel-props-09/index.html": "61d1fbbb:28296",
-    "en/shop/the-three-graces-pixel-props-07/index.html": "92fa3549:28296",
-    "en/shop/sd-zodiac-helios/index.html": "5359f0f3:25244",
-    "en/shop/sd-zodiac-aries/index.html": "78d4a636:25216",
-    "en/shop/sd-zodiac-pisces/index.html": "195488bc:25244",
-    "en/shop/yes-no-like-dislike-2000-2020/index.html": "8d1308a3:26816",
-    "en/shop/torso-10/index.html": "b4338da3:27484",
-    "en/shop/torso-18/index.html": "d0e820a7:27232",
+    "en/shop/at-the-last-judgment-art-poster/index.html": "af304f33:38136",
+    "en/shop/nu/index.html": "4bb6575b:35648",
+    "en/shop/laocoon-art-poster/index.html": "7574ce9d:37820",
+    "en/shop/cronos-art-poster/index.html": "528ededc:37784",
+    "en/shop/torso-01-art-poster/index.html": "7f38a927:37816",
+    "en/shop/torso-02-art-poster/index.html": "9891bd5:37816",
+    "en/shop/torso-03-art-poster/index.html": "1f7f2b1c:37816",
+    "en/shop/torso-04-art-poster/index.html": "11932c49:37816",
+    "en/shop/torso-05-art-poster/index.html": "350c7252:37816",
+    "en/shop/torso-06-art-poster/index.html": "a96df17f:37864",
+    "en/shop/torso-07-art-poster/index.html": "80e36356:37816",
+    "en/shop/torso-08-art-poster/index.html": "206c3ff0:37816",
+    "en/shop/torso-09-art-poster/index.html": "8139ab5:37816",
+    "en/shop/torso-10-art-poster/index.html": "4d19ef69:37524",
+    "en/shop/fragmentary/index.html": "6e27d968:38820",
+    "en/shop/the-three-graces-pixel-props-05/index.html": "fcb6d48e:29236",
+    "en/shop/the-three-graces-pixel-props-08/index.html": "6c1bdbf2:28236",
+    "en/shop/the-three-graces-pixel-props-09/index.html": "f1fda5c2:28236",
+    "en/shop/the-three-graces-pixel-props-07/index.html": "11007c00:28236",
+    "en/shop/sd-zodiac-helios/index.html": "fa0e9eca:25184",
+    "en/shop/sd-zodiac-aries/index.html": "f027d19f:25156",
+    "en/shop/sd-zodiac-pisces/index.html": "f3811d51:25184",
+    "en/shop/yes-no-like-dislike-2000-2020/index.html": "ec8e3192:26756",
+    "en/shop/torso-10/index.html": "9778af1a:27424",
+    "en/shop/torso-18/index.html": "9e0997de:27172",
     "en/cv/index.html": "11bdd6e2:16784",
     "en/shipping/index.html": "38f88ca5:13808",
     "works/prometheus-and-the-three-graces/index.html": "34fecd7f:38132",
     "en/works/prometheus-and-the-three-graces/index.html": "423d6985:32264",
-    "shop/the-drawing-book-torso-100/index.html": "34a7bc1c:35076",
-    "en/shop/the-drawing-book-torso-100/index.html": "2b32ba57:30452",
+    "shop/the-drawing-book-torso-100/index.html": "aa2decb5:35100",
+    "en/shop/the-drawing-book-torso-100/index.html": "fbe3b98b:30476",
     "works/sd-zodiac/index.html": "62c5c53f:56076",
     "en/works/sd-zodiac/index.html": "602772ec:51588",
-    "en/index.html": "dac4adc8:28260"
+    "en/index.html": "dac4adc8:28260",
+    "shop/torso-digital-art-poster/index.html": "ff42e6ce:44456",
+    "en/shop/torso-digital-art-poster/index.html": "35052003:37088",
+    "shop/torso-14-art-poster/index.html": "4aa887f7:44532",
+    "en/shop/torso-14-art-poster/index.html": "2d427d5e:36988",
+    "shop/torso-16-art-poster/index.html": "ad24a38d:44532",
+    "en/shop/torso-16-art-poster/index.html": "d1a55ac1:36988",
+    "shop/torso-18-art-poster/index.html": "dd271ba9:44532",
+    "en/shop/torso-18-art-poster/index.html": "73ca06b3:36988",
+    "shop/annunciation-central-panels-art-poster/index.html": "df522c48:47200",
+    "en/shop/annunciation-central-panels-art-poster/index.html": "86378b12:38772"
   },
   "shopDesign": {
     "mainPct": 56,
