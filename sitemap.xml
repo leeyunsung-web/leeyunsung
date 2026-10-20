@@ -365,7 +365,6 @@
   <url><loc>https://leeyunsung.com/en/shop/torso-04-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-05-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-06-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
-  <url><loc>https://leeyunsung.com/en/shop/torso-07-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/fragmentary/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-05/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-08/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
@@ -374,10 +373,11 @@
   <url><loc>https://leeyunsung.com/en/shop/sd-zodiac-helios/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/sd-zodiac-aries/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/sd-zodiac-pisces/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
-  <url><loc>https://leeyunsung.com/en/shop/torso-08-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/torso-07-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/yes-no-like-dislike-2000-2020/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-18/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/torso-08-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-09-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10-art-poster/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shipping/</loc><lastmod>2026-10-20</lastmod><priority>0.5</priority></url>
@@ -437,11 +437,6 @@
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465287347-94coq.jpg</image:loc><image:title>Torso 06 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
-    <loc>https://leeyunsung.com/shop/torso-07-art-poster/</loc>
-    <lastmod>2026-10-20</lastmod><priority>0.8</priority>
-    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465325523-bc1ig.jpg</image:loc><image:title>Torso 07 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
-  </url>
-  <url>
     <loc>https://leeyunsung.com/shop/fragmentary/</loc>
     <lastmod>2026-10-20</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623636184-2mg2s-cover.jpg</image:loc><image:title>불완전한 — 이윤성 (Lee Yunsung)</image:title></image:image>
@@ -482,9 +477,9 @@
     <image:image><image:loc>https://leeyunsung.com/images/w5-p-1788445755325-ixv93.jpg</image:loc><image:title>SD Zodiac – Pisces — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
-    <loc>https://leeyunsung.com/shop/torso-08-art-poster/</loc>
+    <loc>https://leeyunsung.com/shop/torso-07-art-poster/</loc>
     <lastmod>2026-10-20</lastmod><priority>0.8</priority>
-    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465388849-mlqhg.jpg</image:loc><image:title>Torso 08 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
+    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465325523-bc1ig.jpg</image:loc><image:title>Torso 07 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/yes-no-like-dislike-2000-2020/</loc>
@@ -500,6 +495,11 @@
     <loc>https://leeyunsung.com/shop/torso-18/</loc>
     <lastmod>2026-10-20</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787593029600-54rtv.jpg</image:loc><image:title>Torso 18 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/torso-08-art-poster/</loc>
+    <lastmod>2026-10-20</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465388849-mlqhg.jpg</image:loc><image:title>Torso 08 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-09-art-poster/</loc>
