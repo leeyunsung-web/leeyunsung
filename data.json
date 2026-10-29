@@ -3129,20 +3129,6 @@
     "en/shop/torso-05-art-poster/index.html",
     "shop/fragmentary/index.html",
     "en/shop/fragmentary/index.html",
-    "shop/the-three-graces-pixel-props-05/index.html",
-    "en/shop/the-three-graces-pixel-props-05/index.html",
-    "shop/the-three-graces-pixel-props-08/index.html",
-    "en/shop/the-three-graces-pixel-props-08/index.html",
-    "shop/the-three-graces-pixel-props-09/index.html",
-    "en/shop/the-three-graces-pixel-props-09/index.html",
-    "shop/the-three-graces-pixel-props-07/index.html",
-    "en/shop/the-three-graces-pixel-props-07/index.html",
-    "shop/sd-zodiac-helios/index.html",
-    "en/shop/sd-zodiac-helios/index.html",
-    "shop/sd-zodiac-aries/index.html",
-    "en/shop/sd-zodiac-aries/index.html",
-    "shop/sd-zodiac-pisces/index.html",
-    "en/shop/sd-zodiac-pisces/index.html",
     "shop/torso-06-art-poster/index.html",
     "en/shop/torso-06-art-poster/index.html",
     "shop/yes-no-like-dislike-2000-2020/index.html",
@@ -4230,7 +4216,8 @@
         "image": "./images/w-1790766011679-go31v-p-1790798114177-wlw8x-b702a6ed.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790770433538-xp87a",
@@ -4281,7 +4268,8 @@
         "image": "./images/w-1790766011679-go31v-p-1790797739836-pynr4-16dc435e.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790770458879-rgl4h",
@@ -4332,7 +4320,8 @@
         "image": "./images/w-1790766011679-go31v-p-1790798504927-gvx9u-edf784d7.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790773205085-h4d9d",
@@ -4383,7 +4372,8 @@
         "image": "./images/w-1790766011679-go31v-p-1790798512648-k2mct-be998c1d.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790774155257-fht69",
@@ -4431,7 +4421,7 @@
         "image": "./images/w5-p-1788445603485-941r0.jpg"
       },
       "rowCols": 3,
-      "hidden": false,
+      "hidden": true,
       "year": "2022",
       "descriptionEn": "SD Zodiac – Helios (2022) is a painting shown in the solo exhibition SD ZODIAC (EDIT HANNAM, Seoul, 2022).\nSD stands for \"super deformed,\" a convention in manga and anime that redraws characters in a small, rounded, two-heads-tall style. The head and eyes are enlarged and the features simplified, compressing the original character into something cute.\nHere the twelve constellation characters of the Zodiac series are redrawn in this manner, and their faces fill the canvas."
     },
@@ -4484,7 +4474,8 @@
         "image": "./images/w5-p-1788445793732-7kqnf.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790778537358-887zs",
@@ -4535,7 +4526,8 @@
         "image": "./images/w5-p-1788445755325-ixv93.jpg"
       },
       "author": "",
-      "authorEn": ""
+      "authorEn": "",
+      "hidden": true
     },
     {
       "id": "s-1790624960499-n3l60",
@@ -4964,8 +4956,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "4b9c55ca:119636",
-    "sitemap.xml": "41348e14:143548",
+    "page.css": "b7abcae7:119632",
+    "sitemap.xml": "f7cba7e5:139072",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
@@ -4984,13 +4976,6 @@
     "shop/torso-09-art-poster/index.html": "61ad442d:45648",
     "shop/torso-10-art-poster/index.html": "9fbabd4d:45356",
     "shop/fragmentary/index.html": "9bd9765f:49844",
-    "shop/the-three-graces-pixel-props-05/index.html": "59ec0d7a:35324",
-    "shop/the-three-graces-pixel-props-08/index.html": "8c11d5fb:34312",
-    "shop/the-three-graces-pixel-props-09/index.html": "a6806263:34312",
-    "shop/the-three-graces-pixel-props-07/index.html": "fdf0cbba:34312",
-    "shop/sd-zodiac-helios/index.html": "c7e403f9:29976",
-    "shop/sd-zodiac-aries/index.html": "36846ffa:29952",
-    "shop/sd-zodiac-pisces/index.html": "9743bc66:29976",
     "shop/yes-no-like-dislike-2000-2020/index.html": "eaf234d2:32404",
     "shop/torso-10/index.html": "c5bba0b4:35072",
     "shop/torso-18/index.html": "598d0eb:34820",
@@ -5024,13 +5009,6 @@
     "en/shop/torso-09-art-poster/index.html": "ce24e218:37792",
     "en/shop/torso-10-art-poster/index.html": "59297614:37500",
     "en/shop/fragmentary/index.html": "ab29c072:38800",
-    "en/shop/the-three-graces-pixel-props-05/index.html": "894255cb:29212",
-    "en/shop/the-three-graces-pixel-props-08/index.html": "964407a0:28216",
-    "en/shop/the-three-graces-pixel-props-09/index.html": "ee048e50:28216",
-    "en/shop/the-three-graces-pixel-props-07/index.html": "9b79e3a:28216",
-    "en/shop/sd-zodiac-helios/index.html": "618a6e88:25164",
-    "en/shop/sd-zodiac-aries/index.html": "6ce02488:25136",
-    "en/shop/sd-zodiac-pisces/index.html": "dfc9c2db:25164",
     "en/shop/yes-no-like-dislike-2000-2020/index.html": "237b4e85:26736",
     "en/shop/torso-10/index.html": "fe4a86f8:27404",
     "en/shop/torso-18/index.html": "c3c20a44:27152",
