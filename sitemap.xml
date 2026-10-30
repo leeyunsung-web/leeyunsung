@@ -383,9 +383,12 @@
   <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-07/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-06-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/yes-no-like-dislike-2000-2020/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/laocoon-2024-1/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/laocoon-2024-2/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-07-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-08-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-09-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/laocoon-2024-3/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-18/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shipping/</loc><lastmod>2026-10-30</lastmod><priority>0.5</priority></url>
@@ -520,6 +523,16 @@
     <image:image><image:loc>https://leeyunsung.com/images/s-1791045430344-i1yns-cover-0c6403ef.jpg</image:loc><image:title>네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유 2000-2020년 한국 대중문화의 초상 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
+    <loc>https://leeyunsung.com/shop/laocoon-2024-1/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w7-p-1789631046722-wg4sd.jpg</image:loc><image:title>Laocoon (face) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/laocoon-2024-2/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w7-p-1789631052266-2d3fr.jpg</image:loc><image:title>Laocoon (face) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
     <loc>https://leeyunsung.com/shop/torso-07-art-poster/</loc>
     <lastmod>2026-10-30</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465325523-bc1ig.jpg</image:loc><image:title>Torso 07 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
@@ -533,6 +546,11 @@
     <loc>https://leeyunsung.com/shop/torso-09-art-poster/</loc>
     <lastmod>2026-10-30</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465558711-9hdxm.jpg</image:loc><image:title>Torso 09 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/laocoon-2024-3/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w7-p-1789631056886-lo26y.jpg</image:loc><image:title>Laocoon (face) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-10/</loc>
