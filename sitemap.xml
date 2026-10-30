@@ -332,11 +332,6 @@
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623028311-pavmn-cover.jpg</image:loc><image:title>Cronos, 2011, Digital print, 116 × 82 cm, Digital — 이윤성 (Lee Yunsung)</image:title><image:caption>Digital — 이윤성 (Lee Yunsung)</image:caption></image:image>
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623313493-6o5cs-cover.jpg</image:loc><image:title>Laocoon, 2010, Digital print, 230 × 295 cm, Digital — 이윤성 (Lee Yunsung)</image:title><image:caption>Digital — 이윤성 (Lee Yunsung)</image:caption></image:image>
   </url>
-  <url>
-    <loc>https://leeyunsung.com/works/sculpture-untitled/</loc>
-    <lastmod>2026-10-30</lastmod><priority>0.9</priority>
-    <image:image><image:loc>https://leeyunsung.com/images/s-1793281860372-q9sg2-cover.jpg</image:loc><image:title>Untitled — 이윤성 (Lee Yunsung)</image:title><image:caption>Untitled — 이윤성 (Lee Yunsung)</image:caption></image:image>
-  </url>
   <url><loc>https://leeyunsung.com/text/critical-notes-lim-geunjun/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/text/sections-of-structure-jung-hyun/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/text/hybrid-of-reference-jang-seungyeon/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
@@ -356,7 +351,6 @@
   <url><loc>https://leeyunsung.com/en/works/sd-zodiac/</loc><lastmod>2026-10-30</lastmod><priority>0.8</priority></url>
   <url><loc>https://leeyunsung.com/en/works/pixel-prometheus/</loc><lastmod>2026-10-30</lastmod><priority>0.8</priority></url>
   <url><loc>https://leeyunsung.com/en/works/digital/</loc><lastmod>2026-10-30</lastmod><priority>0.8</priority></url>
-  <url><loc>https://leeyunsung.com/en/works/sculpture-untitled/</loc><lastmod>2026-10-30</lastmod><priority>0.8</priority></url>
   <url><loc>https://leeyunsung.com/en/text/critical-notes-lim-geunjun/</loc><lastmod>2026-10-30</lastmod><priority>0.6</priority></url>
   <url><loc>https://leeyunsung.com/en/text/sections-of-structure-jung-hyun/</loc><lastmod>2026-10-30</lastmod><priority>0.6</priority></url>
   <url><loc>https://leeyunsung.com/en/text/hybrid-of-reference-jang-seungyeon/</loc><lastmod>2026-10-30</lastmod><priority>0.6</priority></url>
@@ -389,11 +383,11 @@
   <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-07/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-06-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/yes-no-like-dislike-2000-2020/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
-  <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-18/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-07-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-08-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-09-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shipping/</loc><lastmod>2026-10-30</lastmod><priority>0.5</priority></url>
   <url>
     <loc>https://leeyunsung.com/shop/at-the-last-judgment-art-poster/</loc>
@@ -526,11 +520,6 @@
     <image:image><image:loc>https://leeyunsung.com/images/s-1791045430344-i1yns-cover-0c6403ef.jpg</image:loc><image:title>네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유 2000-2020년 한국 대중문화의 초상 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
-    <loc>https://leeyunsung.com/shop/torso-10/</loc>
-    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
-    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465590493-13mdp-8ddcc532.jpg</image:loc><image:title>Torso 10 — 이윤성 (Lee Yunsung)</image:title></image:image>
-  </url>
-  <url>
     <loc>https://leeyunsung.com/shop/torso-18/</loc>
     <lastmod>2026-10-30</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787593029600-54rtv.jpg</image:loc><image:title>Torso 18 — 이윤성 (Lee Yunsung)</image:title></image:image>
@@ -549,5 +538,10 @@
     <loc>https://leeyunsung.com/shop/torso-09-art-poster/</loc>
     <lastmod>2026-10-30</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465558711-9hdxm.jpg</image:loc><image:title>Torso 09 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/torso-10/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465590493-13mdp-8ddcc532.jpg</image:loc><image:title>Torso 10 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
 </urlset>
