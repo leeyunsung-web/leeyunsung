@@ -5019,6 +5019,48 @@
       }
     },
     {
+      "id": "s-1793370000000-mdsv1",
+      "title": "Head of Medusa (Silver Edition)",
+      "author": "",
+      "authorEn": "",
+      "year": "2021",
+      "cover": "./images/w6-p-1789630543552-aqba3.jpg",
+      "description": "〈Head of Medusa (Silver Edition)〉(2021)는 〈메두사〉 연작에서 회화로 그려 온 메두사의 얼굴을 입체로 옮긴 두상 조각입니다.\n스케치를 그리고 3D 프로그램으로 모델링한 뒤 3D 프린터로 출력해 만들었습니다.\n화이트, 골드, 실버의 세 가지 에디션으로 각 10점씩 제작되었으며, 이 작품은 그 가운데 실버 에디션입니다.",
+      "descriptionEn": "Head of Medusa (Silver Edition) (2021) is a sculpted head that carries the face of Medusa, painted throughout the Medusa series, into three dimensions. It was made by drawing a sketch, modeling it in a 3D program, and printing it on a 3D printer. The sculpture was produced in three editions (white, gold, and silver) of ten each; this is the silver edition.",
+      "slug": "head-of-medusa-silver-edition",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793370000000-mdsv1-a1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793370000000-mdsv1-a1",
+              "image": "./images/w6-p-1789630543552-aqba3.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "24 × 24 × 30 cm",
+      "spec2": "Resin",
+      "edition": "Edition of 10",
+      "priceKrw": "3000000",
+      "priceUsd": "2300",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "inquiryOnly": true,
+      "hidden": true,
+      "rowCols": 5,
+      "category": "sculpture",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "original": {
+        "workId": "w6",
+        "image": "./images/w6-p-1789630543552-aqba3.jpg"
+      }
+    },
+    {
       "id": "s-1793361496234-dyrzp",
       "title": "Laocoon (face)",
       "author": "",
