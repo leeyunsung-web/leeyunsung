@@ -4995,13 +4995,13 @@
     },
     {
       "id": "s-1793361059290-jkp8o",
-      "title": "",
+      "title": "Laocoon",
       "author": "",
       "authorEn": "",
-      "year": "",
+      "year": "2024",
       "cover": "./images/w7-p-1789631046722-wg4sd.jpg",
-      "description": "",
-      "slug": "shop-37",
+      "description": "〈Laocoon〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.",
+      "slug": "laocoon-2024-1",
       "photoRows": [
         {
           "id": "rowc-s-1793361059290-jkp8o-3c8ca8",
@@ -5015,11 +5015,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -5027,17 +5027,22 @@
       "rowCols": 5,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "Laocoon (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents.",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-p-1789631046722-wg4sd.jpg"
+      }
     },
     {
       "id": "s-1793361286578-y3ojg",
-      "title": "",
+      "title": "Laocoon",
       "author": "",
       "authorEn": "",
-      "year": "",
+      "year": "2024",
       "cover": "./images/w7-p-1789631052266-2d3fr.jpg",
-      "description": "",
-      "slug": "shop-38",
+      "description": "〈Laocoon〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.",
+      "slug": "laocoon-2024-2",
       "photoRows": [
         {
           "id": "rowc-s-1793361286578-y3ojg-54b66f",
@@ -5051,11 +5056,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -5063,17 +5068,22 @@
       "rowCols": 5,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "Laocoon (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents.",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-p-1789631052266-2d3fr.jpg"
+      }
     },
     {
       "id": "s-1793361496234-dyrzp",
-      "title": "",
+      "title": "Laocoon",
       "author": "",
       "authorEn": "",
-      "year": "",
+      "year": "2024",
       "cover": "./images/w7-p-1789631056886-lo26y.jpg",
-      "description": "",
-      "slug": "shop-39",
+      "description": "〈Laocoon〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.",
+      "slug": "laocoon-2024-3",
       "photoRows": [
         {
           "id": "rowc-s-1793361496234-dyrzp-459110",
@@ -5087,11 +5097,11 @@
           ]
         }
       ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
@@ -5099,7 +5109,12 @@
       "rowCols": 5,
       "category": "original",
       "shipProfile": "flat",
-      "coverInRows": true
+      "coverInRows": true,
+      "descriptionEn": "Laocoon (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents.",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-p-1789631056886-lo26y.jpg"
+      }
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
