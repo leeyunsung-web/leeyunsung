@@ -3152,6 +3152,14 @@
     "en/shop/torso-05-art-poster/index.html",
     "shop/fragmentary/index.html",
     "en/shop/fragmentary/index.html",
+    "shop/the-three-graces-pixel-props-05/index.html",
+    "en/shop/the-three-graces-pixel-props-05/index.html",
+    "shop/the-three-graces-pixel-props-08/index.html",
+    "en/shop/the-three-graces-pixel-props-08/index.html",
+    "shop/the-three-graces-pixel-props-09/index.html",
+    "en/shop/the-three-graces-pixel-props-09/index.html",
+    "shop/the-three-graces-pixel-props-07/index.html",
+    "en/shop/the-three-graces-pixel-props-07/index.html",
     "shop/torso-06-art-poster/index.html",
     "en/shop/torso-06-art-poster/index.html",
     "shop/yes-no-like-dislike-2000-2020/index.html",
@@ -4240,7 +4248,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790770433538-xp87a",
@@ -4292,7 +4300,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790770458879-rgl4h",
@@ -4344,7 +4352,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790773205085-h4d9d",
@@ -4396,7 +4404,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790774155257-fht69",
@@ -5146,7 +5154,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
     "page.css": "ac00f702:119684",
-    "sitemap.xml": "cd33170f:139072",
+    "sitemap.xml": "45b72459:141752",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
@@ -5225,7 +5233,15 @@
     "shop/danae-yellow-art-poster/index.html": "fa192ae:42456",
     "en/shop/danae-yellow-art-poster/index.html": "969dd412:35980",
     "shop/danae-pink-art-poster/index.html": "c570c68:42388",
-    "en/shop/danae-pink-art-poster/index.html": "ffa3bb4b:35912"
+    "en/shop/danae-pink-art-poster/index.html": "ffa3bb4b:35912",
+    "shop/the-three-graces-pixel-props-05/index.html": "c72a13fa:35420",
+    "en/shop/the-three-graces-pixel-props-05/index.html": "48257a86:29184",
+    "shop/the-three-graces-pixel-props-08/index.html": "c07d4720:34408",
+    "en/shop/the-three-graces-pixel-props-08/index.html": "6977b790:28184",
+    "shop/the-three-graces-pixel-props-09/index.html": "f7537f7a:34408",
+    "en/shop/the-three-graces-pixel-props-09/index.html": "290fc22:28184",
+    "shop/the-three-graces-pixel-props-07/index.html": "913443f2:34408",
+    "en/shop/the-three-graces-pixel-props-07/index.html": "ca552875:28184"
   },
   "shopDesign": {
     "mainPct": 56,
