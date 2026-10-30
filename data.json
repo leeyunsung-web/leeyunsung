@@ -4992,6 +4992,42 @@
         "workId": "w-1793283604373-y69no",
         "image": "./images/s-1793281860372-q9sg2-cover.jpg"
       }
+    },
+    {
+      "id": "s-1793361059290-jkp8o",
+      "title": "",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/w7-p-1789631046722-wg4sd.jpg",
+      "description": "",
+      "slug": "shop-37",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793361059290-jkp8o-3c8ca8",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793361059290-jkp8o-3c8ca8",
+              "image": "./images/w7-p-1789631046722-wg4sd.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": true,
+      "rowCols": 5,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
@@ -5022,8 +5058,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "b7abcae7:119632",
-    "sitemap.xml": "f7cba7e5:139072",
+    "page.css": "ac00f702:119684",
+    "sitemap.xml": "cd33170f:139072",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
