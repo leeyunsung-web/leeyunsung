@@ -374,6 +374,10 @@
   <url><loc>https://leeyunsung.com/en/shop/torso-04-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-05-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/fragmentary/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-05/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-08/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-09/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/the-three-graces-pixel-props-07/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-06-art-poster/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/yes-no-like-dislike-2000-2020/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
@@ -481,6 +485,26 @@
     <loc>https://leeyunsung.com/shop/fragmentary/</loc>
     <lastmod>2026-10-30</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/s-1790623636184-2mg2s-cover.jpg</image:loc><image:title>불완전한 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/the-three-graces-pixel-props-05/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1790770248545-hgcaz-cover-e0104b1f.jpg</image:loc><image:title>The Three Graces Pixel Props 05 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/the-three-graces-pixel-props-08/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1790770433538-xp87a-cover-d307e54f.jpg</image:loc><image:title>The Three Graces Pixel Props 08 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/the-three-graces-pixel-props-09/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1790770458879-rgl4h-cover-4b98cd69.jpg</image:loc><image:title>The Three Graces Pixel Props 09 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/the-three-graces-pixel-props-07/</loc>
+    <lastmod>2026-10-30</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1790773205085-h4d9d-cover-e6d087eb.jpg</image:loc><image:title>The Three Graces Pixel Props 07 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-06-art-poster/</loc>
