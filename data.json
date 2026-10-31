@@ -3277,6 +3277,8 @@
     "en/shop/laocoon-2024-3/index.html",
     "shop/torso-10/index.html",
     "en/shop/torso-10/index.html",
+    "shop/torso-16/index.html",
+    "en/shop/torso-16/index.html",
     "shop/torso-18/index.html",
     "en/shop/torso-18/index.html"
   ],
@@ -5359,7 +5361,7 @@
         "image": "./images/w3-p-1787593009615-p5ijq.jpg"
       },
       "inquiryOnly": true,
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1791255439727-qkh2e",
@@ -5432,7 +5434,7 @@
     "works/torso/index.html": "dbf9c579:62204",
     "works/danae/index.html": "319845af:69092",
     "works/zodiac/index.html": "15e73769:109820",
-    "works/medusa/index.html": "7e4c18b7:63808",
+    "works/medusa/index.html": "507110ef:63808",
     "works/laocoon/index.html": "84ed1285:71796",
     "works/frames-of-torso/index.html": "11780aed:58856",
     "text/critical-notes-lim-geunjun/index.html": "e3136e23:53620",
@@ -5443,7 +5445,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
     "page.css": "febb9f11:119824",
-    "sitemap.xml": "5e997ed7:144904",
+    "sitemap.xml": "a8a7139e:145468",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
@@ -5463,14 +5465,14 @@
     "shop/torso-10-art-poster/index.html": "9fbabd4d:45356",
     "shop/fragmentary/index.html": "9bd9765f:49844",
     "shop/yes-no-like-dislike-2000-2020/index.html": "eaf234d2:32404",
-    "shop/torso-10/index.html": "c5bba0b4:35072",
-    "shop/torso-18/index.html": "598d0eb:34820",
+    "shop/torso-10/index.html": "99569c12:35072",
+    "shop/torso-18/index.html": "a14b3429:34820",
     "en/works/the-annunciation/index.html": "405d59c4:35472",
     "en/works/torso/index.html": "d2f5b588:53748",
     "en/works/danae/index.html": "92ba6b79:61632",
     "en/works/zodiac/index.html": "c7330883:100168",
     "en/works/pixel-prometheus/index.html": "c7a72ab8:72660",
-    "en/works/medusa/index.html": "5b209ce7:56268",
+    "en/works/medusa/index.html": "e3ed4687:56268",
     "en/works/laocoon/index.html": "4d0b9340:63728",
     "en/works/frames-of-torso/index.html": "3fb54c44:52412",
     "en/works/digital/index.html": "753918ae:31044",
@@ -5496,8 +5498,8 @@
     "en/shop/torso-10-art-poster/index.html": "59297614:37500",
     "en/shop/fragmentary/index.html": "ab29c072:38800",
     "en/shop/yes-no-like-dislike-2000-2020/index.html": "237b4e85:26736",
-    "en/shop/torso-10/index.html": "fe4a86f8:27404",
-    "en/shop/torso-18/index.html": "c3c20a44:27152",
+    "en/shop/torso-10/index.html": "fd7d890:27404",
+    "en/shop/torso-18/index.html": "75eb0a44:27152",
     "en/cv/index.html": "11bdd6e2:16784",
     "en/shipping/index.html": "e24fbffd:13796",
     "works/prometheus-and-the-three-graces/index.html": "34fecd7f:38132",
@@ -5536,7 +5538,9 @@
     "shop/laocoon-2024-2/index.html": "e6bf1098:35168",
     "en/shop/laocoon-2024-2/index.html": "fda56d5e:27360",
     "shop/laocoon-2024-3/index.html": "3cec4ad9:35168",
-    "en/shop/laocoon-2024-3/index.html": "213c05c2:27360"
+    "en/shop/laocoon-2024-3/index.html": "213c05c2:27360",
+    "shop/torso-16/index.html": "ffa609fd:34820",
+    "en/shop/torso-16/index.html": "48265053:27152"
   },
   "shopDesign": {
     "mainPct": 56,
