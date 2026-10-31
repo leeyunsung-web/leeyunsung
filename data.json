@@ -2987,7 +2987,7 @@
             {
               "id": "p-1793460000001-trnw",
               "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "Torso Sculpture 01, 2026, 3D rendering (turnaround)",
+              "caption": "Torso Sculpture, 2026, 3D rendering (turnaround)",
               "video": {
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "1:1",
@@ -3003,7 +3003,7 @@
             {
               "id": "p-1793283604373-wsc01",
               "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Torso Sculpture 01, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
             }
           ]
         },
@@ -3014,7 +3014,7 @@
             {
               "id": "w-1793431792096-j8cbo",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3025,7 +3025,7 @@
             {
               "id": "w-1793431792097-ei5ei",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3036,7 +3036,7 @@
             {
               "id": "w-1793431792098-q1zbl",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3047,7 +3047,7 @@
             {
               "id": "w-1793431792099-zbvpm",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3058,7 +3058,7 @@
             {
               "id": "w-1793431792100-msg2c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3069,7 +3069,7 @@
             {
               "id": "w-1793431792101-p1m1c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
-              "caption": "Torso Sculpture 01, 2026 (digitally composited photograph)"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         }
@@ -5092,6 +5092,25 @@
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "1:1",
                 "poster": "./images/torso-sculpture-turnaround-poster.jpg"
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1793435726262-igsl1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793435726262-mki92",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg",
+                "zoom": 2,
+                "fx": 0.5,
+                "fy": 0.4
               }
             }
           ]
