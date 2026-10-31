@@ -5192,26 +5192,6 @@
           ]
         },
         {
-          "id": "row-1793446398130-hvlyr",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1793446398130-5x91d",
-              "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "",
-              "video": {
-                "src": "./media/torso-sculpture-turnaround.mp4",
-                "ratio": "9:16",
-                "poster": "./images/torso-sculpture-turnaround-poster.jpg",
-                "zoom": 2,
-                "fx": 0.5,
-                "fy": 0.4,
-                "vr": 1
-              }
-            }
-          ]
-        },
-        {
           "id": "row-1793431792096-j8cbo",
           "cols": 1,
           "photos": [
