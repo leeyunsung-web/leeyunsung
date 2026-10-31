@@ -797,6 +797,12 @@
   .dim-v .dim-lab{left:0; top:50%; transform:translate(-50%,-50%) rotate(-90deg);}
   .dim-h .dim-lab{left:50%; top:0; transform:translate(-50%,-50%);}
   .dim-cap{margin-top:18px; padding-left:52px; text-align:center; font-size:var(--shop-body,14px); line-height:1.8; color:var(--ink-soft);}
+  .dim-box.has-d{padding-right:60px;}
+  .dim-box.has-d .dim-h{right:60px;}
+  .dim-d{position:absolute; left:calc(100% - 60px); bottom:44px; width:50px; border-top:1px solid var(--ink-soft); transform-origin:0 0; transform:rotate(38deg);}
+  .dim-d::before,.dim-d::after{content:""; position:absolute; top:-6px; height:11px; border-left:1px solid var(--ink-soft);}
+  .dim-d::before{left:0;} .dim-d::after{right:0;}
+  .dim-lab.dim-dlab{right:-4px; bottom:-14px; transform:none;}
   @media (max-width:760px){ .dim-fig{width:calc(100% - 32px);} }
   
   body.master-on .shared-ex .photo-cell.shared-drag{cursor:grab;}
