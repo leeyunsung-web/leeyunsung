@@ -2981,6 +2981,22 @@
       "slug": "sculpture-untitled",
       "photoRows": [
         {
+          "id": "row-1793460000001-trnw",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793460000001-trnw",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
+              }
+            }
+          ]
+        },
+        {
           "id": "row-1793283604373-wsc01",
           "cols": 1,
           "photos": [
@@ -5053,6 +5069,22 @@
       "descriptionEn": "In 2016, at The Metropolitan Museum of Art in New York, I saw a Hellenistic head whose upper face was gone. It felt as if a single panel from a manga book had surfaced in the real world. This sculpture starts from that thought, capturing the form that emerges when a torso is placed inside an invisible panel.",
       "slug": "sculpture-01",
       "photoRows": [
+        {
+          "id": "row-1793460000002-trns",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793460000002-trns",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
+              }
+            }
+          ]
+        },
         {
           "id": "row-1793281860690-sc001",
           "cols": 1,
