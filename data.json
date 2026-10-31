@@ -5074,14 +5074,9 @@
           "cols": 1,
           "photos": [
             {
-              "id": "p-1793460000002-trns",
-              "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "",
-              "video": {
-                "src": "./media/torso-sculpture-turnaround.mp4",
-                "ratio": "1:1",
-                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
-              }
+              "id": "pc-s-1793281860372-q9sg2-c0v3r",
+              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
+              "caption": ""
             }
           ]
         },
@@ -5090,9 +5085,14 @@
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1793281860372-q9sg2-c0v3r",
-              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": ""
+              "id": "p-1793460000002-trns",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
+              }
             }
           ]
         },
@@ -5476,7 +5476,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "febb9f11:119824",
+    "page.css": "a10cf368:120388",
     "sitemap.xml": "a8a7139e:145468",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
