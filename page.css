@@ -241,7 +241,8 @@
   .vis-seg button.on[data-v="public"]{background:#1d6b3a; color:#fff;}
   .vis-seg button.on[data-v="hidden"]{background:#555; color:#fff;}
   .vis-note{font-size:calc(11.5px + var(--fx) * 0.004392); color:var(--ink-faint); margin-top:6px;}
-  .shop-card.is-hidden .shop-thumb, .shop-card.is-hidden .shop-info{opacity:.38;}   .frame.is-hidden > img{opacity:.38;}
+  .shop-card.is-hidden .shop-thumb, .shop-card.is-hidden .shop-info{opacity:.38;}
+   .frame.is-hidden > img{opacity:.38;}
   .shop-hidden-badge{position:absolute; top:8px; left:8px; z-index:5; font-size:calc(10.5px + var(--fx) * 0.004010); letter-spacing:.06em; padding:3px 7px; border-radius:3px; background:#555; color:#fff;}
   .pd-hidden-note{margin:0 0 18px; padding:10px 14px; background:#f3f3f3; border-left:3px solid #555; font-size:calc(12.5px + var(--fx) * 0.004774); color:#444;}
   
@@ -296,6 +297,7 @@
   .pd-thumb.on{opacity:1; border-color:var(--ink);}
   .pd-info{padding-top:4px; min-width:0;}
   .pd-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .pd-head .detail-actions{position:static; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end;}
   .pd-title{font-size:var(--shop-title,26px); line-height:1.25; font-weight:600; letter-spacing:.005em; margin:0; overflow-wrap:break-word;}
   .book-meta{margin-top:10px; font-size:calc(var(--shop-body,14px) - 1px); color:var(--ink-soft); line-height:1.6;}
   .book-meta .bm{white-space:nowrap;} .book-meta .bm-sep{color:var(--line2,#bbb);}
