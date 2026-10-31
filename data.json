@@ -5178,8 +5178,8 @@
                 "ratio": "9:16",
                 "poster": "./images/torso-sculpture-turnaround-poster.jpg",
                 "zoom": 2,
-                "fx": 0.5,
-                "fy": 0.4,
+                "fx": 0.48910228035523606,
+                "fy": 0.6536011386600878,
                 "vr": 1
               }
             }
