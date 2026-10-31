@@ -5070,17 +5070,6 @@
       "slug": "sculpture-01",
       "photoRows": [
         {
-          "id": "row-1793460000002-trns",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1793281860372-q9sg2-c0v3r",
-              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Digitally composited photograph"
-            }
-          ]
-        },
-        {
           "id": "row-1793281860690-sc001",
           "cols": 1,
           "photos": [
