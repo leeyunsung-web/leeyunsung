@@ -5129,8 +5129,8 @@
                 "ratio": "16:9",
                 "poster": "./images/torso-sculpture-turnaround-poster.jpg",
                 "zoom": 2,
-                "fx": 0.5,
-                "fy": 0.4,
+                "fx": 0.420216971348635,
+                "fy": 0.3992287004777658,
                 "vr": 1
               }
             }
