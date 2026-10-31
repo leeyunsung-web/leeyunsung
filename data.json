@@ -5257,6 +5257,22 @@
       "slug": "head-of-medusa-silver-edition",
       "photoRows": [
         {
+          "id": "row-1793520000001-mdtrn",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793520000001-mdtrn",
+              "image": "./images/medusa-silver-turnaround-poster.jpg",
+              "caption": "3D rendering",
+              "video": {
+                "src": "./media/medusa-silver-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/medusa-silver-turnaround-poster.jpg"
+              }
+            }
+          ]
+        },
+        {
           "id": "rowc-s-1793370000000-mdsv1-b1",
           "cols": 1,
           "photos": [
@@ -5285,7 +5301,7 @@
             {
               "id": "pc-s-1793370000000-mdsv1-a1",
               "image": "./images/w6-p-1789630543552-aqba3.jpg",
-              "caption": ""
+              "caption": "Head of Medusa (Silver Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
             }
           ]
         }
