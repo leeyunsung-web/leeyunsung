@@ -5257,6 +5257,17 @@
       "slug": "head-of-medusa-silver-edition",
       "photoRows": [
         {
+          "id": "rowc-s-1793370000000-mdsv1-a1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793370000000-mdsv1-a1",
+              "image": "./images/w6-p-1789630543552-aqba3.jpg",
+              "caption": "Head of Medusa (Silver Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
+            }
+          ]
+        },
+        {
           "id": "row-1793520000001-mdtrn",
           "cols": 1,
           "photos": [
@@ -5291,17 +5302,6 @@
               "id": "pc-s-1793370000000-mdsv1-b2",
               "image": "./images/w6-p-1788798457271-p6hiy.jpg",
               "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
-            }
-          ]
-        },
-        {
-          "id": "rowc-s-1793370000000-mdsv1-a1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1793370000000-mdsv1-a1",
-              "image": "./images/w6-p-1789630543552-aqba3.jpg",
-              "caption": "Head of Medusa (Silver Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
             }
           ]
         }
