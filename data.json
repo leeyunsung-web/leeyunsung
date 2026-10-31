@@ -5167,7 +5167,8 @@
                 "fx": 0.5005831651896696,
                 "fy": 0.34361835178873457,
                 "vr": 1
-              }
+              },
+              "hidden": true
             }
           ]
         },
@@ -5187,7 +5188,8 @@
                 "fx": 0.48910228035523606,
                 "fy": 0.6536011386600878,
                 "vr": 1
-              }
+              },
+              "hidden": true
             }
           ]
         },
@@ -5577,7 +5579,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "d0684b8f:120388",
+    "page.css": "da5173e0:120392",
     "sitemap.xml": "bd67d677:145544",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
