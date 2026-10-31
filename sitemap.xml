@@ -388,6 +388,8 @@
   <url><loc>https://leeyunsung.com/en/shop/torso-07-art-poster/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-08-art-poster/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-09-art-poster/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/torso-sculpture/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/head-of-medusa-silver-edition/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/laocoon-2024-3/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-16/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
@@ -547,6 +549,16 @@
     <loc>https://leeyunsung.com/shop/torso-09-art-poster/</loc>
     <lastmod>2026-10-31</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465558711-9hdxm.jpg</image:loc><image:title>Torso 09 – Art Poster (2021) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/torso-sculpture/</loc>
+    <lastmod>2026-10-31</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1793281860372-q9sg2-cover.jpg</image:loc><image:title>Torso Sculpture 01 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/head-of-medusa-silver-edition/</loc>
+    <lastmod>2026-10-31</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630543552-aqba3.jpg</image:loc><image:title>Head of Medusa (Silver Edition) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/laocoon-2024-3/</loc>
