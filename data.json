@@ -5146,6 +5146,26 @@
           ]
         },
         {
+          "id": "row-1793446257311-j1hai",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793446257311-5goqz",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "16:9",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg",
+                "zoom": 2,
+                "fx": 0.5,
+                "fy": 0.4,
+                "vr": 1
+              }
+            }
+          ]
+        },
+        {
           "id": "row-1793431792096-j8cbo",
           "cols": 1,
           "photos": [
@@ -5521,7 +5541,7 @@
     "works/torso/index.html": "dbf9c579:62204",
     "works/danae/index.html": "319845af:69092",
     "works/zodiac/index.html": "15e73769:109820",
-    "works/medusa/index.html": "507110ef:63808",
+    "works/medusa/index.html": "62d7afb:63960",
     "works/laocoon/index.html": "84ed1285:71796",
     "works/frames-of-torso/index.html": "11780aed:58856",
     "text/critical-notes-lim-geunjun/index.html": "e3136e23:53620",
@@ -5531,8 +5551,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "a10cf368:120388",
-    "sitemap.xml": "a8a7139e:145468",
+    "page.css": "d0684b8f:120388",
+    "sitemap.xml": "bd67d677:145544",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
@@ -5559,7 +5579,7 @@
     "en/works/danae/index.html": "92ba6b79:61632",
     "en/works/zodiac/index.html": "c7330883:100168",
     "en/works/pixel-prometheus/index.html": "c7a72ab8:72660",
-    "en/works/medusa/index.html": "e3ed4687:56268",
+    "en/works/medusa/index.html": "d726a0ad:56420",
     "en/works/laocoon/index.html": "4d0b9340:63728",
     "en/works/frames-of-torso/index.html": "3fb54c44:52412",
     "en/works/digital/index.html": "753918ae:31044",
