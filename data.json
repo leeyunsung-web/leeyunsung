@@ -14,6 +14,117 @@
   },
   "works": [
     {
+      "id": "w-1793283604373-y69no",
+      "title": "Torso Sculpture",
+      "year": "2026",
+      "cover": "./images/s-1793281860372-q9sg2-cover.jpg",
+      "description": "2016년, 나는 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았다. 그 모습은 나에게 마치 만화책의 한 컷이 현실에 나타난 것 같았다. 〈Torso Sculpture〉는 그 인상에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았다.\n\n그 두상은 〈Fragmentary Colossal Head of a Youth〉(기원전 2세기, 대리석, 베를린 국립박물관 고대 컬렉션)이다. 페르가몬의 김나시온에서 발견되었고, 눈 바로 아래에서 비스듬히 깨져 있다.\n\n미술관에 놓인 조각난 조각들은 3D 모델링의 부품처럼 보이기도 했다. 온전한 전체도 멋지겠지만, 이렇게 따로 떨어져 있는 것도 꽤 아름답다고 생각했다. 무엇보다 단면의 형태가 매력적이었다.\n\n고대 조각의 파편은 온전했던 형상이 시간이 지나며 부서지고 깎여 남은 것이다. 그러나 만화의 칸은 작가의 선택에 의해 결정된다. 만화를 그릴 때는 형태를 잡기 위해 칸 바깥까지 스케치하지만, 완성된 그림은 칸 안에만 남는다. 칸 바깥은 잃어버린 곳이 아니라 상상으로 확장되는 영역이다.\n\n나는 먼저 토르소 조각의 기초가 되는 그림을 그렸고, 그 그림을 보며 직접 3D로 모델링했다. 만화를 그릴 때처럼 형태를 칸 바깥까지 어느 정도 이어서 만든 뒤, 칸 안쪽만 남겨 두었다. 칸의 사선은 원작이 깨진 방향과 비슷하게 기울였다. 최종적으로 3D 프린터로 출력한 뒤 흰색으로 칠했다.\n\n흰색은 형태만 남은 가장 기본적인 상태이자, 대리석을 떠올리게 하는 색이다. 고대 그리스·로마 조각의 상당수는 본래 채색되어 있었고, 우리가 아는 흰색은 안료가 벗겨진 뒤에 남은 상태다. 나는 그 상태를 끝이 아니라 출발점으로 삼고, 색은 이후의 가능성으로 열어 두었다.\n\n형태는 팔이 없는 토르소다. 그림으로 이어 온 〈Torso〉 연작에서 나온 첫 번째 조각이다. 기울어진 칸이 얼굴을 비스듬히 가로지르고, 칸 바깥에 놓인 머리 윗부분은 보이지 않는다.\n\n평면에서 칸의 테두리는 선이다. 입체로 옮기자 그 선은 면이 되었다. 시간에 부서진 원작의 단면이 불규칙한 데 비해, 칸이 만든 면은 매끈하다. 원작은 두 눈을 모두 잃었지만, 나는 한쪽 눈을 칸 안에 남겨 두었다.",
+      "descriptionEn": "In 2016, at the Metropolitan Museum of Art in New York, I saw a Hellenistic marble head missing the upper part of its face. To me, it looked as if a single comic-book panel had appeared in the real world. Torso Sculpture began with that impression, and it takes the form that emerges when a torso is placed inside an invisible panel.\n\nThe head is Fragmentary Colossal Head of a Youth (2nd century BC, marble, Antikensammlung, Staatliche Museen zu Berlin). It was found in the gymnasium at Pergamon and breaks off at an angle just below the eyes.\n\nThe broken sculptures in the museum also looked like parts of a 3D model. A complete figure would be impressive, but I found these separated pieces quite beautiful as well. Above all, I was drawn to the shapes of their broken surfaces.\n\nFragments of ancient sculpture are what remains of once-whole figures after time has broken and worn them away. A comic panel, however, is determined by the artist's choice. To work out a form, one sketches past the panel's edge, yet only what lies within it survives in the finished drawing. The space outside is not lost; it is where the imagination extends.\n\nI first made a drawing as the basis for Torso Sculpture, then modeled it in 3D myself while looking at it. As in drawing comics, I extended the form some way beyond the panel and kept only what lay inside. I tilted the panel's diagonal to roughly follow the angle at which the original is broken. Finally, I printed it on a 3D printer and painted it white.\n\nWhite is the most basic state, in which only form remains, and a color that recalls marble. Many ancient Greek and Roman sculptures were originally painted; the white we know is what was left after the pigment wore away. I took that state not as an end but as a starting point, leaving color open as a possibility for later.\n\nThe form is an armless torso. It is the first sculpture to come out of my Torso series, which I had until now pursued in painting and print. A tilted panel cuts diagonally across the face, and the top of the head, left outside the frame, cannot be seen.\n\nOn a flat page, a panel's border is a line. In three dimensions, that line became a surface. Where the original's break, made by time, is irregular, the surface made by the panel is smooth. The original lost both eyes; I kept one of them inside the panel.",
+      "slug": "torso-sculpture",
+      "photoRows": [
+        {
+          "id": "row-1793460000001-trnw",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793460000001-trnw",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "Torso Sculpture, 2026, 3D rendering (turnaround)",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "1:1",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1793283604373-wsc01",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793283604373-wsc01",
+              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
+              "caption": "Torso Sculpture, 2026, Painted 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792096-j8cbo",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792096-j8cbo",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792097-ei5ei",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792097-ei5ei",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792098-q1zbl",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792098-q1zbl",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792099-zbvpm",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792099-zbvpm",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792100-msg2c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792100-msg2c",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792101-p1m1c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792101-p1m1c",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
+            }
+          ]
+        }
+      ],
+      "hidden": false,
+      "author": "",
+      "authorEn": "",
+      "coverPos": {
+        "x": 54,
+        "y": 37
+      }
+    },
+    {
       "id": "w8",
       "title": "Frames of Torso",
       "cover": "./images/w8-cover.jpg",
@@ -2970,117 +3081,6 @@
         "x": 50,
         "y": 25
       }
-    },
-    {
-      "id": "w-1793283604373-y69no",
-      "title": "Torso Sculpture",
-      "year": "2026",
-      "cover": "./images/s-1793281860372-q9sg2-cover.jpg",
-      "description": "2016년, 나는 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았다. 그 모습은 나에게 마치 만화책의 한 컷이 현실에 나타난 것 같았다. 〈Torso Sculpture〉는 그 인상에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았다.\n\n그 두상은 〈Fragmentary Colossal Head of a Youth〉(기원전 2세기, 대리석, 베를린 국립박물관 고대 컬렉션)이다. 페르가몬의 김나시온에서 발견되었고, 눈 바로 아래에서 비스듬히 깨져 있다.\n\n미술관에 놓인 조각난 조각들은 3D 모델링의 부품처럼 보이기도 했다. 온전한 전체도 멋지겠지만, 이렇게 따로 떨어져 있는 것도 꽤 아름답다고 생각했다. 무엇보다 단면의 형태가 매력적이었다.\n\n고대 조각의 파편은 온전했던 형상이 시간이 지나며 부서지고 깎여 남은 것이다. 만화의 칸은 작가가 고른다. 만화를 그릴 때는 형태를 잡기 위해 칸 바깥까지 스케치하지만, 완성된 그림은 칸 안에만 남는다. 칸 바깥은 잃어버린 곳이 아니라 상상으로 확장되는 영역이다.\n\n나는 먼저 그림을 그렸고, 그 그림을 보며 직접 3D로 모델링했다. 만화를 그릴 때처럼 형태를 칸 바깥까지 어느 정도 이어서 만든 뒤, 칸 안쪽만 남겨 두었다. 칸의 사선은 원작이 깨진 방향과 비슷하게 기울였다. 3D 프린터로 출력한 뒤 흰색으로 칠했다.\n\n흰색은 형태만 남은 가장 기본적인 상태이자, 대리석을 떠올리게 하는 색이다. 고대 그리스·로마 조각의 상당수는 본래 채색되어 있었고, 우리가 아는 흰색은 안료가 벗겨진 뒤에 남은 상태다. 나는 그 상태를 끝이 아니라 출발점으로 삼고, 색은 이후의 가능성으로 열어 두었다.\n\n형태는 팔이 없는 토르소다. 그림으로 이어 온 〈Torso〉 연작에서 나온 첫 번째 조각이다. 기울어진 칸이 얼굴을 비스듬히 가로지르고, 칸 바깥에 놓인 머리 윗부분은 보이지 않는다.\n\n평면에서 칸의 테두리는 선이다. 입체로 옮기자 그 선은 면이 되었다. 시간에 부서진 원작의 단면이 불규칙한 데 비해, 칸이 만든 면은 매끈하다. 원작은 두 눈을 모두 잃었지만, 나는 한쪽 눈을 칸 안에 남겨 두었다.",
-      "descriptionEn": "In 2016, at the Metropolitan Museum of Art in New York, I saw a Hellenistic head whose upper face was missing. To me, it looked as if a single panel from a comic book had appeared in the real world. Torso Sculpture began with that impression, and it holds the form that emerges when a torso is placed inside an invisible panel.\n\nThe head is Fragmentary Colossal Head of a Youth (2nd century BC, marble, Antikensammlung, Staatliche Museen zu Berlin). It was found in the gymnasium at Pergamon and breaks off at an angle just below the eyes.\n\nThe broken sculptures in the museum also looked like parts of a 3D model. A complete figure would be impressive, but I found these separated pieces quite beautiful as well. Above all, I was drawn to the shapes of their broken surfaces.\n\nFragments of ancient sculpture are what remains of once-whole figures after time has broken and worn them away. In comics, the panel is chosen by the artist. To work out a form, one sketches past the panel's edge, yet only what lies within it survives in the finished drawing. The space outside is not lost; it is where the imagination extends.\n\nI first made a drawing, then modeled it in 3D myself while looking at it. As in drawing comics, I extended the form some way beyond the panel and kept only what lay inside. I tilted the panel's diagonal to roughly follow the angle at which the original is broken. I then printed it on a 3D printer and painted it white.\n\nWhite is the most basic state, in which only form remains, and a color that recalls marble. Many ancient Greek and Roman sculptures were originally painted; the white we know is what was left after the pigment wore away. I took that state not as an end but as a starting point, leaving color open as a possibility for later.\n\nThe form is an armless torso. It is the first sculpture to come out of my Torso series, which I had until now pursued in painting and print. A tilted panel cuts diagonally across the face, and the top of the head, left outside the frame, cannot be seen.\n\nOn a flat page, a panel's border is a line. In three dimensions, that line became a surface. Where the original's break, made by time, is irregular, the surface made by the panel is smooth. The original lost both eyes; I kept one of them inside the panel.",
-      "slug": "sculpture-untitled",
-      "photoRows": [
-        {
-          "id": "row-1793460000001-trnw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1793460000001-trnw",
-              "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "Torso Sculpture, 2026, 3D rendering (turnaround)",
-              "video": {
-                "src": "./media/torso-sculpture-turnaround.mp4",
-                "ratio": "1:1",
-                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
-              }
-            }
-          ]
-        },
-        {
-          "id": "row-1793283604373-wsc01",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1793283604373-wsc01",
-              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Torso Sculpture, 2026, Painted 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792096-j8cbo",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792096-j8cbo",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792097-ei5ei",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792097-ei5ei",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792098-q1zbl",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792098-q1zbl",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792099-zbvpm",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792099-zbvpm",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792100-msg2c",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792100-msg2c",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        },
-        {
-          "id": "wrow-1793431792101-p1m1c",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "w-1793431792101-p1m1c",
-              "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
-              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
-            }
-          ]
-        }
-      ],
-      "hidden": true,
-      "author": "",
-      "authorEn": "",
-      "coverPos": {
-        "x": 54,
-        "y": 37
-      }
     }
   ],
   "text": [
@@ -3199,6 +3199,8 @@
     "detailTitleSize": 30
   },
   "publishedPages": [
+    "works/torso-sculpture/index.html",
+    "en/works/torso-sculpture/index.html",
     "works/frames-of-torso/index.html",
     "en/works/frames-of-torso/index.html",
     "works/laocoon/index.html",
@@ -5076,7 +5078,7 @@
       "year": "2026",
       "cover": "./images/s-1793281860372-q9sg2-cover.jpg",
       "description": "〈Torso Sculpture〉는 2012년부터 그려 온 〈Torso〉 연작을 처음 입체의 형상으로 옮긴 작품입니다. 2016년, 저는 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았습니다. 그 모습은 저에게 마치 만화책의 한 컷이 현실에 나타난 것 같았습니다. 이 조각은 그 인상에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았습니다.",
-      "descriptionEn": "Torso Sculpture is the first work to bring the Torso series, painted since 2012, into three-dimensional form. In 2016, at the Metropolitan Museum of Art in New York, I saw a Hellenistic head whose upper face was missing. To me, it looked as if a single panel from a comic book had appeared in the real world. This sculpture began with that impression, and it holds the form that emerges when a torso is placed inside an invisible panel.",
+      "descriptionEn": "Torso Sculpture is the first work to bring the Torso series, which I have been painting since 2012, into three-dimensional form. In 2016, at the Metropolitan Museum of Art in New York, I saw a Hellenistic marble head missing the upper part of its face. To me, it looked as if a single comic-book panel had appeared in the real world. This sculpture began with that impression, and it takes the form that emerges when a torso is placed inside an invisible panel.",
       "slug": "torso-sculpture",
       "photoRows": [
         {
@@ -5184,16 +5186,16 @@
               "id": "p-1793446323431-2052n",
               "image": "./images/torso-sculpture-turnaround-poster.jpg",
               "caption": "",
+              "hidden": true,
               "video": {
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "9:16",
                 "poster": "./images/torso-sculpture-turnaround-poster.jpg",
                 "zoom": 2,
-                "fx": 0.48910228035523606,
-                "fy": 0.6536011386600878,
+                "fx": 0.41447668659689707,
+                "fy": 0.4658715333795556,
                 "vr": 1
-              },
-              "hidden": true
+              }
             }
           ]
         },
@@ -5569,13 +5571,13 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "67fcaa9d:44024",
-    "works/torso/index.html": "dbf9c579:62204",
-    "works/danae/index.html": "319845af:69092",
-    "works/zodiac/index.html": "15e73769:109820",
-    "works/medusa/index.html": "62d7afb:63960",
-    "works/laocoon/index.html": "84ed1285:71796",
-    "works/frames-of-torso/index.html": "11780aed:58856",
+    "works/the-annunciation/index.html": "2b719d0e:44168",
+    "works/torso/index.html": "c902b1ed:62300",
+    "works/danae/index.html": "184e084f:69188",
+    "works/zodiac/index.html": "e02dae9:109916",
+    "works/medusa/index.html": "e817bdcb:64056",
+    "works/laocoon/index.html": "a7cc9e30:71936",
+    "works/frames-of-torso/index.html": "9ec828e8:59000",
     "text/critical-notes-lim-geunjun/index.html": "e3136e23:53620",
     "text/sections-of-structure-jung-hyun/index.html": "a840a421:53272",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "4cc67563:42692",
@@ -5584,10 +5586,10 @@
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
     "page.css": "da5173e0:120392",
-    "sitemap.xml": "3981bca6:146792",
+    "sitemap.xml": "b1eeb727:150572",
     "robots.txt": "e7785df8:92",
-    "works/pixel-prometheus/index.html": "5c4c537f:79396",
-    "works/digital/index.html": "b6bbe2b9:38636",
+    "works/pixel-prometheus/index.html": "36bbd143:79492",
+    "works/digital/index.html": "7c5cb959:38736",
     "shop/at-the-last-judgment-art-poster/index.html": "24b7ac52:45852",
     "shop/nu/index.html": "f19db785:38616",
     "shop/laocoon-art-poster/index.html": "7b7d2e75:45480",
@@ -5606,15 +5608,15 @@
     "shop/yes-no-like-dislike-2000-2020/index.html": "eaf234d2:32404",
     "shop/torso-10/index.html": "99569c12:35072",
     "shop/torso-18/index.html": "a14b3429:34820",
-    "en/works/the-annunciation/index.html": "405d59c4:35472",
-    "en/works/torso/index.html": "d2f5b588:53748",
-    "en/works/danae/index.html": "92ba6b79:61632",
-    "en/works/zodiac/index.html": "c7330883:100168",
-    "en/works/pixel-prometheus/index.html": "c7a72ab8:72660",
-    "en/works/medusa/index.html": "d726a0ad:56420",
-    "en/works/laocoon/index.html": "4d0b9340:63728",
-    "en/works/frames-of-torso/index.html": "3fb54c44:52412",
-    "en/works/digital/index.html": "753918ae:31044",
+    "en/works/the-annunciation/index.html": "e6ad3de2:35612",
+    "en/works/torso/index.html": "f7e4424e:53848",
+    "en/works/danae/index.html": "18491ab3:61728",
+    "en/works/zodiac/index.html": "9ca7093b:100264",
+    "en/works/pixel-prometheus/index.html": "4fc5491e:72760",
+    "en/works/medusa/index.html": "245549f5:56516",
+    "en/works/laocoon/index.html": "4334c49:63868",
+    "en/works/frames-of-torso/index.html": "b76b3e4:52556",
+    "en/works/digital/index.html": "2e7528a:31140",
     "en/text/critical-notes-lim-geunjun/index.html": "bf3db98e:32400",
     "en/text/sections-of-structure-jung-hyun/index.html": "74b92f7e:32840",
     "en/text/hybrid-of-reference-jang-seungyeon/index.html": "d2e6edf2:27160",
@@ -5641,13 +5643,13 @@
     "en/shop/torso-18/index.html": "75eb0a44:27152",
     "en/cv/index.html": "11bdd6e2:16784",
     "en/shipping/index.html": "e24fbffd:13796",
-    "works/prometheus-and-the-three-graces/index.html": "34fecd7f:38132",
-    "en/works/prometheus-and-the-three-graces/index.html": "423d6985:32264",
+    "works/prometheus-and-the-three-graces/index.html": "d73e7043:38232",
+    "en/works/prometheus-and-the-three-graces/index.html": "50f43397:32360",
     "shop/the-drawing-book-torso-100/index.html": "73bfb18e:35080",
     "en/shop/the-drawing-book-torso-100/index.html": "2f7e970e:30452",
-    "works/sd-zodiac/index.html": "62c5c53f:56076",
-    "en/works/sd-zodiac/index.html": "602772ec:51588",
-    "en/index.html": "dac4adc8:28260",
+    "works/sd-zodiac/index.html": "6bc830df:56172",
+    "en/works/sd-zodiac/index.html": "547a070a:51688",
+    "en/index.html": "487a1bd7:29136",
     "shop/torso-digital-art-poster/index.html": "1281ba35:44340",
     "en/shop/torso-digital-art-poster/index.html": "6f35d5f5:36968",
     "shop/torso-14-art-poster/index.html": "2aa253b1:44512",
@@ -5680,10 +5682,12 @@
     "en/shop/laocoon-2024-3/index.html": "213c05c2:27360",
     "shop/torso-16/index.html": "ffa609fd:34820",
     "en/shop/torso-16/index.html": "48265053:27152",
-    "shop/torso-sculpture/index.html": "8f8b932a:40600",
-    "en/shop/torso-sculpture/index.html": "a0645f78:35012",
+    "shop/torso-sculpture/index.html": "baf6d0b7:40816",
+    "en/shop/torso-sculpture/index.html": "3bd67aba:35124",
     "shop/head-of-medusa-silver-edition/index.html": "d618ffc2:35828",
-    "en/shop/head-of-medusa-silver-edition/index.html": "ec910db9:28756"
+    "en/shop/head-of-medusa-silver-edition/index.html": "ec910db9:28756",
+    "works/torso-sculpture/index.html": "3746683a:38688",
+    "en/works/torso-sculpture/index.html": "c73c82da:33660"
   },
   "shopDesign": {
     "mainPct": 56,
