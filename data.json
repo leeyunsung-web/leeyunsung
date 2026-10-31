@@ -5024,22 +5024,11 @@
       "author": "",
       "authorEn": "",
       "year": "2021",
-      "cover": "./images/w6-p-1789630543552-aqba3.jpg",
+      "cover": "./images/w6-p-1788798267314-usjvx.jpg",
       "description": "〈Head of Medusa (Silver Edition)〉(2021)는 〈메두사〉 연작에서 회화로 그려 온 메두사의 얼굴을 입체로 옮긴 두상 조각입니다.\n스케치를 그리고 3D 프로그램으로 모델링한 뒤 3D 프린터로 출력해 만들었습니다.\n화이트, 골드, 실버의 세 가지 에디션으로 각 10점씩 제작되었으며, 이 작품은 그 가운데 실버 에디션입니다.",
       "descriptionEn": "Head of Medusa (Silver Edition) (2021) is a sculpted head that carries the face of Medusa, painted throughout the Medusa series, into three dimensions. It was made by drawing a sketch, modeling it in a 3D program, and printing it on a 3D printer. The sculpture was produced in three editions (white, gold, and silver) of ten each; this is the silver edition.",
       "slug": "head-of-medusa-silver-edition",
       "photoRows": [
-        {
-          "id": "rowc-s-1793370000000-mdsv1-a1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1793370000000-mdsv1-a1",
-              "image": "./images/w6-p-1789630543552-aqba3.jpg",
-              "caption": ""
-            }
-          ]
-        },
         {
           "id": "rowc-s-1793370000000-mdsv1-b1",
           "cols": 1,
@@ -5059,6 +5048,17 @@
               "id": "pc-s-1793370000000-mdsv1-b2",
               "image": "./images/w6-p-1788798457271-p6hiy.jpg",
               "caption": "2024, Odd&Nu, MUSEUM WAVE, Seoul, Korea"
+            }
+          ]
+        },
+        {
+          "id": "rowc-s-1793370000000-mdsv1-a1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793370000000-mdsv1-a1",
+              "image": "./images/w6-p-1789630543552-aqba3.jpg",
+              "caption": ""
             }
           ]
         }
@@ -5256,8 +5256,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "ac00f702:119684",
-    "sitemap.xml": "bb8b42b3:144796",
+    "page.css": "febb9f11:119824",
+    "sitemap.xml": "cefcd91f:144796",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
