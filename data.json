@@ -5309,6 +5309,59 @@
       "descriptionEn": "Torso 10 (2020) is a painting from the Torso series, begun in 2011. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture."
     },
     {
+      "id": "s-1793432663182-q6pra",
+      "title": "Torso 16",
+      "author": "",
+      "authorEn": "",
+      "year": "2023",
+      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
+      "description": "〈Torso 16〉(2023)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
+      "slug": "torso-16",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793432663182-q6pra-y7s6sw",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793432663182-q6pra-y7s6sw",
+              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1793432663183-h0r2h",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793432663183-lf1tq",
+              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "162 × 130 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 2,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Torso 16 (2023) is a painting from the Torso series, begun in 2011. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      },
+      "inquiryOnly": true,
+      "hidden": true
+    },
+    {
       "id": "s-1791255439727-qkh2e",
       "title": "Torso 18",
       "author": "",
