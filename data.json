@@ -5063,7 +5063,7 @@
           ]
         }
       ],
-      "spec1": "43 × 38 × 50 cm",
+      "spec1": "50 × 43 × 38 cm",
       "spec2": "Paint on 3D-printed resin",
       "edition": "Signed and numbered, edition of 10 + 2 AP",
       "priceKrw": "",
@@ -5082,7 +5082,8 @@
       "original": {
         "workId": "w-1793283604373-y69no",
         "image": "./images/s-1793281860372-q9sg2-cover.jpg"
-      }
+      },
+      "dimImage": "./images/s-1793281860372-q9sg2-dim.jpg"
     },
     {
       "id": "s-1793370000000-mdsv1",
@@ -5129,7 +5130,7 @@
           ]
         }
       ],
-      "spec1": "24 × 24 × 30 cm",
+      "spec1": "30 × 24 × 24 cm",
       "spec2": "Resin",
       "edition": "Edition of 10",
       "priceKrw": "",
