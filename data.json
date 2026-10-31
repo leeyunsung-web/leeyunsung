@@ -3074,7 +3074,13 @@
           ]
         }
       ],
-      "hidden": true
+      "hidden": true,
+      "author": "",
+      "authorEn": "",
+      "coverPos": {
+        "x": 63,
+        "y": 31
+      }
     }
   ],
   "text": [
