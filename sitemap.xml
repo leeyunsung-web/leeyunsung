@@ -165,9 +165,9 @@
     <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789629391438-q5qx4.jpg</image:loc><image:title>Medusa&#39;s Smile, 2021, Oil on canvas, 80 × 80 cm, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
     <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789629401165-lcjrz.jpg</image:loc><image:title>Medusa&#39;s Wrath, 2021, Oil on canvas, 80 × 80 cm, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
     <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630419727-gt5d4.jpg</image:loc><image:title>Head of Medusa, 2021, Oil on canvas, 162 × 162 cm, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
-    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630533357-ja9jj.jpg</image:loc><image:title>Head of Medusa (White Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
-    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630543552-aqba3.jpg</image:loc><image:title>Head of Medusa (Silver Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
-    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630552738-vw36k.jpg</image:loc><image:title>Head of Medusa (Gold Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
+    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630533357-ja9jj.jpg</image:loc><image:title>Head of Medusa (White Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
+    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630543552-aqba3.jpg</image:loc><image:title>Head of Medusa (Silver Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
+    <image:image><image:loc>https://leeyunsung.com/images/w6-p-1789630552738-vw36k.jpg</image:loc><image:title>Head of Medusa (Gold Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10, Medusa — 이윤성 (Lee Yunsung)</image:title><image:caption>Medusa — 이윤성 (Lee Yunsung)</image:caption></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/works/prometheus-and-the-three-graces/</loc>
@@ -390,6 +390,7 @@
   <url><loc>https://leeyunsung.com/en/shop/torso-09-art-poster/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/laocoon-2024-3/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/torso-16/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-18/</loc><lastmod>2026-10-31</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shipping/</loc><lastmod>2026-10-31</lastmod><priority>0.5</priority></url>
   <url>
@@ -556,6 +557,11 @@
     <loc>https://leeyunsung.com/shop/torso-10/</loc>
     <lastmod>2026-10-31</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787465590493-13mdp-8ddcc532.jpg</image:loc><image:title>Torso 10 — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/torso-16/</loc>
+    <lastmod>2026-10-31</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/w3-p-1787593009615-p5ijq.jpg</image:loc><image:title>Torso 16 — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-18/</loc>
