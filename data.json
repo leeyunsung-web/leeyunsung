@@ -1512,17 +1512,17 @@
             {
               "id": "p-1789630533357-ja9jj",
               "image": "./images/w6-p-1789630533357-ja9jj.jpg",
-              "caption": "Head of Medusa (White Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10"
+              "caption": "Head of Medusa (White Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
             },
             {
               "id": "p-1789630543552-aqba3",
               "image": "./images/w6-p-1789630543552-aqba3.jpg",
-              "caption": "Head of Medusa (Silver Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10"
+              "caption": "Head of Medusa (Silver Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
             },
             {
               "id": "p-1789630552738-vw36k",
               "image": "./images/w6-p-1789630552738-vw36k.jpg",
-              "caption": "Head of Medusa (Gold Edition), 2021, Resin, 24 × 24 × 30 cm, edition of 10"
+              "caption": "Head of Medusa (Gold Edition), 2021, Resin, 30 × 24 × 24 cm, edition of 10"
             }
           ]
         }
@@ -2973,7 +2973,7 @@
     },
     {
       "id": "w-1793283604373-y69no",
-      "title": "Untitled",
+      "title": "Torso Sculpture",
       "year": "2026",
       "cover": "./images/s-1793281860372-q9sg2-cover.jpg",
       "description": "2016년 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았다. 마치 만화책의 한 컷이 현실로 드러난 것 같다는 생각이 들었다. 이 조각은 그 생각에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았다.\n\n그 두상은 〈젊은이의 거대 두상 파편〉(기원전 2세기, 대리석, 베를린 국립박물관 고대 컬렉션)이다. 페르가몬의 김나지움에서 발견되었고, 눈 바로 아래에서 비스듬히 깨져 있다.\n\n미술관에 놓인 조각난 조각들은 3D 렌더링의 부품처럼 보이기도 했다. 온전한 전체도 멋지겠지만, 이렇게 따로 떨어져 있는 것도 꽤 아름답다고 생각했다. 무엇보다 단면의 형태가 매력적이었다.\n\n고대 조각의 파편은 온전했던 형상이 시간이 지나며 부서지고 깎여 남은 것이다. 만화의 칸은 작가가 고른다. 만화를 그릴 때는 형태를 잡기 위해 칸 바깥까지 넘어가 스케치하지만, 완성된 그림은 칸 안에만 남는다. 칸 바깥은 잃어버린 곳이 아니라 상상으로 확장되는 영역이다.\n\n먼저 그림을 그렸고, 그 그림을 보고 조각을 만들었다. 직접 3D로 모델링했다. 만화의 칸을 그릴 때처럼 칸 바깥까지 형태를 만든 뒤, 칸 안만 남겼다. 칸의 사선은 원작이 깨진 방향과 같게 두었다. 3D 프린터로 출력하고 도색했다.\n\n형태는 팔이 없는 토르소로, 토르소 연작에서 이어지는 작업이다. 사선으로 기울어진 칸이 얼굴을 가로지르고, 칸 바깥에 놓인 머리 윗부분은 보이지 않는다.\n\n평면에서 칸의 테두리는 선이다. 입체가 되자 그 선은 면이 되었고, 그 면은 원작의 깨진 단면을 닮았다. 왠지 한쪽 눈은 남겨 두고 싶었다.\n\n색은 흰색으로 두었다. 흰색은 형태만 남은 가장 기본적인 상태이고, 대리석을 닮은 색이기도 하다. 이것 역시 조각난 조각이기에 흰색이 가장 어울린다고 보았다.\n\n2016년 뉴욕의 전시 《NU》(두산갤러리 뉴욕)에서 나는 큰 다나에 그림의 일부를 정사각형 틀로 따내 다시 그렸다. 그 작업에도 같은 생각이 함께 있었다.",
@@ -2987,7 +2987,73 @@
             {
               "id": "p-1793283604373-wsc01",
               "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Untitled, 2026, paint on 3D-printed resin, 43 × 38 × 50 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792096-j8cbo",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792096-j8cbo",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792097-ei5ei",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792097-ei5ei",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792098-q1zbl",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792098-q1zbl",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792099-zbvpm",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792099-zbvpm",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792100-msg2c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792100-msg2c",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+            }
+          ]
+        },
+        {
+          "id": "wrow-1793431792101-p1m1c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "w-1793431792101-p1m1c",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
             }
           ]
         }
