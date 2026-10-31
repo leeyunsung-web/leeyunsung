@@ -2987,7 +2987,7 @@
             {
               "id": "p-1793460000001-trnw",
               "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "",
+              "caption": "Torso Sculpture, 2026, 3D rendering (turnaround)",
               "video": {
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "1:1",
@@ -3003,7 +3003,7 @@
             {
               "id": "p-1793283604373-wsc01",
               "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
             }
           ]
         },
@@ -3014,7 +3014,7 @@
             {
               "id": "w-1793431792096-j8cbo",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3025,7 +3025,7 @@
             {
               "id": "w-1793431792097-ei5ei",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3036,7 +3036,7 @@
             {
               "id": "w-1793431792098-q1zbl",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3047,7 +3047,7 @@
             {
               "id": "w-1793431792099-zbvpm",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3058,7 +3058,7 @@
             {
               "id": "w-1793431792100-msg2c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         },
@@ -3069,7 +3069,7 @@
             {
               "id": "w-1793431792101-p1m1c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
-              "caption": "Torso Sculpture, 2026, Paint on 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP"
+              "caption": "Torso Sculpture, 2026 (digitally composited photograph)"
             }
           ]
         }
@@ -5065,8 +5065,8 @@
       "titleEn": "Torso Sculpture",
       "year": "2026",
       "cover": "./images/s-1793281860372-q9sg2-cover.jpg",
-      "description": "2016년 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았다. 마치 만화책의 한 컷이 현실로 드러난 것 같다는 생각이 들었다. 이 조각은 그 생각에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았다.",
-      "descriptionEn": "In 2016, at The Metropolitan Museum of Art in New York, I saw a Hellenistic head whose upper face was gone. It felt as if a single panel from a manga book had surfaced in the real world. This sculpture starts from that thought, capturing the form that emerges when a torso is placed inside an invisible panel.",
+      "description": "2016년 뉴욕 메트로폴리탄 미술관에서 얼굴 윗부분이 사라진 헬레니즘 두상을 보았다. 마치 만화책의 한 컷이 현실에 나타난 것 같다는 생각이 들었다. 이 조각은 그 생각에서 출발해, 보이지 않는 칸 안에 토르소를 놓았을 때 생겨나는 형태를 담았다.",
+      "descriptionEn": "In 2016, at the Metropolitan Museum of Art in New York, I saw a Hellenistic head whose upper face was missing. It looked as if a single panel from a comic book had appeared in the real world. This sculpture began with that thought, and it holds the form that emerges when a torso is placed inside an invisible panel.",
       "slug": "sculpture-01",
       "photoRows": [
         {
@@ -5076,7 +5076,7 @@
             {
               "id": "pc-s-1793281860372-q9sg2-c0v3r",
               "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5087,7 +5087,7 @@
             {
               "id": "p-1793460000002-trns",
               "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "",
+              "caption": "3D rendering",
               "video": {
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "1:1",
@@ -5103,7 +5103,7 @@
             {
               "id": "p-1793431792096-j8cbo",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5114,7 +5114,7 @@
             {
               "id": "p-1793431792097-ei5ei",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792097-ei5ei.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5125,7 +5125,7 @@
             {
               "id": "p-1793431792098-q1zbl",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792098-q1zbl.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5136,7 +5136,7 @@
             {
               "id": "p-1793431792099-zbvpm",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5147,7 +5147,7 @@
             {
               "id": "p-1793431792100-msg2c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792100-msg2c.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5158,7 +5158,7 @@
             {
               "id": "p-1793431792101-p1m1c",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
-              "caption": ""
+              "caption": "Digitally composited photograph"
             }
           ]
         }
