@@ -3295,6 +3295,10 @@
     "en/shop/torso-08-art-poster/index.html",
     "shop/torso-09-art-poster/index.html",
     "en/shop/torso-09-art-poster/index.html",
+    "shop/torso-sculpture/index.html",
+    "en/shop/torso-sculpture/index.html",
+    "shop/head-of-medusa-silver-edition/index.html",
+    "en/shop/head-of-medusa-silver-edition/index.html",
     "shop/laocoon-2024-3/index.html",
     "en/shop/laocoon-2024-3/index.html",
     "shop/torso-10/index.html",
@@ -5275,7 +5279,7 @@
       "rowCols": 5,
       "author": "",
       "authorEn": "",
-      "hidden": true,
+      "hidden": false,
       "original": {
         "workId": "w-1793283604373-y69no",
         "image": "./images/s-1793281860372-q9sg2-cover.jpg"
@@ -5341,7 +5345,7 @@
       "buyUs": "",
       "soldOut": false,
       "inquiryOnly": true,
-      "hidden": true,
+      "hidden": false,
       "rowCols": 5,
       "category": "sculpture",
       "shipProfile": "flat",
@@ -5580,7 +5584,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
     "page.css": "da5173e0:120392",
-    "sitemap.xml": "bd67d677:145544",
+    "sitemap.xml": "3981bca6:146792",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "5c4c537f:79396",
     "works/digital/index.html": "b6bbe2b9:38636",
@@ -5675,7 +5679,11 @@
     "shop/laocoon-2024-3/index.html": "3cec4ad9:35168",
     "en/shop/laocoon-2024-3/index.html": "213c05c2:27360",
     "shop/torso-16/index.html": "ffa609fd:34820",
-    "en/shop/torso-16/index.html": "48265053:27152"
+    "en/shop/torso-16/index.html": "48265053:27152",
+    "shop/torso-sculpture/index.html": "8f8b932a:40600",
+    "en/shop/torso-sculpture/index.html": "a0645f78:35012",
+    "shop/head-of-medusa-silver-edition/index.html": "d618ffc2:35828",
+    "en/shop/head-of-medusa-silver-edition/index.html": "ec910db9:28756"
   },
   "shopDesign": {
     "mainPct": 56,
