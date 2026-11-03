@@ -188,6 +188,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <button data-f="58">넓게 (지금)</button><button data-f="45">사람 눈</button><button data-f="32">표준 50mm</button>
       </div>
       <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="1">마네킹</button><button data-p="2">반투명 실루엣</button><button data-p="3">기본 피규어</button></div>
+      <label for="k-figEdge"><span>피규어 가장자리 흐림 <output id="o-figEdge"></output></span><input type="range" id="k-figEdge" min="0" max="1" step="0.01"></label>
+      <label for="k-figUp"><span>피규어 등 펴기 <output id="o-figUp"></output></span><input type="range" id="k-figUp" min="-0.5" max="2" step="0.01"></label>
       <p class="credit" style="font-size:11px;opacity:.6;margin:2px 0 6px">기본 피규어 얼굴: “Genshin Style Anime Female Base Mesh For Blender” by David Onizaki, CC BY 4.0 · 동작 일부: Mesh2Motion / Quaternius, CC0</p>
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
       <label for="k-sculptOff"><span>조각 전체 높이 <output id="o-sculptOff"></output></span><input type="range" id="k-sculptOff" min="-0.3" max="0.4" step="0.01"></label>
@@ -546,7 +548,13 @@ const SSH=[sculptShadow(),sculptShadow(),sculptShadow(),sculptShadow()];
 if(!ROOM2_MEDUSA) for(const i of [2,3]){SSH[i].L1.castShadow=false; SSH[i].rcv.visible=false;}
 
 // ---------- other visitors (preview): walking figures, mannequin or see-through silhouette ----------
-let PPL=null, pplLoading=false, pplMode=0;
+let PPL=null, pplLoading=false, pplMode=0, FIGLOOK=null; const FIGEDGE={value:0.45};
+// walking posture for the base figure: back straighter, knees a little straighter, head level (on top of the motion)
+const _fq=new THREE.Quaternion(), _fx=new THREE.Vector3(1,0,0);
+function figPosture(A){const BN=A.BN, w=A.walkA.weight, k=(typeof tune!=='undefined'?tune.figUp:0.45)*w, kn=((FIGLOOK&&FIGLOOK.kneeUp)||0)*w; let tot=0;
+  for(const [n,deg] of [['Spine',5],['Spine1',5],['Spine2',5],['Neck',4]]){const b=BN['mixamorig'+n]; if(!b) continue; const a=-k*deg*Math.PI/180; tot+=a; b.quaternion.multiply(_fq.setFromAxisAngle(_fx,a));}
+  const hd=BN.mixamorigHead; if(hd) hd.quaternion.multiply(_fq.setFromAxisAngle(_fx,-tot*0.85-w*((FIGLOOK&&FIGLOOK.chin)||0.5)*6*Math.PI/180));
+  if(kn>0) for(const n of ['LeftLeg','RightLeg']){const b=BN['mixamorig'+n]; if(b&&A.legRest[n]) b.quaternion.slerp(A.legRest[n],kn);}}
 const mannequinMat=new THREE.MeshStandardMaterial({color:0xdad7d1,roughness:0.6,metalness:0,envMap:env,envMapIntensity:1.0});
 const ghostMat=new THREE.MeshStandardMaterial({color:0xeef3ff,roughness:0.25,metalness:0,envMap:env,envMapIntensity:0.8,transparent:true,depthWrite:false});
 ghostMat.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <dithering_fragment>',
@@ -572,12 +580,16 @@ async function loadPeople(){
     // 윤성's base figure: a skin made in the figure page, riding on a copy of the same skeleton
     try{const F=await (await fetch('models/figure.json')).json();
       const figMat=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(F.look.tone,F.look.tone,F.look.tone*1.03,THREE.SRGBColorSpace),transparent:true,opacity:1-F.look.op,depthWrite:false});
+      figMat.onBeforeCompile=sh=>{sh.uniforms.uEdge=FIGEDGE; // soft outline, like a light blur
+        sh.vertexShader='varying vec3 vEN; varying vec3 vEV;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n#if defined( USE_ENVMAP ) || defined( USE_SKINNING )\n vEN=normalize(transformedNormal);\n#else\n vEN=normalize(normalMatrix*normal);\n#endif\n vEV=-mvPosition.xyz;');
+        sh.fragmentShader='uniform float uEdge; varying vec3 vEN; varying vec3 vEV;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\n { float f=abs(dot(normalize(vEN),normalize(vEV))); gl_FragColor.a*=mix(1.0,smoothstep(0.0,0.75,f),uEdge); }');};
+      FIGLOOK=F.look;
       const figDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping parts don't double up
       const geos=F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
         g.setIndex(new THREE.BufferAttribute(c.i32?new Uint32Array(b64(c.idx)):new Uint16Array(b64(c.idx)),1));
         g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(Uint16Array.from(new Uint8Array(b64(c.si))),4));
-        g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); return g;});
-      const hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1));
+        g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); g.computeVertexNormals(); return g;});
+      const hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1)); hg.computeVertexNormals();
       const fw=THREE.AnimationClip.parse(F.walk), fi=THREE.AnimationClip.parse(F.idle);
       for(const f of PPL.figs){
         const inner=new THREE.Group(), o=SkeletonUtils.clone(gltf.scene); inner.add(o);
@@ -590,7 +602,7 @@ async function loadPeople(){
         inner.scale.setScalar(F.scale); inner.position.y=F.y;
         const outer=new THREE.Group(); outer.add(inner); scene.add(outer); outer.visible=false;
         const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(fw), idleA=mix.clipAction(fi); walkA.play(); idleA.play(); idleA.weight=0; walkA.timeScale=F.look.speed;
-        f.F={o:outer,mix,walkA,idleA,speed:F.look.speed};}
+        f.F={o:outer,mix,walkA,idleA,speed:F.look.speed,BN,legRest:{LeftLeg:BN.mixamorigLeftLeg&&BN.mixamorigLeftLeg.quaternion.clone(),RightLeg:BN.mixamorigRightLeg&&BN.mixamorigRightLeg.quaternion.clone()}};}
     }catch(e){console.warn('figure',e);}
     setPeople(pplMode,true); dirty=true;
   }catch(e){console.warn('people',e);} pplLoading=false;}
@@ -610,7 +622,7 @@ function updatePeople(dt){
       const want=Math.atan2(dx,dy); f.yaw+=Math.atan2(Math.sin(want-f.yaw),Math.cos(want-f.yaw))*Math.min(1,dt*6); }
     // weights: blend between walking and standing
     const wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
-    A.mix.update(dt);
+    A.mix.update(dt); if(A!==f) figPosture(A);
     // blender y -> three -z ; facing angle measured from +y (blender) = three -z
     A.o.position.set(f.pos.x,0,-f.pos.y); A.o.rotation.y=Math.PI-f.yaw; f.sh.position.set(f.pos.x,0.004,-f.pos.y);
   }
@@ -623,7 +635,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,
+  people:3,figEdge:0.45,figUp:0.45,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -637,7 +649,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','figEdge','figUp'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
@@ -646,6 +658,7 @@ function layoutWall(k){
   return lim;
 }
 function applyTune(){
+  FIGEDGE.value=tune.figEdge??0.45;
   if(typeof scheduleEnv==='function') scheduleEnv(600);
   if(!WALLS[tune.wsel]) tune.wsel='F';
   uC.value=tune.contrast; chrome.color.setScalar(tune.bright); chrome.envMapIntensity=tune.refl; chrome.roughness=tune.gloss;
