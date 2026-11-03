@@ -5411,6 +5411,48 @@
       }
     },
     {
+      "id": "s-1793710000000-hdtr1",
+      "title": "Head of Torso",
+      "author": "",
+      "authorEn": "",
+      "year": "2023",
+      "cover": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
+      "description": "〈Head of Torso〉(2023)는 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
+      "slug": "head-of-torso",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793710000000-hdtr1-a1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793710000000-hdtr1-a1",
+              "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "53 × 45 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
+      "priceKrw": "3000000",
+      "priceUsd": "2300",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Head of Torso (2023) is a painting from the Torso series. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
+      "original": {
+        "workId": "w8",
+        "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg"
+      },
+      "inquiryOnly": true,
+      "hidden": false
+    },
+    {
       "id": "s-1791254521015-hvrt2",
       "title": "Torso 10",
       "author": "",
