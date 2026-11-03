@@ -536,9 +536,9 @@ ghostMat.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#incl
   '#include <dithering_fragment>\n float fr=pow(1.0-abs(dot(normalize(vViewPosition),normalize(normal))),2.2); gl_FragColor.a=0.32+0.58*fr; gl_FragColor.rgb=mix(vec3(0.50,0.56,0.66),gl_FragColor.rgb,0.35+0.4*fr);');};
 // routes in blender ground coords: [x,y,faceDeg|null] (0 = facing the Medusa wall, 90 = right, -90 = left, 180 = entrance side) — figures stop at a work, look at it, then walk on (doorway at x 2.2-3.6)
 const ROUTES=[
-  [[0.0,3.2,0],[-3.0,4.2,-90],[-3.0,1.2,-90],[1.12,-1.2,null],[3.0,0.4,90],[3.0,3.4,90]],
-  [[13.25,3.2,90],[13.25,0.0,90],[13.25,-3.0,90],[13.25,-5.6,null],[10.1,-5.7,180],[7.34,-5.6,null],[7.34,-1.5,null],[10.1,5.2,0],[7.61,4.6,0]],
-  [[1.5,-1.8,180],[4.0,-5.9,null],[5.05,-5.9,null],[6.29,-5.9,null],[10.1,-1.2,null],[10.1,5.0,0],[13.12,1.5,90],[6.82,-3.0,null],[6.29,-5.9,null],[5.05,-5.9,null],[4.0,-5.9,null]]];
+  [[0.0,3.2,0],[-2.7,4.2,-90],[-2.7,1.2,-90],[1.01,-1.2,null],[2.7,0.4,90],[2.7,3.4,90]],
+  [[12.25,3.2,90],[12.25,0.0,90],[12.25,-3.0,90],[12.25,-5.6,null],[9.1,-5.7,180],[6.34,-5.6,null],[6.34,-1.5,null],[9.1,5.2,0],[6.61,4.6,0]],
+  [[1.35,-1.8,180],[3.6,-5.9,null],[4.55,-5.9,null],[5.29,-5.9,null],[9.1,-1.2,null],[9.1,5.0,0],[12.12,1.5,90],[5.82,-3.0,null],[5.29,-5.9,null],[4.55,-5.9,null],[3.6,-5.9,null]]];
 async function loadPeople(){
   if(PPL||pplLoading) return; pplLoading=true;
   try{
@@ -608,7 +608,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
   people:3,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
-  mobH:1.5,mobSpin:true,mwX:9.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:11.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
+  mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 Object.assign(DEF,{"contrast": 2.05, "bright": 0.82, "refl": 1, "gloss": 0.04, "medH": 1.2, "medW": 0.36, "medD": 0.36, "torW": 0.5, "torD": 0.5, "tContrast": 1.65, "tBright": 1, "tDark": 0.1, "tRough": 0.15, "torH": 1.2, "paintY": 1.55, "shadow": 1.5, "sculptOff": 0, "floor": 0.24, "fov": 45, "bob": true, "wsel": "F", "res": 0.9, "aa": 2, "pblur": 1, "rblur": 0.66, "sshadow": 0.24, "ao": 0.6, "bloom": 0.1, "vig": 0.14, "grain": 0.3, "weave": 1, "medX": 0, "medY": 4.85, "medR": 0, "torX": 0, "torY": -3.5, "torR": 0, "msel": "M", "gapF": 0.55, "shF": 0, "gapB": 1.1, "shB": 0, "gapL": 0.6, "shL": 0, "gapR": 0.6, "shR": 0}); // starting point = the settings saved to the homepage on 2026-11-03
 const KEY='medusa-room-tune-v2';
@@ -815,7 +815,7 @@ function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
   camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
 }
-const VIEWS={mobile:{x:10.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:6.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
+const VIEWS={mobile:{x:9.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 function goView(k){
   const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
   document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
