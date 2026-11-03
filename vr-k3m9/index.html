@@ -180,7 +180,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
       <label for="k-sculptOff"><span>조각 전체 높이 <output id="o-sculptOff"></output></span><input type="range" id="k-sculptOff" min="-0.3" max="0.4" step="0.01"></label>
       <label for="k-floor"><span>바닥 비침 <output id="o-floor"></output></span><input type="range" id="k-floor" min="0" max="0.9" step="0.02"></label>
-      <button id="k-reset">조절값 초기화</button>
+      <div class="pick"><button id="k-save">설정 저장</button><button id="k-reset">조절값 초기화</button></div>
+      <p class="maphelp" id="saveInfo">바꾸는 즉시 자동 저장돼요.</p>
     </div>
   </div></div>
 </div>
@@ -512,7 +513,10 @@ function applyTune(){
   uBlur.value=tune.rblur; uAO.value=tune.ao; bloom.enabled=tune.bloom>0.001; bloom.strength=tune.bloom*1.2;
   lens.uniforms.uVig.value=tune.vig; lens.uniforms.uGrain.value=tune.grain; uWeave.value=tune.weave;
   for(const [k,id] of Object.entries(ui)){PD.getElementById(id).value=tune[k]; PD.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
-  lastCap='~'; dirty=true; try{localStorage.setItem(KEY,JSON.stringify(tune));}catch(e){}}
+  lastCap='~'; dirty=true; saveTune(false);}
+function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringify(tune));}catch(e){ok=false;}
+  const el=PD.getElementById('saveInfo'); if(!el) return; const t=new Date(); const hm=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+':'+String(t.getSeconds()).padStart(2,'0');
+  el.textContent=ok?(manual?'저장했어요 ('+hm+')':'자동 저장됨 ('+hm+')'):'이 브라우저에서는 저장이 안 돼요 (사생활 보호 모드인지 확인해 주세요)';}
 for(const [k,id] of Object.entries(ui)) document.getElementById(id).addEventListener('input',e=>{tune[k]=parseFloat(e.target.value); applyTune();});
 // ---------- placement + bird's-eye map ----------
 const pk=()=>tune.msel==='T'?'tor':'med';
@@ -580,13 +584,21 @@ function panelBack(){try{if(PD!==document){panelHome.appendChild(document.adoptN
 function openPanel(){
   if(pop&&!pop.closed){pop.focus(); return;}
   pop=window.open('','vgPanel','width=1100,height=720');
-  if(!pop){document.documentElement.classList.remove('embed'); return;} // popup blocked: show the panel under the room instead
+  if(!pop){ waitGesture=true; showHint('브라우저가 새 창을 막았어요. 화면을 한 번 누르거나 \'조절 창 열기\'를 눌러 주세요.'); return; } // blocked: retry on the next click
   const d=pop.document; d.open(); d.write('<!DOCTYPE html><html lang="ko" class="popup"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>전시실 조절</title></head><body></body></html>'); d.close();
   document.querySelectorAll('link[rel=stylesheet],style').forEach(n=>d.head.appendChild(d.importNode(n,true)));
   d.body.appendChild(d.adoptNode(panelEl)); PD=d; applyTune();
   pop.addEventListener('pagehide',panelBack);
 }
 document.getElementById('openPanel').onclick=openPanel;
+document.getElementById('k-save').onclick=()=>saveTune(true);
+let waitGesture=false;
+function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.style.display='block';}
+// embedded in the site (master mode): open the control window right away; if the browser blocks it, open it on the first click in the room
+if(document.documentElement.classList.contains('embed')){
+  setTimeout(openPanel,400);
+  stage.addEventListener('pointerdown',()=>{ if(waitGesture&&!(pop&&!pop.closed)){ waitGesture=false; openPanel(); } },true);
+}
 addEventListener('pagehide',()=>{try{if(pop&&!pop.closed)pop.close();}catch(e){}});
 applyTune();
 
