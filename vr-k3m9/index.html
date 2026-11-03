@@ -193,7 +193,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.toneMapping=THREE.NoToneMapping; renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f6f6);
 const camera=new THREE.PerspectiveCamera(58,16/9,0.05,60);
-camera.rotation.order='YXZ';
+camera.rotation.order='YXZ'; camera.layers.enable(1);
 const orbit=new OrbitControls(camera,canvas); orbit.enableDamping=true; orbit.dampingFactor=0.1; orbit.maxPolarAngle=Math.PI*0.62; orbit.enabled=false;
 
 const L=await (await fetch('live/layout.json')).json();
@@ -276,8 +276,7 @@ const GH=0.03, GD=0.02;
    const b=new THREE.Mesh(new THREE.PlaneGeometry(L2,GH),back); b.position.set(0,GH/2,-GD); g.add(b);            // back face of the recess
    const u=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),under); u.rotation.x=Math.PI/2; u.position.set(0,GH,-GD/2); g.add(u); // underside of the wall
    const f=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),gfloor); f.rotation.x=-Math.PI/2; f.position.set(0,0.0005,-GD/2); g.add(f); // floor inside the gap
-   const sh=new THREE.Mesh(new THREE.PlaneGeometry(len,0.05),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.09,depthWrite:false}));
-   sh.rotation.x=-Math.PI/2; sh.position.set(0,0.002,0.025); sh.renderOrder=2; g.add(sh);};                      // soft shadow on the floor in front
+   g.traverse(o=>o.layers.set(1));}; // layer 1: seen by the camera, left out of the floor mirror (its reflection read as a dark line sticking out)
  reveal(LL,-W/2,0,Math.PI/2); reveal(LL,W/2,0,-Math.PI/2); reveal(W,0,-LL/2,0);}
 const mir=new Reflector(new THREE.PlaneGeometry(W,LL),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a});
 mir.rotation.x=-Math.PI/2; mir.position.y=-0.002; scene.add(mir);
