@@ -49,6 +49,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .ctl button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
 .ctl button[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
 .hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:6px 10px;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+.online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.online::before{content:"";position:absolute;left:10px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7fd18b}
+.hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 12px var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:5px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.bub{position:absolute;z-index:4;transform:translate(-50%,-100%);max-width:min(260px,60%);font:400 13px/1.35 var(--ui);color:#2a2824;background:rgba(250,248,243,.94);border-radius:12px;padding:6px 10px;pointer-events:none;box-shadow:0 2px 12px rgba(0,0,0,.18);transition:opacity .6s;overflow-wrap:anywhere}
+.bub::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:rgba(250,248,243,.94)}
+.say{position:absolute;left:50%;bottom:clamp(14px,4%,30px);transform:translateX(-50%);z-index:5;display:flex;gap:6px;width:min(420px,86%)}
+.say input{flex:1;min-width:0;font:400 14px var(--ui);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(250,248,243,.95);color:#2a2824;outline:none}
+.say .mine{position:absolute;left:0;right:0;bottom:calc(100% + 8px);text-align:center;font:400 13px var(--ui);color:#f3f0ea;text-shadow:0 1px 3px rgba(0,0,0,.7);transition:opacity .6s}
 .cap{position:absolute;left:50%;bottom:clamp(58px,11%,96px);transform:translate(-50%,6px);width:max-content;max-width:min(760px,86%);text-align:center;pointer-events:none;
   color:#f5f3ee;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 10px rgba(0,0,0,.55),0 0 22px rgba(0,0,0,.35);opacity:0;transition:opacity .7s ease,transform .7s ease;text-wrap:balance}
 .cap.on{opacity:1;transform:translate(-50%,0)}
@@ -110,6 +118,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   <div class="stage" id="stage" tabindex="0" aria-label="가상 전시실. 화살표 키로 걷고 끌어서 둘러봅니다.">
     <canvas id="cv"></canvas>
+    <div class="online" id="online" hidden></div><button class="hello" id="hello" type="button" hidden>Say hello</button>
+    <div class="say" id="say" hidden><input id="sayIn" maxlength="140" placeholder="Say something…" autocomplete="off" enterkeyhint="send"><div class="mine" id="sayMine"></div></div>
     <div class="hint" id="hint">↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
     <div class="cap" id="cap" aria-live="polite"></div>
     <div class="joy" id="joy" hidden aria-hidden="true"><i id="joyK"></i></div>
@@ -627,30 +637,20 @@ const mannequinMat=new THREE.MeshStandardMaterial({color:0xdad7d1,roughness:0.6,
 const ghostMat=new THREE.MeshStandardMaterial({color:0xeef3ff,roughness:0.25,metalness:0,envMap:env,envMapIntensity:0.8,transparent:true,depthWrite:false});
 ghostMat.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <dithering_fragment>',
   '#include <dithering_fragment>\n float fr=pow(1.0-abs(dot(normalize(vViewPosition),normalize(normal))),2.2); gl_FragColor.a=0.32+0.58*fr; gl_FragColor.rgb=mix(vec3(0.50,0.56,0.66),gl_FragColor.rgb,0.35+0.4*fr);');};
-// routes in blender ground coords: [x,y,faceDeg|null] (0 = facing the Medusa wall, 90 = right, -90 = left, 180 = entrance side) — figures stop at a work, look at it, then walk on (doorway at x 2.2-3.6)
-const ROUTES=[
-  [[0.0,3.2,0],[-2.7,4.2,-90],[-2.7,1.2,-90],[1.01,-1.2,null],[2.7,0.4,90],[2.7,3.4,90]],
-  [[12.25,3.2,90],[12.25,0.0,90],[12.25,-3.0,90],[12.25,-5.6,null],[9.1,-5.7,180],[6.34,-5.6,null],[6.34,-1.5,null],[9.1,5.2,0],[6.61,4.6,0]],
-  [[1.35,-1.8,180],[3.6,-5.9,null],[4.55,-5.9,null],[5.29,-5.9,null],[9.1,-1.2,null],[9.1,5.0,0],[12.12,1.5,90],[5.82,-3.0,null],[5.29,-5.9,null],[4.55,-5.9,null],[3.6,-5.9,null]]];
+// ---------- live visitors: everyone who has the exhibition open right now, shown as the base figure ----------
+const ROOM_URL=new URLSearchParams(location.search).get('room')||'wss://leeyunsung-shop.nu-layer.workers.dev/api/room/ws';
+const MY_H=(r=>r<0.5?160:r<0.83?170:180)(Math.random()); // 160 most often, 180 the rarest
+const PEERS=new Map(); let KIT=null;
 async function loadPeople(){
   if(PPL||pplLoading) return; pplLoading=true;
   try{
-    // the base figure carries its own skeleton (no more 3.9 MB X Bot download); old figure.json + xbot.json stay as a fallback
+    // the base figure carries its own skeleton; old figure.json + xbot.json stay as a fallback
     let F=null; try{F=await loadFigure(await (await fetch('models/figure.bin',{cache:'no-cache'})).arrayBuffer());}catch(e){console.warn('figure.bin',e);}
     if(!F){ F=await (await fetch('models/figure.json',{cache:'no-cache'})).json();
       const j=await (await fetch('models/xbot.json')).json(); const gltf=await new Promise((res,rej)=>new GLTFLoader().parse(b64(j.b64),'',res,rej)); F.rigScene=gltf.scene; }
-    const still=new THREE.AnimationClip('still',1,[]);
-    PPL={figs:ROUTES.map((route,i)=>{
-      const o=new THREE.Group(); const meshes=[];
-      const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(still), idleA=mix.clipAction(still.clone()); walkA.play(); idleA.play(); idleA.weight=0;
-      const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.7,0.7),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6})); sh.rotation.x=-Math.PI/2; sh.renderOrder=2; scene.add(sh);
-      const p0=route[0]; o.position.set(p0[0],0,-p0[1]);
-      return {o,meshes,mix,walkA,idleA,sh,route,k:(i*2)%route.length,wait:i*1.5,pos:new THREE.Vector2(p0[0],p0[1]),yaw:0};})};
     if(!F.rig&&!F.rigScene) F.rig=await (await fetch('models/rig.json')).json(); // files saved by the editor leave the skeleton out
-    PPL.rig=F.rig; PPL.rigScene=F.rigScene; try{buildFig(F);}catch(e){console.warn('figure',e);}
-    setPeople(pplMode,true); dirty=true;
+    PPL={figs:[],rig:F.rig,rigScene:F.rigScene}; buildFig(F); // the room connects from the render loop once everything is set up
   }catch(e){console.warn('people',e);} pplLoading=false;}
-// 윤성's base figure: a skin made in the figure page, riding on a copy of the same skeleton (rebuilt in place when the 세부사항 editor sends a new one)
 // read figure.bin into the shape buildFig uses (geometries ready to go)
 async function loadFigure(buf){ const {meta:F,buf:B}=await FP.binRead(buf); await MeshoptDecoder.ready; let k=0;
   F.geos=F.chunks.map(m=>{const V=FP.decodeVerts(MeshoptDecoder,m,16,B[k++]), I=FP.decodeIdx(MeshoptDecoder,m,B[k++]), g=new THREE.BufferGeometry();
@@ -663,59 +663,103 @@ async function loadFigure(buf){ const {meta:F,buf:B}=await FP.binRead(buf); awai
 // the skeleton from the figure file: [name, parent, t, r, s, isBone]
 function rigFrom(R){const root=new THREE.Group(), nodes=R.map(([n,p,t,r,s,b])=>{const o=b?new THREE.Bone():new THREE.Object3D(); o.name=n; o.position.fromArray(t); o.quaternion.fromArray(r); o.scale.fromArray(s); return o;});
   R.forEach(([,p],i)=>(p<0?root:nodes[p]).add(nodes[i])); return root;}
+// shared parts of the figure (materials, skin, motions); every visitor is a light copy on its own skeleton
 function buildFig(F){
-      for(const f of PPL.figs) if(f.F){ scene.remove(f.F.o); f.F.o.traverse(m=>{if(m.isMesh&&m.material&&m.material.dispose) m.material.dispose();}); }
-      if(PPL.figGeos) for(const g of PPL.figGeos) g.dispose();
-      const figMat=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(F.look.tone,F.look.tone,F.look.tone*1.03,THREE.SRGBColorSpace),transparent:true,opacity:1-F.look.op,depthWrite:false,
-        blending:THREE.CustomBlending,blendSrc:THREE.SrcAlphaFactor,blendDst:THREE.OneMinusSrcAlphaFactor,blendSrcAlpha:THREE.OneFactor,blendDstAlpha:THREE.OneMinusSrcAlphaFactor});
-      figMat.onBeforeCompile=sh=>{sh.uniforms.uEdge=FIGEDGE; // soft outline, like a light blur
-        sh.vertexShader='varying vec3 vEN; varying vec3 vEV;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n#if defined( USE_ENVMAP ) || defined( USE_SKINNING )\n vEN=normalize(transformedNormal);\n#else\n vEN=normalize(normalMatrix*normal);\n#endif\n vEV=-mvPosition.xyz;');
-        sh.fragmentShader='uniform float uEdge; varying vec3 vEN; varying vec3 vEV;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\n { float f=abs(dot(normalize(vEN),normalize(vEV))); gl_FragColor.a*=mix(1.0,smoothstep(0.0,0.75,f),uEdge); }');};
-      FIGLOOK=F.look; FIGEDGE.value=0;
-      const figDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping parts don't double up
-      const geos=F.geos||F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
-        g.setIndex(new THREE.BufferAttribute(c.i32?new Uint32Array(b64(c.idx)):new Uint16Array(b64(c.idx)),1));
-        g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(Uint16Array.from(new Uint8Array(b64(c.si))),4));
-        g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); g.computeVertexNormals(); return g;});
-      let hg=F.headGeo; if(!hg){hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1)); hg.computeVertexNormals();} PPL.figGeos=[...geos,hg];
-      const fw=THREE.AnimationClip.parse(F.walk), fi=THREE.AnimationClip.parse(F.idle);
-      for(const f of PPL.figs){
-        const inner=new THREE.Group(), o=(F.rig||PPL.rig)?rigFrom(F.rig||PPL.rig):SkeletonUtils.clone(F.rigScene||PPL.rigScene); inner.add(o);
-        o.traverse(m=>{if(m.isSkinnedMesh) m.visible=false;});
-        const BN={}; o.traverse(b=>{if(b.isBone) BN[b.name]=b;});
-        for(const [n,p] of Object.entries(F.bonePos)) if(BN[n]&&!/Hips$/.test(n)) BN[n].position.fromArray(p);
-        inner.updateMatrixWorld(true); const skel=new THREE.Skeleton(F.bones.map(n=>BN[n]));
-        for(const g of geos) for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.SkinnedMesh(g,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); inner.add(m); m.updateMatrixWorld(true); m.bind(skel,m.matrixWorld);}
-        for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.Mesh(hg,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); m.position.fromArray(F.head.p); m.quaternion.fromArray(F.head.q); m.scale.fromArray(F.head.s); BN[F.head.bone].add(m);}
-        inner.scale.setScalar(F.scale); inner.position.y=F.y;
-        // each visit: visitors of 160 / 170 / 180 cm, 160 the most common, 180 the rarest
-        const hr=Math.random(), cm=hr<0.5?160:hr<0.83?170:180, base=(F.P&&F.P.height)||170;
-        const outer=new THREE.Group(); outer.add(inner); outer.scale.setScalar(cm/base); scene.add(outer); outer.visible=false;
-        const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(fw), idleA=mix.clipAction(fi); walkA.play(); idleA.play(); idleA.weight=0; walkA.timeScale=F.look.speed;
-        const calm=F.calm?Object.fromEntries(Object.entries(F.calm).map(([n,q])=>[n,new THREE.Quaternion().fromArray(q)])):null;
-        f.F={o:outer,mix,walkA,idleA,speed:F.look.speed,BN,calm,legRest:{LeftLeg:BN.mixamorigLeftLeg&&BN.mixamorigLeftLeg.quaternion.clone(),RightLeg:BN.mixamorigRightLeg&&BN.mixamorigRightLeg.quaternion.clone()}};}
-      setPeople(pplMode,true); dirty=true;}
-function setPeople(m,force){ if(m===pplMode&&!force&&PPL) return; pplMode=m;
-  if(m&&!PPL){loadPeople(); return;}
-  if(!PPL) return;
-  for(const f of PPL.figs){ const fig=m===3&&f.F; f.o.visible=!!m&&!fig; if(f.F) f.F.o.visible=!!fig; f.sh.visible=!!m; for(const me of f.meshes) me.material=m===2?ghostMat:mannequinMat; f.sh.material.opacity=m===2?0.25:m===3?0.35:0.6; }
-  dirty=true;}
+  if(KIT){ for(const g of KIT.geos) g.dispose(); KIT.figMat.dispose(); KIT.figDepth.dispose(); }
+  const figMat=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(F.look.tone,F.look.tone,F.look.tone*1.03,THREE.SRGBColorSpace),transparent:true,opacity:1-F.look.op,depthWrite:false,
+    blending:THREE.CustomBlending,blendSrc:THREE.SrcAlphaFactor,blendDst:THREE.OneMinusSrcAlphaFactor,blendSrcAlpha:THREE.OneFactor,blendDstAlpha:THREE.OneMinusSrcAlphaFactor});
+  FIGLOOK=F.look; FIGEDGE.value=0;
+  const figDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping parts don't double up
+  const geos=F.geos||F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
+    g.setIndex(new THREE.BufferAttribute(c.i32?new Uint32Array(b64(c.idx)):new Uint16Array(b64(c.idx)),1));
+    g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(Uint16Array.from(new Uint8Array(b64(c.si))),4));
+    g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); g.computeVertexNormals(); return g;});
+  let hg=F.headGeo; if(!hg){hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1)); hg.computeVertexNormals();}
+  const calm=F.calm?Object.fromEntries(Object.entries(F.calm).map(([n,q])=>[n,new THREE.Quaternion().fromArray(q)])):null;
+  KIT={F,figMat,figDepth,skin:geos,geos:[...geos,hg],hg,fw:THREE.AnimationClip.parse(F.walk),fi:THREE.AnimationClip.parse(F.idle),calm,base:(F.P&&F.P.height)||170};
+  for(const p of PEERS.values()){ dropFig(p); p.F=spawnFig(p.h); }
+  setPeople(pplMode,true); dirty=true;}
+function spawnFig(cm){ const K=KIT, F=K.F;
+  const inner=new THREE.Group(), o=(F.rig||PPL.rig)?rigFrom(F.rig||PPL.rig):SkeletonUtils.clone(F.rigScene||PPL.rigScene); inner.add(o);
+  o.traverse(m=>{if(m.isSkinnedMesh) m.visible=false;});
+  const BN={}; o.traverse(b=>{if(b.isBone) BN[b.name]=b;});
+  for(const [n,p] of Object.entries(F.bonePos)) if(BN[n]&&!/Hips$/.test(n)) BN[n].position.fromArray(p);
+  inner.updateMatrixWorld(true); const skel=new THREE.Skeleton(F.bones.map(n=>BN[n]));
+  for(const g of K.skin) for(const [mat,ro] of [[K.figDepth,1],[K.figMat,2]]){const m=new THREE.SkinnedMesh(g,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); inner.add(m); m.updateMatrixWorld(true); m.bind(skel,m.matrixWorld);}
+  for(const [mat,ro] of [[K.figDepth,1],[K.figMat,2]]){const m=new THREE.Mesh(K.hg,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); m.position.fromArray(F.head.p); m.quaternion.fromArray(F.head.q); m.scale.fromArray(F.head.s); BN[F.head.bone].add(m);}
+  inner.scale.setScalar(F.scale); inner.position.y=F.y;
+  const outer=new THREE.Group(); outer.add(inner); outer.scale.setScalar(cm/K.base); scene.add(outer);
+  const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(K.fw), idleA=mix.clipAction(K.fi); walkA.play(); idleA.play(); walkA.weight=0; idleA.weight=1;
+  return {o:outer,mix,walkA,idleA,BN,calm:K.calm,cm,legRest:{LeftLeg:BN.mixamorigLeftLeg&&BN.mixamorigLeftLeg.quaternion.clone(),RightLeg:BN.mixamorigRightLeg&&BN.mixamorigRightLeg.quaternion.clone()}};}
+function dropFig(p){ if(p&&p.F){ scene.remove(p.F.o); p.F.mix.stopAllAction(); p.F=null; } }
+function addPeer(m){ if(!KIT||m.id===roomMe||PEERS.has(m.id)) return;
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.7,0.7),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.35})); sh.rotation.x=-Math.PI/2; sh.renderOrder=2; scene.add(sh);
+  const p={id:m.id,h:m.h||165,sh,pos:new THREE.Vector2(m.x||0,m.y||0),tgt:new THREE.Vector2(m.x||0,m.y||0),yaw:-(m.a||0),tyaw:-(m.a||0),spd:0,F:null,bub:null};
+  p.F=spawnFig(p.h); PEERS.set(m.id,p); syncFigs(); setPeople(pplMode,true);}
+function removePeer(id){ const p=PEERS.get(id); if(!p) return; dropFig(p); scene.remove(p.sh); p.sh.geometry.dispose(); p.sh.material.dispose(); if(p.bub) p.bub.el.remove(); PEERS.delete(id); syncFigs(); dirty=true;}
+function syncFigs(){ if(PPL) PPL.figs=[...PEERS.values()]; }
+function setPeople(m,force){ pplMode=m; if(m&&!PPL){loadPeople(); return;} if(!PPL) return;
+  for(const p of PEERS.values()){ if(p.F) p.F.o.visible=!!m; p.sh.visible=!!m; } dirty=true;}
+// smooth each visitor toward their last reported spot; legs follow the real speed (no sliding)
 function updatePeople(dt){
-  if(!PPL||!pplMode) return false;
-  for(const f of PPL.figs){
-    const tgt=f.route[f.k]; const dx=tgt[0]-f.pos.x, dy=tgt[1]-f.pos.y, d=Math.hypot(dx,dy);
-    let walking=false; const A=(pplMode===3&&f.F)?f.F:f;
-    if(f.wait>0){ f.wait-=dt; if(tgt[2]!=null){ const want=(tgt[2])*Math.PI/180; f.yaw+=Math.atan2(Math.sin(want-f.yaw),Math.cos(want-f.yaw))*Math.min(1,dt*3);} if(f.wait<=0) f.k=(f.k+1)%f.route.length; }
-    else if(d<0.05){ f.wait=tgt[2]!=null?3+Math.random()*4:0.01; }
-    else { walking=true; const step=Math.min(d,1.05*(A.speed||1)*dt); f.pos.x+=dx/d*step; f.pos.y+=dy/d*step;
-      const want=Math.atan2(dx,dy); f.yaw+=Math.atan2(Math.sin(want-f.yaw),Math.cos(want-f.yaw))*Math.min(1,dt*6); }
-    // weights: blend between walking and standing
-    const wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
-    A.mix.update(dt); if(A!==f) figPosture(A);
-    // blender y -> three -z ; facing angle measured from +y (blender) = three -z
-    A.o.position.set(f.pos.x,0,-f.pos.y); A.o.rotation.y=Math.PI-f.yaw; f.sh.position.set(f.pos.x,0.004,-f.pos.y);
+  if(!PPL||!pplMode||!PEERS.size) return false;
+  for(const p of PEERS.values()){ const A=p.F; if(!A) continue;
+    const k=Math.min(1,dt*9), ox=p.pos.x, oy=p.pos.y; p.pos.x+=(p.tgt.x-p.pos.x)*k; p.pos.y+=(p.tgt.y-p.pos.y)*k;
+    const v=Math.hypot(p.pos.x-ox,p.pos.y-oy)/Math.max(dt,1e-3); p.spd+=(v-p.spd)*Math.min(1,dt*6);
+    p.yaw+=Math.atan2(Math.sin(p.tyaw-p.yaw),Math.cos(p.tyaw-p.yaw))*Math.min(1,dt*8);
+    const walking=p.spd>0.18, wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
+    A.walkA.timeScale=Math.max(0.5,Math.min(1.9,p.spd/(1.05*A.cm/KIT.base)));
+    A.mix.update(dt); figPosture(A);
+    A.o.position.set(p.pos.x,0,-p.pos.y); A.o.rotation.y=Math.PI-p.yaw; p.sh.position.set(p.pos.x,0.004,-p.pos.y);
   }
   return true;}
+// the room: a websocket to the exhibition server (positions and short messages only, nothing stored)
+let room=null, roomMe=null, roomBack=1000, roomSent={x:1e9,y:1e9,a:1e9,t:0}, online=1;
+function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSocket(ROOM_URL); }catch(e){ return; }
+  room.onopen=()=>{ roomBack=1000; room.send(JSON.stringify({t:'hi',h:MY_H,x:walk.x,y:walk.y,a:walk.yaw})); };
+  room.onmessage=e=>{ let m; try{ m=JSON.parse(e.data); }catch(err){ return; }
+    if(m.t==='welcome'){ roomMe=m.id; for(const q of m.peers||[]) addPeer(q); }
+    else if(m.t==='join') addPeer(m);
+    else if(m.t==='p'){ const p=PEERS.get(m.id); if(p){ p.tgt.set(m.x,m.y); p.tyaw=-m.a; } }
+    else if(m.t==='leave') removePeer(m.id);
+    else if(m.t==='n'){ online=m.n; showOnline(); }
+    else if(m.t==='say') showSay(m.id,m.m); };
+  room.onclose=()=>{ for(const id of [...PEERS.keys()]) removePeer(id); online=1; showOnline(); roomMe=null; setTimeout(roomConnect,roomBack); roomBack=Math.min(30000,roomBack*2); }; }
+function roomTick(now){ if(!room&&KIT) roomConnect(); if(!room||room.readyState!==1||!roomMe) return;
+  const moved=Math.hypot(walk.x-roomSent.x,walk.y-roomSent.y)>0.02||Math.abs(walk.yaw-roomSent.a)>0.02;
+  if((moved&&now-roomSent.t>150)||now-roomSent.t>25000){ roomSent={x:walk.x,y:walk.y,a:walk.yaw,t:now}; room.send(JSON.stringify({t:'p',x:+walk.x.toFixed(3),y:+walk.y.toFixed(3),a:+walk.yaw.toFixed(3)})); } }
+addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
+// a tab left in the background drops out of the room after a minute (its figure would stand frozen); it comes back when you return
+let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
+  if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) removePeer(id); online=1; showOnline(); },60000); });
+const onlineEl=document.getElementById('online'), helloEl=document.getElementById('hello'), sayEl=document.getElementById('say'), sayIn=document.getElementById('sayIn'), sayMine=document.getElementById('sayMine');
+window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.values()].map(p=>({id:p.id,h:p.h,x:+p.pos.x.toFixed(2),y:+p.pos.y.toFixed(2),tx:p.tgt.x,ty:p.tgt.y,vis:!!(p.F&&p.F.o.visible),bub:!!p.bub}))}); // for checks
+function showOnline(){ onlineEl.hidden=online<2; onlineEl.textContent=online+' online'; }
+// speech bubbles over a visitor's head; your own line shows above the input
+const _hp=new THREE.Vector3();
+function headScreen(p){ const r=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect(); _hp.set(p.pos.x,(p.h/100)*1.08+0.18,-p.pos.y).project(camera);
+  if(_hp.z>1) return null; return [( _hp.x+1)/2*r.width+r.left-sr.left,(1-_hp.y)/2*r.height+r.top-sr.top]; }
+function showSay(id,m){
+  if(id===roomMe){ sayMine.textContent=m; sayMine.style.opacity='1'; clearTimeout(sayMine._t); sayMine._t=setTimeout(()=>sayMine.style.opacity='0',6000); return; }
+  const p=PEERS.get(id); if(!p) return; if(Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>8) return; // only people nearby hear it
+  if(!p.bub){ const el=document.createElement('div'); el.className='bub'; stage.appendChild(el); p.bub={el,t:0}; }
+  p.bub.el.textContent=m; p.bub.el.style.opacity='1'; p.bub.t=performance.now()+7000; }
+let nearPeer=null;
+function chatTick(now){
+  let best=null, bd=2.4; if(!guest.isOpen) for(const p of PEERS.values()){ const d=Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y); if(d<bd){bd=d;best=p;} }
+  nearPeer=best;
+  if(best&&sayEl.hidden){ const s=headScreen(best); if(s){ helloEl.style.left=s[0]+'px'; helloEl.style.top=(s[1]-6)+'px'; helloEl.hidden=false; } else helloEl.hidden=true; } else helloEl.hidden=true;
+  for(const p of PEERS.values()) if(p.bub){ const s=headScreen(p); const live=now<p.bub.t;
+    if(!s||!live){ p.bub.el.style.opacity='0'; if(now>p.bub.t+800){ p.bub.el.remove(); p.bub=null; } continue; }
+    p.bub.el.style.left=s[0]+'px'; p.bub.el.style.top=(s[1]-10)+'px'; } }
+function openSay(){ sayEl.hidden=false; helloEl.hidden=true; keys.clear(); setTimeout(()=>sayIn.focus({preventScroll:true}),0); }
+function closeSay(){ sayEl.hidden=true; sayIn.value=''; sayIn.blur(); stage.focus({preventScroll:true}); }
+helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); openSay(); };
+sayEl.addEventListener('pointerdown',e=>e.stopPropagation());
+sayIn.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Escape'){ closeSay(); return; }
+  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m&&room&&room.readyState===1) room.send(JSON.stringify({t:'say',m:m.slice(0,140)})); sayIn.value='';
+    if(!nearPeer) closeSay(); } });
+sayIn.addEventListener('blur',()=>{ if(!sayIn.value.trim()) setTimeout(()=>{ if(document.activeElement!==sayIn) sayEl.hidden=true; },150); });
 
 // tuning (Medusa / Torso / room)
 const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
@@ -1024,7 +1068,7 @@ function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=ca
   const bb=new THREE.Box3().setFromObject(GB.bookM), pts=[]; for(const ix of [0,1]) for(const iy of [0,1]) for(const iz of [0,1]) pts.push(new THREE.Vector3(ix?bb.max.x:bb.min.x,iy?bb.max.y:bb.min.y,iz?bb.max.z:bb.min.z).project(camera));
   const xs=pts.map(p=>(p.x+1)/2*r.width+r.left), ys=pts.map(p=>(1-p.y)/2*r.height+r.top);
   guest.open({left:Math.min(...xs),top:Math.min(...ys),width:Math.max(4,Math.max(...xs)-Math.min(...xs)),height:Math.max(4,Math.max(...ys)-Math.min(...ys))}); return true;}
-stage.addEventListener('keydown',e=>{const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
+stage.addEventListener('keydown',e=>{ if(e.target&&e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
 // drag to look
@@ -1118,6 +1162,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
+  roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
