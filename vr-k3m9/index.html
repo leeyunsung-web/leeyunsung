@@ -327,8 +327,14 @@ for(const [k,wd] of Object.entries(WALLS)){
 const env=tl.load('live/env.jpg'); env.mapping=THREE.EquirectangularReflectionMapping; env.colorSpace=THREE.SRGBColorSpace;
 function meshFrom(d,mat){
   const g=new THREE.BufferGeometry();
+  if(d.q){ // quantized: positions uint16 over the bounding box, normals int16
+    const q=new Uint16Array(b64(d.pos)), P=new Float32Array(q.length);
+    for(let k=0;k<q.length;k++){const c=k%3; P[k]=d.min[c]+q[k]*d.scale[c];}
+    g.setAttribute('position',new THREE.BufferAttribute(P,3));
+    g.setAttribute('normal',new THREE.BufferAttribute(new Int16Array(b64(d.nrm)),3,true));
+  } else {
   g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(d.pos)),3));
-  g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(b64(d.nrm)),3));
+  g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(b64(d.nrm)),3));}
   g.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(d.idx)),1));
   return new THREE.Mesh(g,mat);
 }
