@@ -784,6 +784,7 @@ const onlineEl=document.getElementById('online'), helloEl=document.getElementByI
 window.__tapWork=i=>{const w=works[i], v=w.mesh.position.clone().project(camera), r=canvas.getBoundingClientRect(); const x=(v.x+1)/2*r.width+r.left, y=(1-v.y)/2*r.height+r.top; tapMove(x,y); return {x,y,cap:w.caption.slice(0,40)};}; // for checks
 window.__tapSculpt=n=>{const g=sculptures().find(q=>q[0]===n); if(!g) return null; const bb=new THREE.Box3().setFromObject(g[1]), v=bb.getCenter(new THREE.Vector3()).project(camera), r=canvas.getBoundingClientRect(); tapMove((v.x+1)/2*r.width+r.left,(1-v.y)/2*r.height+r.top); return true;}; // for checks
 window.__auto=()=>({go:autoGo,walk:{...walk}}); // for checks
+window.__gates=()=>JSON.stringify(GATES);
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
 window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.values()].map(p=>({id:p.id,h:p.h,x:+p.pos.x.toFixed(2),y:+p.pos.y.toFixed(2),tx:p.tgt.x,ty:p.tgt.y,vis:!!(p.F&&p.F.o.visible),bub:!!p.bub}))}); // for checks
 function showOnline(){ const n=online+BOTS.length; onlineEl.hidden=n<2; onlineEl.textContent=n+' online'; }
@@ -1154,15 +1155,34 @@ const tapMark=document.createElement('div'); tapMark.style.cssText='position:abs
 function showMark(cx,cy){ const r=stage.getBoundingClientRect(); tapMark.style.left=(cx-r.left)+'px'; tapMark.style.top=(cy-r.top)+'px'; tapMark.style.transition='none'; tapMark.style.opacity='1'; tapMark.style.transform='scale(.6)'; tapMark.getBoundingClientRect(); tapMark.style.transition='opacity .6s,transform .6s'; tapMark.style.opacity='0'; tapMark.style.transform='scale(1.25)'; }
 function sculptures(){ return [['medusa',mg],['torso',tg],['mob',MOB&&MOB.group],['mw',mwG],['mgd',mgdG]].filter(([,g])=>g&&g.visible!==false); }
 const canWalk=(x,y)=>okPos(x,y)&&!blocks.some(b=>x>b.x0-0.05&&x<b.x1+0.05&&y>b.y0-0.05&&y<b.y1+0.05);
+function lineWide(ax,ay,bx,by,m=0.4){ const d=Math.hypot(bx-ax,by-ay); if(d<1e-3) return canWalk(bx,by); const px=-(by-ay)/d, py=(bx-ax)/d, n=Math.max(1,Math.ceil(d/0.1));
+  for(let i=1;i<=n;i++){ const t=i/n, x=ax+(bx-ax)*t, y=ay+(by-ay)*t, e=Math.min(1,Math.min(t*d,(1-t)*d)/0.7), mm=m*e; if(!canWalk(x,y)||!canWalk(x+px*mm,y+py*mm)||!canWalk(x-px*mm,y-py*mm)) return false; } return true; }
 function lineClear(ax,ay,bx,by){ const d=Math.hypot(bx-ax,by-ay), n=Math.max(1,Math.ceil(d/0.08)); for(let i=1;i<=n;i++){ const t=i/n; if(!canWalk(ax+(bx-ax)*t,ay+(by-ay)*t)) return false; } return true; }
 // a short path that goes around walls and pedestals (grid search, then straightened); the walk turns early instead of bumping into things
-function findPath(ax,ay,bx,by){
-  if(lineClear(ax,ay,bx,by)) return [[bx,by]];
+// door guides: every walk through a doorway goes in and out along the door's centre line, the same way every time
+const GATES=[]; { const W=WALK[WALK.length-1];
+  if(DOOR) GATES.push(DOORX?{c:[(DOOR.x0+DOOR.x1)/2,(DOOR.y0+DOOR.y1)/2],ax:[1,0],h:(W.y1-W.y0)/2}:{c:[(DOOR.x0+DOOR.x1)/2,(DOOR.y0+DOOR.y1)/2],ax:[0,1],h:(W.x1-W.x0)/2});
+  if(L.door2) GATES.push({c:[L.door2.x0,(L.door2.y0+L.door2.y1)/2],ax:[1,0],h:(L.door2.y1-L.door2.y0)/2-R}); }
+function gateCross(ax,ay,bx,by){ for(const G of GATES){ const [cx,cy]=G.c, [ux,uy]=G.ax, sa=(ax-cx)*ux+(ay-cy)*uy, sb=(bx-cx)*ux+(by-cy)*uy; if(sa*sb>=0) continue;
+    const t=sa/(sa-sb), px=ax+(bx-ax)*t-cx, py=ay+(by-ay)*t-cy; if(Math.abs(px*-uy+py*ux)<G.h+0.6) return {G,s:Math.sign(sb-sa)}; } return null; }
+function gatePt(G,k){ const sg=Math.sign(k); for(let d=Math.abs(k);d>0.2;d-=0.1){ const x=G.c[0]+G.ax[0]*d*sg, y=G.c[1]+G.ax[1]*d*sg; if(canWalk(x,y)) return [x,y,1]; } return [G.c[0],G.c[1],1]; }
+function findPath(ax,ay,bx,by){ const raw=pathCore(ax,ay,bx,by); if(!raw) return raw;
+  const poly=[[ax,ay],...raw], out=[]; let cur=[ax,ay], used=new Set();
+  for(let i=1;i<poly.length;i++){ const x=gateCross(poly[i-1][0],poly[i-1][1],poly[i][0],poly[i][1]); if(!x||used.has(x.G)) continue; used.add(x.G);
+    const pin=gatePt(x.G,-0.9*x.s), pout=gatePt(x.G,0.9*x.s), leg=pathCore(cur[0],cur[1],pin[0],pin[1])||[];
+    if(leg.length) leg[leg.length-1]=pin; else out.push(pin); out.push(...leg, pout); cur=pout; }
+  if(!used.size) return raw; out.push(...(pathCore(cur[0],cur[1],bx,by)||[[bx,by]])); return out; }
+function pathCore(ax,ay,bx,by){
+  if(lineWide(ax,ay,bx,by)) return [[bx,by]];
   const C=0.2; let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; for(const r of WALK){x0=Math.min(x0,r.x0);y0=Math.min(y0,r.y0);x1=Math.max(x1,r.x1);y1=Math.max(y1,r.y1);}
   const nx=Math.ceil((x1-x0)/C)+1, ny=Math.ceil((y1-y0)/C)+1, id=(i,j)=>i+j*nx, cx=i=>x0+i*C, cy=j=>y0+j*C;
   const ok=new Uint8Array(nx*ny); for(let j=0;j<ny;j++) for(let i=0;i<nx;i++) ok[id(i,j)]=canWalk(cx(i),cy(j))?1:0;
+  const clr=new Uint8Array(nx*ny).fill(255), Q=[]; for(let c=0;c<nx*ny;c++) if(!ok[c]){ clr[c]=0; Q.push(c); }
+  for(let qi=0;qi<Q.length;qi++){ const c=Q[qi], ci=c%nx, cj=(c/nx)|0; for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1]]){ const i=ci+di, j=cj+dj; if(i<0||j<0||i>=nx||j>=ny) continue; const n=id(i,j); if(clr[n]>clr[c]+1){ clr[n]=clr[c]+1; Q.push(n); } } }
+  const nearGate=(x,y)=>GATES.some(G=>{ const dx=x-G.c[0], dy=y-G.c[1]; return Math.abs(dx*G.ax[0]+dy*G.ax[1])<1.1&&Math.abs(-dx*G.ax[1]+dy*G.ax[0])<G.h+0.1; });
+  for(let j=0;j<ny;j++) for(let i=0;i<nx;i++){ const c=id(i,j); if(ok[c]&&clr[c]<2&&!nearGate(cx(i),cy(j))) ok[c]=2; } // 2 = walkable but too close: the search keeps out
   const cell=(x,y)=>{ let bi=Math.round((x-x0)/C), bj=Math.round((y-y0)/C), best=null, bd=1e9;
-    for(let r=0;r<12&&!best;r++) for(let j=bj-r;j<=bj+r;j++) for(let i=bi-r;i<=bi+r;i++){ if(i<0||j<0||i>=nx||j>=ny||!ok[id(i,j)]) continue; const d=(i-bi)**2+(j-bj)**2; if(d<bd){bd=d;best=[i,j];} } return best; };
+    for(let r=0;r<12&&!best;r++) for(let j=bj-r;j<=bj+r;j++) for(let i=bi-r;i<=bi+r;i++){ if(i<0||j<0||i>=nx||j>=ny||ok[id(i,j)]!==1) continue; const d=(i-bi)**2+(j-bj)**2; if(d<bd){bd=d;best=[i,j];} } return best; };
   const S=cell(ax,ay), G=cell(bx,by); if(!S||!G) return null;
   const g=new Float32Array(nx*ny).fill(1e9), from=new Int32Array(nx*ny).fill(-1), done=new Uint8Array(nx*ny); g[id(S[0],S[1])]=0; const goal=id(G[0],G[1]);
   const H=[], push=(f,n)=>{H.push([f,n]); let i=H.length-1; while(i>0){const p=(i-1)>>1; if(H[p][0]<=H[i][0]) break; [H[p],H[i]]=[H[i],H[p]]; i=p;}},
@@ -1171,15 +1191,28 @@ function findPath(ax,ay,bx,by){
   const D=[[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
   while(H.length){ const [,c]=pop(); if(done[c]) continue; done[c]=1; if(c===goal) break;
     const ci=c%nx, cj=(c/nx)|0;
-    for(const [di,dj,w] of D){ const i=ci+di, j=cj+dj; if(i<0||j<0||i>=nx||j>=ny) continue; const n=id(i,j); if(!ok[n]||(di&&dj&&(!ok[id(ci+di,cj)]||!ok[id(ci,cj+dj)]))) continue;
-      const ng=g[c]+w; if(ng<g[n]){ g[n]=ng; from[n]=c; push(ng+Math.hypot(i-G[0],j-G[1]),n); } } }
+    for(const [di,dj,w] of D){ const i=ci+di, j=cj+dj; if(i<0||j<0||i>=nx||j>=ny) continue; const n=id(i,j); if(ok[n]!==1||(di&&dj&&(ok[id(ci+di,cj)]!==1||ok[id(ci,cj+dj)]!==1))) continue;
+      const cl=clr[n]*C, ng=g[c]+w+(cl<0.8?(0.8-cl)*7:0); if(ng<g[n]){ g[n]=ng; from[n]=c; push(ng+Math.hypot(i-G[0],j-G[1]),n); } } }
   if(from[goal]<0&&goal!==id(S[0],S[1])) return null;
   const pts=[]; for(let c=goal;c>=0&&c!==id(S[0],S[1]);c=from[c]) pts.push([cx(c%nx),cy((c/nx)|0)]); pts.reverse();
   const end=canWalk(bx,by)?[bx,by]:pts[pts.length-1]||[bx,by]; pts.push(end);
   // straighten: skip every corner you can see past
-  const out=[]; let px=ax,py=ay,k=0; while(k<pts.length){ let far=k; for(let q=pts.length-1;q>k;q--) if(lineClear(px,py,pts[q][0],pts[q][1])){ far=q; break; } out.push(pts[far]); [px,py]=pts[far]; k=far+1; }
+  const out=[]; let px=ax,py=ay,k=0; while(k<pts.length){ let far=k; for(let q=pts.length-1;q>k;q--) if(lineWide(px,py,pts[q][0],pts[q][1])){ far=q; break; } out.push(pts[far]); [px,py]=pts[far]; k=far+1; }
   return out; }
 function goTo(x,y,yaw,pitch){ const path=findPath(walk.x,walk.y,x,y); if(!path||!path.length) return false; const e=path[path.length-1]; autoGo={x:e[0],y:e[1],path,yaw,pitch}; return true; }
+// can the work be seen from here, or does a sculpture stand in front of it?
+const _sr=new THREE.Raycaster(), _so=new THREE.Vector3(), _sp=new THREE.Vector3();
+function workSeen(w,sx,sy){ const m=w.mesh, rx=Math.cos(m.rotation.y), rz=-Math.sin(m.rotation.y); let hit=0;
+  const gs=sculptures().map(([,g])=>[g,new THREE.Box3().setFromObject(g)]).filter(([,b])=>!b.isEmpty());
+  for(const [u,v] of [[0,0],[-0.35,0.3],[0.35,0.3],[-0.35,-0.3],[0.35,-0.3]]){ _sp.set(m.position.x+rx*u*w.p.w,m.position.y+v*w.p.h,m.position.z+rz*u*w.p.w); _so.set(sx,EYE,-sy);
+    const far=_so.distanceTo(_sp); _sr.set(_so,_sp.sub(_so).normalize()); _sr.far=far-0.05;
+    if(gs.some(([g,b])=>_sr.ray.intersectsBox(b)&&_sr.intersectObject(g,true).length)) hit++; }
+  return hit<=1; }
+// which way is the room open from here (for a stop after a door: look into the room, not at the wall)
+function openYaw(x,y,cur){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a); let t=0.2; while(t<14&&okPos(x+dx*t,y+dy*t)) t+=0.15; return t; };
+  const here=reach(cur); if(here>2.6) return null; let best=null, bs=-1;
+  for(let i=0;i<32;i++){ const a=i/32*Math.PI*2, r=reach(a), sc=r*(0.65+0.35*Math.cos(a-cur)); if(sc>bs){ bs=sc; best=a; } }
+  return reach(best)>here*1.8?cur+Math.atan2(Math.sin(best-cur),Math.cos(best-cur)):null; }
 function standAt(x,y,d0,nx,ny){ for(let d=d0; d>0.5; d-=0.15){ const sx=x+nx*d, sy=y+ny*d; if(okPos(sx,sy)&&!blocks.some(b=>sx>b.x0&&sx<b.x1&&sy>b.y0&&sy<b.y1)) return [sx,sy]; } return null; }
 function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingClientRect(); _n2.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
   let best=null;
@@ -1189,8 +1222,9 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   if(!best) return; showMark(cx,cy);
   if(best.kind==='work'){ const w=best.w, m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
-    const d0=Math.max(1.4,w.p.h/(2*Math.tan(vf/2)*fill),w.p.w/(2*Math.tan(hf/2)*fill*1.15)), s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
-    goTo(s[0],s[1],lookYaw(-nx,-ny),Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9); }
+    const d0=Math.max(1.4,w.p.h/(2*Math.tan(vf/2)*fill),w.p.w/(2*Math.tan(hf/2)*fill*1.15)); let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
+    for(let d=Math.hypot(s[0]-x,s[1]-y)-0.25; d>=1.2&&!workSeen(w,s[0],s[1]); d-=0.25){ const t=standAt(x,y,d,nx,ny); if(t) s=t; } // something in front of it: go closer
+    if(goTo(s[0],s[1],lookYaw(-nx,-ny),Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)) autoGo.fit={w,nx,ny,back:0}; }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1199,17 +1233,33 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const s=standAt(x,y,rad,dx,dy); if(!s) return; goTo(s[0],s[1],lookYaw(x-s[0],y-s[1]),Math.atan2(tc-EYE,rad)); }
   else { const x=best.p.x, y=-best.p.z; goTo(x,y,null,null); } }
 // one step of the walk you asked for (called from the main loop)
-function autoStep(dt){ if(!autoGo) return false; const g=autoGo, turn=(to,k)=>{ walk.yaw+=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw))*Math.min(1,dt*k); };
-  if(g.orbit){ const o=g.orbit, st=Math.min(o.left,dt*0.45); o.a+=st; o.left-=st; const nx=o.x+Math.cos(o.a)*o.r, ny=o.y+Math.sin(o.a)*o.r;
-    if(!canWalk(nx,ny)){ autoGo=null; return true; } [walk.x,walk.y]=collide(nx,ny); turn(lookYaw(o.x-walk.x,o.y-walk.y),6); walk.pitch+=(Math.atan2(o.top-EYE,o.r)-walk.pitch)*Math.min(1,dt*3); if(o.left<=0) autoGo=null; return true; }
-  if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; if(Math.hypot(tx-walk.x,ty-walk.y)<0.35) g.path.shift(); }
+function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
+  // smooth head turn: the turning speed eases in and out and never goes past ~60°/s
+  const turn=(to,max=1.05)=>{ const df=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw)), want=Math.max(-max,Math.min(max,df*2.2)); g.wv=(g.wv||0)+(want-(g.wv||0))*Math.min(1,dt*3.5); walk.yaw+=g.wv*dt; return Math.abs(df); };
+  const tilt=(to,k=1.6)=>{ walk.pitch+=(to-walk.pitch)*Math.min(1,dt*k); };
+  if(g.orbit){ const o=g.orbit; o.v=Math.min(0.45,(o.v||0)+dt*0.3); const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const nx=o.x+Math.cos(o.a)*o.r, ny=o.y+Math.sin(o.a)*o.r;
+    if(!canWalk(nx,ny)){ autoGo=null; return true; } [walk.x,walk.y]=collide(nx,ny); turn(lookYaw(o.x-walk.x,o.y-walk.y),1.4); tilt(Math.atan2(o.top-EYE,o.r)); if(o.left<=0) autoGo=null; return true; }
+  if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; if(Math.hypot(tx-walk.x,ty-walk.y)<(g.path[0][2]?0.12:0.35)) g.path.shift(); }
   const wp=g.path&&g.path.length?g.path[0]:[g.x,g.y], last=!g.path||g.path.length<=1;
   const dx=(last?g.x:wp[0])-walk.x, dy=(last?g.y:wp[1])-walk.y, d=Math.hypot(dx,dy);
-  if(d>0.04||!last){ const st=Math.min(d,1.3*dt), ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+dx/d*st,walk.y+dy/d*st); turn(!last||d>0.6||g.yaw==null?lookYaw(dx,dy):g.yaw,4);
-    if(Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ autoGo=null; return true; } // blocked: stop here
-    if(last&&g.pitch!=null&&d<1.2) walk.pitch+=(g.pitch-walk.pitch)*Math.min(1,dt*2.5); return true; }
-  if(g.yaw!=null){ turn(g.yaw,5); if(g.pitch!=null) walk.pitch+=(g.pitch-walk.pitch)*Math.min(1,dt*3); if(Math.abs(Math.atan2(Math.sin(g.yaw-walk.yaw),Math.cos(g.yaw-walk.yaw)))>0.01) return true; }
+  let rem=d; if(g.path) for(let i=1;i<g.path.length;i++) rem+=Math.hypot(g.path[i][0]-g.path[i-1][0],g.path[i][1]-g.path[i-1][1]);
+  if(g.near==null) g.near=g.yaw!=null&&last&&rem<4.5; // a short straight move (the next work along the wall): just slide, no head turn
+  if(d>0.03||!last){ // speed eases up from 0 and slows down into the stop
+    const vmax=g.near?0.75:1.3, want=Math.min(vmax,Math.sqrt(2*0.8*rem)+0.02); g.v=(g.v||0)+Math.max(-1.6*dt,Math.min(0.9*dt,want-(g.v||0)));
+    const st=Math.min(d,g.v*dt), ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+dx/d*st,walk.y+dy/d*st);
+    const look=g.yaw==null?lookYaw(dx,dy):(g.near||rem<2.2?g.yaw:lookYaw(dx,dy)); if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
+    if(g.v>0.2&&Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ // blocked: back off along the way you came, then find a new way
+      g.stuck=(g.stuck||0)+1; if(g.stuck>2){ autoGo=null; return true; }
+      const bx=walk.x-dx/d*0.45, by=walk.y-dy/d*0.45, back=canWalk(bx,by)?[bx,by,1]:null, from=back||[walk.x,walk.y], np=findPath(from[0],from[1],g.x,g.y);
+      if(!np){ autoGo=null; return true; } g.path=back?[back,...np]:np; g.v=0; g.near=false; g.back=!!back; return true; }
+    if(g.pitch!=null&&(g.near||rem<2.2)) tilt(g.pitch); else if(g.pitch!=null) tilt(0,1); return true; }
+  if(g.yaw==null&&!g.looked){ g.looked=1; const a=openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=0; } }
+  if(g.yaw!=null){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
+  if(g.fit&&g.fit.back<3&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
+    if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z))*0.9; return true; } }
   autoGo=null; return true; }
+const _fb=new THREE.Box3(), _fv=new THREE.Vector3();
+function fitsView(w){ _fb.setFromObject(w.mesh); for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); if(Math.abs(_fv.x)>0.93||Math.abs(_fv.y)>0.9) return false; } return true; }
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
 if(matchMedia('(pointer:coarse)').matches) joy.hidden=!(typeof tune!=='undefined'&&tune.joy);
