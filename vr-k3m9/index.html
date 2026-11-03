@@ -507,6 +507,23 @@ const dt=await (await fetch('torso_mesh.json')).json();
 const TOR_BASE=0.8, MED_BASE=L.medusa.z; // original pedestal tops (m)
 const whiteMat=new THREE.MeshStandardMaterial({color:0xf3f2ef,roughness:0.55,metalness:0,envMap:env,envMapIntensity:0.9});
 const goldMat=chrome.clone(); goldMat.onBeforeCompile=chrome.onBeforeCompile;
+// live reflections: photograph the room as it is now (works as hung today) from where each shiny piece stands
+const LIVE=[];
+function liveEnv(getPos,hide,mats){const rt=new THREE.WebGLCubeRenderTarget(256,{type:THREE.HalfFloatType,generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter});
+  const cc=new THREE.CubeCamera(0.05,80,rt); cc.layers.enableAll(); LIVE.push({rt,cc,getPos,hide,mats});}
+function shootEnv(){ if(!LIVE.length) return; const ctl=[];
+  for(const e of LIVE){ for(const o of e.hide()) if(o){ctl.push([o,o.visible]); o.visible=false;}
+    e.cc.position.copy(e.getPos()); e.cc.update(renderer,scene); e.rt.texture.needsPMREMUpdate=true;
+    for(const m of e.mats()) if(m&&m.envMap!==e.rt.texture){m.envMap=e.rt.texture; m.needsUpdate=true;}
+    for(const [o,v] of ctl) o.visible=v; ctl.length=0;}
+  dirty=true;}
+let envTimer=0; const scheduleEnv=(ms=400)=>{clearTimeout(envTimer); envTimer=setTimeout(shootEnv,ms);};
+if(MOB){const mm=[]; MOB.group.traverse(o=>{if(o.material) (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.envMap===env&&!mm.includes(m)) mm.push(m);});});
+  liveEnv(()=>MOB.group.position.clone().add(new THREE.Vector3(0,(typeof tune!=='undefined'?tune.mobH:1.5)+0.25,0)),()=>[MOB.group],()=>mm);}
+liveEnv(()=>mg.position.clone().add(new THREE.Vector3(0,0.15,0)),()=>[mg],()=>[chrome]);
+liveEnv(()=>(typeof mgdG!=='undefined'?mgdG.position.clone():new THREE.Vector3(10.1,1.2,4.4)).add(new THREE.Vector3(0,0.15,0)),()=>[typeof mgdG!=='undefined'?mgdG:null],()=>[goldMat]);
+manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true; scheduleEnv(200);};
+setTimeout(()=>scheduleEnv(0),2500); setTimeout(()=>scheduleEnv(0),7000);
 const mkMed=mat=>{const g=mg.clone(); g.traverse(o=>{if(o.isMesh){o.material=mat; o.castShadow=true;}}); scene.add(g); return g;};
 const mwG=mkMed(whiteMat), mgdG=mkMed(goldMat);
 const ROOM2_MEDUSA=false; // 2026-11-03: white and gold Medusa heads taken out of room 2 (set true to bring them back)
@@ -629,6 +646,7 @@ function layoutWall(k){
   return lim;
 }
 function applyTune(){
+  if(typeof scheduleEnv==='function') scheduleEnv(600);
   if(!WALLS[tune.wsel]) tune.wsel='F';
   uC.value=tune.contrast; chrome.color.setScalar(tune.bright); chrome.envMapIntensity=tune.refl; chrome.roughness=tune.gloss;
   goldMat.color.setRGB(1.0,0.77,0.40).multiplyScalar(tune.bright); goldMat.envMapIntensity=tune.refl; goldMat.roughness=tune.gloss;
