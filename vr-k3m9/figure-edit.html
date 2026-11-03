@@ -1,9 +1,5 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><script>try{if(!/(?:^|;\s*)lysM=1/.test(document.cookie))location.replace("/#works")}catch(e){location.replace("/#works")}</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>피규어 세부사항</title><style>html{-webkit-text-size-adjust:100%}*{box-sizing:border-box}body{margin:0}</style>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<style>
+<title>피규어 세부사항</title><style>
 :root{--bg:#f4f2ee;--panel:#ffffff;--ink:#22211f;--mute:#6f6b64;--line:#dedad2;--acc:#2f5d8a;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--panel:#22211f;--ink:#eceae5;--mute:#a19c93;--line:#393731;--acc:#8fb6dd;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#171716;--panel:#22211f;--ink:#eceae5;--mute:#a19c93;--line:#393731;--acc:#8fb6dd;color-scheme:dark}
@@ -61,7 +57,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { MeshoptEncoder } from 'three/addons/libs/meshopt_encoder.module.js';
-import * as FP from './figpack.js?v=1104c';
+import * as FP from './figpack.js?v=1104d';
 
 // ---------- settings (menu order)
 const GROUPS=[
@@ -75,7 +71,7 @@ const GROUPS=[
  ['다리',[['thighL','허벅지 길이',0.75,1.3,0.01,1],['shinL','종아리 길이',0.75,1.3,0.01,1],['thigh','허벅지 굵기',0.6,1.6,0.01,1],['knee','무릎 굵기',0.6,1.6,0.01,1],
         ['calf','종아리 굵기',0.6,1.6,0.01,1],['ankle','발목 굵기',0.6,1.6,0.01,1],['footL','발 길이',0.7,1.4,0.01,1],['foot','발 굵기',0.7,1.5,0.01,1]]],
  ['천(겉면)',[['soft','이음 부드러움',0.005,0.08,0.001,0.035,v=>Math.round(v*1000)+'mm'],['pad','천 두께',-0.01,0.025,0.001,0.004,v=>Math.round(v*1000)+'mm']]],
- ['동작',[['speed','걷는 속도',0.5,1.5,0.01,1],['upright','등 펴기',-0.5,2,0.01,0.45],['kneeUp','무릎 펴기',0,0.8,0.01,0.25],['chin','고개 들기',-1,1.5,0.01,0.5]]]];
+ ['동작',[['speed','걷는 속도',0.5,1.5,0.01,1],['upright','등 펴기',-0.5,2,0.01,0.45],['kneeUp','무릎 펴기',0,0.8,0.01,0.25],['chin','고개 들기',-1,1.5,0.01,0.5],['armSwing','팔 흔들기 크기',0,1,0.01,0.45],['elbowBend','팔꿈치 굽힘',0,1,0.01,0.4],['shrug','어깨 힘 빼기',0,1,0.01,0.5]]]];
 const TOGGLES=[['head','머리·얼굴'],['neck','목'],['chest','가슴'],['belly','허리·배'],['pelvis','골반'],['shoulder','어깨'],['uarm','위팔'],['farm','아래팔'],['hand','손'],['thigh','허벅지'],['shin','종아리'],['foot','발']];
 const DEF={}; for(const [,rows] of GROUPS) for(const r of rows) DEF[r[0]]=r[5]; for(const [k] of TOGGLES) DEF['on_'+k]=1;
 Object.assign(DEF,{walk:'walk-relaxed',idle:'view-back',nose:0.7,ear:0,tone:0.05,op:0.8,neckL:0.85,calf:0.67,soft:0.04,pad:0,speed:0.59,on_chest:0}); // 윤성's settings (2026-11-03)
@@ -108,16 +104,15 @@ acts.innerHTML='<button class="btn" id="bApply" style="background:var(--acc);col
 panel.appendChild(acts);
 const codeEl=document.createElement('code'); panel.appendChild(codeEl);
 const note=document.createElement('p'); note.className='note'; note.textContent='“전시장에 적용”은 이 창을 연 전시장으로 보내요. 홈페이지 저장은 마스터 연결(GitHub)로 해요.'; panel.appendChild(note);
-
 function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0;i<a.length;i+=0x8000) s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000)); return btoa(s);};
   const f32=a=>u8(new Uint8Array(Float32Array.from(a).buffer));
   const bones=[], bi=new Map(); for(const c of d.chunks) for(const n of c.bones) if(!bi.has(n)){bi.set(n,bones.length); bones.push(n);} // one bone list for every piece
   const chunks=d.chunks.map(c=>{const big=c.idx.some(v=>v>65535); return {pos:f32(c.pos),idx:u8(new Uint8Array((big?Uint32Array:Uint16Array).from(c.idx).buffer)),i32:big,si:u8(Uint8Array.from(c.si,v=>bi.get(c.bones[v])??0)),sw:u8(Uint8Array.from(c.sw,v=>Math.round(Math.min(1,Math.max(0,v))*255)))};});
-  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5};
+  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5,armSwing:P.armSwing??1,elbowBend:P.elbowBend??1,shrug:P.shrug??0};
   return {credit:'Face: "Genshin Style Anime Female Base Mesh For Blender" by David Onizaki, CC BY 4.0 (edited in NU-LAYER figure creator). Motion: Mesh2Motion / Quaternius CC0.',
     bones,bonePos:d.bonePos,scale:d.scale,y:d.y,chunks,
     head:d.head?{pos:f32(d.head.pos),idx:u8(new Uint8Array(Uint16Array.from(d.head.idx).buffer)),bone:d.head.bone,p:d.head.p,q:d.head.q,s:d.head.s}:null,
-    walk:d.walk,idle:d.idle,look,P:{...P}};}
+    walk:d.walk,idle:d.idle,look,P:{...P},calm:CALM?Object.fromEntries(Object.entries(CALM).filter(([n])=>/(Arm|ForeArm|Hand|Shoulder)$/.test(n)).map(([n,q])=>[n,q.toArray()])):null};}
 window.__packFigure=packFigure;
 document.getElementById('bApply').onclick=async()=>{const info=document.getElementById('applyInfo');
   const G=[window.opener&&window.opener.opener,window.opener,window.parent!==window?window.parent:null].find(w=>{try{return w&&typeof w.__applyFigure==='function';}catch(e){return false;}});
@@ -385,7 +380,7 @@ function rebuild(cell=0.011){
 function apply(){
   baseMat.color.setRGB(P.tone,P.tone,P.tone*1.03,THREE.SRGBColorSpace); baseMat.opacity=1-P.op; baseMat.transparent=true; uEdge.value=0;
   if(aw) aw.timeScale=P.speed; showCode();
-  const sk=JSON.stringify(Object.entries(P).filter(([k])=>!['tone','op','speed','walk','idle','upright','chin','kneeUp','edge','blur'].includes(k)));
+  const sk=JSON.stringify(Object.entries(P).filter(([k])=>!['tone','op','speed','walk','idle','upright','chin','kneeUp','edge','blur','armSwing','elbowBend','shrug'].includes(k)));
   if(sk!==shapeKey&&rig){shapeKey=sk; document.getElementById('busy').hidden=false; clearTimeout(timer); clearTimeout(timer2); // quick rough skin while dragging, the fine one once you stop
     timer=setTimeout(()=>{rebuild(0.017); document.getElementById('busy').hidden=false;},90); timer2=setTimeout(()=>rebuild(0.011),650);}}
 
@@ -402,7 +397,7 @@ function apply(){
     for(const t of c.tracks) if(t.name.endsWith('.position')){t.orig=Float32Array.from(t.values); hipTracks.push(t);}}
   xbotClips={walk:clips.walk,idle:clips.idle};
   mix=new THREE.AnimationMixer(o); aw=mix.clipAction(clips.walk); ai=mix.clipAction(clips.idle); aw.play(); ai.play(); ai.weight=0;
-  document.getElementById('loading').remove(); apply(); await setClip('walk'); await setClip('idle');
+  document.getElementById('loading').remove(); apply(); await setClip('walk'); await setClip('idle'); loadCalm();
 })().catch(e=>{document.getElementById('loading').textContent='불러오기 실패: '+e.message; console.error(e);});
 
 // ---------- view buttons
@@ -417,7 +412,15 @@ const POST=[['Spine',5],['Spine1',5],['Spine2',5],['Neck',4]], _pq=new THREE.Qua
 function posture(){ if(!B.Spine) return; const k=(P.upright??1)*(aw?aw.weight:1), sgn=POSTSIGN;
   const kn=(P.kneeUp??0)*(aw?aw.weight:1); if(kn>0) for(const n of ['LeftLeg','RightLeg']) B[n].quaternion.slerp(restQ.get(B[n]),kn);
   let tot=0; for(const [n,deg] of POST){const a=sgn*k*deg*Math.PI/180; tot+=a; B[n].quaternion.multiply(_pq.setFromAxisAngle(_px,a));}
-  B.Head.quaternion.multiply(_pq.setFromAxisAngle(_px,-tot*0.85+sgn*(P.chin??0.5)*6*Math.PI/180));}
+  B.Head.quaternion.multiply(_pq.setFromAxisAngle(_px,-tot*0.85+sgn*(P.chin??0.5)*6*Math.PI/180));
+  armCalm();}
+// calmer arms while walking: the swing is pulled toward a relaxed hang (the 'view-calm' arms) — smaller swing, straighter elbows, looser shoulders
+let CALM=null;
+async function loadCalm(){ try{ const c=await getClip('view-calm'); CALM={}; for(const t of c.tracks){ const m=/^(.*)\.quaternion$/.exec(t.name); if(m) CALM[m[1]]=new THREE.Quaternion().fromArray(t.values,0); } }catch(e){ console.warn('calm',e); } }
+function armCalm(){ if(!CALM||!aw) return; const w=aw.weight;
+  for(const s of ['Left','Right']){
+    const pull=(b,amt)=>{ if(!b||amt<=0) return; const q=CALM[b.name]; if(q) b.quaternion.slerp(q,Math.min(1,amt)); };
+    pull(B[s+'Arm'],(1-(P.armSwing??1))*w); pull(B[s+'ForeArm'],(1-(P.elbowBend??1))*w); pull(B[s+'Hand'],(1-(P.armSwing??1))*w*0.6); pull(B[s+'Shoulder'],(P.shrug??0)*w); } }
 window.__exp=()=>{const col=skins.filter(m=>m.material===baseMat).map(m=>({pos:Array.from(m.geometry.attributes.position.array),idx:Array.from(m.geometry.index.array),si:Array.from(m.geometry.attributes.skinIndex.array),sw:Array.from(m.geometry.attributes.skinWeight.array),bones:m.skeleton.bones.map(b=>b.name)})); const hm=headMs.find(m=>m.material===baseMat); const bp={}; rig.traverse(o=>{if(o.isBone) bp[o.name]=o.position.toArray();}); const cj=c=>THREE.AnimationClip.toJSON(c); return {chunks:col, head:hm?{pos:Array.from(FCH.g.attributes.position.array),idx:Array.from(FCH.g.index.array),bone:hm.parent.name,p:hm.position.toArray(),q:hm.quaternion.toArray(),s:hm.scale.toArray()}:null, bonePos:bp, scale:holder.scale.x, y:holder.position.y, ratio:curRatio, walk:cj(aw.getClip()), idle:cj(ai.getClip()), P}}; const clock=new THREE.Clock();
 renderer.setAnimationLoop(()=>{const dt=Math.min(0.05,clock.getDelta());
   if(mix){const w=state==='walk'?1:0; aw.weight+=(w-aw.weight)*Math.min(1,dt*5); ai.weight=1-aw.weight; mix.update(dt); posture();}
@@ -448,5 +451,3 @@ function drawFrame(){
   renderer.setRenderTarget(null); quad.material=compMat; compMat.uniforms.t.value=blurRT[2].texture;
   const ac=renderer.autoClear; renderer.autoClear=false; renderer.render(qScene,qCam); renderer.autoClear=ac; cam.layers.enableAll();}
 </script>
-
-</body></html>

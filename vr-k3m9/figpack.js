@@ -53,7 +53,7 @@ export async function figToBin(F, E) {
   let head = null;
   if (F.head) { const P = new Float32Array(ab(F.head.pos)), idx = new Uint16Array(ab(F.head.idx)), q = q16(P), e = encode(E, q.Q, idx, 8, null);
     head = { bone: F.head.bone, p: F.head.p, q: F.head.q, s: F.head.s, count: e.count, tris: e.tris, min: q.min, scale: q.scale }; bufs.push(e.vb, e.ib); }
-  const meta = { v: 2, credit: F.credit, bones: F.bones, bonePos: F.bonePos, scale: F.scale, y: F.y, chunks, head, walk: roundClip(F.walk), idle: roundClip(F.idle), look: F.look, P: F.P };
+  const meta = { v: 2, credit: F.credit, bones: F.bones, bonePos: F.bonePos, scale: F.scale, y: F.y, chunks, head, walk: roundClip(F.walk), idle: roundClip(F.idle), look: F.look, P: F.P, calm: F.calm || null };
   return gzip(binPack(meta, bufs));
 }
 
