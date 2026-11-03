@@ -132,7 +132,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <button class="ask" id="panelAsk" hidden>조절 창 열기<small>브라우저가 새 창을 막았어요 · 이 사이트의 팝업을 허용하면 다음부터 저절로 떠요</small></button>
     <div class="load" id="load"><div class="lys-ld"><div class="lys-ld-row" id="ldRow"></div><div class="lys-ld-label">LOADING</div><div class="fill" id="fill" hidden></div></div></div>
     <script>/* 무지개 십자별 로딩 — 속도 2 / 파도 높이 0 / 파도 간격 0.7 / 별 크기 10 / 반짝임 0.7 */
-(function(){var L={speed:2,amp:0,phase:0.7,size:10,twinkle:0.7,colors:["#FF3B30","#FF9500","#FFD60A","#00B400","#0A84FF","#3F51F5","#AF52DE"]};var row=document.getElementById("ldRow"),box=document.getElementById("load");if(!row||!box)return;var st=L.colors.map(function(c){var d=document.createElement("div");d.className="lys-ld-star";d.style.background=c;d.style.setProperty("--w",(L.size*1.6)+"px");row.appendChild(d);return d;});function f(ms){if(box.hidden)return;var t=ms/1000*L.speed,tw=L.twinkle;st.forEach(function(s,i){var w=t*4-i*L.phase*2,p=(Math.sin(w)+1)/2;s.style.transform="translateY("+(-Math.sin(w)*L.amp).toFixed(2)+"px) scale("+(0.6+0.55*p*tw+(1-tw)*0.3).toFixed(3)+")";s.style.opacity=(0.45+0.55*(tw*p+(1-tw))).toFixed(3);});requestAnimationFrame(f);}requestAnimationFrame(f);})();</script>
+(function(){var L={speed:2,amp:0,phase:0.7,size:10,twinkle:0.7,colors:["#FF3B30","#FF9500","#FFD60A","#00B400","#0A84FF","#3F51F5","#AF52DE"]};var row=document.getElementById("ldRow"),box=document.getElementById("load");if(!row||!box)return;var st=L.colors.map(function(c){var d=document.createElement("div");d.className="lys-ld-star";d.style.background=c;d.style.setProperty("--w",(L.size*1.6)+"px");row.appendChild(d);return d;});function f(ms){if(box.hidden)return;var t=ms/1000*L.speed,tw=L.twinkle;st.forEach(function(s,i){var w=t*4-i*L.phase*2,p=(Math.sin(w)+1)/2;s.style.transform="translateY("+(-Math.sin(w)*L.amp).toFixed(2)+"px) scale("+(0.6+0.55*p*tw+(1-tw)*0.3).toFixed(3)+")";s.style.opacity=(0.45+0.55*(tw*p+(1-tw))).toFixed(3);});requestAnimationFrame(f);}requestAnimationFrame(f);var pend=0,t0=performance.now();window.__ldLast=t0;var of=window.fetch;if(of){window.fetch=function(){pend++;window.__ldLast=performance.now();return of.apply(this,arguments).finally(function(){pend--;window.__ldLast=performance.now();});};}var fontsOk=false;try{document.fonts.ready.then(function(){fontsOk=true;});}catch(e){fontsOk=true;}var fr0=null;function chk(){if(box.hidden)return;var now=performance.now(),tx=window.__ldTex;var idle=pend===0&&window.__ldTexDone&&(!tx||tx[0]>=tx[1])&&now-window.__ldLast>800&&fontsOk;if(idle&&fr0===null)fr0=window.__ldFrames||0;if(!idle)fr0=null;if((idle&&(window.__ldFrames||0)-fr0>=10)||now-t0>40000){box.style.transition='opacity .45s ease';box.style.opacity='0';setTimeout(function(){box.hidden=true;box.style.opacity='';},460);return;}setTimeout(chk,100);}setTimeout(chk,300);})();</script>
     <div class="bar">
       <span class="chip" id="fps">–</span>
       <div class="ctl" id="views">
@@ -259,8 +259,8 @@ import { createGuestbook } from './guestbook.js?v=1104spread';
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
 const manager=new THREE.LoadingManager();
-manager.onProgress=(u,l,t)=>{document.getElementById('fill').style.width=(l/t*100)+'%';};
-manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true;};
+manager.onProgress=(u,l,t)=>{document.getElementById('fill').style.width=(l/t*100)+'%'; window.__ldTex=[l,t]; window.__ldLast=performance.now();};
+manager.onLoad=()=>{window.__ldTexDone=true; dirty=true;};
 const tl=new THREE.TextureLoader(manager);
 const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; return t;};
 const b64=s=>{const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
@@ -626,7 +626,7 @@ if(MOB){const mm=[]; MOB.group.traverse(o=>{if(o.material) (Array.isArray(o.mate
   liveEnv(()=>MOB.group.position.clone().add(new THREE.Vector3(0,(typeof tune!=='undefined'?tune.mobH:1.5)+0.25,0)),()=>[MOB.group],()=>mm);}
 liveEnv(()=>mg.position.clone().add(new THREE.Vector3(0,0.15,0)),()=>[mg],()=>[chrome]);
 liveEnv(()=>(typeof mgdG!=='undefined'?mgdG.position.clone():new THREE.Vector3(10.1,1.2,4.4)).add(new THREE.Vector3(0,0.15,0)),()=>[typeof mgdG!=='undefined'?mgdG:null],()=>[goldMat]);
-manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true; scheduleEnv(200);};
+manager.onLoad=()=>{window.__ldTexDone=true; dirty=true; scheduleEnv(200);};
 setTimeout(()=>scheduleEnv(0),2500); setTimeout(()=>scheduleEnv(0),7000);
 const mkMed=mat=>{const g=mg.clone(); g.traverse(o=>{if(o.isMesh){o.material=mat; o.castShadow=true;}}); scene.add(g); return g;};
 const mwG=mkMed(whiteMat), mgdG=mkMed(goldMat);
@@ -1268,7 +1268,7 @@ setInterval(saveState,1000); addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function loop(now){
-  requestAnimationFrame(loop);
+  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1;
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
   if(mode==='walk'){
     let fwd=0, strafe=0, turn=0;
