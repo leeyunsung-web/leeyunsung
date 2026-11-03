@@ -227,6 +227,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import * as FP from './figpack.js';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -513,8 +515,15 @@ for(const [k,wd] of Object.entries(WALLS)){
 
 // environment for the sculptures
 const env=tl.load('live/env.jpg'); env.mapping=THREE.EquirectangularReflectionMapping; env.colorSpace=THREE.SRGBColorSpace;
+// sculptures: compact .bin (meshopt + gzip) first, the old .json if that fails
+async function meshData(name){ try{ const {meta,buf}=await FP.binRead(await (await fetch(name+'.bin')).arrayBuffer()); await MeshoptDecoder.ready;
+    const V=FP.decodeVerts(MeshoptDecoder,meta,16,buf[0]); meta.I=FP.decodeIdx(MeshoptDecoder,meta,buf[1]); meta.P=FP.positions(V,meta,16);
+    const dv=new DataView(V.buffer), N=new Int16Array(meta.count*3); for(let i=0;i<meta.count;i++) for(let c=0;c<3;c++) N[i*3+c]=dv.getInt16(i*16+8+c*2,true); meta.N=N;
+    if(meta.ao){const A=new Uint8Array(meta.count); for(let i=0;i<meta.count;i++) A[i]=V[i*16+6]; meta.A=A;} return meta;
+  }catch(e){ console.warn(name+'.bin',e); return (await fetch(name+'.json')).json(); } }
 function meshFrom(d,mat){
   const g=new THREE.BufferGeometry();
+  if(d.P){ g.setAttribute('position',new THREE.BufferAttribute(d.P,3)); g.setAttribute('normal',new THREE.BufferAttribute(d.N,3,true)); if(d.A) g.setAttribute('ao',new THREE.BufferAttribute(d.A,1,true)); g.setIndex(new THREE.BufferAttribute(d.I,1)); return new THREE.Mesh(g,mat); }
   if(d.q){ // quantized: positions uint16 over the bounding box, normals int16
     const q=new Uint16Array(b64(d.pos)), P=new Float32Array(q.length);
     for(let k=0;k<q.length;k++){const c=k%3; P[k]=d.min[c]+q[k]*d.scale[c];}
@@ -531,7 +540,7 @@ function meshFrom(d,mat){
 const chrome=new THREE.MeshStandardMaterial({color:new THREE.Color(0.82,0.82,0.82),metalness:1,roughness:0.04,envMap:env});
 const uC={value:1.9};
 chrome.onBeforeCompile=sh=>{sh.uniforms.uContrast=uC; sh.fragmentShader='uniform float uContrast;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\n gl_FragColor.rgb=clamp((gl_FragColor.rgb-vec3(0.70))*uContrast+vec3(0.70),0.0,1.0);');};
-const dm=await (await fetch('medusa_mesh.json')).json();
+const dm=await meshData('medusa_mesh');
 const med=meshFrom(dm,chrome); med.scale.set(...(dm.node.scale||[1,1,1])); med.castShadow=true;
 const mg=new THREE.Group(); mg.add(med); scene.add(mg);
 // HC-UAS mobile: hung from the ceiling at the centre of room 2, real size
@@ -548,7 +557,7 @@ resin.onBeforeCompile=sh=>{sh.uniforms.uAO=uAO;
   sh.uniforms.uContrast=uC2; sh.uniforms.uKeyDir=uKeyDir; sh.uniforms.uKey=uKey; sh.uniforms.uDark=uDark;
   sh.fragmentShader='uniform float uContrast; uniform vec3 uKeyDir; uniform float uKey; uniform float uDark; uniform float uAO; varying float vAO;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','outgoingLight += diffuseColor.rgb*uKey*(0.5+0.5*dot(normal,uKeyDir))*(0.5+0.5*dot(normal,uKeyDir));\n outgoingLight*=mix(1.0,sqrt(vAO),uAO);\n#include <opaque_fragment>\n gl_FragColor.rgb=clamp((gl_FragColor.rgb-vec3(0.72))*uContrast+vec3(0.72),0.0,1.0);\n float lum=dot(gl_FragColor.rgb,vec3(0.2126,0.7152,0.0722));\n gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(lum),0.9);\n gl_FragColor.rgb*=1.0-uDark*0.45*smoothstep(0.9,0.45,lum);');};
 const updKey=()=>uKeyDir.value.copy(KEYW).transformDirection(camera.matrixWorldInverse);
-const dt=await (await fetch('torso_mesh.json')).json();
+const dt=await meshData('torso_mesh');
 const TOR_BASE=0.8, MED_BASE=L.medusa.z; // original pedestal tops (m)
 const whiteMat=new THREE.MeshStandardMaterial({color:0xf3f2ef,roughness:0.55,metalness:0,envMap:env,envMapIntensity:0.9});
 const goldMat=chrome.clone(); goldMat.onBeforeCompile=chrome.onBeforeCompile;
@@ -616,22 +625,34 @@ const ROUTES=[
 async function loadPeople(){
   if(PPL||pplLoading) return; pplLoading=true;
   try{
-    const j=await (await fetch('models/xbot.json')).json(); const gltf=await new Promise((res,rej)=>new GLTFLoader().parse(b64(j.b64),'',res,rej));
-    const clips=Object.fromEntries(gltf.animations.map(a=>[a.name,a]));
-    const sc=1.70/1.80; // the model is about 1.8 m tall; scale it to a 170 cm visitor
+    // the base figure carries its own skeleton (no more 3.9 MB X Bot download); old figure.json + xbot.json stay as a fallback
+    let F=null; try{F=await loadFigure(await (await fetch('models/figure.bin',{cache:'no-cache'})).arrayBuffer());}catch(e){console.warn('figure.bin',e);}
+    if(!F){ F=await (await fetch('models/figure.json',{cache:'no-cache'})).json();
+      const j=await (await fetch('models/xbot.json')).json(); const gltf=await new Promise((res,rej)=>new GLTFLoader().parse(b64(j.b64),'',res,rej)); F.rigScene=gltf.scene; }
+    const still=new THREE.AnimationClip('still',1,[]);
     PPL={figs:ROUTES.map((route,i)=>{
-      const o=SkeletonUtils.clone(gltf.scene); o.scale.setScalar(sc); scene.add(o);
-      const meshes=[]; o.traverse(m=>{if(m.isMesh||m.isSkinnedMesh){m.frustumCulled=false; meshes.push(m);}});
-      const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(clips.walk), idleA=mix.clipAction(clips.idle); walkA.play(); idleA.play(); idleA.weight=0;
+      const o=new THREE.Group(); const meshes=[];
+      const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(still), idleA=mix.clipAction(still.clone()); walkA.play(); idleA.play(); idleA.weight=0;
       const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.7,0.7),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6})); sh.rotation.x=-Math.PI/2; sh.renderOrder=2; scene.add(sh);
       const p0=route[0]; o.position.set(p0[0],0,-p0[1]);
       return {o,meshes,mix,walkA,idleA,sh,route,k:(i*2)%route.length,wait:i*1.5,pos:new THREE.Vector2(p0[0],p0[1]),yaw:0};})};
-    PPL.gltf=gltf; try{buildFig(await (await fetch('models/figure.json',{cache:'no-cache'})).json());
-    }catch(e){console.warn('figure',e);}
+    PPL.rig=F.rig; PPL.rigScene=F.rigScene; try{buildFig(F);}catch(e){console.warn('figure',e);}
     setPeople(pplMode,true); dirty=true;
   }catch(e){console.warn('people',e);} pplLoading=false;}
 // 윤성's base figure: a skin made in the figure page, riding on a copy of the same skeleton (rebuilt in place when the 세부사항 editor sends a new one)
-function buildFig(F){ const gltf=PPL.gltf;
+// read figure.bin into the shape buildFig uses (geometries ready to go)
+async function loadFigure(buf){ const {meta:F,buf:B}=await FP.binRead(buf); await MeshoptDecoder.ready; let k=0;
+  F.geos=F.chunks.map(m=>{const V=FP.decodeVerts(MeshoptDecoder,m,16,B[k++]), I=FP.decodeIdx(MeshoptDecoder,m,B[k++]), g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(FP.positions(V,m,16),3)); g.setIndex(new THREE.BufferAttribute(I,1));
+    const si=new Uint16Array(m.count*4), sw=new Float32Array(m.count*4); for(let i=0;i<m.count;i++) for(let c=0;c<4;c++){si[i*4+c]=V[i*16+8+c]; sw[i*4+c]=V[i*16+12+c]/255;}
+    g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(si,4)); g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(sw,4)); g.computeVertexNormals(); return g;});
+  if(F.head){const m=F.head, V=FP.decodeVerts(MeshoptDecoder,m,8,B[k++]), I=FP.decodeIdx(MeshoptDecoder,m,B[k++]), g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(FP.positions(V,m,8),3)); g.setIndex(new THREE.BufferAttribute(I,1)); g.computeVertexNormals(); F.headGeo=g;}
+  return F;}
+// the skeleton from the figure file: [name, parent, t, r, s, isBone]
+function rigFrom(R){const root=new THREE.Group(), nodes=R.map(([n,p,t,r,s,b])=>{const o=b?new THREE.Bone():new THREE.Object3D(); o.name=n; o.position.fromArray(t); o.quaternion.fromArray(r); o.scale.fromArray(s); return o;});
+  R.forEach(([,p],i)=>(p<0?root:nodes[p]).add(nodes[i])); return root;}
+function buildFig(F){
       for(const f of PPL.figs) if(f.F){ scene.remove(f.F.o); f.F.o.traverse(m=>{if(m.isMesh&&m.material&&m.material.dispose) m.material.dispose();}); }
       if(PPL.figGeos) for(const g of PPL.figGeos) g.dispose();
       const figMat=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(F.look.tone,F.look.tone,F.look.tone*1.03,THREE.SRGBColorSpace),transparent:true,opacity:1-F.look.op,depthWrite:false,
@@ -641,14 +662,14 @@ function buildFig(F){ const gltf=PPL.gltf;
         sh.fragmentShader='uniform float uEdge; varying vec3 vEN; varying vec3 vEV;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\n { float f=abs(dot(normalize(vEN),normalize(vEV))); gl_FragColor.a*=mix(1.0,smoothstep(0.0,0.75,f),uEdge); }');};
       FIGLOOK=F.look; FIGEDGE.value=0;
       const figDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping parts don't double up
-      const geos=F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
+      const geos=F.geos||F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
         g.setIndex(new THREE.BufferAttribute(c.i32?new Uint32Array(b64(c.idx)):new Uint16Array(b64(c.idx)),1));
         g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(Uint16Array.from(new Uint8Array(b64(c.si))),4));
         g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); g.computeVertexNormals(); return g;});
-      const hg=new THREE.BufferGeometry(); PPL.figGeos=[...geos,hg]; hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1)); hg.computeVertexNormals();
+      let hg=F.headGeo; if(!hg){hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1)); hg.computeVertexNormals();} PPL.figGeos=[...geos,hg];
       const fw=THREE.AnimationClip.parse(F.walk), fi=THREE.AnimationClip.parse(F.idle);
       for(const f of PPL.figs){
-        const inner=new THREE.Group(), o=SkeletonUtils.clone(gltf.scene); inner.add(o);
+        const inner=new THREE.Group(), o=(F.rig||PPL.rig)?rigFrom(F.rig||PPL.rig):SkeletonUtils.clone(F.rigScene||PPL.rigScene); inner.add(o);
         o.traverse(m=>{if(m.isSkinnedMesh) m.visible=false;});
         const BN={}; o.traverse(b=>{if(b.isBone) BN[b.name]=b;});
         for(const [n,p] of Object.entries(F.bonePos)) if(BN[n]&&!/Hips$/.test(n)) BN[n].position.fromArray(p);
@@ -899,18 +920,18 @@ async function ghPut(name,text,message,cfg,token){
   const url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`, br=cfg.branch||'main';
   const H={Authorization:'token '+token,Accept:'application/vnd.github+json'};
   let sha; const g=await fetch(url+'?ref='+encodeURIComponent(br)+'&_='+Date.now(),{headers:H,cache:'no-store'}); if(g.ok) sha=(await g.json()).sha;
-  const u=new TextEncoder().encode(text); let bin=''; for(let i=0;i<u.length;i+=0x8000) bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+  const u=typeof text==='string'?new TextEncoder().encode(text):text; let bin=''; for(let i=0;i<u.length;i+=0x8000) bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
   const r=await fetch(url,{method:'PUT',headers:H,body:JSON.stringify({message,content:btoa(bin),branch:br,...(sha?{sha}:{})})});
   if(!r.ok) throw new Error(r.status);}
 // the 세부사항 editor sends a finished figure here: swap it in right away, then save it to the homepage
-window.__applyFigure=async F=>{
-  if(!PPL){ tune.people=3; applyTune(); for(let i=0;i<200&&!(PPL&&PPL.gltf);i++) await new Promise(r=>setTimeout(r,100)); }
-  if(!PPL||!PPL.gltf) throw new Error('관람객을 불러오지 못했어요');
+window.__applyFigure=async bin=>{ const u8=new Uint8Array(bin); const F=await loadFigure(u8.slice().buffer);
+  if(!PPL){ tune.people=3; applyTune(); for(let i=0;i<200&&!(PPL&&(PPL.rig||PPL.rigScene));i++) await new Promise(r=>setTimeout(r,100)); }
+  if(!PPL||!(PPL.rig||PPL.rigScene)) throw new Error('관람객을 불러오지 못했어요');
   buildFig(F); tune.people=3; if(F.look){ if(F.look.blur!=null) tune.figBlur=F.look.blur; if(F.look.upright!=null) tune.figUp=F.look.upright; } applyTune(); saveTune(true);
   let cfg=null, token='';
   try{cfg=JSON.parse(localStorage.getItem('leeArchiveGhConfig_v2')||'null'); token=sessionStorage.getItem('leeArchiveGhToken_v2')||localStorage.getItem('leeArchiveGhTokenKeep_v2')||'';}catch(e){}
   if(!cfg||!cfg.owner||!cfg.repo||!token) return '전시장에 적용했어요. 홈페이지 연결(GitHub 토큰)이 없어서 홈페이지 저장은 못 했어요 — 마스터 바의 ⇪ 버튼으로 연결한 뒤 다시 눌러 주세요.';
-  await ghPut('models/figure.json',JSON.stringify(F),'Virtual exhibition: base figure from the detail editor',cfg,token);
+  await ghPut('models/figure.bin',u8,'Virtual exhibition: base figure from the detail editor',cfg,token);
   await ghPut('settings.json',JSON.stringify({savedAt:Date.now(),tune},null,1),'Virtual exhibition settings',cfg,token);
   const t=new Date(); return '전시장에 적용하고 홈페이지에도 저장했어요 ('+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+') · 1~2분 뒤 다른 기기에도 보여요.';};
 let waitGesture=false;

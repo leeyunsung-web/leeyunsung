@@ -59,7 +59,9 @@ code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--bg);b
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { MeshoptDecoder } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/meshopt_decoder.module.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { MeshoptEncoder } from 'three/addons/libs/meshopt_encoder.module.js';
+import * as FP from './figpack.js';
 
 // ---------- settings (menu order)
 const GROUPS=[
@@ -78,7 +80,7 @@ const TOGGLES=[['head','머리·얼굴'],['neck','목'],['chest','가슴'],['bel
 const DEF={}; for(const [,rows] of GROUPS) for(const r of rows) DEF[r[0]]=r[5]; for(const [k] of TOGGLES) DEF['on_'+k]=1;
 Object.assign(DEF,{walk:'walk-relaxed',idle:'view-back',nose:0.7,ear:0,tone:0.05,op:0.8,neckL:0.85,calf:0.67,soft:0.04,pad:0,speed:0.59,on_chest:0}); // 윤성's settings (2026-11-03)
 let P={...DEF};
-const HOME=new URLSearchParams(location.search).has('home')?await fetch('models/figure.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>j.P).catch(()=>null):null;
+const HOME=new URLSearchParams(location.search).has('home')?await fetch('models/figure.bin?_='+Date.now(),{cache:'no-store'}).then(r=>r.arrayBuffer()).then(FP.binRead).then(r=>r.meta.P).catch(()=>fetch('models/figure.json').then(r=>r.json()).then(j=>j.P).catch(()=>null)):null;
 try{const s3=JSON.parse(localStorage.getItem('base-figure-v3')||'null'), s=JSON.parse(localStorage.getItem('base-figure-v2')||'null');
   if(s3) P={...DEF,...s3}; else if(s){P={...DEF,...s,on_hand:1,on_foot:1};} // new hands and feet: switch them back on once
   else{const o=JSON.parse(localStorage.getItem('base-figure-v1')||'null'); if(o) for(const k of ['tone','op','height','speed']) if(k in o) P[k]=o[k];}}catch(e){}
@@ -119,8 +121,8 @@ function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0
 document.getElementById('bApply').onclick=async()=>{const info=document.getElementById('applyInfo');
   const G=[window.opener&&window.opener.opener,window.opener,window.parent!==window?window.parent:null].find(w=>{try{return w&&typeof w.__applyFigure==='function';}catch(e){return false;}});
   if(!G){info.textContent='전시장 창을 찾지 못했어요. 전시장 조절 창의 “세부사항” 버튼으로 이 창을 열어 주세요.'; return;}
-  info.textContent='보내는 중…'; let F; try{F=packFigure();}catch(e){info.textContent='만들지 못했어요: '+e.message; return;}
-  try{const r=await G.__applyFigure(F); info.textContent=r||'적용했어요.';}catch(e){info.textContent='적용 실패: '+e.message;}};
+  info.textContent='보내는 중…'; let bin; try{bin=await FP.figToBin(packFigure(),MeshoptEncoder);}catch(e){info.textContent='만들지 못했어요: '+e.message; return;}
+  try{const r=await G.__applyFigure(bin); info.textContent=r||'적용했어요.';}catch(e){info.textContent='적용 실패: '+e.message;}};
 function showCode(){codeEl.textContent='기본 피규어 '+Object.entries(P).map(([k,v])=>k+'='+(typeof v==='number'?+v.toFixed(2):v)).join(' ');}
 document.getElementById('bReset').onclick=()=>{P={...DEF}; for(const k in ins){if(ins[k].type==='checkbox') ins[k].checked=!!P[k]; else {ins[k].value=P[k]; if(outs[k]) outs[k][0].textContent=fmt(outs[k][1],P[k]);}} save(); apply(); setClip('walk'); setClip('idle');};
 document.getElementById('bCopy').onclick=async e=>{const b=e.target; try{await navigator.clipboard.writeText(codeEl.textContent); b.textContent='복사됨';}catch(err){const r=document.createRange(); r.selectNodeContents(codeEl); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent='선택됨 — 복사하세요';} setTimeout(()=>b.textContent='값 복사',1600);};
