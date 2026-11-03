@@ -734,21 +734,22 @@ function botTick(dt){
   if(botsOn()&&KIT&&!BOTS.length) ROUTES.forEach((r,i)=>{ const id='bot'+i, p0=r[0]; addPeer({id,h:[160,170,180][i%3],x:p0[0],y:p0[1],a:0}); const p=PEERS.get(id); if(p){ p.bot=true; BOTS.push({id,route:r,k:1,wait:i*1.5,x:p0[0],y:p0[1],yaw:0}); } });
   if(!botsOn()&&BOTS.length){ for(const b of BOTS) removePeer(b.id); BOTS.length=0; showOnline(); }
   for(const b of BOTS){ const p=PEERS.get(b.id); if(!p) continue; if(p.stopFor>0){ p.stopFor-=dt; continue; } const t=b.route[b.k], dx=t[0]-b.x, dy=t[1]-b.y, d=Math.hypot(dx,dy);
-    if(b.wait>0){ b.wait-=dt; if(t[2]!=null) b.yaw=-(t[2]*Math.PI/180); if(b.wait<=0) b.k=(b.k+1)%b.route.length; }
+    if(b.wait>0){ b.wait-=dt; if(t[2]!=null) b.yaw=t[2]*Math.PI/180; if(b.wait<=0) b.k=(b.k+1)%b.route.length; }
     else if(d<0.05) b.wait=t[2]!=null?3+Math.random()*4:0.01;
-    else { const st=Math.min(d,1.0*dt); b.x+=dx/d*st; b.y+=dy/d*st; b.yaw=-Math.atan2(dx,dy); }
+    else { const st=Math.min(d,1.0*dt); b.x+=dx/d*st; b.y+=dy/d*st; b.yaw=Math.atan2(dx,dy); }
     p.tgt.set(b.x,b.y); p.tyaw=b.yaw; } }
 // a bot near you answers, stops for a moment and turns to you
 function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get(b.id); if(!p) continue; const d=Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y); if(d<bd){bd=d;best=p;} }
-  if(!best) return; best.stopFor=6; best.tyaw=-Math.atan2(walk.x-best.pos.x,walk.y-best.pos.y);
+  if(!best) return; best.stopFor=6; best.tyaw=Math.atan2(walk.x-best.pos.x,walk.y-best.pos.y);
   setTimeout(()=>showSay(best.id,BOT_LINES[Math.floor(Math.random()*BOT_LINES.length)]),900+Math.random()*900); }
 // smooth each visitor toward their last reported spot; legs follow the real speed (no sliding)
 function updatePeople(dt){
   if(!PPL||!pplMode||!PEERS.size) return false;
   for(const p of PEERS.values()){ const A=p.F; if(!A) continue;
     const k=Math.min(1,dt*9), ox=p.pos.x, oy=p.pos.y; p.pos.x+=(p.tgt.x-p.pos.x)*k; p.pos.y+=(p.tgt.y-p.pos.y)*k;
-    const v=Math.hypot(p.pos.x-ox,p.pos.y-oy)/Math.max(dt,1e-3); p.spd+=(v-p.spd)*Math.min(1,dt*6);
-    p.yaw+=Math.atan2(Math.sin(p.tyaw-p.yaw),Math.cos(p.tyaw-p.yaw))*Math.min(1,dt*8);
+    const mx=p.pos.x-ox, my=p.pos.y-oy, v=Math.hypot(mx,my)/Math.max(dt,1e-3); p.spd+=(v-p.spd)*Math.min(1,dt*6);
+    // face where they walk while moving (no walking backwards or sliding sideways), face where they look when standing
+    const face=p.spd>0.25&&v>0.05?Math.atan2(mx,my):p.tyaw; p.yaw+=Math.atan2(Math.sin(face-p.yaw),Math.cos(face-p.yaw))*Math.min(1,dt*5);
     const walking=p.spd>0.18, wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
     A.walkA.timeScale=Math.max(0.5,Math.min(1.9,p.spd/(1.05*A.cm/KIT.base)));
     A.mix.update(dt); figPosture(A);
