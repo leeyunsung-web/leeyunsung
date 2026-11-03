@@ -1,0 +1,449 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><script>try{if(!/(?:^|;\s*)lysM=1/.test(document.cookie))location.replace("/#works")}catch(e){location.replace("/#works")}</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>피규어 세부사항</title><style>html{-webkit-text-size-adjust:100%}*{box-sizing:border-box}body{margin:0}</style>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f4f2ee;--panel:#ffffff;--ink:#22211f;--mute:#6f6b64;--line:#dedad2;--acc:#2f5d8a;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--panel:#22211f;--ink:#eceae5;--mute:#a19c93;--line:#393731;--acc:#8fb6dd;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171716;--panel:#22211f;--ink:#eceae5;--mute:#a19c93;--line:#393731;--acc:#8fb6dd;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
+h1{font-size:22px;margin:0;font-weight:600}
+.sub{color:var(--mute);margin:2px 0 0;max-width:70ch}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
+@media (max-width:820px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{position:sticky;top:8px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#ecebe8;aspect-ratio:4/5;max-height:78vh;width:100%;min-height:320px}
+.stage canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:10px;bottom:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap}
+.hud button,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.hud button[aria-pressed="true"]{background:var(--acc);color:var(--panel);border-color:var(--acc)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:#55524c;font-size:14px}
+.panel{max-height:82vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.panel h2{font-size:13px;letter-spacing:.04em;color:var(--mute);font-weight:600;margin:10px 0 2px;border-top:1px solid var(--line);padding-top:10px}
+.panel h2:first-child{border-top:0;padding-top:0;margin-top:0}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr) 54px;align-items:center;gap:8px;font-size:14px}
+.row input{width:100%;accent-color:var(--acc)}
+.row output{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mute);text-align:right}
+.tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 8px;font-size:14px}
+.tg input{accent-color:var(--acc)}
+.busy{position:absolute;right:10px;top:10px;font-size:12px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.note{color:var(--mute);font-size:13px}
+code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;display:block;overflow-wrap:anywhere;margin-top:6px}
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>피규어 세부사항</h1>
+    <p class="sub">슬라이더를 움직이면 바로 바뀌어요. 마음에 들면 아래 “전시장에 적용”을 누르세요 — 전시장 관람객이 바로 바뀌고 홈페이지에도 저장돼요.</p>
+  </div>
+  <div class="main">
+    <div class="stage" id="stage">
+      <div class="loading" id="loading">불러오는 중…</div>
+      <div class="busy" id="busy" hidden>겉면 만드는 중…</div>
+      <div class="hud">
+        <button id="bWalk" aria-pressed="true">걷기</button>
+        <button id="bIdle" aria-pressed="false">서서 보기</button>
+        <button data-v="front">앞</button><button data-v="side">옆</button><button data-v="back">뒤</button><button data-v="q">비스듬히</button>
+      </div>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"/vr-k3m9/three/three.module.min.js","three/addons/":"/vr-k3m9/three/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { MeshoptDecoder } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/meshopt_decoder.module.js';
+
+// ---------- settings (menu order)
+const GROUPS=[
+ ['색',[['tone','진하기',0.05,0.6,0.01,0.2,v=>Math.round(v*100)+'%'],['op','비침',0,0.8,0.01,0.3,v=>Math.round(v*100)+'%'],['blur','윤곽 블러',0,14,0.1,4,v=>v.toFixed(1)+'px']]],
+ ['전체',[['height','키',150,195,1,170,v=>v+'cm']]],
+ ['머리 · 목',[['head','머리 크기',0.75,1.35,0.01,1],['headH','머리 세로',0.8,1.25,0.01,1],['neckL','목 길이',0.5,1.6,0.01,1],['neck','목 굵기',0.6,1.5,0.01,1]]],
+ ['몸통',[['torsoL','상체 길이',0.8,1.25,0.01,1],['shoulder','어깨 너비',0.7,1.35,0.01,1],['chest','가슴 너비',0.7,1.35,0.01,1],['chestD','가슴 두께',0.7,1.4,0.01,1],
+          ['waist','허리 너비',0.7,1.4,0.01,1],['waistD','배 두께',0.7,1.5,0.01,1],['hip','골반 너비',0.7,1.4,0.01,1],['hipD','엉덩이 두께',0.7,1.5,0.01,1]]],
+ ['팔',[['uarmL','위팔 길이',0.75,1.3,0.01,1],['farmL','아래팔 길이',0.75,1.3,0.01,1],['uarm','위팔 굵기',0.6,1.6,0.01,1],['elbow','팔꿈치 굵기',0.6,1.6,0.01,1],
+        ['farm','팔뚝 굵기',0.6,1.6,0.01,1],['wrist','손목 굵기',0.6,1.6,0.01,1],['hand','손 크기',0.6,1.5,0.01,1]]],
+ ['다리',[['thighL','허벅지 길이',0.75,1.3,0.01,1],['shinL','종아리 길이',0.75,1.3,0.01,1],['thigh','허벅지 굵기',0.6,1.6,0.01,1],['knee','무릎 굵기',0.6,1.6,0.01,1],
+        ['calf','종아리 굵기',0.6,1.6,0.01,1],['ankle','발목 굵기',0.6,1.6,0.01,1],['footL','발 길이',0.7,1.4,0.01,1],['foot','발 굵기',0.7,1.5,0.01,1]]],
+ ['천(겉면)',[['soft','이음 부드러움',0.005,0.08,0.001,0.035,v=>Math.round(v*1000)+'mm'],['pad','천 두께',-0.01,0.025,0.001,0.004,v=>Math.round(v*1000)+'mm']]],
+ ['동작',[['speed','걷는 속도',0.5,1.5,0.01,1],['upright','등 펴기',-0.5,2,0.01,0.45],['kneeUp','무릎 펴기',0,0.8,0.01,0.25],['chin','고개 들기',-1,1.5,0.01,0.5]]]];
+const TOGGLES=[['head','머리·얼굴'],['neck','목'],['chest','가슴'],['belly','허리·배'],['pelvis','골반'],['shoulder','어깨'],['uarm','위팔'],['farm','아래팔'],['hand','손'],['thigh','허벅지'],['shin','종아리'],['foot','발']];
+const DEF={}; for(const [,rows] of GROUPS) for(const r of rows) DEF[r[0]]=r[5]; for(const [k] of TOGGLES) DEF['on_'+k]=1;
+Object.assign(DEF,{walk:'walk-relaxed',idle:'view-back',nose:0.7,ear:0,tone:0.05,op:0.8,neckL:0.85,calf:0.67,soft:0.04,pad:0,speed:0.59,on_chest:0}); // 윤성's settings (2026-11-03)
+let P={...DEF};
+const HOME=new URLSearchParams(location.search).has('home')?await fetch('models/figure.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>j.P).catch(()=>null):null;
+try{const s3=JSON.parse(localStorage.getItem('base-figure-v3')||'null'), s=JSON.parse(localStorage.getItem('base-figure-v2')||'null');
+  if(s3) P={...DEF,...s3}; else if(s){P={...DEF,...s,on_hand:1,on_foot:1};} // new hands and feet: switch them back on once
+  else{const o=JSON.parse(localStorage.getItem('base-figure-v1')||'null'); if(o) for(const k of ['tone','op','height','speed']) if(k in o) P[k]=o[k];}}catch(e){}
+if(HOME) P={...DEF,...HOME};
+const save=()=>{try{localStorage.setItem('base-figure-v3',JSON.stringify(P));}catch(e){}};
+const fmt=(r,v)=>r[6]?r[6](v):Math.round(v*100)+'%';
+
+const panel=document.getElementById('panel'); const outs={}, ins={};
+for(const [g,rows] of GROUPS){const h=document.createElement('h2'); h.textContent=g; panel.appendChild(h);
+  for(const r of rows){const d=document.createElement('label'); d.className='row';
+    d.innerHTML=`<span>${r[1]}</span><input type="range" min="${r[2]}" max="${r[3]}" step="${r[4]}"><output></output>`;
+    const i=d.querySelector('input'), o=d.querySelector('output'); i.value=P[r[0]]; o.textContent=fmt(r,P[r[0]]);
+    i.oninput=()=>{P[r[0]]=+i.value; o.textContent=fmt(r,P[r[0]]); save(); apply();}; ins[r[0]]=i; outs[r[0]]=[o,r]; panel.appendChild(d);}}
+const WALKS=[['walk-relaxed','편안하게'],['walk','보통'],['walk-formal','단정하게'],['walk-female','부드럽게'],['walk-happy','경쾌하게'],['walk-cautious','조심스럽게'],['xbot-walk','예전 마네킹 걸음']];
+const IDLES=[['view-back','감상 · 뒷짐'],['view-calm','감상 · 팔 내림'],['idle-subtle','가만히 (살짝 움직임)'],['idle-a','편하게 서기'],['idle-foldarms','팔짱'],['idle-listening','귀 기울이기'],['idle-talkingphone','통화'],['xbot-idle','예전 마네킹']];
+for(const [k,l,opts] of [['walk','걷는 모양',WALKS],['idle','서 있는 모양',IDLES]]){const d=document.createElement('label'); d.className='row';
+  d.innerHTML=`<span>${l}</span><select style="width:100%;font:inherit;font-size:13px">${opts.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select><output></output>`;
+  const sel=d.querySelector('select'); sel.value=P[k]; sel.onchange=()=>{P[k]=sel.value; save(); showCode(); setClip(k);}; ins[k]=sel; panel.appendChild(d);}
+{const h=document.createElement('h2'); h.textContent='부위 켜고 끄기'; panel.appendChild(h);
+ const box=document.createElement('div'); box.className='tg'; panel.appendChild(box);
+ for(const [k,l] of TOGGLES){const lb=document.createElement('label'); lb.innerHTML=`<input type="checkbox"> ${l}`; const c=lb.querySelector('input'); c.checked=!!P['on_'+k];
+   c.onchange=()=>{P['on_'+k]=c.checked?1:0; save(); apply();}; ins['on_'+k]=c; box.appendChild(lb);}}
+const acts=document.createElement('div'); acts.className='acts';
+acts.innerHTML='<button class="btn" id="bApply" style="background:var(--acc);color:var(--panel);border-color:var(--acc);font-weight:600">전시장에 적용</button><button class="btn" id="bCopy">값 복사</button><button class="btn" id="bReset">처음 값으로</button><span class="note" id="applyInfo" style="flex-basis:100%"></span>';
+panel.appendChild(acts);
+const codeEl=document.createElement('code'); panel.appendChild(codeEl);
+const note=document.createElement('p'); note.className='note'; note.textContent='“전시장에 적용”은 이 창을 연 전시장으로 보내요. 홈페이지 저장은 마스터 연결(GitHub)로 해요.'; panel.appendChild(note);
+
+function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0;i<a.length;i+=0x8000) s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000)); return btoa(s);};
+  const f32=a=>u8(new Uint8Array(Float32Array.from(a).buffer));
+  const bones=[], bi=new Map(); for(const c of d.chunks) for(const n of c.bones) if(!bi.has(n)){bi.set(n,bones.length); bones.push(n);} // one bone list for every piece
+  const chunks=d.chunks.map(c=>{const big=c.idx.some(v=>v>65535); return {pos:f32(c.pos),idx:u8(new Uint8Array((big?Uint32Array:Uint16Array).from(c.idx).buffer)),i32:big,si:u8(Uint8Array.from(c.si,v=>bi.get(c.bones[v])??0)),sw:u8(Uint8Array.from(c.sw,v=>Math.round(Math.min(1,Math.max(0,v))*255)))};});
+  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5};
+  return {credit:'Face: "Genshin Style Anime Female Base Mesh For Blender" by David Onizaki, CC BY 4.0 (edited in NU-LAYER figure creator). Motion: Mesh2Motion / Quaternius CC0.',
+    bones,bonePos:d.bonePos,scale:d.scale,y:d.y,chunks,
+    head:d.head?{pos:f32(d.head.pos),idx:u8(new Uint8Array(Uint16Array.from(d.head.idx).buffer)),bone:d.head.bone,p:d.head.p,q:d.head.q,s:d.head.s}:null,
+    walk:d.walk,idle:d.idle,look,P:{...P}};}
+document.getElementById('bApply').onclick=async()=>{const info=document.getElementById('applyInfo');
+  const G=[window.opener&&window.opener.opener,window.opener,window.parent!==window?window.parent:null].find(w=>{try{return w&&typeof w.__applyFigure==='function';}catch(e){return false;}});
+  if(!G){info.textContent='전시장 창을 찾지 못했어요. 전시장 조절 창의 “세부사항” 버튼으로 이 창을 열어 주세요.'; return;}
+  info.textContent='보내는 중…'; let F; try{F=packFigure();}catch(e){info.textContent='만들지 못했어요: '+e.message; return;}
+  try{const r=await G.__applyFigure(F); info.textContent=r||'적용했어요.';}catch(e){info.textContent='적용 실패: '+e.message;}};
+function showCode(){codeEl.textContent='기본 피규어 '+Object.entries(P).map(([k,v])=>k+'='+(typeof v==='number'?+v.toFixed(2):v)).join(' ');}
+document.getElementById('bReset').onclick=()=>{P={...DEF}; for(const k in ins){if(ins[k].type==='checkbox') ins[k].checked=!!P[k]; else {ins[k].value=P[k]; if(outs[k]) outs[k][0].textContent=fmt(outs[k][1],P[k]);}} save(); apply(); setClip('walk'); setClip('idle');};
+document.getElementById('bCopy').onclick=async e=>{const b=e.target; try{await navigator.clipboard.writeText(codeEl.textContent); b.textContent='복사됨';}catch(err){const r=document.createRange(); r.selectNodeContents(codeEl); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent='선택됨 — 복사하세요';} setTimeout(()=>b.textContent='값 복사',1600);};
+
+// ---------- scene
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(2,devicePixelRatio)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap; stage.prepend(renderer.domElement);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0xecebe8);
+const cam=new THREE.PerspectiveCamera(32,1,0.1,100); cam.position.set(0,1.2,5.2);
+const ctl=new OrbitControls(cam,renderer.domElement); ctl.target.set(0,0.88,0); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.52; ctl.minDistance=1.2; ctl.maxDistance=12;
+scene.add(new THREE.HemisphereLight(0xffffff,0xb9b4aa,1.6));
+const sun=new THREE.DirectionalLight(0xffffff,1.4); sun.position.set(1.5,6,2.5); sun.castShadow=true; sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.layers.enableAll();
+Object.assign(sun.shadow.camera,{left:-2,right:2,top:3,bottom:-1,near:1,far:15}); sun.shadow.radius=8; sun.shadow.blurSamples=12; scene.add(sun);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshStandardMaterial({color:0xd9d7d2,roughness:0.85})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+const wall=new THREE.Mesh(new THREE.PlaneGeometry(40,10),new THREE.MeshStandardMaterial({color:0xf2f1ee,roughness:0.95})); wall.position.set(0,5,-3); scene.add(wall);
+function size(){const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();}
+new ResizeObserver(size).observe(stage); size();
+
+// ---------- figure: soft volumes on the mannequin's bones, melted into one skin (like cloth pulled over a frame), bound to the bones
+const baseMat=new THREE.MeshBasicMaterial({color:0x3a3a3c,transparent:true,opacity:0.7,depthWrite:false,blending:THREE.CustomBlending,blendSrc:THREE.SrcAlphaFactor,blendDst:THREE.OneMinusSrcAlphaFactor,blendSrcAlpha:THREE.OneFactor,blendDstAlpha:THREE.OneMinusSrcAlphaFactor});
+const FIGL=1;
+// soft edge: the outline fades out like a light blur (the less the surface faces you, the more see-through)
+const uEdge={value:0.45};
+baseMat.onBeforeCompile=sh=>{sh.uniforms.uEdge=uEdge;
+  sh.vertexShader='varying vec3 vEN; varying vec3 vEV;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n#if defined( USE_ENVMAP ) || defined( USE_SKINNING )\n vEN=normalize(transformedNormal);\n#else\n vEN=normalize(normalMatrix*normal);\n#endif\n vEV=-mvPosition.xyz;');
+  sh.fragmentShader='uniform float uEdge; varying vec3 vEN; varying vec3 vEV;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','#include <opaque_fragment>\n { float f=abs(dot(normalize(vEN),normalize(vEV))); gl_FragColor.a*=mix(1.0,smoothstep(0.0,0.75,f),uEdge); }');};
+const baseDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping arm/body don't double up
+const key=n=>n.replace(/^mixamorig[:_]?/,'').replace(/[^A-Za-z0-9]/g,'');
+let B={}, restPos=new Map(), restQ=new Map(), holder=null, rig=null, mix=null, aw=null, ai=null, hipTracks=[], legRest=1, skins=[];
+const LEN={ // bone whose rest offset is scaled -> slider
+  Spine:'torsoL',Spine1:'torsoL',Spine2:'torsoL',Neck:'torsoL',Head:'neckL',HeadTopEnd:'head*headH',
+  LeftArm:'shoulder',RightArm:'shoulder',LeftForeArm:'uarmL',RightForeArm:'uarmL',LeftHand:'farmL',RightHand:'farmL',
+  LeftUpLeg:'hip',RightUpLeg:'hip',LeftLeg:'thighL',RightLeg:'thighL',LeftFoot:'shinL',RightFoot:'shinL',
+  LeftToeBase:'footL',RightToeBase:'footL',LeftToeEnd:'footL',RightToeEnd:'footL'};
+const lf=(v,p)=>v.split('*').reduce((a,k)=>a*p[k],1);
+// volumes: [group, bone, end A, end B, kind, size(p)]  cone: [[wA,dA],[wB,dB]] half width/depth at each end; ell: [t along A-B, rx, ry(axis), rz]
+const VOL=[
+  ['neck','Neck','@neckBase','@neckTop','cone',p=>[[0.058*p.neck,0.056*p.neck],[0.046*p.neck,0.05*p.neck]]],
+  ...['Left','Right'].map(s=>['neck','Spine2','@neckBase','@trap'+s,'cone',p=>[[0.05*p.neck,0.04],[0.032,0.032]]]),   // slope from neck to shoulder
+  ['pelvis','Hips','@pelvis','Spine','cone',p=>[[0.150*p.hip,0.100*p.hipD],[0.132*p.waist,0.088*p.waistD]]],
+  ['belly','Spine','Spine','Spine1','cone',p=>[[0.132*p.waist,0.088*p.waistD],[0.130*p.waist,0.086*p.waistD]]],
+  ['belly','Spine1','Spine1','Spine2','cone',p=>[[0.130*p.waist,0.086*p.waistD],[0.150*p.chest,0.098*p.chestD]]],
+  ['chest','Spine2','Spine2','Neck','cone',p=>[[0.150*p.chest,0.098*p.chestD],[0.105*p.chest,0.062*p.chestD]]],
+  ...['Left','Right'].flatMap(s=>[
+  ['shoulder',s+'Shoulder',s+'Shoulder',s+'Arm','cone',p=>[[0.045,0.045],[0.05*p.uarm,0.048*p.uarm]]],
+  ['uarm',s+'Arm',s+'Arm',s+'ForeArm','cone',p=>[[0.046*p.uarm,0.046*p.uarm],[0.034*p.elbow,0.034*p.elbow]]],
+  ['farm',s+'ForeArm',s+'ForeArm',s+'Hand','cone',p=>[[0.034*p.elbow,0.033*p.elbow],[0.025*p.wrist,0.019*p.wrist]]],
+  ['farm',s+'ForeArm',s+'ForeArm',s+'Hand','ell',p=>[0.3,0.038*p.farm,0.32,0.035*p.farm]],   // forearm muscle
+  ['thigh',s+'UpLeg',s+'UpLeg',s+'Leg','cone',p=>[[0.078*p.thigh,0.08*p.thigh],[0.047*p.knee,0.049*p.knee]]],
+  ['shin',s+'Leg',s+'Leg',s+'Foot','cone',p=>[[0.046*p.knee,0.048*p.knee],[0.029*p.ankle,0.031*p.ankle]]],
+  ['shin',s+'Leg',s+'Leg',s+'Foot','ell',p=>[0.3,0.05*p.calf,0.3,0.054*p.calf]],             // calf
+  ])];
+function setup(o){
+  rig=o; o.traverse(b=>{if(b.isBone){B[key(b.name)]=b; restPos.set(b,b.position.clone()); restQ.set(b,b.quaternion.clone());}});
+  o.traverse(m=>{if(m.isSkinnedMesh) m.visible=false;});
+  legRest=['LeftLeg','LeftFoot'].reduce((a,n)=>a+restPos.get(B[n]).length(),0);}
+function applyLengths(){
+  for(const [n,f] of Object.entries(LEN)) if(B[n]) B[n].position.copy(restPos.get(B[n])).multiplyScalar(lf(f,P));
+  const ratio=['LeftLeg','LeftFoot'].reduce((a,n)=>a+B[n].position.length(),0)/legRest;
+  for(const t of hipTracks) for(let i=0;i<t.values.length;i++) t.values[i]=t.orig[i]*ratio;
+  curRatio=ratio; return ratio;}
+// signed distances (metres)
+function sdCone(q,L,r1,r2){ // q = [radial, axial]
+  const h=Math.max(L,1e-4), b=Math.max(-0.99,Math.min(0.99,(r1-r2)/h)), a=Math.sqrt(1-b*b), k=-b*q[0]+a*q[1];
+  if(k<0) return Math.hypot(q[0],q[1])-r1; if(k>a*h) return Math.hypot(q[0],q[1]-h)-r2; return q[0]*a+q[1]*b-r1;}
+const XA=new THREE.Vector3(1,0,0);
+function mkCone(bone,A,Bp,ea,eb,chunk){const dir=Bp.clone().sub(A), L=Math.max(0.001,dir.length()); dir.normalize();
+  const x=XA.clone().sub(dir.clone().multiplyScalar(XA.dot(dir))); if(x.lengthSq()<1e-6) x.set(0,0,1); x.normalize(); const z=new THREE.Vector3().crossVectors(x,dir);
+  const o={bone,A,x,y:dir,z,L,kind:'cone',chunk}; o.r1=(ea[0]+ea[1])/2; o.r2=(eb[0]+eb[1])/2; o.sx=(o.r1+o.r2)/(ea[0]+eb[0]); o.sz=(o.r1+o.r2)/(ea[1]+eb[1]);
+  const R=Math.max(ea[0],ea[1],eb[0],eb[1]); o.min=A.clone().min(Bp).subScalar(R+0.03); o.max=A.clone().max(Bp).addScalar(R+0.03); return o;}
+function mkEll(bone,c,r,chunk,cut=false){const R=Math.max(...r); return {bone,kind:'ellw',c,r,chunk,cut,min:c.clone().subScalar(R+0.03),max:c.clone().addScalar(R+0.03)};}
+function prepVolumes(W){
+  const out=[];
+  for(const [grp,bone,a,b,kind,f] of VOL){ if(!P['on_'+grp]) continue;
+    const A=W(a), Bp=W(b), v=f(P);
+    if(kind==='cone') out.push(mkCone(B[bone],A,Bp,v[0],v[1],'body'));
+    else {const c0=mkCone(B[bone],A,Bp,[0.01,0.01],[0.01,0.01],'body'), [t,rx,ry,rz]=v, c=A.clone().addScaledVector(c0.y,c0.L*t), R=Math.max(rx,c0.L*ry,rz); // ellipsoid along the bone
+      out.push({bone:B[bone],kind:'ell',x:c0.x,y:c0.y,z:c0.z,c,rx,ry:c0.L*ry,rz,chunk:'body',min:c.clone().subScalar(R+0.03),max:c.clone().addScalar(R+0.03)});}}
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+  // head: the face from the NU-LAYER figure creator is placed in rebuild()
+  // hands: palm + four fingers + thumb on the finger bones
+  if(P.on_hand) for(const sd of ['Left','Right']){const ch='hand'+sd, k=P.hand, Hn=W(sd+'Hand'), M1=W(sd+'HandMiddle1'), I1=W(sd+'HandIndex1'), P1=W(sd+'HandPinky1');
+    out.push(mkCone(B[sd+'Hand'],Hn.clone().lerp(M1,-0.05),M1,[0.026*k,0.014*k],[0.040*k,0.012*k],ch));            // palm
+    out.push(mkCone(B[sd+'Hand'],Hn.clone().lerp(M1,0.1),I1.clone().lerp(P1,0.5),[0.03*k,0.013*k],[0.036*k,0.011*k],ch));
+    for(const f of ['Index','Middle','Ring','Pinky']){const r=(f==='Pinky'?0.0078:f==='Middle'?0.0093:0.0088)*k;
+      for(let q=1;q<=3;q++) out.push(mkCone(B[sd+'Hand'+f+q],W(sd+'Hand'+f+q),W(sd+'Hand'+f+(q+1)),[r,r*0.9],[r*0.9,r*0.82],ch));}
+    for(let q=1;q<=3;q++){const r=0.0115*k*(1-0.08*q); out.push(mkCone(B[sd+'HandThumb'+q],W(sd+'HandThumb'+q),W(sd+'HandThumb'+(q+1)),[r,r],[r*0.92,r*0.9],ch));}}
+  // feet: heel, arch, ball and toes, sitting on the sole line
+  if(P.on_foot) for(const sd of ['Left','Right']){const ch='foot'+sd, k=P.foot, F0=W(sd+'Foot'), Tb=W(sd+'ToeBase'), Te=W(sd+'ToeEnd'), sole=Math.min(Tb.y,Te.y)-0.022*k;
+    const fw=Tb.clone().sub(F0).setY(0).normalize(), at=(p,dy)=>V(p.x,sole+dy,p.z);
+    const heel=at(F0.clone().addScaledVector(fw,-0.045*P.footL),0.034*k);
+    out.push(mkEll(B[sd+'Foot'],heel,[0.031*k,0.034*k,0.040*k],ch));                                              // heel
+    out.push(mkCone(B[sd+'Foot'],V(F0.x,F0.y-0.01,F0.z),heel,[0.030*P.ankle,0.032*P.ankle],[0.03*k,0.03*k],ch));      // ankle into heel
+    out.push(mkCone(B[sd+'Foot'],heel,at(Tb,0.024*k),[0.030*k,0.026*k],[0.044*k,0.02*k],ch));                       // arch
+    out.push(mkCone(B[sd+'Foot'],V(F0.x,F0.y-0.012,F0.z),at(Tb,0.03*k),[0.03*k,0.024*k],[0.038*k,0.018*k],ch));       // top of the foot
+    out.push(mkEll(B[sd+'ToeBase'],at(Tb.clone().lerp(Te,0.45),0.016*k),[0.042*k,0.016*k,0.034*k*P.footL],ch));}    // toes
+  return out;}
+const _d=new THREE.Vector3();
+function sdVol(o,px,py,pz){
+  if(o.kind==='cone'){_d.set(px-o.A.x,py-o.A.y,pz-o.A.z); const lx=_d.dot(o.x)*o.sx, ly=_d.dot(o.y), lz=_d.dot(o.z)*o.sz; return sdCone([Math.hypot(lx,lz),ly],o.L,o.r1,o.r2);}
+  if(o.kind==='ellw'){const lx=(px-o.c.x)/o.r[0], ly=(py-o.c.y)/o.r[1], lz=(pz-o.c.z)/o.r[2]; return (Math.hypot(lx,ly,lz)-1)*Math.min(o.r[0],o.r[1],o.r[2]);}
+  _d.set(px-o.c.x,py-o.c.y,pz-o.c.z); const lx=_d.dot(o.x)/o.rx, ly=_d.dot(o.y)/o.ry, lz=_d.dot(o.z)/o.rz; return (Math.hypot(lx,ly,lz)-1)*Math.min(o.rx,o.ry,o.rz);}
+function smin(a,b,k){const h=Math.max(k-Math.abs(a-b),0)/k; return Math.min(a,b)-h*h*k*0.25;}
+// surface nets: one smooth closed skin from the field
+function skinGeometry(all,cell,k){
+  const vols=all.filter(o=>!o.cut), cuts=all.filter(o=>o.cut);
+  const mn=new THREE.Vector3(1e9,1e9,1e9), mx=new THREE.Vector3(-1e9,-1e9,-1e9);
+  for(const o of vols){mn.min(o.min); mx.max(o.max);} mn.subScalar(cell*2); mx.addScalar(cell*2);
+  const nx=Math.ceil((mx.x-mn.x)/cell)+1, ny=Math.ceil((mx.y-mn.y)/cell)+1, nz=Math.ceil((mx.z-mn.z)/cell)+1;
+  const F=new Float32Array(nx*ny*nz).fill(1), pad=P.pad, idx=(i,j,l)=>i+nx*(j+ny*l);
+  for(const o of vols){ // evaluate each volume only inside its own box, then blend
+    const i0=Math.max(0,Math.floor((o.min.x-mn.x)/cell)), i1=Math.min(nx-1,Math.ceil((o.max.x-mn.x)/cell));
+    const j0=Math.max(0,Math.floor((o.min.y-mn.y)/cell)), j1=Math.min(ny-1,Math.ceil((o.max.y-mn.y)/cell));
+    const l0=Math.max(0,Math.floor((o.min.z-mn.z)/cell)), l1=Math.min(nz-1,Math.ceil((o.max.z-mn.z)/cell));
+    for(let l=l0;l<=l1;l++) for(let j=j0;j<=j1;j++) for(let i=i0;i<=i1;i++){const n=idx(i,j,l); const d=sdVol(o,mn.x+i*cell,mn.y+j*cell,mn.z+l*cell)-pad; F[n]=F[n]>=1?d:smin(F[n],d,k);}}
+  for(const o of cuts){ // carved in softly
+    const i0=Math.max(0,Math.floor((o.min.x-mn.x)/cell)), i1=Math.min(nx-1,Math.ceil((o.max.x-mn.x)/cell)), j0=Math.max(0,Math.floor((o.min.y-mn.y)/cell)), j1=Math.min(ny-1,Math.ceil((o.max.y-mn.y)/cell)), l0=Math.max(0,Math.floor((o.min.z-mn.z)/cell)), l1=Math.min(nz-1,Math.ceil((o.max.z-mn.z)/cell));
+    for(let l=l0;l<=l1;l++) for(let j=j0;j<=j1;j++) for(let i=i0;i<=i1;i++){const n=idx(i,j,l); F[n]=-smin(-F[n],sdVol(o,mn.x+i*cell,mn.y+j*cell,mn.z+l*cell),0.008);}}
+  const vid=new Int32Array(nx*ny*nz).fill(-1), pos=[], ind=[];
+  const E=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+  const C=[[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]], v=new Float32Array(8);
+  for(let l=0;l<nz-1;l++) for(let j=0;j<ny-1;j++) for(let i=0;i<nx-1;i++){
+    let m=0; for(let c=0;c<8;c++){v[c]=F[idx(i+C[c][0],j+C[c][1],l+C[c][2])]; if(v[c]<0) m|=1<<c;}
+    if(m===0||m===255) continue; let sx=0,sy=0,sz=0,cnt=0;
+    for(const [a,b] of E){ if((v[a]<0)===(v[b]<0)) continue; const t=v[a]/(v[a]-v[b]);
+      sx+=C[a][0]+(C[b][0]-C[a][0])*t; sy+=C[a][1]+(C[b][1]-C[a][1])*t; sz+=C[a][2]+(C[b][2]-C[a][2])*t; cnt++;}
+    vid[idx(i,j,l)]=pos.length/3; pos.push(mn.x+(i+sx/cnt)*cell, mn.y+(j+sy/cnt)*cell, mn.z+(l+sz/cnt)*cell);}
+  const quad=(a,b,c,d,flip)=>{if(a<0||b<0||c<0||d<0) return; if(flip) ind.push(a,c,b,a,d,c); else ind.push(a,b,c,a,c,d);};
+  for(let l=1;l<nz-1;l++) for(let j=1;j<ny-1;j++) for(let i=1;i<nx-1;i++){
+    const f0=F[idx(i,j,l)]<0;
+    if(f0!==(F[idx(i+1,j,l)]<0)) quad(vid[idx(i,j-1,l-1)],vid[idx(i,j,l-1)],vid[idx(i,j,l)],vid[idx(i,j-1,l)],!f0);
+    if(f0!==(F[idx(i,j+1,l)]<0)) quad(vid[idx(i-1,j,l-1)],vid[idx(i-1,j,l)],vid[idx(i,j,l)],vid[idx(i,j,l-1)],!f0);
+    if(f0!==(F[idx(i,j,l+1)]<0)) quad(vid[idx(i-1,j-1,l)],vid[idx(i,j-1,l)],vid[idx(i,j,l)],vid[idx(i-1,j,l)],!f0);}
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(ind);
+  // light smoothing (keeps the cloth look, removes voxel steps)
+  const P3=g.attributes.position.array, nb=Array.from({length:pos.length/3},()=>new Set());
+  for(let t=0;t<ind.length;t+=3){const a=ind[t],b=ind[t+1],c=ind[t+2]; nb[a].add(b).add(c); nb[b].add(a).add(c); nb[c].add(a).add(b);}
+  for(let it=0;it<2;it++){const cp=P3.slice(); for(let q=0;q<nb.length;q++){if(!nb[q].size) continue; let x=0,y=0,z=0; for(const r of nb[q]){x+=cp[r*3];y+=cp[r*3+1];z+=cp[r*3+2];} const n=nb[q].size;
+    P3[q*3]=cp[q*3]*0.5+x/n*0.5; P3[q*3+1]=cp[q*3+1]*0.5+y/n*0.5; P3[q*3+2]=cp[q*3+2]*0.5+z/n*0.5;}}
+  // skin weights: each volume pulls the skin with its bone, softly where volumes meet
+  const bones=[...new Set(vols.map(o=>o.bone))], bi=new Map(bones.map((b,i)=>[b,i]));
+  const SI=new Uint16Array(pos.length/3*4), SW=new Float32Array(pos.length/3*4), tau=Math.max(0.006,k*0.6);
+  for(let q=0;q<pos.length/3;q++){const px=P3[q*3],py=P3[q*3+1],pz=P3[q*3+2]; const acc=new Map(); let dmin=1e9; const ds=vols.map(o=>{const d=sdVol(o,px,py,pz); if(d<dmin) dmin=d; return d;});
+    vols.forEach((o,n)=>{const w=Math.exp(-(ds[n]-dmin)/tau); if(w<1e-3) return; const b=bi.get(o.bone); acc.set(b,(acc.get(b)||0)+w);});
+    const top=[...acc.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4), sum=top.reduce((a,e)=>a+e[1],0);
+    top.forEach(([b,w],c)=>{SI[q*4+c]=b; SW[q*4+c]=w/sum;});}
+  g.computeVertexNormals();
+  g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(SI,4)); g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(SW,4));
+  return {g,bones};}
+let POSTSIGN=-1, shapeKey='', timer=0, timer2=0, FCH=null, headMs=[], curRatio=1, clipCache={}, xbotClips={};
+// ---------- walks and stances from real motion (Mesh2Motion / Quaternius, CC0), moved onto the mannequin's bones
+const MAP_UE={Hips:'pelvis',Spine:'spine_01',Spine1:'spine_02',Spine2:'spine_03',Neck:'neck_01',Head:'head'};
+for(const [s,u] of [['Left','l'],['Right','r']]){Object.assign(MAP_UE,{[s+'Shoulder']:'clavicle_'+u,[s+'Arm']:'upperarm_'+u,[s+'ForeArm']:'lowerarm_'+u,[s+'Hand']:'hand_'+u,[s+'UpLeg']:'thigh_'+u,[s+'Leg']:'calf_'+u,[s+'Foot']:'foot_'+u,[s+'ToeBase']:'ball_'+u});
+  for(const f of ['Index','Middle','Ring','Pinky','Thumb']) for(let q=1;q<=3;q++) MAP_UE[s+'Hand'+f+q]=f.toLowerCase()+'_0'+q+'_'+u;}
+function bakeOnto(srcRoot,clip){
+  const wrap=new THREE.Group(); wrap.add(srcRoot); wrap.updateMatrixWorld(true);
+  const SB={}; srcRoot.traverse(o=>{SB[o.name]=o;});
+  const fwd=SB.ball_l.getWorldPosition(new THREE.Vector3()).sub(SB.foot_l.getWorldPosition(new THREE.Vector3())); fwd.y=0; fwd.normalize();
+  wrap.rotation.y=-Math.atan2(fwd.x,fwd.z); wrap.updateMatrixWorld(true); // face +z like the mannequin
+  // the mannequin in its own rest pose
+  const order=[]; rig.traverse(o=>{if(o.isBone) order.push(o);});
+  const keep=order.map(b=>[b,b.quaternion.clone(),b.position.clone()]); for(const b of order){b.quaternion.copy(restQ.get(b)); b.position.copy(restPos.get(b));}
+  rig.updateMatrixWorld(true);
+  const tgt=Object.entries(MAP_UE).filter(([t,s])=>B[t]&&SB[s]).map(([t,s])=>[B[t],SB[s]]), T2S=new Map(tgt);
+  const tRestQ=new Map(order.map(b=>[b,b.getWorldQuaternion(new THREE.Quaternion())])), tRestP=new Map(order.map(b=>[b,b.getWorldPosition(new THREE.Vector3())]));
+  const rootQ=order[0].parent.getWorldQuaternion(new THREE.Quaternion()), pScale=B.Hips.parent.getWorldScale(new THREE.Vector3()).x;
+  const tHipY=tRestP.get(B.Hips).y-holder.position.y;
+  for(const [b,q,p] of keep){b.quaternion.copy(q); b.position.copy(p);} rig.updateMatrixWorld(true);
+  const sRest=new Map(tgt.map(([,s])=>[s,s.getWorldQuaternion(new THREE.Quaternion())]));
+  // turn each mannequin bone to point where the source bone points at rest (T-pose vs A-pose)
+  const align=new Map(); for(const [t,s] of tgt){const ch=t.children.filter(c=>T2S.has(c)), tc=ch.find(c=>!/Shoulder|UpLeg|Thumb|Index|Ring|Pinky/.test(c.name))||ch[0]; const a=new THREE.Quaternion();
+    if(tc&&/Shoulder|Arm|Hand/.test(t.name)){const dT=tRestP.get(tc).clone().sub(tRestP.get(t)).normalize(), dS=T2S.get(tc).getWorldPosition(new THREE.Vector3()).sub(s.getWorldPosition(new THREE.Vector3())).normalize(); a.setFromUnitVectors(dT,dS);}
+    align.set(t,a);}
+  const sHip=SB.pelvis, sHip0=sHip.getWorldPosition(new THREE.Vector3()), ratio=tHipY/Math.max(0.2,sHip0.y);
+  const mx=new THREE.AnimationMixer(srcRoot), act=mx.clipAction(clip); act.play();
+  const fps=30, n=Math.max(2,Math.round(clip.duration*fps)+1), times=[], qv=new Map(tgt.map(([t])=>[t,[]])), pv=[], q=new THREE.Quaternion();
+  for(let i=0;i<n;i++){const tt=Math.min(clip.duration,i/fps); times.push(tt); mx.setTime(tt); wrap.updateMatrixWorld(true); const cur=new Map();
+    for(const b of order){const p=cur.get(b.parent)||rootQ, s=T2S.get(b); let w;
+      if(s){s.getWorldQuaternion(q); w=q.clone().multiply(sRest.get(s).clone().invert()).multiply(align.get(b)).multiply(tRestQ.get(b)); qv.get(b).push(...p.clone().invert().multiply(w).normalize().toArray());}
+      else w=p.clone().multiply(restQ.get(b));
+      cur.set(b,w);}
+    const d=sHip.getWorldPosition(new THREE.Vector3()).sub(sHip0).multiplyScalar(ratio); pv.push(d.x,d.y,d.z);}
+  const L=pv.length/3, dx=(pv[(L-1)*3]-pv[0])/(L-1), dz=(pv[(L-1)*3+2]-pv[2])/(L-1), x0=pv[0], z0=pv[2]; // walk in place, loop closes
+  const r=restPos.get(B.Hips); for(let i=0;i<L;i++){pv[i*3]=r.x+(pv[i*3]-x0-dx*i)/pScale; pv[i*3+1]=r.y+pv[i*3+1]/pScale; pv[i*3+2]=r.z+(pv[i*3+2]-z0-dz*i)/pScale;}
+  const tracks=tgt.map(([t])=>new THREE.QuaternionKeyframeTrack(t.name+'.quaternion',times,qv.get(t)));
+  const ht=new THREE.VectorKeyframeTrack(B.Hips.name+'.position',times,pv); ht.orig=Float32Array.from(pv); for(let i=0;i<pv.length;i++) ht.values[i]=ht.orig[i]*curRatio; hipTracks.push(ht); tracks.push(ht);
+  return new THREE.AnimationClip(clip.name,clip.duration,tracks);}
+// a person standing still in front of a work: tall, weight on one leg, head up a little, breathing
+function viewPose(id){
+  const order=[]; rig.traverse(o=>{if(o.isBone) order.push(o);});
+  const keep=order.map(b=>[b,b.quaternion.clone(),b.position.clone()]); for(const b of order){b.quaternion.copy(restQ.get(b)); b.position.copy(restPos.get(b));} rig.updateMatrixWorld(true);
+  const rq=new Map(order.map(b=>[b,b.getWorldQuaternion(new THREE.Quaternion())])), rp=new Map(order.map(b=>[b,b.getWorldPosition(new THREE.Vector3())]));
+  const rootQ=order[0].parent.getWorldQuaternion(new THREE.Quaternion()); for(const [b,q,p] of keep){b.quaternion.copy(q); b.position.copy(p);} rig.updateMatrixWorld(true);
+  const child=b=>{const ch=b.children.filter(c=>c.isBone); return ch.find(c=>!/Shoulder|UpLeg|Thumb|Index|Ring|Pinky|Eye/.test(c.name))||ch[0];};
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z).normalize();
+  const back=id==='view-back';
+  const dirs=t=>{const br=Math.sin(t*Math.PI*2/4.4), D={}; // world directions the bones should point (figure faces +z, its left is +x)
+    D.Spine=V(0,1,-0.03); D.Spine1=V(0,1,-0.02-0.006*br); D.Spine2=V(0,1,0.0-0.01*br); D.Neck=V(0,1,0.10); D.Head=V(0,1,-0.06);
+    for(const [s,sx] of [['Left',1],['Right',-1]]){
+      if(back){D[s+'Arm']=V(0.07*sx,-0.985,-0.17); D[s+'ForeArm']=V(-0.50*sx,-0.80,-0.10); D[s+'Hand']=V(-0.35*sx,-0.93,0.02);}
+      else {D[s+'Arm']=V(0.13*sx,-1,-0.04); D[s+'ForeArm']=V(0.05*sx,-1,0.13); D[s+'Hand']=V(0.02*sx,-1,0.1);}
+      const st=s==='Right'; // weight on the right leg, left knee eased
+      D[s+'UpLeg']=st?V(-0.02,-1,0):V(0.07,-1,0.05); D[s+'Leg']=st?V(0,-1,0):V(0.02,-1,-0.07);}
+    return D;};
+  const fps=10, dur=4.4, n=Math.round(dur*fps)+1, times=[], qv=new Map(order.map(b=>[b,[]])), pv=[];
+  for(let i=0;i<n;i++){const t=i/fps; times.push(t); const D=dirs(t), cur=new Map();
+    for(const b of order){const p=cur.get(b.parent)||rootQ, nm=key(b.name), c=child(b); let w;
+      if(D[nm]&&c){const d0=rp.get(c).clone().sub(rp.get(b)).normalize(); w=new THREE.Quaternion().setFromUnitVectors(d0,D[nm]).multiply(rq.get(b));}
+      else w=p.clone().multiply(restQ.get(b));
+      qv.get(b).push(...p.clone().invert().multiply(w).normalize().toArray()); cur.set(b,w);}
+    const r=restPos.get(B.Hips), br=Math.sin(t*Math.PI*2/4.4); pv.push(r.x-0.6+0.25*br, r.y-0.6, r.z);} // hips over the standing leg, a touch lower
+  const tracks=order.filter(b=>key(b.name)!=='HeadTopEnd').map(b=>new THREE.QuaternionKeyframeTrack(b.name+'.quaternion',times,qv.get(b)));
+  const ht=new THREE.VectorKeyframeTrack(B.Hips.name+'.position',times,pv); ht.orig=Float32Array.from(pv); for(let i=0;i<pv.length;i++) ht.values[i]=ht.orig[i]*curRatio; hipTracks.push(ht); tracks.push(ht);
+  return new THREE.AnimationClip(id,dur,tracks);}
+const gl=new GLTFLoader(); gl.setMeshoptDecoder(MeshoptDecoder);
+async function getClip(id){
+  if(clipCache[id]) return clipCache[id];
+  if(id.startsWith('xbot-')) return clipCache[id]=xbotClips[id.slice(5)];
+  if(id.startsWith('view-')) return clipCache[id]=viewPose(id);
+  const j=await (await fetch('models/fig/a_'+id+'.json')).json(); const g=await new Promise((res,rej)=>gl.parse(ab(j.b64),'',res,rej));
+  return clipCache[id]=bakeOnto(g.scene,g.animations[0]);}
+async function setClip(kind){
+  if(!mix) return; let c; try{c=await getClip(P[kind]);}catch(e){console.error(e); return;}
+  const old=kind==='walk'?aw:ai, a=mix.clipAction(c); if(old===a) return;
+  a.reset().play(); a.weight=old?old.weight:(kind==='walk'?1:0); if(old) old.stop();
+  if(kind==='walk'){aw=a; aw.timeScale=P.speed;} else ai=a;}
+const ab=b64=>{const t=atob(b64), u=new Uint8Array(t.length); for(let i=0;i<t.length;i++) u[i]=t.charCodeAt(i); return u.buffer;};
+function rebuild(cell=0.011){
+  if(!rig) return;
+  const ratio=applyLengths();
+  const saveQ=new Map(); for(const b of restQ.keys()){saveQ.set(b,b.quaternion.clone()); b.quaternion.copy(restQ.get(b));}
+  const hp=B.Hips.position.clone(); B.Hips.position.copy(restPos.get(B.Hips)).multiplyScalar(ratio);
+  holder.scale.setScalar(1); holder.position.set(0,0,0); holder.updateMatrixWorld(true);
+  const W=n=>{if(n==='@pelvis') return B.LeftUpLeg.getWorldPosition(new THREE.Vector3()).add(B.RightUpLeg.getWorldPosition(new THREE.Vector3())).multiplyScalar(0.5).add(new THREE.Vector3(0,-0.035,0));
+    if(n==='@neckBase') return B.Neck.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0,-0.02,-0.005));
+    if(n==='@neckTop') return B.Head.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0,0.035,0.012));
+    if(n.startsWith('@trap')){const s=n.slice(5); return B[s+'Shoulder'].getWorldPosition(new THREE.Vector3()).lerp(B[s+'Arm'].getWorldPosition(new THREE.Vector3()),0.55).add(new THREE.Vector3(0,0.025,-0.01));}
+    if(n.startsWith('@heel')){const s=n.slice(5), f=B[s+'Foot'].getWorldPosition(new THREE.Vector3()), t=B[s+'ToeBase'].getWorldPosition(new THREE.Vector3()); return f.clone().addScaledVector(t.sub(f),-0.28).add(new THREE.Vector3(0,-0.035*P.foot,0));}
+    return B[n].getWorldPosition(new THREE.Vector3());};
+  const vols=prepVolumes(W), q=cell/0.011;
+  // the body at normal fineness; head, hands and feet finer so the face, fingers and toes read
+  const CH={body:[cell,P.soft],head:[0.0042*q,Math.min(P.soft,0.028)],handLeft:[0.0034*q,0.004],handRight:[0.0034*q,0.004],footLeft:[0.0055*q,Math.min(P.soft,0.02)],footRight:[0.0055*q,Math.min(P.soft,0.02)]};
+  for(const m of skins){holder.remove(m); if(m.material===baseDepth) m.geometry.dispose();} skins=[];
+  let bot=1e9, top=-1e9;
+  for(const [ch,[c,kk]] of Object.entries(CH)){const vs=vols.filter(o=>o.chunk===ch); if(!vs.some(o=>!o.cut)) continue;
+    const {g,bones}=skinGeometry(vs,c,kk), skel=new THREE.Skeleton(bones); // inverses taken now, in the rest pose with today's lengths
+    for(const [mat,ro] of [[baseDepth,1],[baseMat,2]]){const m=new THREE.SkinnedMesh(g,mat); m.renderOrder=ro; m.frustumCulled=false; m.castShadow=mat===baseDepth; m.layers.set(FIGL); if(mat===baseDepth) m.layers.enable(0); holder.add(m); m.updateMatrixWorld(true); m.bind(skel,m.matrixWorld); skins.push(m);}
+    g.computeBoundingBox(); bot=Math.min(bot,g.boundingBox.min.y); top=Math.max(top,g.boundingBox.max.y);}
+  // head: the face from 윤성's figure creator, sized to this body and riding on the head bone
+  for(const m of headMs) m.parent&&m.parent.remove(m); headMs=[];
+  if(P.on_head&&FCH){const hb=W('Head'), ht=W('HeadTopEnd'), k=0.225*P.head/(FCH.top-FCH.chin), kh=k*P.headH, topY=ht.y+0.012*P.head;
+    for(const [mat,ro] of [[baseDepth,1],[baseMat,2]]){const m=new THREE.Mesh(FCH.g,mat); m.renderOrder=ro; m.castShadow=mat===baseDepth; m.frustumCulled=false; m.layers.set(FIGL); if(mat===baseDepth) m.layers.enable(0);
+      m.scale.set(k,kh,k); m.position.set(hb.x,topY-FCH.top*kh,hb.z+0.01*P.head); holder.add(m); m.updateMatrixWorld(true); B.Head.attach(m); headMs.push(m);}
+    top=Math.max(top,topY);}
+  for(const [b,q] of saveQ) b.quaternion.copy(q); B.Hips.position.copy(hp);
+  const kk=(P.height/100)/(top-bot); holder.scale.setScalar(kk); holder.position.y=-bot*kk;
+  document.getElementById('busy').hidden=true;}
+function apply(){
+  baseMat.color.setRGB(P.tone,P.tone,P.tone*1.03,THREE.SRGBColorSpace); baseMat.opacity=1-P.op; baseMat.transparent=true; uEdge.value=0;
+  if(aw) aw.timeScale=P.speed; showCode();
+  const sk=JSON.stringify(Object.entries(P).filter(([k])=>!['tone','op','speed','walk','idle','upright','chin','kneeUp','edge','blur'].includes(k)));
+  if(sk!==shapeKey&&rig){shapeKey=sk; document.getElementById('busy').hidden=false; clearTimeout(timer); clearTimeout(timer2); // quick rough skin while dragging, the fine one once you stop
+    timer=setTimeout(()=>{rebuild(0.017); document.getElementById('busy').hidden=false;},90); timer2=setTimeout(()=>rebuild(0.011),650);}}
+
+// ---------- load the mannequin (skeleton + walk/idle)
+(async()=>{
+  const j=await (await fetch('models/xbot.json')).json(); const bin=Uint8Array.from(atob(j.b64),c=>c.charCodeAt(0));
+  const g=await new Promise((res,rej)=>new GLTFLoader().parse(bin.buffer,'',res,rej));
+  const o=g.scene; holder=new THREE.Group(); holder.add(o); scene.add(holder);
+  setup(o);
+  {const hj=await (await fetch('models/fig/fc_head.json')).json(); const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(ab(hj.pos)),3)); g.setIndex(new THREE.BufferAttribute(new Uint16Array(ab(hj.idx)),1)); g.computeVertexNormals(); FCH={g,top:hj.top,chin:hj.chin};}
+  const clips=Object.fromEntries(g.animations.map(a=>[a.name,a]));
+  for(const c of [clips.walk,clips.idle]){ // keep bone rotations; only the hips move, so new bone lengths hold
+    c.tracks=c.tracks.filter(t=>!t.name.endsWith('.position')||/Hips\.position$/.test(t.name)).filter(t=>!t.name.endsWith('.scale'));
+    for(const t of c.tracks) if(t.name.endsWith('.position')){t.orig=Float32Array.from(t.values); hipTracks.push(t);}}
+  xbotClips={walk:clips.walk,idle:clips.idle};
+  mix=new THREE.AnimationMixer(o); aw=mix.clipAction(clips.walk); ai=mix.clipAction(clips.idle); aw.play(); ai.play(); ai.weight=0;
+  document.getElementById('loading').remove(); apply(); await setClip('walk'); await setClip('idle');
+})().catch(e=>{document.getElementById('loading').textContent='불러오기 실패: '+e.message; console.error(e);});
+
+// ---------- view buttons
+let state='walk'; const bW=document.getElementById('bWalk'), bI=document.getElementById('bIdle');
+bW.onclick=()=>{state='walk'; bW.setAttribute('aria-pressed','true'); bI.setAttribute('aria-pressed','false');};
+bI.onclick=()=>{state='idle'; bI.setAttribute('aria-pressed','true'); bW.setAttribute('aria-pressed','false');};
+const VIEWS={front:[0,1.2,5.2],side:[5.2,1.2,0],back:[0,1.2,-5.2],q:[3.4,1.6,4.0]}; let goal=null;
+document.querySelectorAll('.hud [data-v]').forEach(b=>b.onclick=()=>{goal=new THREE.Vector3(...VIEWS[b.dataset.v]);});
+ctl.addEventListener('start',()=>goal=null);
+// posture: straighten the back on top of the motion (spine leans back a little, neck up, head level)
+const POST=[['Spine',5],['Spine1',5],['Spine2',5],['Neck',4]], _pq=new THREE.Quaternion(), _px=new THREE.Vector3(1,0,0);
+function posture(){ if(!B.Spine) return; const k=(P.upright??1)*(aw?aw.weight:1), sgn=POSTSIGN;
+  const kn=(P.kneeUp??0)*(aw?aw.weight:1); if(kn>0) for(const n of ['LeftLeg','RightLeg']) B[n].quaternion.slerp(restQ.get(B[n]),kn);
+  let tot=0; for(const [n,deg] of POST){const a=sgn*k*deg*Math.PI/180; tot+=a; B[n].quaternion.multiply(_pq.setFromAxisAngle(_px,a));}
+  B.Head.quaternion.multiply(_pq.setFromAxisAngle(_px,-tot*0.85+sgn*(P.chin??0.5)*6*Math.PI/180));}
+window.__exp=()=>{const col=skins.filter(m=>m.material===baseMat).map(m=>({pos:Array.from(m.geometry.attributes.position.array),idx:Array.from(m.geometry.index.array),si:Array.from(m.geometry.attributes.skinIndex.array),sw:Array.from(m.geometry.attributes.skinWeight.array),bones:m.skeleton.bones.map(b=>b.name)})); const hm=headMs.find(m=>m.material===baseMat); const bp={}; rig.traverse(o=>{if(o.isBone) bp[o.name]=o.position.toArray();}); const cj=c=>THREE.AnimationClip.toJSON(c); return {chunks:col, head:hm?{pos:Array.from(FCH.g.attributes.position.array),idx:Array.from(FCH.g.index.array),bone:hm.parent.name,p:hm.position.toArray(),q:hm.quaternion.toArray(),s:hm.scale.toArray()}:null, bonePos:bp, scale:holder.scale.x, y:holder.position.y, ratio:curRatio, walk:cj(aw.getClip()), idle:cj(ai.getClip()), P}}; const clock=new THREE.Clock();
+renderer.setAnimationLoop(()=>{const dt=Math.min(0.05,clock.getDelta());
+  if(mix){const w=state==='walk'?1:0; aw.weight+=(w-aw.weight)*Math.min(1,dt*5); ai.weight=1-aw.weight; mix.update(dt); posture();}
+  if(goal){cam.position.lerp(goal,Math.min(1,dt*4)); if(cam.position.distanceTo(goal)<0.01) goal=null;}
+  ctl.target.y=0.9*P.height/170; ctl.update(); drawFrame();});
+// ---------- outline blur: the figure is drawn alone, blurred (gaussian, two passes) and laid over the room
+const blurRT=[0,1,2].map(()=>new THREE.WebGLRenderTarget(4,4,{type:THREE.HalfFloatType,depthBuffer:true}));
+const qCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1), qScene=new THREE.Scene(), quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2)); qScene.add(quad);
+const blurMat=new THREE.ShaderMaterial({uniforms:{t:{value:null},dir:{value:new THREE.Vector2()}},depthTest:false,depthWrite:false,
+  vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
+  fragmentShader:`uniform sampler2D t; uniform vec2 dir; varying vec2 vUv;
+    void main(){ vec4 s=vec4(0.); float ws=0.; for(int i=-8;i<=8;i++){float x=float(i)/8.; float w=exp(-x*x*4.5); s+=texture2D(t,vUv+dir*x)*w; ws+=w;} gl_FragColor=s/ws; }`});
+const compMat=new THREE.ShaderMaterial({uniforms:{t:{value:null}},depthTest:false,depthWrite:false,transparent:true,blending:THREE.CustomBlending,blendSrc:THREE.OneFactor,blendDst:THREE.OneMinusSrcAlphaFactor,
+  vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
+  fragmentShader:`uniform sampler2D t; varying vec2 vUv;
+    vec3 toSRGB(vec3 c){return mix(c*12.92,1.055*pow(c,vec3(1./2.4))-0.055,step(0.0031308,c));}
+    void main(){ vec4 s=texture2D(t,vUv); vec3 c=s.a>1e-4?s.rgb/s.a:vec3(0.); gl_FragColor=vec4(toSRGB(c)*s.a,s.a); }`});
+function drawFrame(){
+  const r=P.blur??0;
+  if(r<0.05){cam.layers.enableAll(); renderer.render(scene,cam); return;}
+  const w=renderer.domElement.width, h=renderer.domElement.height; for(const t of blurRT) if(t.width!==w||t.height!==h) t.setSize(w,h);
+  cam.layers.set(0); renderer.render(scene,cam);                                 // the room
+  const bg=scene.background; scene.background=null; cam.layers.set(FIGL);        // the figure alone, on clear
+  renderer.setRenderTarget(blurRT[0]); renderer.setClearColor(0x000000,0); renderer.clear(); renderer.render(scene,cam); scene.background=bg;
+  const px=r*renderer.getPixelRatio(); quad.material=blurMat;
+  blurMat.uniforms.t.value=blurRT[0].texture; blurMat.uniforms.dir.value.set(px/w,0); renderer.setRenderTarget(blurRT[1]); renderer.clear(); renderer.render(qScene,qCam);
+  blurMat.uniforms.t.value=blurRT[1].texture; blurMat.uniforms.dir.value.set(0,px/h); renderer.setRenderTarget(blurRT[2]); renderer.clear(); renderer.render(qScene,qCam);
+  renderer.setRenderTarget(null); quad.material=compMat; compMat.uniforms.t.value=blurRT[2].texture;
+  const ac=renderer.autoClear; renderer.autoClear=false; renderer.render(qScene,qCam); renderer.autoClear=ac; cam.layers.enableAll();}
+</script>
+
+</body></html>
