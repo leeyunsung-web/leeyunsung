@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chatlog div.out{opacity:0;transform:translateY(-10px)}
 .online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .online::before{content:"";position:absolute;left:10px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7fd18b}
-.hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 12px var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:5px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 calc(12px * var(--bs,1)) var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:calc(5px * var(--bs,1)) calc(12px * var(--bs,1));cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .bub{position:absolute;z-index:4;transform:translate(-50%,-100%);max-width:calc(min(260px,60%) * var(--bs,1));font:400 calc(13px * var(--bs,1))/1.35 var(--ui);color:#2a2824;background:rgba(250,248,243,.94);border-radius:12px;padding:6px 10px;pointer-events:none;box-shadow:0 2px 12px rgba(0,0,0,.18);transition:opacity .6s;overflow-wrap:anywhere}
 .bub::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:rgba(250,248,243,.94)}
 .say{position:absolute;left:50%;bottom:clamp(14px,4%,30px);transform:translateX(-50%);z-index:5;display:flex;gap:6px;width:min(420px,86%)}
@@ -221,7 +221,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
       <label for="k-helloY"><span>말 걸기 높이 (머리 위 m) <output id="o-helloY"></output></span><input type="range" id="k-helloY" min="-0.1" max="0.6" step="0.01"></label>
       <label for="k-bubY"><span>말풍선 높이 (머리 위 m) <output id="o-bubY"></output></span><input type="range" id="k-bubY" min="-0.1" max="0.8" step="0.01"></label>
-      <label for="k-bubS"><span>말풍선 크기 <output id="o-bubS"></output></span><input type="range" id="k-bubS" min="0.6" max="1.8" step="0.05"></label>
+      <label for="k-bubS"><span>말풍선·말 걸기 크기 <output id="o-bubS"></output></span><input type="range" id="k-bubS" min="0.6" max="1.8" step="0.05"></label>
       <label for="k-figUp"><span>피규어 등 펴기 <output id="o-figUp"></output></span><input type="range" id="k-figUp" min="-0.5" max="2" step="0.01"></label>
       <p class="credit" style="font-size:11px;opacity:.6;margin:2px 0 6px">기본 피규어 얼굴: “Genshin Style Anime Female Base Mesh For Blender” by David Onizaki, CC BY 4.0 · 동작 일부: Mesh2Motion / Quaternius, CC0</p>
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
@@ -652,7 +652,8 @@ const _fq=new THREE.Quaternion(), _fx=new THREE.Vector3(1,0,0);
 function figPosture(A){const BN=A.BN, w=A.walkA.weight, k=(typeof tune!=='undefined'?tune.figUp:0.45)*w, kn=((FIGLOOK&&FIGLOOK.kneeUp)||0)*w; let tot=0;
   for(const [n,deg] of [['Spine',5],['Spine1',5],['Spine2',5],['Neck',4]]){const b=BN['mixamorig'+n]; if(!b) continue; const a=-k*deg*Math.PI/180; tot+=a; b.quaternion.multiply(_fq.setFromAxisAngle(_fx,a));}
   const hd=BN.mixamorigHead; if(hd) hd.quaternion.multiply(_fq.setFromAxisAngle(_fx,-tot*0.85-w*((FIGLOOK&&FIGLOOK.chin)||0.5)*6*Math.PI/180));
-  if(kn>0) for(const n of ['LeftLeg','RightLeg']){const b=BN['mixamorig'+n]; if(b&&A.legRest[n]) b.quaternion.slerp(A.legRest[n],kn);}
+  const tl=((FIGLOOK&&FIGLOOK.tall)||0)*w, kk=Math.min(1,kn+tl*0.5); if(kk>0) for(const n of ['LeftLeg','RightLeg']){const b=BN['mixamorig'+n]; if(b&&A.legRest[n]) b.quaternion.slerp(A.legRest[n],kk);}
+  if(tl>0&&BN.mixamorigHips) BN.mixamorigHips.position.y+=tl*3.5; // walking tall: straighter legs, body carried higher
   // calmer arms while walking (set in the figure page): pull the swing toward a relaxed hang
   const C=A.calm; if(C&&FIGLOOK){ const L=FIGLOOK, pull=(n,amt)=>{const b=BN[n], q=C[n]; if(b&&q&&amt>0) b.quaternion.slerp(q,Math.min(1,amt));};
     for(const s of ['Left','Right']){ pull('mixamorig'+s+'Arm',(1-(L.armSwing??1))*w); pull('mixamorig'+s+'ForeArm',(1-(L.elbowBend??1))*w); pull('mixamorig'+s+'Hand',(1-(L.armSwing??1))*w*0.6); pull('mixamorig'+s+'Shoulder',(L.shrug??0)*w); } }}

@@ -62,7 +62,7 @@ import * as FP from './figpack.js?v=1104d';
 // ---------- settings (menu order)
 const GROUPS=[
  ['색',[['tone','진하기',0.05,0.6,0.01,0.2,v=>Math.round(v*100)+'%'],['op','비침',0,0.8,0.01,0.3,v=>Math.round(v*100)+'%'],['blur','윤곽 블러',0,14,0.1,4,v=>v.toFixed(1)+'px']]],
- ['전체',[['height','키',150,195,1,170,v=>v+'cm']]],
+ ['전체',[['height','키',150,195,1,170,v=>v+'cm'],['bulk','살집 (전체)',0.8,1.45,0.01,1]]],
  ['머리 · 목',[['head','머리 크기',0.75,1.35,0.01,1],['headH','머리 세로',0.8,1.25,0.01,1],['neckL','목 길이',0.5,1.6,0.01,1],['neck','목 굵기',0.6,1.5,0.01,1]]],
  ['몸통',[['torsoL','상체 길이',0.8,1.25,0.01,1],['shoulder','어깨 너비',0.7,1.35,0.01,1],['chest','가슴 너비',0.7,1.35,0.01,1],['chestD','가슴 두께',0.7,1.4,0.01,1],
           ['waist','허리 너비',0.7,1.4,0.01,1],['waistD','배 두께',0.7,1.5,0.01,1],['hip','골반 너비',0.7,1.4,0.01,1],['hipD','엉덩이 두께',0.7,1.5,0.01,1]]],
@@ -71,7 +71,7 @@ const GROUPS=[
  ['다리',[['thighL','허벅지 길이',0.75,1.3,0.01,1],['shinL','종아리 길이',0.75,1.3,0.01,1],['thigh','허벅지 굵기',0.6,1.6,0.01,1],['knee','무릎 굵기',0.6,1.6,0.01,1],
         ['calf','종아리 굵기',0.6,1.6,0.01,1],['ankle','발목 굵기',0.6,1.6,0.01,1],['footL','발 길이',0.7,1.4,0.01,1],['foot','발 굵기',0.7,1.5,0.01,1]]],
  ['천(겉면)',[['soft','이음 부드러움',0.005,0.08,0.001,0.035,v=>Math.round(v*1000)+'mm'],['pad','천 두께',-0.01,0.025,0.001,0.004,v=>Math.round(v*1000)+'mm']]],
- ['동작',[['speed','걷는 속도',0.5,1.5,0.01,1],['upright','등 펴기',-0.5,2,0.01,0.45],['kneeUp','무릎 펴기',0,0.8,0.01,0.25],['chin','고개 들기',-1,1.5,0.01,0.5],['armSwing','팔 흔들기 크기',0,1,0.01,0.45],['elbowBend','팔꿈치 굽힘',0,1,0.01,0.4],['shrug','어깨 힘 빼기',0,1,0.01,0.5]]]];
+ ['동작',[['speed','걷는 속도',0.5,1.5,0.01,1],['upright','등 펴기',-0.5,2,0.01,0.45],['kneeUp','무릎 펴기',0,1,0.01,0.25],['tall','꼿꼿하게 걷기',0,1,0.01,0],['chin','고개 들기',-1,1.5,0.01,0.5],['armSwing','팔 흔들기 크기',0,1,0.01,0.45],['elbowBend','팔꿈치 굽힘',0,1,0.01,0.4],['shrug','어깨 힘 빼기',0,1,0.01,0.5]]]];
 const TOGGLES=[['head','머리·얼굴'],['neck','목'],['chest','가슴'],['belly','허리·배'],['pelvis','골반'],['shoulder','어깨'],['uarm','위팔'],['farm','아래팔'],['hand','손'],['thigh','허벅지'],['shin','종아리'],['foot','발']];
 const DEF={}; for(const [,rows] of GROUPS) for(const r of rows) DEF[r[0]]=r[5]; for(const [k] of TOGGLES) DEF['on_'+k]=1;
 Object.assign(DEF,{walk:'walk-relaxed',idle:'view-back',nose:0.7,ear:0,tone:0.05,op:0.8,neckL:0.85,calf:0.67,soft:0.04,pad:0,speed:0.59,on_chest:0}); // 윤성's settings (2026-11-03)
@@ -108,7 +108,7 @@ function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0
   const f32=a=>u8(new Uint8Array(Float32Array.from(a).buffer));
   const bones=[], bi=new Map(); for(const c of d.chunks) for(const n of c.bones) if(!bi.has(n)){bi.set(n,bones.length); bones.push(n);} // one bone list for every piece
   const chunks=d.chunks.map(c=>{const big=c.idx.some(v=>v>65535); return {pos:f32(c.pos),idx:u8(new Uint8Array((big?Uint32Array:Uint16Array).from(c.idx).buffer)),i32:big,si:u8(Uint8Array.from(c.si,v=>bi.get(c.bones[v])??0)),sw:u8(Uint8Array.from(c.sw,v=>Math.round(Math.min(1,Math.max(0,v))*255)))};});
-  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5,armSwing:P.armSwing??1,elbowBend:P.elbowBend??1,shrug:P.shrug??0};
+  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5,armSwing:P.armSwing??1,elbowBend:P.elbowBend??1,shrug:P.shrug??0,tall:P.tall??0};
   return {credit:'Face: "Genshin Style Anime Female Base Mesh For Blender" by David Onizaki, CC BY 4.0 (edited in NU-LAYER figure creator). Motion: Mesh2Motion / Quaternius CC0.',
     bones,bonePos:d.bonePos,scale:d.scale,y:d.y,chunks,
     head:d.head?{pos:f32(d.head.pos),idx:u8(new Uint8Array(Uint16Array.from(d.head.idx).buffer)),bone:d.head.bone,p:d.head.p,q:d.head.q,s:d.head.s}:null,
@@ -194,7 +194,8 @@ function mkEll(bone,c,r,chunk,cut=false){const R=Math.max(...r); return {bone,ki
 function prepVolumes(W){
   const out=[];
   for(const [grp,bone,a,b,kind,f] of VOL){ if(!P['on_'+grp]) continue;
-    const A=W(a), Bp=W(b), v=f(P);
+    const A=W(a), Bp=W(b), v=f(P), k=P.bulk??1; // 살집: every part a little fuller, in proportion
+    if(kind==='cone'){ v[0]=v[0].map(x=>x*k); v[1]=v[1].map(x=>x*k); } else { v[1]*=k; v[3]*=k; }
     if(kind==='cone') out.push(mkCone(B[bone],A,Bp,v[0],v[1],'body'));
     else {const c0=mkCone(B[bone],A,Bp,[0.01,0.01],[0.01,0.01],'body'), [t,rx,ry,rz]=v, c=A.clone().addScaledVector(c0.y,c0.L*t), R=Math.max(rx,c0.L*ry,rz); // ellipsoid along the bone
       out.push({bone:B[bone],kind:'ell',x:c0.x,y:c0.y,z:c0.z,c,rx,ry:c0.L*ry,rz,chunk:'body',min:c.clone().subScalar(R+0.03),max:c.clone().addScalar(R+0.03)});}}
@@ -380,7 +381,7 @@ function rebuild(cell=0.011){
 function apply(){
   baseMat.color.setRGB(P.tone,P.tone,P.tone*1.03,THREE.SRGBColorSpace); baseMat.opacity=1-P.op; baseMat.transparent=true; uEdge.value=0;
   if(aw) aw.timeScale=P.speed; showCode();
-  const sk=JSON.stringify(Object.entries(P).filter(([k])=>!['tone','op','speed','walk','idle','upright','chin','kneeUp','edge','blur','armSwing','elbowBend','shrug'].includes(k)));
+  const sk=JSON.stringify(Object.entries(P).filter(([k])=>!['tone','op','speed','walk','idle','upright','chin','kneeUp','edge','blur','armSwing','elbowBend','shrug','tall'].includes(k)));
   if(sk!==shapeKey&&rig){shapeKey=sk; document.getElementById('busy').hidden=false; clearTimeout(timer); clearTimeout(timer2); // quick rough skin while dragging, the fine one once you stop
     timer=setTimeout(()=>{rebuild(0.017); document.getElementById('busy').hidden=false;},90); timer2=setTimeout(()=>rebuild(0.011),650);}}
 
@@ -410,7 +411,8 @@ ctl.addEventListener('start',()=>goal=null);
 // posture: straighten the back on top of the motion (spine leans back a little, neck up, head level)
 const POST=[['Spine',5],['Spine1',5],['Spine2',5],['Neck',4]], _pq=new THREE.Quaternion(), _px=new THREE.Vector3(1,0,0);
 function posture(){ if(!B.Spine) return; const k=(P.upright??1)*(aw?aw.weight:1), sgn=POSTSIGN;
-  const kn=(P.kneeUp??0)*(aw?aw.weight:1); if(kn>0) for(const n of ['LeftLeg','RightLeg']) B[n].quaternion.slerp(restQ.get(B[n]),kn);
+  const tl=(P.tall??0)*(aw?aw.weight:1), kn=Math.min(1,(P.kneeUp??0)*(aw?aw.weight:1)+tl*0.5); if(kn>0) for(const n of ['LeftLeg','RightLeg']) B[n].quaternion.slerp(restQ.get(B[n]),kn);
+  if(tl>0&&B.Hips) B.Hips.position.y+=tl*3.5*curRatio; // straighter legs reach further: lift the body so the feet stay on the floor
   let tot=0; for(const [n,deg] of POST){const a=sgn*k*deg*Math.PI/180; tot+=a; B[n].quaternion.multiply(_pq.setFromAxisAngle(_px,a));}
   B.Head.quaternion.multiply(_pq.setFromAxisAngle(_px,-tot*0.85+sgn*(P.chin??0.5)*6*Math.PI/180));
   armCalm();}
