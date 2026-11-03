@@ -51,6 +51,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:6px 10px;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
 .cap{position:absolute;left:12px;top:12px;max-width:min(360px,60%);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.45}
 .cap b{display:block;font-weight:600;font-size:13px}
+.ask{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;font:600 15px var(--ui);padding:14px 22px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.ask small{font:400 12px var(--ui);color:var(--muted)}
 .load{position:absolute;inset:0;display:grid;place-items:center;background:var(--stage);color:var(--muted);font-size:13px}
 .load .track{width:min(260px,60%);height:4px;background:var(--line);border-radius:2px;margin-top:10px;overflow:hidden}
 .load .fill{height:100%;width:0;background:var(--accent)}
@@ -102,6 +104,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="hint" id="hint">↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
     <div class="cap" id="cap" hidden></div>
     <div class="joy" id="joy" hidden aria-hidden="true"><i id="joyK"></i></div>
+    <button class="ask" id="panelAsk" hidden>조절 창 열기<small>브라우저가 새 창을 막았어요 · 이 사이트의 팝업을 허용하면 다음부터 저절로 떠요</small></button>
     <div class="load" id="load"><div style="text-align:center">전시실 불러오는 중<div class="track"><div class="fill" id="fill"></div></div></div></div>
     <div class="bar">
       <span class="chip" id="fps">–</span>
@@ -180,8 +183,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
       <label for="k-sculptOff"><span>조각 전체 높이 <output id="o-sculptOff"></output></span><input type="range" id="k-sculptOff" min="-0.3" max="0.4" step="0.01"></label>
       <label for="k-floor"><span>바닥 비침 <output id="o-floor"></output></span><input type="range" id="k-floor" min="0" max="0.9" step="0.02"></label>
-      <div class="pick"><button id="k-save">설정 저장</button><button id="k-reset">조절값 초기화</button></div>
-      <p class="maphelp" id="saveInfo">바꾸는 즉시 자동 저장돼요.</p>
+      <div class="pick"><button id="k-save">홈페이지에 저장</button><button id="k-reset">조절값 초기화</button></div>
+      <p class="maphelp" id="saveInfo">바꾸는 즉시 이 브라우저에 자동 저장돼요. "홈페이지에 저장"을 누르면 모든 기기와 방문자 화면의 기본값이 돼요.</p>
     </div>
   </div></div>
 </div>
@@ -461,8 +464,10 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 const KEY='medusa-room-tune-v2';
 let tune={...DEF};
-try{const s=JSON.parse(localStorage.getItem(KEY)||'null');
-  if(s) tune={...DEF,...s};
+const SITE_SET=await fetch('settings.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null); // saved to the homepage
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStorage.getItem(KEY+'-at')||0);
+  if(SITE_SET&&SITE_SET.tune&&(!s||(+SITE_SET.savedAt||0)>st)) tune={...DEF,...SITE_SET.tune};
+  else if(s) tune={...DEF,...s};
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave'].map(k=>[k,'k-'+k]));
@@ -514,7 +519,7 @@ function applyTune(){
   lens.uniforms.uVig.value=tune.vig; lens.uniforms.uGrain.value=tune.grain; uWeave.value=tune.weave;
   for(const [k,id] of Object.entries(ui)){PD.getElementById(id).value=tune[k]; PD.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
   lastCap='~'; dirty=true; saveTune(false);}
-function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringify(tune));}catch(e){ok=false;}
+function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringify(tune)); localStorage.setItem(KEY+'-at',String(Date.now()));}catch(e){ok=false;}
   const el=PD.getElementById('saveInfo'); if(!el) return; const t=new Date(); const hm=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+':'+String(t.getSeconds()).padStart(2,'0');
   el.textContent=ok?(manual?'저장했어요 ('+hm+')':'자동 저장됨 ('+hm+')'):'이 브라우저에서는 저장이 안 돼요 (사생활 보호 모드인지 확인해 주세요)';}
 for(const [k,id] of Object.entries(ui)) document.getElementById(id).addEventListener('input',e=>{tune[k]=parseFloat(e.target.value); applyTune();});
@@ -583,21 +588,42 @@ let pop=null; const panelEl=document.getElementById('tunePanel'), panelHome=docu
 function panelBack(){try{if(PD!==document){panelHome.appendChild(document.adoptNode(panelEl)); PD=document;}}catch(e){PD=document;}}
 function openPanel(){
   if(pop&&!pop.closed){pop.focus(); return;}
+  document.getElementById('panelAsk').hidden=true;
   pop=window.open('','vgPanel','width=1100,height=720');
-  if(!pop){ waitGesture=true; showHint('브라우저가 새 창을 막았어요. 화면을 한 번 누르거나 \'조절 창 열기\'를 눌러 주세요.'); return; } // blocked: retry on the next click
+  if(!pop){ waitGesture=true; document.getElementById('panelAsk').hidden=false; return; } // blocked: big button, or the next click in the room
   const d=pop.document; d.open(); d.write('<!DOCTYPE html><html lang="ko" class="popup"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>전시실 조절</title></head><body></body></html>'); d.close();
   document.querySelectorAll('link[rel=stylesheet],style').forEach(n=>d.head.appendChild(d.importNode(n,true)));
   d.body.appendChild(d.adoptNode(panelEl)); PD=d; applyTune();
   pop.addEventListener('pagehide',panelBack);
 }
 document.getElementById('openPanel').onclick=openPanel;
-document.getElementById('k-save').onclick=()=>saveTune(true);
+document.getElementById('panelAsk').onclick=e=>{e.stopPropagation(); waitGesture=false; openPanel();};
+document.getElementById('k-save').onclick=publishSettings;
+// save the current settings to the homepage (vr-k3m9/settings.json) with the master's GitHub connection
+async function publishSettings(){
+  const info=t=>{const el=PD.getElementById('saveInfo'); if(el) el.textContent=t;};
+  saveTune(true);
+  let cfg=null, token='';
+  try{cfg=JSON.parse(localStorage.getItem('leeArchiveGhConfig_v2')||'null'); token=sessionStorage.getItem('leeArchiveGhToken_v2')||localStorage.getItem('leeArchiveGhTokenKeep_v2')||'';}catch(e){}
+  if(!cfg||!cfg.owner||!cfg.repo||!token){ info('홈페이지 연결(GitHub 토큰)이 없어서 이 브라우저에만 저장했어요. 마스터 바의 ⇪ 버튼으로 한 번 연결한 뒤 다시 눌러 주세요.'); return; }
+  const base=location.pathname.replace(/^\/+/,'').replace(/[^/]*$/,''); const path=base+'settings.json';
+  const url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`, br=cfg.branch||'main';
+  const H={Authorization:'token '+token,Accept:'application/vnd.github+json'};
+  info('홈페이지에 저장하는 중…');
+  try{
+    let sha; const g=await fetch(url+'?ref='+encodeURIComponent(br)+'&_='+Date.now(),{headers:H,cache:'no-store'}); if(g.ok) sha=(await g.json()).sha;
+    const body=JSON.stringify({savedAt:Date.now(),tune},null,1); const b64=btoa(unescape(encodeURIComponent(body)));
+    const r=await fetch(url,{method:'PUT',headers:H,body:JSON.stringify({message:'Virtual exhibition settings',content:b64,branch:br,...(sha?{sha}:{})})});
+    if(!r.ok) throw new Error(r.status);
+    const t=new Date(); info('홈페이지에 저장했어요 ('+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+') · 1분쯤 뒤 다른 기기에도 적용돼요');
+  }catch(e){ info('홈페이지 저장 실패 ('+e.message+'). 이 브라우저에는 저장돼 있어요. 잠시 뒤 다시 눌러 주세요.'); }
+}
 let waitGesture=false;
 function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.style.display='block';}
 // embedded in the site (master mode): open the control window right away; if the browser blocks it, open it on the first click in the room
 if(document.documentElement.classList.contains('embed')){
   setTimeout(openPanel,400);
-  stage.addEventListener('pointerdown',()=>{ if(waitGesture&&!(pop&&!pop.closed)){ waitGesture=false; openPanel(); } },true);
+  stage.addEventListener('pointerdown',()=>{ if(waitGesture&&!(pop&&!pop.closed)){ waitGesture=false; document.getElementById('panelAsk').hidden=true; openPanel(); } },true);
 }
 addEventListener('pagehide',()=>{try{if(pop&&!pop.closed)pop.close();}catch(e){}});
 applyTune();
