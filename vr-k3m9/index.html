@@ -68,6 +68,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 #map{width:440px;height:400px;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--stage);touch-action:none;cursor:crosshair}
 .mapside{display:flex;flex-direction:column;gap:10px;min-width:200px;flex:1;max-width:360px}
 .mapside input[type=number]{font:13px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);width:100%;box-sizing:border-box}
+.selbox{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.selbox:empty{display:none}
+.selbox b{font-size:13px}
+.selbox ol{margin:0;padding-left:18px;max-height:140px;overflow:auto;font-size:12px;line-height:1.5;color:var(--muted)}
+.selbox label{display:flex;flex-direction:column;gap:2px}
+.selbox input[type=range]{width:100%}
 .maphelp{margin:0;font-size:12px;line-height:1.55;color:var(--muted)}
 .pick{display:flex;flex-wrap:wrap;gap:4px}
 .pick button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;cursor:pointer}
@@ -132,7 +138,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
           <label for="n-x"><span>왼쪽 벽에서 (m)</span><input type="number" id="n-x" step="0.05"></label>
           <label for="n-y"><span>입구 벽에서 (m)</span><input type="number" id="n-y" step="0.05"></label>
           <label for="n-r"><span>회전 (°, 시계 방향)</span><input type="number" id="n-r" step="5"></label>
-          <p class="maphelp">조각(좌대)을 끌어서 옮기거나 숫자로 맞춥니다. 빈 바닥을 누르면 그 자리로 걸어갑니다. 파란 점과 부채꼴이 지금 내 위치와 보는 방향, 위쪽이 메두사 쪽 정면 벽, 아래쪽이 입구입니다.</p>
+          <div class="selbox" id="selBox"></div>
+          <p class="maphelp">벽(파란 선)을 누르면 그 벽의 작품 목록과 간격·위치·높이를, 조각(좌대)을 누르면 그 조각의 위치와 좌대 크기를 바로 조절할 수 있어요. 조각(좌대)을 끌어서 옮기거나 숫자로 맞춥니다. 빈 바닥을 누르면 그 자리로 걸어갑니다. 파란 점과 부채꼴이 지금 내 위치와 보는 방향, 위쪽이 메두사 쪽 정면 벽, 아래쪽이 입구입니다.</p>
         </div>
       </div>
     </div>
@@ -165,6 +172,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
+      <label for="k-wallY"><span>이 벽 그림 높이 (중심) <output id="o-wallY"></output></span><input type="range" id="k-wallY" min="1.0" max="2.6" step="0.01"></label>
       <label for="k-paintY"><span>그림 높이 (중심, 모든 벽) <output id="o-paintY"></output></span><input type="range" id="k-paintY" min="1.0" max="2.6" step="0.01"></label>
       <label for="k-shadow"><span>그림자 진하기 <output id="o-shadow"></output></span><input type="range" id="k-shadow" min="0" max="1.5" step="0.05"></label>
     </div>
@@ -695,7 +703,8 @@ function applyTune(){
   if(sculptCap[2]) sculptCap[2].pos.set(tune.mwX,wTop+0.15,-tune.mwY); if(sculptCap[3]) sculptCap[3].pos.set(tune.mgdX,gTop+0.15,-tune.mgdY);
   sculptCap[0].pos.set(tune.medX,L.sculptures[0].z+(mTop-MED_BASE),-tune.medY); sculptCap[1].pos.set(tune.torX,L.sculptures[1].z+(tTop-TOR_BASE),-tune.torY);
   syncPlaceUI(); drawMap();
-  for(const w of works){w.mesh.position.y=w.baseY+(tune.paintY-1.55); w.pos.y=w.mesh.position.y;}
+  {const el=PD.getElementById('k-wallY'); if(el&&WALLS[tune.wsel]){const v=tune['py'+tune.wsel]??tune.paintY; el.value=v; const o=PD.getElementById('o-wallY'); if(o) o.textContent=(+v).toFixed(2);}}
+  for(const w of works){const py=tune['py'+w.wall]??tune.paintY; w.mesh.position.y=w.baseY+(py-1.55); w.pos.y=w.mesh.position.y;}
   let lim=0; for(const k of Object.keys(WALLS)){const l=layoutWall(k); if(k===tune.wsel) lim=l;}
   for(const sm of shadowMats) sm.opacity=tune.shadow/1.5;
   const gi=PD.getElementById('k-gap'), si=PD.getElementById('k-shift');
@@ -748,9 +757,11 @@ function drawMap(){
   if(DOOR){const [dx0,dy0]=toMap(DOOR.x0,DOOR.y1,S), [dx1,dy1]=toMap(DOOR.x1,DOOR.y0,S); c.fillStyle=col('--panel'); if(DOORX) c.fillRect(dx0-3,dy0+1,dx1-dx0+6,dy1-dy0-2); else c.fillRect(dx0+1,dy0-3,dx1-dx0-2,dy1-dy0+6);}
   // paintings
   c.strokeStyle=col('--accent'); c.lineWidth=4;
-  for(const w of works){const p=w.p, cx=w.mesh.position.x, cy=-w.mesh.position.z, half=p.w/2;
-    let x1,y1,x2,y2; if(w.wall==='F'||w.wall==='B'||w.wall==='F2'||w.wall==='B2'){x1=cx-half;x2=cx+half;y1=y2=cy;} else {x1=x2=cx;y1=cy-half;y2=cy+half;}
+  for(const w of works){const p=w.p, cx=w.mesh.position.x, cy=-w.mesh.position.z, half=p.w/2, on=mapSel.kind==='wall'&&mapSel.k===w.wall;
+    let x1,y1,x2,y2; if(WALLS[w.wall]?WALLS[w.wall].u==='x':Math.abs(p.rot%180)<1){x1=cx-half;x2=cx+half;y1=y2=cy;} else {x1=x2=cx;y1=cy-half;y2=cy+half;}
+    c.strokeStyle=on?col('--fg'):col('--accent'); c.lineWidth=on?7:4;
     const a=toMap(x1,y1,S), b=toMap(x2,y2,S); c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(b[0],b[1]); c.stroke();}
+  c.lineWidth=4;
   // pedestals
   for(const p of SK){const sel=p===pk(); const [x,y]=toMap(tune[p+'X'],tune[p+'Y'],S);
     c.save(); c.translate(x,y); c.rotate(tune[p+'R']*Math.PI/180); const w=tune[p+'W']*S.s, d=tune[p+'D']*S.s;
@@ -763,16 +774,41 @@ function drawMap(){
   const ang=Math.atan2(-dir[1],dir[0]); c.arc(vx,vy,46,ang-fov,ang+fov); c.closePath(); c.fill();
   c.fillStyle='#3c6ee6'; c.beginPath(); c.arc(vx,vy,5,0,Math.PI*2); c.fill();
 }
-let mdrag=null;
+let mdrag=null, mapSel={kind:'none'};
+const WNAME={F:'1번 방 정면 벽',B:'1번 방 입구 벽',L:'1번 방 왼쪽 벽',R:'1번 방 오른쪽 벽',F2:'2번 방 정면 벽',B2:'2번 방 입구 쪽 벽',R2:'2번 방 긴 벽',L2:'2번 방 조디악 얼굴 벽',Z:'2번 방 Zodiac 벽'};
+function wallAt(x,y){let best=null,bd=0.55; // the wall (with works) nearest the click, within about half a metre
+  for(const w of works){const cx=w.mesh.position.x, cy=-w.mesh.position.z, half=w.p.w/2+0.3, horiz=WALLS[w.wall]?WALLS[w.wall].u==='x':Math.abs(w.p.rot%180)<1;
+    const d=horiz?Math.hypot(Math.max(0,Math.abs(x-cx)-half),y-cy):Math.hypot(x-cx,Math.max(0,Math.abs(y-cy)-half)); if(d<bd){bd=d; best=w.wall;}}
+  return best;}
+function selRow(label,key,min,max,step,def,after){const d=PD.createElement('label'); const v=()=>tune[key]??def;
+  d.innerHTML=`<span>${label} <output>${(+v()).toFixed(2)}</output></span><input type="range" min="${min}" max="${max}" step="${step}" value="${v()}">`;
+  const i=d.querySelector('input'), o=d.querySelector('output'); i.addEventListener('input',()=>{tune[key]=parseFloat(i.value); o.textContent=(+i.value).toFixed(2); if(after) after(); applyTune();}); return d;}
+function renderSel(){const box=PD.getElementById('selBox'); if(!box) return; box.innerHTML='';
+  if(mapSel.kind==='wall'&&WALLS[mapSel.k]){const k=mapSel.k, wd=WALLS[k];
+    const h=PD.createElement('b'); h.textContent='벽: '+(WNAME[k]||k)+' · '+wd.items.length+'점'; box.appendChild(h);
+    const ol=PD.createElement('ol'); for(const w of wd.items){const li=PD.createElement('li'); li.textContent=(w.caption||'').split('|')[0]||w.p.id; ol.appendChild(li);} box.appendChild(ol);
+    if(wd.items.length>1) box.appendChild(selRow('그림 간격 (m)','gap'+k,0.05,2.5,0.01,wd.gap0));
+    const lim=layoutWall(k); box.appendChild(selRow('좌우 위치 (m)','sh'+k,-Math.max(0.01,lim),Math.max(0.01,lim),0.01,0));
+    box.appendChild(selRow('그림 높이 (중심, m)','py'+k,1.0,2.6,0.01,tune.paintY));}
+  else if(mapSel.kind==='sculpt'){const p=mapSel.p;
+    const h=PD.createElement('b'); h.textContent='조각: '+SNAME[p]; box.appendChild(h);
+    box.appendChild(selRow('좌대 높이 (m)',p+'H',0.3,1.4,0.01,1));
+    box.appendChild(selRow('좌대 가로 (m)',p+'W',0.2,1.2,0.01,0.4));
+    box.appendChild(selRow('좌대 세로 (m)',p+'D',0.2,1.2,0.01,0.4));
+    const n=PD.createElement('p'); n.className='maphelp'; n.textContent='위치와 회전은 위 숫자 칸에서, 또는 조감도에서 끌어서 옮겨요.'; box.appendChild(n);}}
 mapEl.addEventListener('pointerdown',e=>{const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
   let hit=null; for(const p of SK){const h=Math.max(tune[p+'W'],tune[p+'D'])/2+0.12; if(Math.abs(x-tune[p+'X'])<h&&Math.abs(y-tune[p+'Y'])<h) hit=p;}
-  if(hit){tune.msel=SELR[hit]; mdrag={p:hit,dx:tune[hit+'X']-x,dy:tune[hit+'Y']-y}; mapEl.setPointerCapture(e.pointerId); applyTune();}
+  const wk=hit?null:wallAt(x,y);
+  if(hit){tune.msel=SELR[hit]; mapSel={kind:'sculpt',p:hit}; mdrag={p:hit,dx:tune[hit+'X']-x,dy:tune[hit+'Y']-y}; mapEl.setPointerCapture(e.pointerId); applyTune(); renderSel();}
+  else if(wk){tune.wsel=wk; mapSel={kind:'wall',k:wk}; applyTune(); renderSel();}
   else {[walk.x,walk.y]=collide(x,y); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true; drawMap();}});
 mapEl.addEventListener('pointermove',e=>{if(!mdrag) return; const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
   tune[mdrag.p+'X']=Math.round((x+mdrag.dx)*100)/100; tune[mdrag.p+'Y']=Math.round((y+mdrag.dy)*100)/100; applyTune();});
 const endM=()=>mdrag=null; mapEl.addEventListener('pointerup',endM); mapEl.addEventListener('pointercancel',endM);
 document.getElementById('k-gap').addEventListener('input',e=>{tune['gap'+tune.wsel]=parseFloat(e.target.value); applyTune();});
 document.getElementById('k-shift').addEventListener('input',e=>{tune['sh'+tune.wsel]=parseFloat(e.target.value); applyTune();});
+document.getElementById('k-wallY').addEventListener('input',e=>{tune['py'+tune.wsel]=parseFloat(e.target.value); applyTune();});
+document.getElementById('k-paintY').addEventListener('input',()=>{for(const k of Object.keys(WALLS)) delete tune['py'+k];}); // the all-walls slider resets each wall's own height
 document.querySelectorAll('#wallPick button').forEach(b=>b.onclick=()=>{tune.wsel=b.dataset.w; applyTune();});
 document.querySelectorAll('#fovPick button').forEach(b=>b.onclick=()=>{tune.fov=+b.dataset.f; applyTune();});
 document.getElementById('k-bob').addEventListener('change',e=>{tune.bob=e.target.checked; applyTune();});
