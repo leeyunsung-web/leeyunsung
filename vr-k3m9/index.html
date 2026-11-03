@@ -242,7 +242,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js?v=1104moon';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
-import { createGuestbook } from './guestbook.js?v=1104d';
+import { createGuestbook } from './guestbook.js?v=1104e';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -373,8 +373,22 @@ function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice();
     for(const v of vs){ if(P[v*3+1]>0.001) continue; const q=vs.find(o=>o!==v&&P[o*3+1]>1&&Math.abs(P[o*3]-P[v*3])<1e-4&&Math.abs(P[o*3+2]-P[v*3+2])<1e-4); if(q===undefined) continue;
       const t=0.03/P[q*3+1]; U[v*2]+=(U[q*2]-U[v*2])*t; U[v*2+1]+=(U[q*2+1]-U[v*2+1])*t; P[v*3+1]=0.03; }}
   return {...s,pos:P,uv:U};}
+// grow every wall and ceiling-band face 3 mm within its own plane so neighbouring pieces overlap: no hairline cracks (the dotted white lines) where they meet
+function growFaces(s,eps,inset){const P=s.pos.slice(), U=s.uv?s.uv.slice():null;
+  for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0; for(let k=0;k<4;k++){const v=f*4+k; cx+=P[v*3]/4; cy+=P[v*3+1]/4; cz+=P[v*3+2]/4;}
+    for(let k=0;k<4;k++){const v=f*4+k, dx=P[v*3]-cx, dy=P[v*3+1]-cy, dz=P[v*3+2]-cz, l=Math.hypot(dx,dy,dz)||1; P[v*3]+=dx/l*eps; P[v*3+1]+=dy/l*eps; P[v*3+2]+=dz/l*eps;}
+    // and pull the texture a couple of texels in from its edges, so the bake's dark padding never shows as a dotted line
+    if(U&&inset){let cu=0,cv=0; for(let k=0;k<4;k++){cu+=U[(f*4+k)*2]/4; cv+=U[(f*4+k)*2+1]/4;}
+      for(let k=0;k<4;k++){const v=f*4+k, du=U[v*2]-cu, dv=U[v*2+1]-cv; U[v*2]-=Math.sign(du)*Math.min(Math.abs(du)*0.5,inset); U[v*2+1]-=Math.sign(dv)*Math.min(Math.abs(dv)*0.5,inset);}}}
+  return {...s,pos:P,uv:U||s.uv};}
+// ceiling bands: their side faces stop 2 mm short of the underside, so they never z-fight with the neighbouring band's underside (the faint diagonal lines)
+function trimBandSides(s){const P=s.pos.slice();
+  for(let f=0;f<P.length/12;f++){const ys=[0,1,2,3].map(k=>P[(f*4+k)*3+1]), lo=Math.min(...ys), hi=Math.max(...ys); if(hi-lo<1e-4) continue;
+    for(let k=0;k<4;k++){const v=f*4+k; if(P[v*3+1]-lo<1e-4) P[v*3+1]=lo+0.002;}}
+  return {...s,pos:P};}
 for(let s of L.baked){
   if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')) s=liftWallFoot(s);
+  if(/Wall/.test(s.name)) s=growFaces(s,0.003,4.5/2048); else if(/Soffit/.test(s.name)) s=trimBandSides(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
   geo.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(s.uv),2));
@@ -390,6 +404,7 @@ for(let s of L.baked){
     geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
   const isFloor=/FloorBox$/.test(s.name);
   const m=new THREE.MeshBasicMaterial({map:tex('live/'+s.img),transparent:isFloor,opacity:isFloor?0.80:1});
+  if(s.name.startsWith('G_Wall')){ m.polygonOffset=true; m.polygonOffsetFactor=-2; m.polygonOffsetUnits=-12; } // where the two rooms' walls overlap, room 1's wins cleanly (no flicker)
   const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh);
   if(s.name.startsWith('G_Pedestal')){ // rebuilt below as a resizable box shaded like its bake
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
@@ -452,7 +467,7 @@ if(L.door2){const D=L.door2, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=-D.y0, zB=-D.y
    br.position.set((D.x0+D.x1)/2,(H+y0)/2,zc); scene.add(br);}
   buildGuestbookCorner(x1,zc,wd);}
 // thin strips over the joints where two back walls meet, so the seam never shows
-for(const x of [DOOR&&DOORX?DOOR.x1:null, L.door2?L.door2.x0:null].filter(v=>v!==null)){
+for(const x of [].filter(v=>v!==null)){ // (joint strips retired: the faces now overlap)
   const m=new THREE.Mesh(new THREE.PlaneGeometry(0.03,H-GH),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867,0.863,0.855,THREE.SRGBColorSpace)}));
   m.rotation.y=Math.PI; m.position.set(x,GH+(H-GH)/2,LL/2-0.0008); scene.add(m);}
 }
@@ -733,6 +748,7 @@ addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
 let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
   if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) removePeer(id); online=1; showOnline(); },60000); });
 const onlineEl=document.getElementById('online'), helloEl=document.getElementById('hello'), sayEl=document.getElementById('say'), sayIn=document.getElementById('sayIn'), sayMine=document.getElementById('sayMine');
+window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
 window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.values()].map(p=>({id:p.id,h:p.h,x:+p.pos.x.toFixed(2),y:+p.pos.y.toFixed(2),tx:p.tgt.x,ty:p.tgt.y,vis:!!(p.F&&p.F.o.visible),bub:!!p.bub}))}); // for checks
 function showOnline(){ onlineEl.hidden=online<2; onlineEl.textContent=online+' online'; }
 // speech bubbles over a visitor's head; your own line shows above the input
@@ -1082,7 +1098,8 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
     walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); }
   dirty=true;});
-const endDrag=e=>{ if(drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6) tryOpenGuestbook(e.clientX,e.clientY); drag=null;}; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
+  if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY; setTimeout(()=>tryOpenGuestbook(x,y),0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
 if(matchMedia('(pointer:coarse)').matches) joy.hidden=false;

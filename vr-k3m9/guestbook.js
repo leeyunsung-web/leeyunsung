@@ -3,7 +3,7 @@
 const INK = '#1d1b18', PEN_W = 2.4, PAGE_AR = 0.74, MAXLEN = 190000;
 const PEN_CUR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 25l2.2-6.6L19.6 4a2.4 2.4 0 013.4 0l1 1a2.4 2.4 0 010 3.4L9.6 22.8z' fill='%23fffdf7' stroke='%231d1b18' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M5.2 18.4l4.4 4.4M3 25l2.2-.7-1.5-1.5z' fill='%231d1b18' stroke='%231d1b18' stroke-width='1.2'/%3E%3C/svg%3E") 3 25,crosshair`;
 const CSS = `
-.gbx{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:clamp(12px,4vw,40px);background:rgba(14,13,11,0);transition:background .55s ease;touch-action:none}
+.gbx{position:absolute;inset:0;z-index:20;cursor:default;display:grid;place-items:center;padding:clamp(12px,4vw,40px);background:rgba(14,13,11,0);transition:background .55s ease;touch-action:none}
 .gbx.on{background:rgba(14,13,11,.72)}
 .gbx.inline,.gbx.inline.on{position:relative;inset:auto;min-height:100%;background:transparent}
 .gbx .book{position:relative;width:min(100%,920px);background:repeating-linear-gradient(0deg,rgba(0,0,0,.025) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 1px,transparent 1px 3px),#e6dfcf;
@@ -15,7 +15,8 @@ const CSS = `
 .gbx .page.l{border-radius:3px 0 0 3px;box-shadow:inset -18px 0 22px -16px rgba(60,40,10,.28)}
 .gbx .page.r{border-radius:0 3px 3px 0;box-shadow:inset 18px 0 22px -16px rgba(60,40,10,.28)}
 .gbx .book.single .page.r{border-radius:3px;box-shadow:inset 14px 0 18px -14px rgba(60,40,10,.25)}
-.gbx .page canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gbx .page canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:inherit}
+.gbx .page canvas:active{cursor:inherit}
 .gbx .page.mine{cursor:${PEN_CUR}}
 .gbx .leaf{position:absolute;top:0;bottom:0;transform-style:preserve-3d;z-index:5;pointer-events:none}
 .gbx .leaf .side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#faf6ec;overflow:hidden}
