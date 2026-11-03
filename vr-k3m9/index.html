@@ -685,7 +685,9 @@ function buildFig(F){
         for(const g of geos) for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.SkinnedMesh(g,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); inner.add(m); m.updateMatrixWorld(true); m.bind(skel,m.matrixWorld);}
         for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.Mesh(hg,mat); m.renderOrder=ro; m.frustumCulled=false; m.layers.set(FIGL); m.position.fromArray(F.head.p); m.quaternion.fromArray(F.head.q); m.scale.fromArray(F.head.s); BN[F.head.bone].add(m);}
         inner.scale.setScalar(F.scale); inner.position.y=F.y;
-        const outer=new THREE.Group(); outer.add(inner); scene.add(outer); outer.visible=false;
+        // each visit: visitors of 160 / 170 / 180 cm, 160 the most common, 180 the rarest
+        const hr=Math.random(), cm=hr<0.5?160:hr<0.83?170:180, base=(F.P&&F.P.height)||170;
+        const outer=new THREE.Group(); outer.add(inner); outer.scale.setScalar(cm/base); scene.add(outer); outer.visible=false;
         const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(fw), idleA=mix.clipAction(fi); walkA.play(); idleA.play(); idleA.weight=0; walkA.timeScale=F.look.speed;
         f.F={o:outer,mix,walkA,idleA,speed:F.look.speed,BN,legRest:{LeftLeg:BN.mixamorigLeftLeg&&BN.mixamorigLeftLeg.quaternion.clone(),RightLeg:BN.mixamorigRightLeg&&BN.mixamorigRightLeg.quaternion.clone()}};}
       setPeople(pplMode,true); dirty=true;}
