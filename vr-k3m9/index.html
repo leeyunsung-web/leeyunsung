@@ -1246,8 +1246,12 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
     const far=workDist(w), close=lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     const d0=close?Math.max(1.0,far*0.55):far; let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
-    for(let d=Math.hypot(s[0]-x,s[1]-y)-0.25; d>=1.2&&!workSeen(w,s[0],s[1]); d-=0.25){ const t=standAt(x,y,d,nx,ny); if(t) s=t; } // something in front of it: go closer
-    if(goTo(s[0],s[1],lookYaw(-nx,-ny),Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)){ if(!close) autoGo.fit={w,nx,ny,back:0}; lastWork={w,s,close}; } }
+    let yaw=lookYaw(-nx,-ny);
+    if(!workSeen(w,s[0],s[1])){ // something stands in front of it: step a little to the side and a little closer, whichever needs the least change
+      const tx=-ny, ty=nx, D=Math.hypot(s[0]-x,s[1]-y); let pick=null, ps=1e9;
+      for(let d=D; d>=1.2; d-=0.25) for(const o of [0,0.35,-0.35,0.7,-0.7,1.05,-1.05]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=(D-d)+Math.abs(o)*0.8; if(sc>=ps||!canWalk(sx,sy)||!workSeen(w,sx,sy)) continue; ps=sc; pick=[sx,sy]; }
+      if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)){ if(!close) autoGo.fit={w,nx,ny,back:0}; lastWork={w,s,close}; } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
