@@ -61,7 +61,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { MeshoptEncoder } from 'three/addons/libs/meshopt_encoder.module.js';
-import * as FP from './figpack.js';
+import * as FP from './figpack.js?v=1104c';
 
 // ---------- settings (menu order)
 const GROUPS=[
@@ -118,6 +118,7 @@ function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0
     bones,bonePos:d.bonePos,scale:d.scale,y:d.y,chunks,
     head:d.head?{pos:f32(d.head.pos),idx:u8(new Uint8Array(Uint16Array.from(d.head.idx).buffer)),bone:d.head.bone,p:d.head.p,q:d.head.q,s:d.head.s}:null,
     walk:d.walk,idle:d.idle,look,P:{...P}};}
+window.__packFigure=packFigure;
 document.getElementById('bApply').onclick=async()=>{const info=document.getElementById('applyInfo');
   const G=[window.opener&&window.opener.opener,window.opener,window.parent!==window?window.parent:null].find(w=>{try{return w&&typeof w.__applyFigure==='function';}catch(e){return false;}});
   if(!G){info.textContent='전시장 창을 찾지 못했어요. 전시장 조절 창의 “세부사항” 버튼으로 이 창을 열어 주세요.'; return;}

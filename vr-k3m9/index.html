@@ -227,10 +227,10 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
-import { buildMobile } from './mobile.js';
+import { buildMobile } from './mobile.js?v=1104c';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import * as FP from './figpack.js';
-import { createGuestbook } from './guestbook.js';
+import * as FP from './figpack.js?v=1104c';
+import { createGuestbook } from './guestbook.js?v=1104c';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -641,6 +641,7 @@ async function loadPeople(){
       const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.7,0.7),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6})); sh.rotation.x=-Math.PI/2; sh.renderOrder=2; scene.add(sh);
       const p0=route[0]; o.position.set(p0[0],0,-p0[1]);
       return {o,meshes,mix,walkA,idleA,sh,route,k:(i*2)%route.length,wait:i*1.5,pos:new THREE.Vector2(p0[0],p0[1]),yaw:0};})};
+    if(!F.rig&&!F.rigScene) F.rig=await (await fetch('models/rig.json')).json(); // files saved by the editor leave the skeleton out
     PPL.rig=F.rig; PPL.rigScene=F.rigScene; try{buildFig(F);}catch(e){console.warn('figure',e);}
     setPeople(pplMode,true); dirty=true;
   }catch(e){console.warn('people',e);} pplLoading=false;}
