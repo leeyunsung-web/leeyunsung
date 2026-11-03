@@ -1,5 +1,5 @@
 {
- "savedAt": 1793733596239,
+ "savedAt": 1793734194723,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -40,6 +40,9 @@
   "figUp": -0.29,
   "figNear": 1,
   "bots": true,
+  "helloY": 0.1,
+  "bubY": 0.05,
+  "bubS": 1.8,
   "medX": 0,
   "medY": 4,
   "medR": 0,
