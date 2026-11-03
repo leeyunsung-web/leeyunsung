@@ -1,5 +1,5 @@
 {
- "savedAt": 1793733559595,
+ "savedAt": 1793733596239,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -13,10 +13,10 @@
   "tContrast": 1.25,
   "tBright": 1.02,
   "tWhite": 0.48,
-  "tDark": 0.3,
+  "tDark": 0.4,
   "tDeepR": 0.35,
   "tDeep": 1,
-  "tRough": 0.15,
+  "tRough": 1,
   "torH": 1.1,
   "paintY": 1.45,
   "shadow": 1.5,
