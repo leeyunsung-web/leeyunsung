@@ -5450,7 +5450,8 @@
         "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg"
       },
       "inquiryOnly": true,
-      "hidden": false
+      "hidden": false,
+      "rowAlone": true
     },
     {
       "id": "s-1791254521015-hvrt2",
