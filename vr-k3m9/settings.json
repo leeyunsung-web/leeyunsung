@@ -1,5 +1,5 @@
 {
- "savedAt": 1793725907671,
+ "savedAt": 1793726029553,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -10,9 +10,9 @@
   "medD": 0.36,
   "torW": 0.5,
   "torD": 0.5,
-  "tContrast": 1.85,
+  "tContrast": 1.25,
   "tBright": 1.08,
-  "tDark": 0.1,
+  "tDark": 0.25,
   "tRough": 0.15,
   "torH": 1.1,
   "paintY": 1.45,
@@ -42,7 +42,7 @@
   "torX": -1.15,
   "torY": -5.3,
   "torR": 0,
-  "msel": "M",
+  "msel": "T",
   "mobH": 1.5,
   "mobSpin": true,
   "mwX": 7.1,
