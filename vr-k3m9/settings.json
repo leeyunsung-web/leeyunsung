@@ -1,5 +1,5 @@
 {
- "savedAt": 1793725879695,
+ "savedAt": 1793725907671,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -33,7 +33,7 @@
   "grain": 0.3,
   "weave": 1,
   "people": 3,
-  "figBlur": 4,
+  "figBlur": 14,
   "figUp": -0.21,
   "figNear": 1,
   "medX": 0,
