@@ -1217,6 +1217,13 @@ function openYaw(x,y,cur){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a
   return reach(best)>here*1.8?cur+Math.atan2(Math.sin(best-cur),Math.cos(best-cur)):null; }
 let lastWork=null, lastSculpt=null; const _sph2=new THREE.Sphere(), _pt2=new THREE.Vector3();
 // the usual viewing distance for a work (the one-click stop); captions show from here
+// a multi-panel work (same caption on one wall, "panels" in it — Zodiac's nine canvases) counts as one work
+const UNITS=new Map();
+function unitOf(w){ const cap=w.caption||''; if(!/panels/i.test(cap)) return w;
+  const mem=works.filter(o=>o.caption===cap&&o.wall===w.wall); if(mem.length<2) return w; let u=UNITS.get(mem[0]);
+  if(!u){ u={mesh:{position:new THREE.Vector3(),rotation:{y:0}},p:{w:0,h:0},pos:new THREE.Vector3(),caption:cap,members:mem}; UNITS.set(mem[0],u); }
+  const bb=new THREE.Box3(); for(const o of mem) bb.expandByObject(o.mesh); bb.getCenter(u.mesh.position); u.pos.copy(u.mesh.position); u.mesh.rotation.y=mem[0].mesh.rotation.y;
+  const sz=bb.getSize(new THREE.Vector3()); u.p.w=Math.max(sz.x,sz.z); u.p.h=sz.y; return u; }
 function workDist(w){ const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5;
   return Math.max(1.4,w.p.h/(2*Math.tan(vf/2)*fill),w.p.w/(2*Math.tan(hf/2)*fill*1.15)); }
 // where a straight line from here to (tx,ty) first runs into a wall: null if it does not
@@ -1235,7 +1242,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   if(!best) return; showMark(cx,cy);
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
-  if(best.kind==='work'){ const w=best.w, m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
+  if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
     const far=workDist(w), close=lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     const d0=close?Math.max(1.0,far*0.55):far; let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
@@ -1280,7 +1287,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z))*0.9; return true; } }
   autoGo=null; return true; }
 const _fb=new THREE.Box3(), _fv=new THREE.Vector3();
-function fitsView(w){ _fb.setFromObject(w.mesh); for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); if(Math.abs(_fv.x)>0.93||Math.abs(_fv.y)>0.9) return false; } return true; }
+function fitsView(w){ _fb.makeEmpty(); for(const o of (w.members||[w])) _fb.expandByObject(o.mesh); for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); if(Math.abs(_fv.x)>0.93||Math.abs(_fv.y)>0.9) return false; } return true; }
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
 if(matchMedia('(pointer:coarse)').matches) joy.hidden=!(typeof tune!=='undefined'&&tune.joy);
@@ -1300,7 +1307,7 @@ function updateCaption(){
   if(mode!=='walk'){ if(lastCap){lastCap=''; showCap('');} return;}
   const p=b2t(walk.x,walk.y,EYE); const f=new THREE.Vector3(); camera.getWorldDirection(f);
   let best=null,bd=1e9;
-  for(const w of [...works,...sculptCap.filter(c=>c.s.caption).map(c=>({pos:c.pos,caption:c.s.caption}))]){
+  for(const w of [...new Set(works.map(unitOf)),...sculptCap.filter(c=>c.s.caption).map(c=>({pos:c.pos,caption:c.s.caption}))]){
     const v=w.pos.clone().sub(p); const d=v.length(); if(d>(w.mesh?Math.max(3.2,Math.hypot(Math.min(8,workDist(w))+0.9,w.pos.y-EYE)+0.3):3.2)) continue; v.normalize(); if(v.dot(f)<0.9) continue;
     if(w.mesh){ const nx=Math.sin(w.mesh.rotation.y), nz=Math.cos(w.mesh.rotation.y); if((p.x-w.pos.x)*nx+(p.z-w.pos.z)*nz<0.2) continue; } // standing in front of it, not beside or behind
     _cv.copy(w.pos).project(camera); if(_cv.z>1||Math.abs(_cv.x)>0.36||Math.abs(_cv.y)>0.6) continue; // you are looking at it: it sits near the middle of the view
