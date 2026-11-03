@@ -187,7 +187,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="시야" id="fovPick">
         <button data-f="58">넓게 (지금)</button><button data-f="45">사람 눈</button><button data-f="32">표준 50mm</button>
       </div>
-      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="1">마네킹</button><button data-p="2">반투명 실루엣</button></div>
+      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="1">마네킹</button><button data-p="2">반투명 실루엣</button><button data-p="3">기본 피규어</button></div>
+      <p class="credit" style="font-size:11px;opacity:.6;margin:2px 0 6px">기본 피규어 얼굴: “Genshin Style Anime Female Base Mesh For Blender” by David Onizaki, CC BY 4.0 · 동작 일부: Mesh2Motion / Quaternius, CC0</p>
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
       <label for="k-sculptOff"><span>조각 전체 높이 <output id="o-sculptOff"></output></span><input type="range" id="k-sculptOff" min="-0.3" max="0.4" step="0.01"></label>
       <label for="k-floor"><span>바닥 비침 <output id="o-floor"></output></span><input type="range" id="k-floor" min="0" max="0.9" step="0.02"></label>
@@ -551,27 +552,50 @@ async function loadPeople(){
       const sh=new THREE.Mesh(new THREE.PlaneGeometry(0.7,0.7),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6})); sh.rotation.x=-Math.PI/2; sh.renderOrder=2; scene.add(sh);
       const p0=route[0]; o.position.set(p0[0],0,-p0[1]);
       return {o,meshes,mix,walkA,idleA,sh,route,k:(i*2)%route.length,wait:i*1.5,pos:new THREE.Vector2(p0[0],p0[1]),yaw:0};})};
+    // 윤성's base figure: a skin made in the figure page, riding on a copy of the same skeleton
+    try{const F=await (await fetch('models/figure.json')).json();
+      const figMat=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(F.look.tone,F.look.tone,F.look.tone*1.03,THREE.SRGBColorSpace),transparent:true,opacity:1-F.look.op,depthWrite:false});
+      const figDepth=new THREE.MeshBasicMaterial({colorWrite:false}); // depth pre-pass: overlapping parts don't double up
+      const geos=F.chunks.map(c=>{const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(c.pos)),3));
+        g.setIndex(new THREE.BufferAttribute(c.i32?new Uint32Array(b64(c.idx)):new Uint16Array(b64(c.idx)),1));
+        g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(Uint16Array.from(new Uint8Array(b64(c.si))),4));
+        g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(Float32Array.from(new Uint8Array(b64(c.sw)),v=>v/255),4)); return g;});
+      const hg=new THREE.BufferGeometry(); hg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(b64(F.head.pos)),3)); hg.setIndex(new THREE.BufferAttribute(new Uint16Array(b64(F.head.idx)),1));
+      const fw=THREE.AnimationClip.parse(F.walk), fi=THREE.AnimationClip.parse(F.idle);
+      for(const f of PPL.figs){
+        const inner=new THREE.Group(), o=SkeletonUtils.clone(gltf.scene); inner.add(o);
+        o.traverse(m=>{if(m.isSkinnedMesh) m.visible=false;});
+        const BN={}; o.traverse(b=>{if(b.isBone) BN[b.name]=b;});
+        for(const [n,p] of Object.entries(F.bonePos)) if(BN[n]&&!/Hips$/.test(n)) BN[n].position.fromArray(p);
+        inner.updateMatrixWorld(true); const skel=new THREE.Skeleton(F.bones.map(n=>BN[n]));
+        for(const g of geos) for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.SkinnedMesh(g,mat); m.renderOrder=ro; m.frustumCulled=false; inner.add(m); m.updateMatrixWorld(true); m.bind(skel,m.matrixWorld);}
+        for(const [mat,ro] of [[figDepth,1],[figMat,2]]){const m=new THREE.Mesh(hg,mat); m.renderOrder=ro; m.frustumCulled=false; m.position.fromArray(F.head.p); m.quaternion.fromArray(F.head.q); m.scale.fromArray(F.head.s); BN[F.head.bone].add(m);}
+        inner.scale.setScalar(F.scale); inner.position.y=F.y;
+        const outer=new THREE.Group(); outer.add(inner); scene.add(outer); outer.visible=false;
+        const mix=new THREE.AnimationMixer(o), walkA=mix.clipAction(fw), idleA=mix.clipAction(fi); walkA.play(); idleA.play(); idleA.weight=0; walkA.timeScale=F.look.speed;
+        f.F={o:outer,mix,walkA,idleA,speed:F.look.speed};}
+    }catch(e){console.warn('figure',e);}
     setPeople(pplMode,true); dirty=true;
   }catch(e){console.warn('people',e);} pplLoading=false;}
 function setPeople(m,force){ if(m===pplMode&&!force&&PPL) return; pplMode=m;
   if(m&&!PPL){loadPeople(); return;}
   if(!PPL) return;
-  for(const f of PPL.figs){ f.o.visible=!!m; f.sh.visible=!!m; for(const me of f.meshes) me.material=m===2?ghostMat:mannequinMat; f.sh.material.opacity=m===2?0.25:0.6; }
+  for(const f of PPL.figs){ const fig=m===3&&f.F; f.o.visible=!!m&&!fig; if(f.F) f.F.o.visible=!!fig; f.sh.visible=!!m; for(const me of f.meshes) me.material=m===2?ghostMat:mannequinMat; f.sh.material.opacity=m===2?0.25:m===3?0.35:0.6; }
   dirty=true;}
 function updatePeople(dt){
   if(!PPL||!pplMode) return false;
   for(const f of PPL.figs){
     const tgt=f.route[f.k]; const dx=tgt[0]-f.pos.x, dy=tgt[1]-f.pos.y, d=Math.hypot(dx,dy);
-    let walking=false;
+    let walking=false; const A=(pplMode===3&&f.F)?f.F:f;
     if(f.wait>0){ f.wait-=dt; if(tgt[2]!=null){ const want=(tgt[2])*Math.PI/180; f.yaw+=Math.atan2(Math.sin(want-f.yaw),Math.cos(want-f.yaw))*Math.min(1,dt*3);} if(f.wait<=0) f.k=(f.k+1)%f.route.length; }
     else if(d<0.05){ f.wait=tgt[2]!=null?3+Math.random()*4:0.01; }
-    else { walking=true; const step=Math.min(d,1.05*dt); f.pos.x+=dx/d*step; f.pos.y+=dy/d*step;
+    else { walking=true; const step=Math.min(d,1.05*(A.speed||1)*dt); f.pos.x+=dx/d*step; f.pos.y+=dy/d*step;
       const want=Math.atan2(dx,dy); f.yaw+=Math.atan2(Math.sin(want-f.yaw),Math.cos(want-f.yaw))*Math.min(1,dt*6); }
     // weights: blend between walking and standing
-    const wt=walking?1:0; f.walkA.weight+=(wt-f.walkA.weight)*Math.min(1,dt*5); f.idleA.weight=1-f.walkA.weight;
-    f.mix.update(dt);
+    const wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
+    A.mix.update(dt);
     // blender y -> three -z ; facing angle measured from +y (blender) = three -z
-    f.o.position.set(f.pos.x,0,-f.pos.y); f.o.rotation.y=Math.PI-f.yaw; f.sh.position.set(f.pos.x,0.004,-f.pos.y);
+    A.o.position.set(f.pos.x,0,-f.pos.y); A.o.rotation.y=Math.PI-f.yaw; f.sh.position.set(f.pos.x,0.004,-f.pos.y);
   }
   return true;}
 
@@ -582,7 +606,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:1,
+  people:3,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:9.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:11.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
