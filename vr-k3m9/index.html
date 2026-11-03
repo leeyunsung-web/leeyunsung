@@ -211,7 +211,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="시야" id="fovPick">
         <button data-f="58">넓게 (지금)</button><button data-f="45">사람 눈</button><button data-f="32">표준 50mm</button>
       </div>
-      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button></div>
+      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button id="botToggle" type="button">테스트 봇</button></div>
       <label for="k-figBlur"><span>피규어 윤곽 블러 (px) <output id="o-figBlur"></output></span><input type="range" id="k-figBlur" min="0" max="14" step="0.1"></label>
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
       <label for="k-figUp"><span>피규어 등 펴기 <output id="o-figUp"></output></span><input type="range" id="k-figUp" min="-0.5" max="2" step="0.01"></label>
@@ -715,6 +715,25 @@ function removePeer(id){ const p=PEERS.get(id); if(!p) return; dropFig(p); scene
 function syncFigs(){ if(PPL) PPL.figs=[...PEERS.values()]; }
 function setPeople(m,force){ pplMode=m; if(m&&!PPL){loadPeople(); return;} if(!PPL) return;
   for(const p of PEERS.values()){ if(p.F) p.F.o.visible=!!m; p.sh.visible=!!m; } dirty=true;}
+// ---------- test bots (master mode): walk the old routes, answer when spoken to; they live only on this screen ----------
+const ROUTES=[
+  [[0.0,3.2,0],[-2.7,4.2,-90],[-2.7,1.2,-90],[1.01,-1.2,null],[2.7,0.4,90],[2.7,3.4,90]],
+  [[12.25,3.2,90],[12.25,0.0,90],[12.25,-3.0,90],[12.25,-5.6,null],[9.1,-5.7,180],[6.34,-5.6,null],[6.34,-1.5,null],[9.1,5.2,0],[6.61,4.6,0]],
+  [[1.35,-1.8,180],[3.6,-5.9,null],[4.55,-5.9,null],[5.29,-5.9,null],[9.1,-1.2,null],[9.1,5.0,0],[12.12,1.5,90],[5.82,-3.0,null],[5.29,-5.9,null],[4.55,-5.9,null],[3.6,-5.9,null]]];
+const BOTS=[], BOT_LINES=['Hello!','Hi there :)','Beautiful work.','I love the Medusa.','First time here?','The colors are amazing.','Nice to meet you!','This room feels calm.'];
+function botsOn(){ return !!(typeof tune!=='undefined'&&tune.bots); }
+function botTick(dt){
+  if(botsOn()&&KIT&&!BOTS.length) ROUTES.forEach((r,i)=>{ const id='bot'+i, p0=r[0]; addPeer({id,h:[160,170,180][i%3],x:p0[0],y:p0[1],a:0}); const p=PEERS.get(id); if(p){ p.bot=true; BOTS.push({id,route:r,k:1,wait:i*1.5,x:p0[0],y:p0[1],yaw:0}); } });
+  if(!botsOn()&&BOTS.length){ for(const b of BOTS) removePeer(b.id); BOTS.length=0; showOnline(); }
+  for(const b of BOTS){ const p=PEERS.get(b.id); if(!p) continue; if(p.stopFor>0){ p.stopFor-=dt; continue; } const t=b.route[b.k], dx=t[0]-b.x, dy=t[1]-b.y, d=Math.hypot(dx,dy);
+    if(b.wait>0){ b.wait-=dt; if(t[2]!=null) b.yaw=-(t[2]*Math.PI/180); if(b.wait<=0) b.k=(b.k+1)%b.route.length; }
+    else if(d<0.05) b.wait=t[2]!=null?3+Math.random()*4:0.01;
+    else { const st=Math.min(d,1.0*dt); b.x+=dx/d*st; b.y+=dy/d*st; b.yaw=-Math.atan2(dx,dy); }
+    p.tgt.set(b.x,b.y); p.tyaw=b.yaw; } }
+// a bot near you answers, stops for a moment and turns to you
+function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get(b.id); if(!p) continue; const d=Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y); if(d<bd){bd=d;best=p;} }
+  if(!best) return; best.stopFor=6; best.tyaw=-Math.atan2(walk.x-best.pos.x,walk.y-best.pos.y);
+  setTimeout(()=>showSay(best.id,BOT_LINES[Math.floor(Math.random()*BOT_LINES.length)]),900+Math.random()*900); }
 // smooth each visitor toward their last reported spot; legs follow the real speed (no sliding)
 function updatePeople(dt){
   if(!PPL||!pplMode||!PEERS.size) return false;
@@ -739,18 +758,18 @@ function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSoc
     else if(m.t==='leave') removePeer(m.id);
     else if(m.t==='n'){ online=m.n; showOnline(); }
     else if(m.t==='say') showSay(m.id,m.m); };
-  room.onclose=()=>{ for(const id of [...PEERS.keys()]) removePeer(id); online=1; showOnline(); roomMe=null; setTimeout(roomConnect,roomBack); roomBack=Math.min(30000,roomBack*2); }; }
+  room.onclose=()=>{ for(const id of [...PEERS.keys()]) if(!PEERS.get(id).bot) removePeer(id); online=1; showOnline(); roomMe=null; setTimeout(roomConnect,roomBack); roomBack=Math.min(30000,roomBack*2); }; }
 function roomTick(now){ if(!room&&KIT) roomConnect(); if(!room||room.readyState!==1||!roomMe) return;
   const moved=Math.hypot(walk.x-roomSent.x,walk.y-roomSent.y)>0.02||Math.abs(walk.yaw-roomSent.a)>0.02;
   if((moved&&now-roomSent.t>150)||now-roomSent.t>25000){ roomSent={x:walk.x,y:walk.y,a:walk.yaw,t:now}; room.send(JSON.stringify({t:'p',x:+walk.x.toFixed(3),y:+walk.y.toFixed(3),a:+walk.yaw.toFixed(3)})); } }
 addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
 // a tab left in the background drops out of the room after a minute (its figure would stand frozen); it comes back when you return
 let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
-  if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) removePeer(id); online=1; showOnline(); },60000); });
+  if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) if(!PEERS.get(id).bot) removePeer(id); online=1; showOnline(); },60000); });
 const onlineEl=document.getElementById('online'), helloEl=document.getElementById('hello'), sayEl=document.getElementById('say'), sayIn=document.getElementById('sayIn'), sayMine=document.getElementById('sayMine');
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
 window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.values()].map(p=>({id:p.id,h:p.h,x:+p.pos.x.toFixed(2),y:+p.pos.y.toFixed(2),tx:p.tgt.x,ty:p.tgt.y,vis:!!(p.F&&p.F.o.visible),bub:!!p.bub}))}); // for checks
-function showOnline(){ onlineEl.hidden=online<2; onlineEl.textContent=online+' online'; }
+function showOnline(){ const n=online+BOTS.length; onlineEl.hidden=n<2; onlineEl.textContent=n+' online'; }
 // speech bubbles over a visitor's head; your own line shows above the input
 const _hp=new THREE.Vector3();
 function headScreen(p){ const r=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect(); _hp.set(p.pos.x,(p.h/100)*1.08+0.18,-p.pos.y).project(camera);
@@ -773,7 +792,7 @@ function closeSay(){ sayEl.hidden=true; sayIn.value=''; sayIn.blur(); stage.focu
 helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); openSay(); };
 sayEl.addEventListener('pointerdown',e=>e.stopPropagation());
 sayIn.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Escape'){ closeSay(); return; }
-  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m&&room&&room.readyState===1) room.send(JSON.stringify({t:'say',m:m.slice(0,140)})); sayIn.value='';
+  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m){ if(room&&room.readyState===1&&roomMe) room.send(JSON.stringify({t:'say',m:m.slice(0,140)})); else showSay(roomMe,m.slice(0,140)); botHear(m); } sayIn.value='';
     if(!nearPeer) closeSay(); } });
 sayIn.addEventListener('blur',()=>{ if(!sayIn.value.trim()) setTimeout(()=>{ if(document.activeElement!==sayIn) sayEl.hidden=true; },150); });
 
@@ -784,7 +803,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,figBlur:4,figUp:0.45,figNear:1,
+  people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -856,6 +875,7 @@ function applyTune(){
   PD.getElementById('k-bob').checked=!!tune.bob; PD.getElementById('k-mobSpin').checked=!!tune.mobSpin;
   if(+tune.people===1||+tune.people===2) tune.people=3; // mannequin and silhouette are retired: only the base figure
   PD.querySelectorAll('#pplPick button[data-p]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.p===+tune.people))); setPeople(+tune.people);
+  {const bt=PD.getElementById('botToggle'); if(bt) bt.setAttribute('aria-pressed',String(!!tune.bots));}
   if(applyTune.live && mode==='walk'){camera.fov=tune.fov; camera.updateProjectionMatrix();}
   for(const fm of floorMats) fm.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
   uPBlur.value=tune.pblur; setQuality();
@@ -957,6 +977,7 @@ document.getElementById('k-bob').addEventListener('change',e=>{tune.bob=e.target
 document.getElementById('k-mobSpin').addEventListener('change',e=>{tune.mobSpin=e.target.checked; applyTune();});
 document.querySelectorAll('#pplPick button[data-p]').forEach(b=>b.onclick=()=>{tune.people=+b.dataset.p; applyTune();});
 // 세부사항: the full figure editor in its own window; its “전시장에 적용” comes back through window.__applyFigure
+document.getElementById('botToggle').onclick=()=>{tune.bots=!tune.bots; applyTune(); showOnline();};
 document.getElementById('figDetail').onclick=()=>{const w=(PD.defaultView||window); const e=w.open(new URL('figure-edit.html?home=1',location.href).href,'figEdit','width=1200,height=920'); if(!e) showHint('팝업이 막혔어요. 주소창 오른쪽에서 팝업을 허용해 주세요.');};
 document.getElementById('k-reset').onclick=()=>{tune={...DEF}; applyTune();};
 // control panel in its own window (used when the room is embedded in the site)
@@ -1179,7 +1200,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
-  roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
+  botTick(dt); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
