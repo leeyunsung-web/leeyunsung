@@ -161,7 +161,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">그림</div>
       <div class="pick" role="group" aria-label="조절할 벽" id="wallPick">
         <button data-w="F">정면 벽</button><button data-w="L">왼쪽 벽</button><button data-w="R">오른쪽 벽</button><button data-w="B">입구 벽</button>
-        <button data-w="R2">2번 방 토르소 벽</button><button data-w="B2">2번 방 메두사 벽</button>
+        <button data-w="R2">2번 방 긴 벽 토르소</button><button data-w="B2">2번 방 입구 쪽 토르소 벽</button>
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
@@ -319,7 +319,8 @@ for(let s of L.baked){
   if(s.name.startsWith('G_Soffit')||s.name.startsWith('G2_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
     const P=s.pos, col=new Float32Array(P.length), C=new THREE.Color();
     for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0,ys=[];for(let k=0;k<4;k++){const v=f*4+k;cx+=P[v*3]/4;cy+=P[v*3+1]/4;cz+=P[v*3+2]/4;ys.push(P[v*3+1]);}
-      const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=inRoom3(cx,cz,1e-3);
+      const inDoor=DOOR&&DOORX&&DOOR.h>=H-1e-3&&cx>=DOOR.x0-0.02&&cx<=DOOR.x1+0.02; // with the opening up to the ceiling, the bands' backs on the shared wall line show through it
+      const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=inRoom3(cx,cz,1e-3)||inDoor;
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
     if(/Soffit[FB]$/.test(s.name)) geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
@@ -364,6 +365,10 @@ const GH=0.03, GD=0.02;
    for(const z of [zN,zS]){ if(Math.abs(z)>=LL/2-1e-3) continue; // the doorway runs into the corner: the back wall continues there, no jamb
      const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,DOOR.h-GH),jm); j.position.set(dx,GH+(DOOR.h-GH)/2,z); scene.add(j);}
    if(Math.abs(zS)>=LL/2-1e-3){const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(DOOR.x1,H/2,LL/2+0.05); scene.add(bk);} // backing where the two back walls meet, so their seam never shows light
+   if(DOOR.h>=H-1e-3){ // opening runs up to the ceiling: carry the ceiling band across it so the two rooms' bands join
+     const sb=L.baked.find(b=>b.name==='G_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
+     const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
+     br.position.set(dx,(H+y0)/2,(zN+zS)/2); scene.add(br); }
    const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}}
 const BlurReflectorShader={name:'BlurReflectorShader',uniforms:{color:{value:null},tDiffuse:{value:null},textureMatrix:{value:null},uBlur:{value:0}},
   vertexShader:Reflector.ReflectorShader.vertexShader,
@@ -509,9 +514,9 @@ ghostMat.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#incl
   '#include <dithering_fragment>\n float fr=pow(1.0-abs(dot(normalize(vViewPosition),normalize(normal))),2.2); gl_FragColor.a=0.32+0.58*fr; gl_FragColor.rgb=mix(vec3(0.50,0.56,0.66),gl_FragColor.rgb,0.35+0.4*fr);');};
 // routes in blender ground coords: [x,y,faceDeg|null] (0 = facing the Medusa wall, 90 = right, -90 = left, 180 = entrance side) — figures stop at a work, look at it, then walk on (doorway at x 2.2-3.6)
 const ROUTES=[
-  [[0,3.2,0],[-2.4,4.2,-90],[-2.4,1.2,-90],[0.9,-1.2,null],[2.4,0.4,90],[2.4,3.4,90]],
-  [[10.5,3.2,90],[10.5,0.0,90],[10.5,-3.0,90],[10.5,-5.6,null],[8.1,-5.7,180],[6.0,-5.6,null],[6.0,-1.5,null],[8.1,5.2,0],[6.2,4.6,0]],
-  [[1.2,-1.8,180],[3.2,-5.9,null],[4.05,-5.9,null],[5.2,-5.9,null],[8.1,-1.2,null],[8.1,5.0,0],[10.4,1.5,90],[5.6,-3.0,null],[5.2,-5.9,null],[4.05,-5.9,null],[3.2,-5.9,null]]];
+  [[0.0,3.2,0],[-3.0,4.2,-90],[-3.0,1.2,-90],[1.12,-1.2,null],[3.0,0.4,90],[3.0,3.4,90]],
+  [[13.25,3.2,90],[13.25,0.0,90],[13.25,-3.0,90],[13.25,-5.6,null],[10.1,-5.7,180],[7.34,-5.6,null],[7.34,-1.5,null],[10.1,5.2,0],[7.61,4.6,0]],
+  [[1.5,-1.8,180],[4.0,-5.9,null],[5.05,-5.9,null],[6.29,-5.9,null],[10.1,-1.2,null],[10.1,5.0,0],[13.12,1.5,90],[6.82,-3.0,null],[6.29,-5.9,null],[5.05,-5.9,null],[4.0,-5.9,null]]];
 async function loadPeople(){
   if(PPL||pplLoading) return; pplLoading=true;
   try{
@@ -558,7 +563,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
   people:1,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
-  mobH:1.5,mobSpin:true,mwX:7.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:9.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
+  mobH:1.5,mobSpin:true,mwX:9.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:11.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 Object.assign(DEF,{"contrast": 2.05, "bright": 0.82, "refl": 1, "gloss": 0.04, "medH": 1.2, "medW": 0.36, "medD": 0.36, "torW": 0.5, "torD": 0.5, "tContrast": 1.65, "tBright": 1, "tDark": 0.1, "tRough": 0.15, "torH": 1.2, "paintY": 1.55, "shadow": 1.5, "sculptOff": 0, "floor": 0.24, "fov": 45, "bob": true, "wsel": "F", "res": 0.9, "aa": 2, "pblur": 1, "rblur": 0.66, "sshadow": 0.24, "ao": 0.6, "bloom": 0.1, "vig": 0.14, "grain": 0.3, "weave": 1, "medX": 0, "medY": 4.85, "medR": 0, "torX": 0, "torY": -3.5, "torR": 0, "msel": "M", "gapF": 0.55, "shF": 0, "gapB": 1.1, "shB": 0, "gapL": 0.6, "shL": 0, "gapR": 0.6, "shR": 0}); // starting point = the settings saved to the homepage on 2026-11-03
 const KEY='medusa-room-tune-v2';
@@ -765,7 +770,7 @@ function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
   camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
 }
-const VIEWS={mobile:{x:8.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
+const VIEWS={mobile:{x:10.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:6.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 function goView(k){
   const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
   document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
@@ -855,7 +860,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
-  if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>3.2){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
+  if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
     fpsEl.textContent=idle?'멈춤 (움직이면 측정)':Math.round(fc*1000/(now-ft))+' fps · '+(fc?(fms/fc).toFixed(1):'–')+' ms';
