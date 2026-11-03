@@ -553,6 +553,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else if(s) tune={...DEF,...s};
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
+for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
 const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
