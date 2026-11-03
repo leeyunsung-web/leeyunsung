@@ -36,19 +36,24 @@ function partGeo(def){
   for(const r of def.rings||[]){const g=new THREE.TorusGeometry(r.r*MM,1.2*TH*MM,6,48); g.translate(r.x*MM,r.y*MM,0); gs.push(g);} // thin wire rings beside the balls
   return mergeGeometries(gs.map(flat));
 }
-function eyeGeo(top,bot){
+// crescent at the upper-right spike (2019 photos; not on PLAN B01) — plate mm: centre x,y, outer radius r, widest band t, turn rot (deg), flip
+export const MOON_DEFAULT={x:406,y:-120,r:26,t:6,rot:180,flip:false};
+export function moonPts(m){m={...MOON_DEFAULT,...(m||{})}; const R=m.r, c=Math.max(0.5,Math.min(m.t,R*1.6)), r=R*0.97;
+  const ix=(R*R-r*r+c*c)/(2*c), iy=Math.sqrt(Math.max(0,R*R-ix*ix)), a=Math.atan2(iy,ix), b=Math.atan2(iy,ix-c), pts=[];
+  for(let i=0;i<=36;i++){const t=a+i/36*(2*Math.PI-2*a); pts.push([R*Math.cos(t),R*Math.sin(t)]);}           // outer arc through the back
+  for(let i=1;i<36;i++){const t=(2*Math.PI-b)-i/36*(2*Math.PI-2*b); pts.push([c+r*Math.cos(t),r*Math.sin(t)]);} // inner arc back to the top horn
+  const q=m.rot*Math.PI/180, cs=Math.cos(q), sn=Math.sin(q), fx=m.flip?-1:1;
+  return pts.map(([x,y])=>{y*=fx; return [m.x+x*cs-y*sn, m.y+x*sn+y*cs];});}
+function moonShape(m){return new THREE.Shape(moonPts(m).map(([x,y])=>new THREE.Vector2(x,y)));}
+export const EYE_OUTLINE=()=>EYE[0];
+function eyeGeo(top,bot,mo){
   const sh=EYE[0], ctr=h=>h.reduce((a,p)=>[a[0]+p[0]/h.length,a[1]+p[1]/h.length],[0,0]);
   const star=sh.h.reduce((a,b)=>b.length>a.length?b:a), tip=star.reduce((a,p)=>p[1]>a[1]?p:a), ax=tip[0];
   const topY=Math.max(...sh.o.filter(p=>Math.abs(p[0]-ax)<20).map(p=>p[1])), hang={x:ax,y:topY-9};
   const shape=new THREE.Shape(sh.o.map(p=>new THREE.Vector2(p[0],p[1])));
   const hh=new THREE.Path(); hh.absarc(hang.x,hang.y,3.25,0,Math.PI*2,true); shape.holes.push(hh); // 6.5Ø
   for(const h of sh.h) shape.holes.push(new THREE.Path(h.map(p=>new THREE.Vector2(p[0],p[1]))));
-  const moon=(()=>{const R=26,f=R/24,c=4.95*f,r=21.95*f,hx=R*Math.cos(5*Math.PI/3),hy=R*Math.sin(5*Math.PI/3),pts=[];
-    for(let i=0;i<=40;i++){const a=Math.PI/3+i/40*(4*Math.PI/3); pts.push([Math.cos(a)*R,Math.sin(a)*R]);}
-    const a0=Math.atan2(hy,hx-c), a1=Math.atan2(-hy,hx-c); // inner arc back through the left side (289° down to 71°)
-    for(let i=1;i<40;i++){const a=(a0+2*Math.PI)-i/40*((a0+2*Math.PI)-(a1)); pts.push([c+Math.cos(a)*r,Math.sin(a)*r]);}
-    const tip=[393.4,-142.2], cx=tip[0]-(-hx), cy=tip[1]-hy;          // mirrored: opens toward the eye, lower horn on the spike tip
-    return new THREE.Shape(pts.map(([x,y])=>new THREE.Vector2(cx-x,cy+y)));})();
+  const moon=moonShape(mo);
   const g=new THREE.ExtrudeGeometry([shape,moon],{depth:2.4,bevelEnabled:false}); // 1.2T × 2 sheets
   g.translate(-hang.x,-hang.y,-1.2); g.scale(MM,MM,MM); g.computeBoundingBox();
   const y0=g.boundingBox.min.y,y1=g.boundingBox.max.y,p=g.attributes.position,col=new Float32Array(p.count*3),c=new THREE.Color();
@@ -60,12 +65,12 @@ function eyeGeo(top,bot){
 const TOP=[['A05',.035,.2],['A04',.16,.55],['A02',.27,2.55],['A03b',.45,.3],['A03',.61,-.6],['A01',.78,.4]];
 // under the eye: the ball rod, then the diagonal rod (seen from the back in the photos, so turned half round)
 const BOT=[['A06',.3],['A07',2.8]];
-export function buildMobile({env,ceiling,eyeBottom=1.5}){
+export function buildMobile({env,ceiling,eyeBottom=1.5,moon}){
   const gold=new THREE.MeshStandardMaterial({color:new THREE.Color('#d8c470'),metalness:1,roughness:.05,envMap:env,envMapIntensity:1.2});
   const plate=new THREE.MeshStandardMaterial({color:new THREE.Color('#d8c470'),vertexColors:true,metalness:1,roughness:.03,envMap:env,envMapIntensity:1.25,side:THREE.DoubleSide});
   const wireM=new THREE.MeshStandardMaterial({color:0xd4d6d8,metalness:1,roughness:.08,envMap:env});
   const grp=new THREE.Group(), nodes=[], P=130*MM;
-  const eg=eyeGeo(new THREE.Color('#ffffff'),new THREE.Color('#ffffff')), eyeH=eg.userData.h;
+  const eg=eyeGeo(new THREE.Color('#ffffff'),new THREE.Color('#ffffff'),moon), eyeH=eg.userData.h;
   const eye=new THREE.Group(); eye.add(new THREE.Mesh(eg,plate));
   const ring=new THREE.Mesh(new THREE.TorusGeometry(9*MM,1.6*MM,8,24),wireM); ring.position.y=16*MM; ring.rotation.y=Math.PI/2; eye.add(ring);
   let wireBot=0;
