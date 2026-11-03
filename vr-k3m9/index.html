@@ -228,7 +228,6 @@ function makePedestal(name,cx,cz,w,d){
 }
 // baked surfaces
 let floorMat=null; const peds={}; const blocks=[];
-// front/back ceiling bands overlap the side bands at the corners (double-dark patch): trim them to the side bands' inner edge
 function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
   for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k), xs=vs.map(v=>P[v*3]);
     if(xs.every(x=>Math.abs(x)>lim+0.01)) continue; // end cap inside the side band
@@ -239,12 +238,25 @@ function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
     keep.push(f);}
   const idx=[]; for(const f of keep) for(const t of s.idx.slice(f*6,f*6+6)) idx.push(t);
   return {...s,pos:P,uv:U,idx};}
+function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice(), inner=s.name==='G_WallF'?(v=>Math.abs(Math.abs(P[v*3+2])-LL/2)<1e-3):(v=>Math.abs(Math.abs(P[v*3])-W/2)<1e-3);
+  for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k); if(!vs.every(inner)) continue;
+    for(const v of vs){ if(P[v*3+1]>0.001) continue; const q=vs.find(o=>o!==v&&P[o*3+1]>1&&Math.abs(P[o*3]-P[v*3])<1e-4&&Math.abs(P[o*3+2]-P[v*3+2])<1e-4); if(q===undefined) continue;
+      const t=0.03/P[q*3+1]; U[v*2]+=(U[q*2]-U[v*2])*t; U[v*2+1]+=(U[q*2+1]-U[v*2+1])*t; P[v*3+1]=0.03; }}
+  return {...s,pos:P,uv:U};}
 for(let s of L.baked){
-  if(s.name==='G_SoffitF'||s.name==='G_SoffitB') s=trimBand(s,W/2-0.8);
+  if(s.name==='G_WallL'||s.name==='G_WallR'||s.name==='G_WallF') s=liftWallFoot(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
   geo.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(s.uv),2));
   geo.setIndex(s.idx);
+  if(s.name.startsWith('G_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
+    const P=s.pos, col=new Float32Array(P.length), C=new THREE.Color();
+    for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0,ys=[];for(let k=0;k<4;k++){const v=f*4+k;cx+=P[v*3]/4;cy+=P[v*3+1]/4;cz+=P[v*3+2]/4;ys.push(P[v*3+1]);}
+      const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=Math.abs(cx)<W/2-1e-3&&Math.abs(cz)<LL/2-1e-3;
+      const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
+      for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
+    if(s.name==='G_SoffitF'||s.name==='G_SoffitB') geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
   const isFloor=s.name==='G_FloorBox';
   const m=new THREE.MeshBasicMaterial({map:tex('live/'+s.img),transparent:isFloor,opacity:isFloor?0.80:1});
   const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMat=m;} scene.add(mesh);
@@ -252,18 +264,21 @@ for(let s of L.baked){
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
 }
-// shadow gap (recessed reveal) at the foot of the walls: replaces the flat black band of the bake with an inset look
-{const c=document.createElement('canvas'); c.width=4; c.height=64; const x=c.getContext('2d');
- const g=x.createLinearGradient(0,0,0,64); // top = under the wall's edge (deepest shadow) -> bottom = floor bounce
- g.addColorStop(0,'#d9d7d3'); g.addColorStop(0.07,'#d9d7d3'); g.addColorStop(0.1,'#2a2927'); g.addColorStop(0.45,'#3d3b38'); g.addColorStop(1,'#6e6b66');
- x.fillStyle=g; x.fillRect(0,0,4,64); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace;
- const GH=0.03, m=new THREE.MeshBasicMaterial({map:t});
- const strip=(len,px,pz,ry)=>{const s=new THREE.Mesh(new THREE.PlaneGeometry(len,GH),m); s.position.set(px,GH/2,pz); s.rotation.y=ry; scene.add(s);
-   // a faint soft line on the floor in front of the gap
-   const f=new THREE.Mesh(new THREE.PlaneGeometry(len,0.05),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.10,depthWrite:false}));
-   f.rotation.order='YXZ'; f.rotation.set(-Math.PI/2,ry,0); const d=0.025; f.position.set(px+Math.sin(ry)*d,0.002,pz+Math.cos(ry)*d); f.renderOrder=2; scene.add(f);};
- const e=0.001;
- strip(LL,-W/2+e,0,Math.PI/2); strip(LL,W/2-e,0,-Math.PI/2); strip(W,0,-LL/2+e,0);}
+// shadow gap: the wall stops 3 cm above the floor and the reveal behind it is set back 2 cm, so it reads as a real dark recess
+const GH=0.03, GD=0.02;
+{const dark=c=>new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(c,c,c,THREE.SRGBColorSpace)});
+ const back=(()=>{const c=document.createElement('canvas'); c.width=4; c.height=32; const x=c.getContext('2d'); const g=x.createLinearGradient(0,0,0,32);
+   g.addColorStop(0,'#141312'); g.addColorStop(1,'#3b3936'); x.fillStyle=g; x.fillRect(0,0,4,32); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return new THREE.MeshBasicMaterial({map:t});})();
+ const under=dark(0.07), gfloor=dark(0.24);
+ const reveal=(len,cx,cz,ry)=>{ // ry: rotation so local +z points into the room
+   const g=new THREE.Group(); g.position.set(cx,0,cz); g.rotation.y=ry; scene.add(g);
+   const L2=len+2*GD;
+   const b=new THREE.Mesh(new THREE.PlaneGeometry(L2,GH),back); b.position.set(0,GH/2,-GD); g.add(b);            // back face of the recess
+   const u=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),under); u.rotation.x=Math.PI/2; u.position.set(0,GH,-GD/2); g.add(u); // underside of the wall
+   const f=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),gfloor); f.rotation.x=-Math.PI/2; f.position.set(0,0.0005,-GD/2); g.add(f); // floor inside the gap
+   const sh=new THREE.Mesh(new THREE.PlaneGeometry(len,0.05),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.09,depthWrite:false}));
+   sh.rotation.x=-Math.PI/2; sh.position.set(0,0.002,0.025); sh.renderOrder=2; g.add(sh);};                      // soft shadow on the floor in front
+ reveal(LL,-W/2,0,Math.PI/2); reveal(LL,W/2,0,-Math.PI/2); reveal(W,0,-LL/2,0);}
 const mir=new Reflector(new THREE.PlaneGeometry(W,LL),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a});
 mir.rotation.x=-Math.PI/2; mir.position.y=-0.002; scene.add(mir);
 const glow=new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,LL-1.6),new THREE.MeshBasicMaterial({color:0xffffff}));
