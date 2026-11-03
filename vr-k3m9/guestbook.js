@@ -60,7 +60,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     canHide: async () => !!masterPass() };
   // pages: everyone's (in the order they came), then yours (one blank page always ahead, up to MAXP), then the rest of the book
   let mineStart = 0;
-  const myCount = () => { const n = mine.strokes.reduce((m, s) => Math.max(m, (s.g | 0) + 1), 0); return Math.min(MAXP, Math.max(2, Math.ceil((n + 1) / 2) * 2)); };
+  const myCount = () => MAXP; // all ten of your pages are open to write on, in any order
   const pages = () => { const list = [];
     for (const o of others) list.push({ kind: 'entry', key: o.id + ':' + o.g, id: o.id, g: o.g });
     if (list.length % 2) list.push({ kind: 'blank' }); // your writing starts on a left-hand page
