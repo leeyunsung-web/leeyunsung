@@ -12,9 +12,11 @@ const PARTS={
   A03:simple(73,-15,{x:-405,t:'x',r:46},{x:181,t:'s',r:16}),
   A04:simple(40,17,{x:-270,t:'x',r:46},{x:459,t:'s',r:30}),
   A05:{segs:[[-558,ln(19,16,-558),404,ln(19,16,404)],[404,ln(19,16,404),746,316],[404,ln(19,16,404),600,95]],
-    orns:[{t:'s',r:18,x:-558,y:ln(19,16,-558)},{t:'x',r:46,x:746,y:316},{t:'s',r:18,x:600,y:95},{t:'x',r:45,x:0,y:45}],balls:[{x:404,y:ln(19,16,404)}]},
+    orns:[{t:'s',r:18,x:-558,y:ln(19,16,-558)},{t:'x',r:46,x:746,y:316},{t:'s',r:18,x:600,y:95},{t:'x',r:45,x:0,y:45}],balls:[{x:404,y:ln(19,16,404)}],
+    rings:[{x:404-25,y:ln(19,16,404)+8,r:78},{x:404+18,y:ln(19,16,404)-87,r:28}]},
   A03b:{segs:[[-225,46,261,104],[-225,46,-671,-62],[-225,46,-476,205]],
-    orns:[{t:'s',r:24,x:261,y:104},{t:'s',r:18,x:-671,y:-62},{t:'x',r:46,x:-476,y:205},{t:'s',r:18,x:0,y:45}],balls:[{x:-225,y:46}]},
+    orns:[{t:'s',r:24,x:261,y:104},{t:'s',r:18,x:-671,y:-62},{t:'x',r:46,x:-476,y:205},{t:'s',r:18,x:0,y:45}],balls:[{x:-225,y:46}],
+    rings:[{x:-225-99,y:46+38,r:66},{x:-225-54,y:46+83,r:24}]},
   A06:simple(53,9,{x:-225,t:'s',r:24},{x:314,ball:true}),
   A07:simple(54,20,{x:-225,t:'x',r:46},{x:212,t:'s',r:15}),
 };
@@ -29,6 +31,7 @@ function partGeo(def){
   for(const o of def.orns){const g=new THREE.ExtrudeGeometry(o.t==='x'?cross4(o.r):star5(o.r),{depth:2,bevelEnabled:false,curveSegments:10});
     g.translate(0,0,-1); if(o.t==='s') g.rotateZ((o.x*0.37%1)*.6); g.scale(MM,MM,MM); g.translate(o.x*MM,o.y*MM,0); gs.push(g);}
   for(const b of def.balls){const g=new THREE.SphereGeometry(21.5*MM,28,18); g.translate(b.x*MM,b.y*MM,0); gs.push(g);}
+  for(const r of def.rings||[]){const g=new THREE.TorusGeometry(r.r*MM,1.2*MM,6,48); g.translate(r.x*MM,r.y*MM,0); gs.push(g);} // thin wire rings beside the balls
   return mergeGeometries(gs.map(flat));
 }
 function eyeGeo(top,bot){
@@ -58,14 +61,25 @@ export function buildMobile({env,ceiling,eyeBottom=1.5}){
   function layout(eb){
     const eyeTop=eb+eyeH; let y=eyeTop+60*MM;
     nodes.forEach(n=>{ if(n.userData.tier==='top'){n.position.y=y+n.userData.i*P;} else if(n.userData.tier==='bot'){n.position.y=eb-140*MM-n.userData.i*P;} });
-    eye.position.y=eyeTop; wireBot=eb-140*MM-(BOT.length-1)*P;
-    wire.scale.y=ceiling-wireBot; wire.position.y=(ceiling+wireBot)/2;
+    eye.position.y=eyeTop;
+    const topPipe=eyeTop+60*MM+(TOP.length-1)*P+90*MM;           // top of the highest pipe
+    wire.scale.y=ceiling-topPipe; wire.position.y=(ceiling+topPipe)/2;  // ceiling wire stops at the top of the mobile
+    const upBot=eyeTop+34*MM, upTop=topPipe+20*MM;                     // brass axis through the upper pipes
+    upRod.scale.y=upTop-upBot; upRod.position.y=(upTop+upBot)/2;
+    clip.position.y=eyeTop+24*MM;                                     // carabiner into the 6.5 mm hole
+    l1.position.y=eb-8*MM; l2.position.y=eb-26*MM;                    // two links from the 10 mm hole
+    const loTop=eb-140*MM+90*MM+16*MM; wireBot=eb-140*MM-(BOT.length-1)*P;
+    const loBot=wireBot-12*MM; loRod.scale.y=loTop-loBot; loRod.position.y=(loTop+loBot)/2;
   }
   const geoCache={};
   TOP.slice().reverse().forEach(([k,yaw],i)=>{const m=new THREE.Mesh(geoCache[k]||=partGeo(PARTS[k]),gold); m.userData={tier:'top',i,yaw,ph:i*1.7}; nodes.push(m);});
   nodes.push(Object.assign(eye,{userData:{tier:'eye',yaw:0,ph:.4}}));
   BOT.forEach(([k,yaw],i)=>{const m=new THREE.Mesh(geoCache[k]||=partGeo(PARTS[k]),gold); m.userData={tier:'bot',i,yaw,ph:5+i*2.3}; nodes.push(m);});
   const wire=new THREE.Mesh(new THREE.CylinderGeometry(MM,MM,1,6),wireM);
+  const unit=new THREE.CylinderGeometry(3*MM,3*MM,1,10); const upRod=new THREE.Mesh(unit,gold), loRod=new THREE.Mesh(unit,gold);
+  const link=()=>{const m=new THREE.Mesh(new THREE.TorusGeometry(7*MM,1.4*MM,8,20),gold); m.scale.set(1,1.5,1); return m;};
+  const clip=link(), l1=link(), l2=link(); l2.rotation.y=Math.PI/2;
+  grp.add(upRod,loRod,clip,l1,l2);
   nodes.forEach(n=>grp.add(n)); grp.add(wire); layout(eyeBottom);
   return { group:grp, setHeight:layout, lowest:()=>wireBot,
     update(t){ nodes.forEach((n,i)=>{const u=n.userData; n.rotation.y=u.yaw+Math.sin(t*(.08+i*.013)+u.ph)*.5;}); } };
