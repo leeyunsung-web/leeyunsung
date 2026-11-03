@@ -1,5 +1,5 @@
 {
- "savedAt": 1793734286035,
+ "savedAt": 1793734391384,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -22,7 +22,7 @@
   "shadow": 1.5,
   "sculptOff": 0,
   "floor": 0.06,
-  "fov": 45,
+  "fov": 32,
   "bob": true,
   "wsel": "L2",
   "res": 1,
