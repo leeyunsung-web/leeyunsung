@@ -128,7 +128,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="mapwrap">
         <canvas id="map" width="440" height="400" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
         <div class="mapside">
-          <div class="pick" role="group" aria-label="옮길 조각" id="selPick"><button data-s="M">메두사(은)</button><button data-s="T">토르소</button><button data-s="W">메두사(흰)</button><button data-s="G">메두사(금)</button></div>
+          <div class="pick" role="group" aria-label="옮길 조각" id="selPick"><button data-s="M">메두사(은)</button><button data-s="T">토르소</button></div>
           <label for="n-x"><span>왼쪽 벽에서 (m)</span><input type="number" id="n-x" step="0.05"></label>
           <label for="n-y"><span>입구 벽에서 (m)</span><input type="number" id="n-y" step="0.05"></label>
           <label for="n-r"><span>회전 (°, 시계 방향)</span><input type="number" id="n-r" step="5"></label>
@@ -161,7 +161,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">그림</div>
       <div class="pick" role="group" aria-label="조절할 벽" id="wallPick">
         <button data-w="F">정면 벽</button><button data-w="L">왼쪽 벽</button><button data-w="R">오른쪽 벽</button><button data-w="B">입구 벽</button>
-        <button data-w="F2">2번 방 라오콘 벽</button><button data-w="R2">2번 방 토르소 벽</button><button data-w="B2">2번 방 메두사 벽</button>
+        <button data-w="R2">2번 방 토르소 벽</button><button data-w="B2">2번 방 메두사 벽</button>
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
@@ -482,9 +482,12 @@ const whiteMat=new THREE.MeshStandardMaterial({color:0xf3f2ef,roughness:0.55,met
 const goldMat=chrome.clone(); goldMat.onBeforeCompile=chrome.onBeforeCompile;
 const mkMed=mat=>{const g=mg.clone(); g.traverse(o=>{if(o.isMesh){o.material=mat; o.castShadow=true;}}); scene.add(g); return g;};
 const mwG=mkMed(whiteMat), mgdG=mkMed(goldMat);
+const ROOM2_MEDUSA=false; // 2026-11-03: white and gold Medusa heads taken out of room 2 (set true to bring them back)
+if(!ROOM2_MEDUSA){mwG.visible=mgdG.visible=false;}
 const tg=new THREE.Group(); scene.add(tg);
 {const tm=meshFrom(dt,resin); tm.position.z=-3.5; tm.castShadow=true; tg.add(tm);} // world-space mesh re-centred on its pedestal (blender y=-3.5); faces the Medusa (+y)
 const sculptCap=L.sculptures.map(s=>({s,pos:b2t(s.x,s.y,s.z)}));
+if(!ROOM2_MEDUSA) for(const i of [2,3]) if(sculptCap[i]) sculptCap[i].s={caption:''};
 const MOBCAP={s:{caption:'Inside of Light|2019, Mirror Stainless Steel, 160 × 160 × 200 cm'},pos:new THREE.Vector3()}; if(MOB){const r2=ROOMS[1]||ROOMS[0]; MOBCAP.pos.copy(b2t((r2.x0+r2.x1)/2,(r2.y0+r2.y1)/2,1.8)); sculptCap.push(MOBCAP);}
 // soft cast shadow of each sculpture onto its pedestal top, from the ceiling light (the light itself adds no brightness)
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap; renderer.shadowMap.autoUpdate=false; // static: redrawn in applyTune
@@ -496,6 +499,7 @@ function sculptShadow(){
   rcv.rotation.order='YXZ'; rcv.rotation.x=-Math.PI/2; rcv.receiveShadow=true; rcv.renderOrder=3; scene.add(rcv);
   return {L1,rcv};}
 const SSH=[sculptShadow(),sculptShadow(),sculptShadow(),sculptShadow()];
+if(!ROOM2_MEDUSA) for(const i of [2,3]){SSH[i].L1.castShadow=false; SSH[i].rcv.visible=false;}
 
 // ---------- other visitors (preview): walking figures, mannequin or see-through silhouette ----------
 let PPL=null, pplLoading=false, pplMode=0;
@@ -590,6 +594,7 @@ function applyTune(){
     const f=P.userData.fs; f.position.set(x,0.003,-y); f.rotation.y=rad; f.scale.set(w*1.6,d*1.6,1); };
   place(P1,tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop,0.26,0.26);
   place(P3,tune.mwX,tune.mwY,tune.mwR,tune.mwW,tune.mwD,wTop,0.26,0.26); place(P4,tune.mgdX,tune.mgdY,tune.mgdR,tune.mgdW,tune.mgdD,gTop,0.26,0.26);
+  if(!ROOM2_MEDUSA){ if(tune.msel==='W'||tune.msel==='G') tune.msel='M'; for(const P of [P3,P4]) if(P){P.visible=false; P.userData.blob.visible=false; P.userData.fs.visible=false;} }
   [[SSH[0],tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop],[SSH[1],tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop],
    [SSH[2],tune.mwX,tune.mwY,tune.mwR,tune.mwW,tune.mwD,wTop],[SSH[3],tune.mgdX,tune.mgdY,tune.mgdR,tune.mgdW,tune.mgdD,gTop]].forEach(([o,x,y,r,w,d,top])=>{
     o.rcv.position.set(x,top+0.0012,-y); o.rcv.rotation.y=-r*Math.PI/180; o.rcv.scale.set(w,d,1); o.rcv.material.opacity=tune.sshadow;
@@ -631,7 +636,7 @@ function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringi
   el.textContent=ok?(manual?'저장했어요 ('+hm+')':'자동 저장됨 ('+hm+')'):'이 브라우저에서는 저장이 안 돼요 (사생활 보호 모드인지 확인해 주세요)';}
 for(const [k,id] of Object.entries(ui)) document.getElementById(id).addEventListener('input',e=>{tune[k]=parseFloat(e.target.value); applyTune();});
 // ---------- placement + bird's-eye map ----------
-const SK=['med','tor','mw','mgd'], SEL={M:'med',T:'tor',W:'mw',G:'mgd'}, SELR={med:'M',tor:'T',mw:'W',mgd:'G'}, SNAME={med:'메두사(은)',tor:'토르소',mw:'메두사(흰)',mgd:'메두사(금)'};
+const SK=ROOM2_MEDUSA?['med','tor','mw','mgd']:['med','tor'], SEL={M:'med',T:'tor',W:'mw',G:'mgd'}, SELR={med:'M',tor:'T',mw:'W',mgd:'G'}, SNAME={med:'메두사(은)',tor:'토르소',mw:'메두사(흰)',mgd:'메두사(금)'};
 const pk=()=>SEL[tune.msel]||'med';
 function clampPlace(){for(const p of SK){const w=tune[p+'W'],d=tune[p+'D'],m=Math.max(w,d)/2+0.05; const x=+tune[p+'X']||0, y=+tune[p+'Y']||0;
   let best=null,bd=1e9; for(const r of ROOMS){const cx=Math.max(r.x0+m,Math.min(r.x1-m,x)), cy=Math.max(r.y0+m,Math.min(r.y1-m,y)); const dd=(cx-x)**2+(cy-y)**2; if(dd<bd){bd=dd;best=[cx,cy];}}
@@ -798,7 +803,7 @@ function updateCaption(){
   if(mode!=='walk'){capEl.hidden=true; return;}
   const p=b2t(walk.x,walk.y,EYE); const f=new THREE.Vector3(); camera.getWorldDirection(f);
   let best=null,bd=1e9;
-  for(const w of [...works,...sculptCap.map(c=>({pos:c.pos,caption:c.s.caption}))]){
+  for(const w of [...works,...sculptCap.filter(c=>c.s.caption).map(c=>({pos:c.pos,caption:c.s.caption}))]){
     const v=w.pos.clone().sub(p); const d=v.length(); if(d>3.2) continue; v.normalize(); if(v.dot(f)<0.9) continue; if(d<bd){bd=d;best=w;}
   }
   const c=best?best.caption:''; if(c!==lastCap){lastCap=c; if(c){const [t,...rest]=c.split('|'); capEl.innerHTML='<b></b><span></span>'; capEl.firstChild.textContent=t; capEl.lastChild.textContent=rest.join(', '); capEl.hidden=false;} else capEl.hidden=true;}
