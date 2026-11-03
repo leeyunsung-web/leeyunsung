@@ -52,44 +52,46 @@ function eyeGeo(top,bot){
   const g=new THREE.ExtrudeGeometry([shape,moon],{depth:2.4,bevelEnabled:false}); // 1.2T × 2 sheets
   g.translate(-hang.x,-hang.y,-1.2); g.scale(MM,MM,MM); g.computeBoundingBox();
   const y0=g.boundingBox.min.y,y1=g.boundingBox.max.y,p=g.attributes.position,col=new Float32Array(p.count*3),c=new THREE.Color();
-  const mid=new THREE.Color('#e9e7e1');
-  for(let i=0;i<p.count;i++){const t=(p.getY(i)-y0)/(y1-y0); if(t>0.62) c.copy(mid).lerp(top,Math.min(1,(t-0.62)/0.2)); else c.copy(bot).lerp(mid,Math.max(0,(t-0.08)/0.5)); col.set([c.r,c.g,c.b],i*3);}
+  c.copy(top); for(let i=0;i<p.count;i++) col.set([c.r,c.g,c.b],i*3); // gold mirror stainless all over
   g.setAttribute('color',new THREE.BufferAttribute(col,3)); g.userData.h=y1-y0; return g;
 }
 // order and turn of each tier read from the installation image (IMG 01)
-const TOP=[['A05',.25],['A03b',-.9],['A04',2.3],['A01',-2.1],['A03',1.1],['A02',-.4]], BOT=[['A06',.5],['A07',-1.4]];
+// 2019 UARTSPACE photos (the final state): upper stack, bottom to top — [part, pipe bottom above the eye top (m), turn]
+const TOP=[['A05',.035,.2],['A04',.16,.55],['A02',.27,2.55],['A03b',.45,.3],['A03',.61,-.6],['A01',.78,.4]];
+// under the eye: the ball rod, then the diagonal rod (seen from the back in the photos, so turned half round)
+const BOT=[['A06',.3],['A07',2.8]];
 export function buildMobile({env,ceiling,eyeBottom=1.5}){
   const gold=new THREE.MeshStandardMaterial({color:new THREE.Color('#d8c470'),metalness:1,roughness:.05,envMap:env,envMapIntensity:1.2});
-  const plate=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:true,metalness:1,roughness:.03,envMap:env,envMapIntensity:1.25,side:THREE.DoubleSide});
+  const plate=new THREE.MeshStandardMaterial({color:new THREE.Color('#d8c470'),vertexColors:true,metalness:1,roughness:.03,envMap:env,envMapIntensity:1.25,side:THREE.DoubleSide});
   const wireM=new THREE.MeshStandardMaterial({color:0xd4d6d8,metalness:1,roughness:.08,envMap:env});
   const grp=new THREE.Group(), nodes=[], P=130*MM;
-  const eg=eyeGeo(new THREE.Color('#f2dc7e'),new THREE.Color('#c49a3c')), eyeH=eg.userData.h;
+  const eg=eyeGeo(new THREE.Color('#ffffff'),new THREE.Color('#ffffff')), eyeH=eg.userData.h;
   const eye=new THREE.Group(); eye.add(new THREE.Mesh(eg,plate));
   const ring=new THREE.Mesh(new THREE.TorusGeometry(9*MM,1.6*MM,8,24),wireM); ring.position.y=16*MM; ring.rotation.y=Math.PI/2; eye.add(ring);
   let wireBot=0;
   function layout(eb){
     const eyeTop=eb+eyeH; let y=eyeTop+60*MM;
-    nodes.forEach(n=>{ if(n.userData.tier==='top'){n.position.y=y+n.userData.i*P;} else if(n.userData.tier==='bot'){n.position.y=eb-140*MM-n.userData.i*P;} });
+    nodes.forEach(n=>{ if(n.userData.tier==='top'){n.position.y=eyeTop+n.userData.h;} else if(n.userData.tier==='bot'){n.position.y=eb-140*MM-n.userData.i*90*MM;} }); // lower pipes stacked end to end
     eye.position.y=eyeTop;
-    const topPipe=eyeTop+60*MM+(TOP.length-1)*P+90*MM;           // top of the highest pipe
+    const topPipe=eyeTop+TOP[TOP.length-1][1]+90*MM;              // top of the highest pipe
     wire.scale.y=ceiling-topPipe; wire.position.y=(ceiling+topPipe)/2;  // ceiling wire stops at the top of the mobile
-    const upBot=eyeTop+34*MM, upTop=topPipe+20*MM;                     // brass axis through the upper pipes
+    const upBot=eyeTop+34*MM, upTop=topPipe;                           // one continuous brass axis, same thickness as the pipes (no gaps)
     upRod.scale.y=upTop-upBot; upRod.position.y=(upTop+upBot)/2;
     clip.position.y=eyeTop+24*MM;                                     // carabiner into the 6.5 mm hole
     l1.position.y=eb-8*MM; l2.position.y=eb-26*MM;                    // two links from the 10 mm hole
-    const loTop=eb-140*MM+90*MM+16*MM; wireBot=eb-140*MM-(BOT.length-1)*P;
-    const loBot=wireBot-12*MM; loRod.scale.y=loTop-loBot; loRod.position.y=(loTop+loBot)/2;
+    const loTop=eb-34*MM; wireBot=eb-140*MM-(BOT.length-1)*90*MM;
+    const loBot=wireBot; loRod.scale.y=loTop-loBot; loRod.position.y=(loTop+loBot)/2;
   }
   const geoCache={};
-  TOP.slice().reverse().forEach(([k,yaw],i)=>{const m=new THREE.Mesh(geoCache[k]||=partGeo(PARTS[k]),gold); m.userData={tier:'top',i,yaw,ph:i*1.7}; nodes.push(m);});
+  TOP.forEach(([k,h,yaw],i)=>{const m=new THREE.Mesh(geoCache[k]||=partGeo(PARTS[k]),gold); m.userData={tier:'top',i,h,yaw,ph:i*1.7}; nodes.push(m);});
   nodes.push(Object.assign(eye,{userData:{tier:'eye',yaw:0,ph:.4}}));
   BOT.forEach(([k,yaw],i)=>{const m=new THREE.Mesh(geoCache[k]||=partGeo(PARTS[k]),gold); m.userData={tier:'bot',i,yaw,ph:5+i*2.3}; nodes.push(m);});
   const wire=new THREE.Mesh(new THREE.CylinderGeometry(TH*MM,TH*MM,1,6),wireM);
-  const unit=new THREE.CylinderGeometry(3*TH*MM,3*TH*MM,1,10); const upRod=new THREE.Mesh(unit,gold), loRod=new THREE.Mesh(unit,gold);
+  const unit=new THREE.CylinderGeometry(4.8*MM,4.8*MM,1,14); const upRod=new THREE.Mesh(unit,gold), loRod=new THREE.Mesh(unit,gold);
   const link=()=>{const m=new THREE.Mesh(new THREE.TorusGeometry(7*MM,1.4*MM,8,20),gold); m.scale.set(1,1.5,1); return m;};
   const clip=link(), l1=link(), l2=link(); l2.rotation.y=Math.PI/2;
   grp.add(upRod,loRod,clip,l1,l2);
   nodes.forEach(n=>grp.add(n)); grp.add(wire); layout(eyeBottom);
   return { group:grp, setHeight:layout, lowest:()=>wireBot,
-    update(t){ nodes.forEach((n,i)=>{const u=n.userData; n.rotation.y=u.yaw+Math.sin(t*(.08+i*.013)+u.ph)*.5;}); } };
+    update(t){ nodes.forEach((n,i)=>{const u=n.userData; n.rotation.y=u.yaw+Math.sin(t*(.08+i*.013)+u.ph)*.3;}); } };
 }
