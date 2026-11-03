@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 html{-webkit-text-size-adjust:100%}body{margin:0}
+html.embed body{background:transparent}
 /* Layout: one wide gallery stage, a quiet control strip beneath — the room is the page */
 :root{
   --bg:#efeeeb; --panel:#fbfaf8; --line:#dad6d0; --fg:#1d1b19; --muted:#6c675f;
@@ -22,12 +23,17 @@ html{-webkit-text-size-adjust:100%}body{margin:0}
   --bg:#141312; --panel:#1d1c1a; --line:#34312d; --fg:#ece8e2; --muted:#a39d94; --accent:#e2614a; --stage:#1a1918; color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#141312; --panel:#1d1c1a; --line:#34312d; --fg:#ece8e2; --muted:#a39d94; --accent:#e2614a; --stage:#1a1918; color-scheme:dark}
 [hidden]{display:none!important}
+.emb-only{display:none!important}
+html.embed .emb-only{display:inline-block!important}
+html.embed,html.embed body{height:100%;overflow:hidden}
+html.embed .wrap{max-width:none;padding:0;gap:0}
+html.embed .wrap>header,html.embed .keys,html.embed #panelHome{display:none}
+html.embed .stage{aspect-ratio:auto;height:100vh;border:0;border-radius:0}
+html.popup body{padding:16px}
 body{background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:14px}
 .wrap{max-width:1240px;margin:0 auto;padding-block:20px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
 header{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
 h1{font-size:19px;font-weight:600;margin:0;text-wrap:balance}
-html.embed .crumb{display:none}html.embed body{background:transparent}
-.crumb{margin:0 0 6px;font:500 11px var(--mono);letter-spacing:.14em}.crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{color:var(--fg)}
 .sub{margin:4px 0 0;color:var(--muted);line-height:1.55;max-width:66ch}
 .seg{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px}
 .seg button{font:500 13px var(--ui);border:0;border-radius:6px;padding:8px 14px;background:transparent;color:var(--fg);cursor:pointer}
@@ -55,6 +61,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .tune .grp{display:flex;flex-direction:column;gap:10px;min-width:0}
 .tune .gt{font-size:13px;font-weight:600;padding-bottom:4px;border-bottom:1px solid var(--line)}
 .tune .grp>button{align-self:flex-start;margin-top:4px}
+.tune .mapgrp{grid-column:1/-1}
+.mapwrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+#map{width:300px;height:500px;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--stage);touch-action:none;cursor:crosshair}
+.mapside{display:flex;flex-direction:column;gap:10px;min-width:200px;flex:1;max-width:360px}
+.mapside input[type=number]{font:13px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);width:100%;box-sizing:border-box}
+.maphelp{margin:0;font-size:12px;line-height:1.55;color:var(--muted)}
 .pick{display:flex;flex-wrap:wrap;gap:4px}
 .pick button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;cursor:pointer}
 .pick button[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
@@ -76,7 +88,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 <div class="wrap">
   <header>
     <div>
-      <p class="crumb"><a href="/#works">LEE YUNSUNG</a> · <a href="/#works">WORKS</a> · <a href="/#shop">SHOP</a></p>
       <h1>메두사 가상 전시실</h1>
       <p class="sub">〈Head of Medusa (Silver Edition)〉과 〈Torso Sculpture 01〉, 메두사·토르소 연작 회화를 실측 크기로 놓은 샘플 전시실입니다.</p>
     </div>
@@ -98,14 +109,28 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <button data-v="entry">입구</button>
         <button data-v="medusa">메두사 앞</button>
         <button data-v="torso">토르소 앞</button>
+        <button class="emb-only" id="orbitT" aria-pressed="false">돌려 보기</button>
+        <button class="emb-only" id="openPanel">조절 창 열기</button>
       </div>
     </div>
   </div>
 
   <p class="keys"><kbd>↑</kbd><kbd>↓</kbd> 앞뒤로 걷기 · <kbd>←</kbd><kbd>→</kbd> 몸 돌리기 · <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 걷기·옆걸음 · 마우스로 끌어 둘러보기 · 휴대폰은 왼쪽 아래 조이스틱. 눈높이는 키 170cm 기준 1.6m, 천장은 4m이고, 벽과 좌대는 통과하지 않습니다.</p>
 
-  <div class="tune">
+  <div id="panelHome"><div class="tune" id="tunePanel">
     <div class="tt">조절 (바꾼 값은 이 브라우저에 계속 저장돼요 · 높이는 m 단위)</div>
+    <div class="grp mapgrp"><div class="gt">배치 (조감도)</div>
+      <div class="mapwrap">
+        <canvas id="map" width="300" height="500" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
+        <div class="mapside">
+          <div class="pick" role="group" aria-label="옮길 조각" id="selPick"><button data-s="M">메두사 조각</button><button data-s="T">토르소 조각</button></div>
+          <label for="n-x"><span>왼쪽 벽에서 (m)</span><input type="number" id="n-x" step="0.05"></label>
+          <label for="n-y"><span>입구 벽에서 (m)</span><input type="number" id="n-y" step="0.05"></label>
+          <label for="n-r"><span>회전 (°, 시계 방향)</span><input type="number" id="n-r" step="5"></label>
+          <p class="maphelp">조각(좌대)을 끌어서 옮기거나 숫자로 맞춥니다. 빈 바닥을 누르면 그 자리로 걸어갑니다. 파란 점과 부채꼴이 지금 내 위치와 보는 방향, 위쪽이 메두사 쪽 정면 벽, 아래쪽이 입구입니다.</p>
+        </div>
+      </div>
+    </div>
     <div class="grp"><div class="gt">메두사 조각</div>
       <label for="k-contrast"><span>대비 <output id="o-contrast"></output></span><input type="range" id="k-contrast" min="0.8" max="2.6" step="0.05"></label>
       <label for="k-bright"><span>밝기 <output id="o-bright"></output></span><input type="range" id="k-bright" min="0.4" max="1.2" step="0.02"></label>
@@ -142,7 +167,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label for="k-floor"><span>바닥 비침 <output id="o-floor"></output></span><input type="range" id="k-floor" min="0" max="0.9" step="0.02"></label>
       <button id="k-reset">조절값 초기화</button>
     </div>
-  </div>
+  </div></div>
 </div>
 
 <script type="importmap">
@@ -154,7 +179,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
-let dirty=true, lastCap='';
+let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
 const manager=new THREE.LoadingManager();
 manager.onProgress=(u,l,t)=>{document.getElementById('fill').style.width=(l/t*100)+'%';};
 manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true;};
@@ -181,6 +206,10 @@ function blobTex(){const c=document.createElement('canvas'); c.width=c.height=12
   const g=x.createRadialGradient(64,64,6,64,64,64); g.addColorStop(0,'rgba(0,0,0,0.55)'); g.addColorStop(0.55,'rgba(0,0,0,0.25)'); g.addColorStop(1,'rgba(0,0,0,0)');
   x.fillStyle=g; x.fillRect(0,0,128,128); const t=new THREE.CanvasTexture(c); return t;}
 const BLOB=blobTex();
+// soft contact shadow on the floor around a pedestal (unit footprint + 0.3 m margin each side)
+const FLOORSH=(()=>{const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d'), ppm=256/1.6, OFF=1000;
+  const pass=(blur,a)=>{x.save(); x.shadowColor=`rgba(0,0,0,${a})`; x.shadowBlur=blur*ppm; x.shadowOffsetX=OFF; x.fillStyle='#000'; x.fillRect(0.3*ppm-OFF,0.3*ppm,ppm,ppm); x.restore();};
+  pass(0.16,0.35); pass(0.04,0.5); pass(0.01,0.5); return new THREE.CanvasTexture(c);})();
 function makePedestal(name,cx,cz,w,d){
   const g=new THREE.BoxGeometry(1,1,1,1,10,1); g.translate(0,0.5,0);
   const P=g.attributes.position, N=g.attributes.normal, col=new Float32Array(P.count*3), C=new THREE.Color(), sh=PED_SHADE[name];
@@ -193,11 +222,25 @@ function makePedestal(name,cx,cz,w,d){
   g.setAttribute('color',new THREE.BufferAttribute(col,3));
   const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({vertexColors:true})); m.position.set(cx,0,cz); m.userData.size=[1,1]; scene.add(m);
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
-  blob.rotation.x=-Math.PI/2; blob.position.set(cx,0,cz); scene.add(blob); m.userData.blob=blob; return m;
+  blob.rotation.order='YXZ'; blob.rotation.x=-Math.PI/2; blob.position.set(cx,0,cz); scene.add(blob); m.userData.blob=blob;
+  const fs=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:FLOORSH,transparent:true,depthWrite:false,opacity:0.85}));
+  fs.rotation.order='YXZ'; fs.rotation.x=-Math.PI/2; fs.position.set(cx,0.003,cz); fs.renderOrder=2; scene.add(fs); m.userData.fs=fs; return m;
 }
 // baked surfaces
 let floorMat=null; const peds={}; const blocks=[];
-for(const s of L.baked){
+// front/back ceiling bands overlap the side bands at the corners (double-dark patch): trim them to the side bands' inner edge
+function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
+  for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k), xs=vs.map(v=>P[v*3]);
+    if(xs.every(x=>Math.abs(x)>lim+0.01)) continue; // end cap inside the side band
+    for(const v of vs){const x=P[v*3]; if(Math.abs(x)<=lim) continue;
+      const q=vs.find(o=>o!==v&&Math.abs(P[o*3]+x)<1e-3&&Math.abs(P[o*3+1]-P[v*3+1])<1e-4&&Math.abs(P[o*3+2]-P[v*3+2])<1e-4);
+      if(q===undefined) continue; const t=(Math.abs(x)-lim)/(2*Math.abs(x));
+      U[v*2]+=(U[q*2]-U[v*2])*t; U[v*2+1]+=(U[q*2+1]-U[v*2+1])*t; P[v*3]=Math.sign(x)*lim;}
+    keep.push(f);}
+  const idx=[]; for(const f of keep) for(const t of s.idx.slice(f*6,f*6+6)) idx.push(t);
+  return {...s,pos:P,uv:U,idx};}
+for(let s of L.baked){
+  if(s.name==='G_SoffitF'||s.name==='G_SoffitB') s=trimBand(s,W/2-0.8);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
   geo.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(s.uv),2));
@@ -209,6 +252,18 @@ for(const s of L.baked){
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
 }
+// shadow gap (recessed reveal) at the foot of the walls: replaces the flat black band of the bake with an inset look
+{const c=document.createElement('canvas'); c.width=4; c.height=64; const x=c.getContext('2d');
+ const g=x.createLinearGradient(0,0,0,64); // top = under the wall's edge (deepest shadow) -> bottom = floor bounce
+ g.addColorStop(0,'#d9d7d3'); g.addColorStop(0.07,'#d9d7d3'); g.addColorStop(0.1,'#2a2927'); g.addColorStop(0.45,'#3d3b38'); g.addColorStop(1,'#6e6b66');
+ x.fillStyle=g; x.fillRect(0,0,4,64); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace;
+ const GH=0.03, m=new THREE.MeshBasicMaterial({map:t});
+ const strip=(len,px,pz,ry)=>{const s=new THREE.Mesh(new THREE.PlaneGeometry(len,GH),m); s.position.set(px,GH/2,pz); s.rotation.y=ry; scene.add(s);
+   // a faint soft line on the floor in front of the gap
+   const f=new THREE.Mesh(new THREE.PlaneGeometry(len,0.05),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.10,depthWrite:false}));
+   f.rotation.order='YXZ'; f.rotation.set(-Math.PI/2,ry,0); const d=0.025; f.position.set(px+Math.sin(ry)*d,0.002,pz+Math.cos(ry)*d); f.renderOrder=2; scene.add(f);};
+ const e=0.001;
+ strip(LL,-W/2+e,0,Math.PI/2); strip(LL,W/2-e,0,-Math.PI/2); strip(W,0,-LL/2+e,0);}
 const mir=new Reflector(new THREE.PlaneGeometry(W,LL),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a});
 mir.rotation.x=-Math.PI/2; mir.position.y=-0.002; scene.add(mir);
 const glow=new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,LL-1.6),new THREE.MeshBasicMaterial({color:0xffffff}));
@@ -278,14 +333,15 @@ const updKey=()=>uKeyDir.value.copy(KEYW).transformDirection(camera.matrixWorldI
 const dt=await (await fetch('torso_mesh.json')).json();
 const TOR_BASE=0.8, MED_BASE=L.medusa.z; // original pedestal tops (m)
 const tg=new THREE.Group(); scene.add(tg);
-{const tm=meshFrom(dt,resin); tg.add(tm);} // world-space mesh, faces the Medusa (+y); head cut has its own flat normals
+{const tm=meshFrom(dt,resin); tm.position.z=-3.5; tg.add(tm);} // world-space mesh re-centred on its pedestal (blender y=-3.5); faces the Medusa (+y)
 const sculptCap=L.sculptures.map(s=>({s,pos:b2t(s.x,s.y,s.z)}));
 
 // tuning (Medusa / Torso / room)
 const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   medW:0.36,medD:0.36,torW:0.5,torD:0.5,
   tContrast:1.12,tBright:1.0,tDark:0.5,tRough:0.92,torH:TOR_BASE,
-  paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F'};
+  paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
+  medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M'};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 const KEY='medusa-room-tune-v2';
 let tune={...DEF};
@@ -306,33 +362,110 @@ function applyTune(){
   uC2.value=tune.tContrast; uDark.value=tune.tDark; resin.color.copy(RESIN).multiplyScalar(tune.tBright); resin.roughness=tune.tRough;
   const mTop=Math.max(0.1,tune.medH+tune.sculptOff), tTop=Math.max(0.1,tune.torH+tune.sculptOff);
   const P1=peds.G_Pedestal, P2=peds.G_Pedestal2;
-  if(P1){P1.scale.set(tune.medW, mTop, tune.medD); P1.userData.blob.position.y=mTop+0.001; P1.userData.blob.scale.set(0.26,0.26,1);}
-  if(P2){P2.scale.set(tune.torW, tTop, tune.torD); P2.userData.blob.position.y=tTop+0.001; P2.userData.blob.scale.set(0.42,0.36,1);}
-  // walking collision follows the pedestal footprints (R = body radius 0.28 m)
+  clampPlace();
+  const place=(P,x,y,r,w,d,top,bw,bd)=>{ if(!P) return; const rad=-r*Math.PI/180;
+    P.position.set(x,0,-y); P.rotation.y=rad; P.scale.set(w,top,d);
+    const b=P.userData.blob; b.position.set(x,top+0.001,-y); b.rotation.y=rad; b.scale.set(bw,bd,1);
+    const f=P.userData.fs; f.position.set(x,0.003,-y); f.rotation.y=rad; f.scale.set(w*1.6,d*1.6,1); };
+  place(P1,tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop,0.26,0.26);
+  place(P2,tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop,0.42,0.36);
+  // walking collision follows the (rotated) pedestal footprints; R = body radius 0.28 m
   blocks.length=0;
-  [[L.obstacles[0],tune.medW,tune.medD],[L.obstacles[1],tune.torW,tune.torD]].forEach(([o,w,d])=>blocks.push({x0:o.x-w/2-0.28,x1:o.x+w/2+0.28,y0:o.y-d/2-0.28,y1:o.y+d/2+0.28}));
-  mg.position.y=mTop; tg.position.y=tTop-TOR_BASE;
-  sculptCap[0].pos.y=L.sculptures[0].z+(mTop-MED_BASE); sculptCap[1].pos.y=L.sculptures[1].z+(tTop-TOR_BASE);
+  [[tune.medX,tune.medY,tune.medR,tune.medW,tune.medD],[tune.torX,tune.torY,tune.torR,tune.torW,tune.torD]].forEach(([x,y,r,w,d])=>{
+    const c=Math.abs(Math.cos(r*Math.PI/180)), sn=Math.abs(Math.sin(r*Math.PI/180)), ex=c*w/2+sn*d/2+0.28, ey=sn*w/2+c*d/2+0.28;
+    blocks.push({x0:x-ex,x1:x+ex,y0:y-ey,y1:y+ey});});
+  mg.position.set(tune.medX,mTop,-tune.medY); mg.rotation.y=-tune.medR*Math.PI/180;
+  tg.position.set(tune.torX,tTop-TOR_BASE+0.0015,-tune.torY); // 1.5 mm lift avoids flicker where the base meets the pedestal tg.rotation.y=-tune.torR*Math.PI/180;
+  sculptCap[0].pos.set(tune.medX,L.sculptures[0].z+(mTop-MED_BASE),-tune.medY); sculptCap[1].pos.set(tune.torX,L.sculptures[1].z+(tTop-TOR_BASE),-tune.torY);
+  syncPlaceUI(); drawMap();
   for(const w of works){w.mesh.position.y=w.baseY+(tune.paintY-1.55); w.pos.y=w.mesh.position.y;}
   let lim=0; for(const k of Object.keys(WALLS)){const l=layoutWall(k); if(k===tune.wsel) lim=l;}
   for(const sm of shadowMats) sm.opacity=tune.shadow/1.5;
-  const gi=document.getElementById('k-gap'), si=document.getElementById('k-shift');
-  gi.value=tune['gap'+tune.wsel]; document.getElementById('o-gap').textContent=(+tune['gap'+tune.wsel]).toFixed(2);
-  si.min=(-lim).toFixed(2); si.max=lim.toFixed(2); si.value=tune['sh'+tune.wsel]; document.getElementById('o-shift').textContent=((tune['sh'+tune.wsel]>0?'+':'')+(+tune['sh'+tune.wsel]).toFixed(2));
-  document.querySelectorAll('#wallPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.w===tune.wsel)));
-  document.querySelectorAll('#fovPick button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.f===+tune.fov)));
-  document.getElementById('k-bob').checked=!!tune.bob;
+  const gi=PD.getElementById('k-gap'), si=PD.getElementById('k-shift');
+  gi.value=tune['gap'+tune.wsel]; PD.getElementById('o-gap').textContent=(+tune['gap'+tune.wsel]).toFixed(2);
+  si.min=(-lim).toFixed(2); si.max=lim.toFixed(2); si.value=tune['sh'+tune.wsel]; PD.getElementById('o-shift').textContent=((tune['sh'+tune.wsel]>0?'+':'')+(+tune['sh'+tune.wsel]).toFixed(2));
+  PD.querySelectorAll('#wallPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.w===tune.wsel)));
+  PD.querySelectorAll('#fovPick button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.f===+tune.fov)));
+  PD.getElementById('k-bob').checked=!!tune.bob;
   if(applyTune.live && mode==='walk'){camera.fov=tune.fov; camera.updateProjectionMatrix();}
   if(floorMat) floorMat.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
-  for(const [k,id] of Object.entries(ui)){document.getElementById(id).value=tune[k]; document.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
+  for(const [k,id] of Object.entries(ui)){PD.getElementById(id).value=tune[k]; PD.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
   lastCap='~'; dirty=true; try{localStorage.setItem(KEY,JSON.stringify(tune));}catch(e){}}
 for(const [k,id] of Object.entries(ui)) document.getElementById(id).addEventListener('input',e=>{tune[k]=parseFloat(e.target.value); applyTune();});
+// ---------- placement + bird's-eye map ----------
+const pk=()=>tune.msel==='T'?'tor':'med';
+function clampPlace(){for(const p of ['med','tor']){const w=tune[p+'W'],d=tune[p+'D'],m=Math.max(w,d)/2+0.05;
+  tune[p+'X']=Math.max(-W/2+m,Math.min(W/2-m,+tune[p+'X']||0)); tune[p+'Y']=Math.max(-LL/2+m,Math.min(LL/2-m,+tune[p+'Y']||0)); tune[p+'R']=((+tune[p+'R']||0)%360+360)%360;}}
+function syncPlaceUI(){const p=pk();
+  PD.querySelectorAll('#selPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.s===tune.msel)));
+  const set=(id,v)=>{const el=PD.getElementById(id); if(el&&PD.activeElement!==el) el.value=v;};
+  set('n-x',(tune[p+'X']+W/2).toFixed(2)); set('n-y',(tune[p+'Y']+LL/2).toFixed(2)); set('n-r',Math.round(tune[p+'R']));}
+document.querySelectorAll('#selPick button').forEach(b=>b.onclick=()=>{tune.msel=b.dataset.s; applyTune();});
+document.getElementById('n-x').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'X']=v-W/2; applyTune();}});
+document.getElementById('n-y').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'Y']=v-LL/2; applyTune();}});
+document.getElementById('n-r').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'R']=v; applyTune();}});
+['n-x','n-y','n-r'].forEach(id=>document.getElementById(id).addEventListener('change',()=>syncPlaceUI()));
+const mapEl=document.getElementById('map'); const MM=14; // map margin px
+function mapScale(){const r=mapEl.getBoundingClientRect(); const w=r.width||300,h=r.height||500; return {w,h,s:Math.min((w-2*MM)/W,(h-2*MM)/LL)};}
+function toMap(x,y,S){return [S.w/2+x*S.s, S.h/2-y*S.s];}
+function fromMap(px,py,S){return [(px-S.w/2)/S.s, (S.h/2-py)/S.s];}
+function drawMap(){
+  if(!applyTune.live||!mapEl||!mapEl.isConnected) return; const S=mapScale(); const dpr=(mapEl.ownerDocument.defaultView||window).devicePixelRatio||1;
+  if(mapEl.width!==Math.round(S.w*dpr)){mapEl.width=Math.round(S.w*dpr); mapEl.height=Math.round(S.h*dpr);}
+  const c=mapEl.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,S.w,S.h);
+  const cs=getComputedStyle(panelEl), col=v=>cs.getPropertyValue(v).trim()||'#888';
+  const [ax,ay]=toMap(-W/2,LL/2,S); c.fillStyle=col('--panel'); c.fillRect(ax,ay,W*S.s,LL*S.s);
+  c.strokeStyle=col('--line'); c.lineWidth=1; for(let gx=-W/2+1;gx<W/2;gx++){const [x]=toMap(gx,0,S); c.beginPath(); c.moveTo(x,ay); c.lineTo(x,ay+LL*S.s); c.stroke();}
+  for(let gy=-LL/2+1;gy<LL/2;gy++){const [,y]=toMap(0,gy,S); c.beginPath(); c.moveTo(ax,y); c.lineTo(ax+W*S.s,y); c.stroke();}
+  c.strokeStyle=col('--fg'); c.lineWidth=3; c.strokeRect(ax,ay,W*S.s,LL*S.s);
+  // entrance mark + labels
+  c.fillStyle=col('--muted'); c.font='11px '+(cs.getPropertyValue('--ui')||'sans-serif'); c.textAlign='center';
+  c.fillText('정면 벽',S.w/2,ay-3>9?ay-3:ay+12); c.fillText('입구',S.w/2,ay+LL*S.s+12>S.h?ay+LL*S.s-5:ay+LL*S.s+12);
+  // paintings
+  c.strokeStyle=col('--accent'); c.lineWidth=4;
+  for(const w of works){const p=w.p, cx=w.mesh.position.x, cy=-w.mesh.position.z, half=p.w/2;
+    let x1,y1,x2,y2; if(w.wall==='F'||w.wall==='B'){x1=cx-half;x2=cx+half;y1=y2=cy;} else {x1=x2=cx;y1=cy-half;y2=cy+half;}
+    const a=toMap(x1,y1,S), b=toMap(x2,y2,S); c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(b[0],b[1]); c.stroke();}
+  // pedestals
+  for(const p of ['med','tor']){const sel=(p==='med')===(tune.msel!=='T'); const [x,y]=toMap(tune[p+'X'],tune[p+'Y'],S);
+    c.save(); c.translate(x,y); c.rotate(tune[p+'R']*Math.PI/180); const w=tune[p+'W']*S.s, d=tune[p+'D']*S.s;
+    c.fillStyle=sel?col('--fg'):col('--muted'); c.fillRect(-w/2,-d/2,w,d);
+    c.fillStyle=col('--panel'); c.beginPath(); c.moveTo(0,-d/2+2); c.lineTo(-4,-d/2+8); c.lineTo(4,-d/2+8); c.fill(); // front mark (faces up = toward front wall at 0°)
+    c.restore(); c.fillStyle=sel?col('--fg'):col('--muted'); c.textAlign='left'; c.fillText(p==='med'?'메두사':'토르소',x+Math.max(w,d)/2+5,y+4);}
+  // viewer
+  const [vx,vy]=toMap(walk.x,walk.y,S), yaw=walk.yaw; const dir=[-Math.sin(yaw),Math.cos(yaw)];
+  const fov=(camera.fov*camera.aspect)*Math.PI/360; c.fillStyle='rgba(60,110,230,0.18)'; c.beginPath(); c.moveTo(vx,vy);
+  const ang=Math.atan2(-dir[1],dir[0]); c.arc(vx,vy,46,ang-fov,ang+fov); c.closePath(); c.fill();
+  c.fillStyle='#3c6ee6'; c.beginPath(); c.arc(vx,vy,5,0,Math.PI*2); c.fill();
+}
+let mdrag=null;
+mapEl.addEventListener('pointerdown',e=>{const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
+  let hit=null; for(const p of ['med','tor']){const h=Math.max(tune[p+'W'],tune[p+'D'])/2+0.12; if(Math.abs(x-tune[p+'X'])<h&&Math.abs(y-tune[p+'Y'])<h) hit=p;}
+  if(hit){tune.msel=hit==='tor'?'T':'M'; mdrag={p:hit,dx:tune[hit+'X']-x,dy:tune[hit+'Y']-y}; mapEl.setPointerCapture(e.pointerId); applyTune();}
+  else {[walk.x,walk.y]=collide(x,y); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true; drawMap();}});
+mapEl.addEventListener('pointermove',e=>{if(!mdrag) return; const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
+  tune[mdrag.p+'X']=Math.round((x+mdrag.dx)*100)/100; tune[mdrag.p+'Y']=Math.round((y+mdrag.dy)*100)/100; applyTune();});
+const endM=()=>mdrag=null; mapEl.addEventListener('pointerup',endM); mapEl.addEventListener('pointercancel',endM);
 document.getElementById('k-gap').addEventListener('input',e=>{tune['gap'+tune.wsel]=parseFloat(e.target.value); applyTune();});
 document.getElementById('k-shift').addEventListener('input',e=>{tune['sh'+tune.wsel]=parseFloat(e.target.value); applyTune();});
 document.querySelectorAll('#wallPick button').forEach(b=>b.onclick=()=>{tune.wsel=b.dataset.w; applyTune();});
 document.querySelectorAll('#fovPick button').forEach(b=>b.onclick=()=>{tune.fov=+b.dataset.f; applyTune();});
 document.getElementById('k-bob').addEventListener('change',e=>{tune.bob=e.target.checked; applyTune();});
 document.getElementById('k-reset').onclick=()=>{tune={...DEF}; applyTune();};
+// control panel in its own window (used when the room is embedded in the site)
+let pop=null; const panelEl=document.getElementById('tunePanel'), panelHome=document.getElementById('panelHome');
+function panelBack(){try{if(PD!==document){panelHome.appendChild(document.adoptNode(panelEl)); PD=document;}}catch(e){PD=document;}}
+function openPanel(){
+  if(pop&&!pop.closed){pop.focus(); return;}
+  pop=window.open('','vgPanel','width=1100,height=720');
+  if(!pop){document.documentElement.classList.remove('embed'); return;} // popup blocked: show the panel under the room instead
+  const d=pop.document; d.open(); d.write('<!DOCTYPE html><html lang="ko" class="popup"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>전시실 조절</title></head><body></body></html>'); d.close();
+  document.querySelectorAll('link[rel=stylesheet],style').forEach(n=>d.head.appendChild(d.importNode(n,true)));
+  d.body.appendChild(d.adoptNode(panelEl)); PD=d; applyTune();
+  pop.addEventListener('pagehide',panelBack);
+}
+document.getElementById('openPanel').onclick=openPanel;
+addEventListener('pagehide',()=>{try{if(pop&&!pop.closed)pop.close();}catch(e){}});
 applyTune();
 
 // ---------- walking ----------
@@ -355,10 +488,10 @@ function placeWalkCam(){
 }
 const VIEWS={entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 function goView(k){
-  const v=VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
-  document.querySelectorAll('#views button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
+  const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
+  document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
 }
-document.querySelectorAll('#views button').forEach(b=>b.onclick=()=>goView(b.dataset.v));
+document.querySelectorAll('#views button[data-v]').forEach(b=>b.onclick=()=>goView(b.dataset.v));
 
 const keys=new Set();
 stage.addEventListener('keydown',e=>{const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
@@ -394,15 +527,17 @@ function updateCaption(){
 // modes
 let mode='walk'; applyTune.live=true;
 function setMode(m){
-  mode=m; document.getElementById('m-walk').setAttribute('aria-pressed',String(m==='walk')); document.getElementById('m-orbit').setAttribute('aria-pressed',String(m==='orbit'));
+  mode=m; document.getElementById('orbitT').setAttribute('aria-pressed',String(m==='orbit')); document.getElementById('m-walk').setAttribute('aria-pressed',String(m==='walk')); document.getElementById('m-orbit').setAttribute('aria-pressed',String(m==='orbit'));
   document.getElementById('hint').textContent= m==='walk' ? '↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 끌어 둘러보기' : '끌어서 돌리기 · 휠로 확대 · 오른쪽 버튼으로 이동';
-  if(m==='orbit'){ orbit.enabled=true; camera.fov=40; camera.updateProjectionMatrix(); camera.position.copy(b2t(1.4,2.4,1.55)); orbit.target.copy(b2t(0,L.medusa.y,mg.position.y+0.15)); orbit.update(); }
+  if(m==='orbit'){ orbit.enabled=true; camera.fov=40; camera.updateProjectionMatrix(); camera.position.copy(b2t(tune.medX+1.4,tune.medY-2.45,1.55)); orbit.target.set(tune.medX,mg.position.y+0.15,-tune.medY); orbit.update(); }
   else { orbit.enabled=false; camera.fov=tune.fov; camera.updateProjectionMatrix(); placeWalkCam(); }
   if(matchMedia('(pointer:coarse)').matches) joy.hidden=m!=='walk';
   dirty=true; updateCaption();
 }
 document.getElementById('m-walk').onclick=()=>setMode('walk');
 document.getElementById('m-orbit').onclick=()=>setMode('orbit');
+document.getElementById('orbitT').onclick=()=>setMode(mode==='walk'?'orbit':'walk');
+if(document.documentElement.classList.contains('embed')) setTimeout(()=>stage.focus({preventScroll:true}),300);
 const lim={x:W/2-0.3,z:LL/2-0.3};
 orbit.addEventListener('change',()=>{const p=camera.position; p.x=Math.max(-lim.x,Math.min(lim.x,p.x)); p.z=Math.max(-lim.z,Math.min(lim.z,p.z)); p.y=Math.max(0.3,Math.min(H-0.4,p.y)); dirty=true;});
 
@@ -429,10 +564,10 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const nx=walk.x+(-sy*fwd+cy*strafe)*sp, ny=walk.y+(cy*fwd+sy*strafe)*sp;
       [walk.x,walk.y]=collide(nx,ny); dirty=true;
       if(tune.bob&&(fwd||strafe)){bobT+=dt*1.8; bobA=Math.min(1,bobA+dt*3);}
-      document.querySelectorAll('#views button').forEach(b=>b.setAttribute('aria-pressed','false'));
+      document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed','false'));
     }
     if(!(fwd||strafe)&&bobA>0){bobA=Math.max(0,bobA-dt*3); dirty=true;}
-    if(dirty){placeWalkCam(); updateCaption();}
+    if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
   } else if(orbit.update()) dirty=true;
   if(dirty||!reduce){ camera.updateMatrixWorld(); updKey(); renderer.render(scene,camera); dirty=false; fc++; }
   if(now-ft>1000){fpsEl.textContent=Math.round(fc*1000/(now-ft))+' fps'; fc=0; ft=now;}
