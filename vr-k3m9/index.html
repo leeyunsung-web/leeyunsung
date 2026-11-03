@@ -238,13 +238,13 @@ function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
     keep.push(f);}
   const idx=[]; for(const f of keep) for(const t of s.idx.slice(f*6,f*6+6)) idx.push(t);
   return {...s,pos:P,uv:U,idx};}
-function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice(), inner=s.name==='G_WallF'?(v=>Math.abs(Math.abs(P[v*3+2])-LL/2)<1e-3):(v=>Math.abs(Math.abs(P[v*3])-W/2)<1e-3);
+function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice(), inner=(s.name==='G_WallF'||s.name==='G_WallB')?(v=>Math.abs(Math.abs(P[v*3+2])-LL/2)<1e-3):(v=>Math.abs(Math.abs(P[v*3])-W/2)<1e-3);
   for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k); if(!vs.every(inner)) continue;
     for(const v of vs){ if(P[v*3+1]>0.001) continue; const q=vs.find(o=>o!==v&&P[o*3+1]>1&&Math.abs(P[o*3]-P[v*3])<1e-4&&Math.abs(P[o*3+2]-P[v*3+2])<1e-4); if(q===undefined) continue;
       const t=0.03/P[q*3+1]; U[v*2]+=(U[q*2]-U[v*2])*t; U[v*2+1]+=(U[q*2+1]-U[v*2+1])*t; P[v*3+1]=0.03; }}
   return {...s,pos:P,uv:U};}
 for(let s of L.baked){
-  if(s.name==='G_WallL'||s.name==='G_WallR'||s.name==='G_WallF') s=liftWallFoot(s);
+  if(s.name.startsWith('G_Wall')) s=liftWallFoot(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
   geo.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(s.uv),2));
@@ -264,20 +264,25 @@ for(let s of L.baked){
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
 }
-// shadow gap: the wall stops 3 cm above the floor and the reveal behind it is set back 2 cm, so it reads as a real dark recess
+// shadow gap: the wall stops 3 cm above the floor and the reveal behind it is set back 2 cm; inside it reads as plain black
 const GH=0.03, GD=0.02;
-{const dark=c=>new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(c,c,c,THREE.SRGBColorSpace)});
- const back=(()=>{const c=document.createElement('canvas'); c.width=4; c.height=32; const x=c.getContext('2d'); const g=x.createLinearGradient(0,0,0,32);
-   g.addColorStop(0,'#141312'); g.addColorStop(1,'#3b3936'); x.fillStyle=g; x.fillRect(0,0,4,32); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return new THREE.MeshBasicMaterial({map:t});})();
- const under=dark(0.07), gfloor=dark(0.24);
- const reveal=(len,cx,cz,ry)=>{ // ry: rotation so local +z points into the room
+{const black=new THREE.MeshBasicMaterial({color:0x050505});
+ // ePos/eNeg: how far the reveal runs past each end of the wall (only where it meets another wall's reveal)
+ const reveal=(len,cx,cz,ry,ePos,eNeg)=>{
    const g=new THREE.Group(); g.position.set(cx,0,cz); g.rotation.y=ry; scene.add(g);
-   const L2=len+2*GD;
-   const b=new THREE.Mesh(new THREE.PlaneGeometry(L2,GH),back); b.position.set(0,GH/2,-GD); g.add(b);            // back face of the recess
-   const u=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),under); u.rotation.x=Math.PI/2; u.position.set(0,GH,-GD/2); g.add(u); // underside of the wall
-   const f=new THREE.Mesh(new THREE.PlaneGeometry(L2,GD),gfloor); f.rotation.x=-Math.PI/2; f.position.set(0,0.0005,-GD/2); g.add(f); // floor inside the gap
-   g.traverse(o=>o.layers.set(1));}; // layer 1: seen by the camera, left out of the floor mirror (its reflection read as a dark line sticking out)
- reveal(LL,-W/2,0,Math.PI/2); reveal(LL,W/2,0,-Math.PI/2); reveal(W,0,-LL/2,0);}
+   const L2=len+ePos+eNeg, off=(ePos-eNeg)/2;
+   const b=new THREE.Mesh(new THREE.PlaneGeometry(L2+0.006,GH+0.006),black); b.position.set(off,GH/2,-GD); g.add(b);                                   // back of the recess
+   const u=new THREE.Mesh(new THREE.PlaneGeometry(L2+0.006,GD+0.006),black); u.rotation.x=Math.PI/2; u.position.set(off,GH,-GD/2-0.003); g.add(u);          // underside of the wall
+   const f=new THREE.Mesh(new THREE.PlaneGeometry(L2+0.006,GD+0.006),black); f.rotation.x=-Math.PI/2; f.position.set(off,0.0005,-GD/2-0.003); g.add(f);   // floor inside the gap
+   if(!eNeg){const c=new THREE.Mesh(new THREE.PlaneGeometry(GD+0.006,GH+0.006),black); c.rotation.y=Math.PI/2; c.position.set(-len/2,GH/2,-GD/2); g.add(c);} // closed end at the entrance wall
+   if(!ePos){const c=new THREE.Mesh(new THREE.PlaneGeometry(GD+0.006,GH+0.006),black); c.rotation.y=-Math.PI/2; c.position.set(len/2,GH/2,-GD/2); g.add(c);}
+   g.traverse(o=>o.layers.set(1));}; // layer 1: seen by the camera, left out of the floor mirror
+ // local +x of the left wall points to the front wall, of the right wall to the entrance wall
+ reveal(LL,-W/2,0,Math.PI/2,GD,GD); reveal(LL,W/2,0,-Math.PI/2,GD,GD); reveal(W,0,-LL/2,0,GD,GD); reveal(W,0,LL/2,Math.PI,GD,GD); // all four walls float
+ // fill the empty column where two wall boxes meet at each corner (it showed as a thin light line)
+ const wallC=new THREE.Color().setRGB(0.86,0.858,0.852,THREE.SRGBColorSpace);
+ for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],[W/2+0.05,LL/2+0.05,GH]]){
+   const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-y0,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(cx,y0+(H-y0)/2,cz); scene.add(m);}}
 const mir=new Reflector(new THREE.PlaneGeometry(W,LL),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a});
 mir.rotation.x=-Math.PI/2; mir.position.y=-0.002; scene.add(mir);
 const glow=new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,LL-1.6),new THREE.MeshBasicMaterial({color:0xffffff}));
