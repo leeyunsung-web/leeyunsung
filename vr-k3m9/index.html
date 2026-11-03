@@ -161,7 +161,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">그림</div>
       <div class="pick" role="group" aria-label="조절할 벽" id="wallPick">
         <button data-w="F">정면 벽</button><button data-w="L">왼쪽 벽</button><button data-w="R">오른쪽 벽</button><button data-w="B">입구 벽</button>
-        <button data-w="R2">2번 방 긴 벽 토르소</button><button data-w="B2">2번 방 입구 쪽 토르소 벽</button>
+        <button data-w="R2">2번 방 긴 벽 토르소</button><button data-w="B2">2번 방 입구 쪽 토르소 벽</button><button data-w="L2">2번 방 조디악 얼굴 벽</button>
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
@@ -457,7 +457,7 @@ for(const p of L.paintings){
 }
 // per-wall layout: order along the wall, original centre and gap
 const WALLS={F:{u:'x',sgn:1,len:W},B:{u:'x',sgn:-1,len:W},L:{u:'y',sgn:1,len:LL},R:{u:'y',sgn:-1,len:LL},
-  F2:{u:'x',sgn:1,len:W},B2:{u:'x',sgn:-1,len:W},R2:{u:'y',sgn:-1,len:LL}};
+  F2:{u:'x',sgn:1,len:W},B2:{u:'x',sgn:-1,len:W},R2:{u:'y',sgn:-1,len:LL},L2:{u:'y',sgn:1,len:LL-1.8}};
 for(const k of Object.keys(WALLS)) if(!works.some(w=>w.wall===k)) delete WALLS[k];
 for(const [k,wd] of Object.entries(WALLS)){
   wd.items=works.filter(w=>w.wall===k).sort((a,b)=>a.p[wd.u]-b.p[wd.u]);
