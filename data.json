@@ -334,6 +334,17 @@
               "caption": "Between the Frames: Fragment of Torso 03, 2025, Oil on canvas, 2 panels, 36 × 90 cm each"
             }
           ]
+        },
+        {
+          "id": "row-1793700133210-5thy7",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793700133210-78ufc",
+              "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
+              "caption": ""
+            }
+          ]
         }
       ],
       "slug": "frames-of-torso",
@@ -5577,7 +5588,7 @@
     "works/zodiac/index.html": "e02dae9:109916",
     "works/medusa/index.html": "e817bdcb:64056",
     "works/laocoon/index.html": "a7cc9e30:71936",
-    "works/frames-of-torso/index.html": "9ec828e8:59000",
+    "works/frames-of-torso/index.html": "feb4b54f:60392",
     "text/critical-notes-lim-geunjun/index.html": "e3136e23:53620",
     "text/sections-of-structure-jung-hyun/index.html": "a840a421:53272",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "4cc67563:42692",
@@ -5585,8 +5596,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "c629bbb:72028",
     "text/exploding-bishojo-baek-jihong/index.html": "401de02f:103828",
     "cv/index.html": "cc28443c:19048",
-    "page.css": "da5173e0:120392",
-    "sitemap.xml": "b1eeb727:150572",
+    "page.css": "1f8787ce:120392",
+    "sitemap.xml": "5669d548:150928",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "36bbd143:79492",
     "works/digital/index.html": "7c5cb959:38736",
@@ -5615,7 +5626,7 @@
     "en/works/pixel-prometheus/index.html": "4fc5491e:72760",
     "en/works/medusa/index.html": "245549f5:56516",
     "en/works/laocoon/index.html": "4334c49:63868",
-    "en/works/frames-of-torso/index.html": "b76b3e4:52556",
+    "en/works/frames-of-torso/index.html": "173986c8:53920",
     "en/works/digital/index.html": "2e7528a:31140",
     "en/text/critical-notes-lim-geunjun/index.html": "bf3db98e:32400",
     "en/text/sections-of-structure-jung-hyun/index.html": "74b92f7e:32840",
@@ -5682,12 +5693,12 @@
     "en/shop/laocoon-2024-3/index.html": "213c05c2:27360",
     "shop/torso-16/index.html": "ffa609fd:34820",
     "en/shop/torso-16/index.html": "48265053:27152",
-    "shop/torso-sculpture/index.html": "baf6d0b7:40816",
-    "en/shop/torso-sculpture/index.html": "3bd67aba:35124",
+    "shop/torso-sculpture/index.html": "6e2f51a6:40780",
+    "en/shop/torso-sculpture/index.html": "aa8a1bcf:35084",
     "shop/head-of-medusa-silver-edition/index.html": "d618ffc2:35828",
     "en/shop/head-of-medusa-silver-edition/index.html": "ec910db9:28756",
-    "works/torso-sculpture/index.html": "3746683a:38688",
-    "en/works/torso-sculpture/index.html": "c73c82da:33660"
+    "works/torso-sculpture/index.html": "ffdacd96:38672",
+    "en/works/torso-sculpture/index.html": "a5013906:33640"
   },
   "shopDesign": {
     "mainPct": 56,
