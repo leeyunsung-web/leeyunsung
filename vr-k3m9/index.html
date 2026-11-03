@@ -49,6 +49,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .ctl button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
 .ctl button[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
 .hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:6px 10px;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+.chatlog{position:absolute;left:12px;top:42px;z-index:3;display:flex;flex-direction:column;gap:4px;width:min(300px,60%);pointer-events:none}
+.chatlog div{font:400 12.5px/1.35 var(--ui);color:#f6f3ec;background:rgba(20,19,17,.40);border-radius:9px;padding:4px 9px;width:max-content;max-width:100%;overflow-wrap:anywhere;transition:opacity .8s,transform .8s;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.chatlog div b{font-weight:600;margin-right:6px;opacity:.85}
+.chatlog div.out{opacity:0;transform:translateY(-10px)}
 .online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .online::before{content:"";position:absolute;left:10px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7fd18b}
 .hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 12px var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:5px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
@@ -118,7 +122,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   <div class="stage" id="stage" tabindex="0" aria-label="가상 전시실. 화살표 키로 걷고 끌어서 둘러봅니다.">
     <canvas id="cv"></canvas>
-    <div class="online" id="online" hidden></div><button class="hello" id="hello" type="button" hidden>Say hello</button>
+    <div class="online" id="online" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div><button class="hello" id="hello" type="button" hidden>Say hello</button>
     <div class="say" id="say" hidden><input id="sayIn" maxlength="140" placeholder="Say something…" autocomplete="off" enterkeyhint="send"><div class="mine" id="sayMine"></div></div>
     <div class="hint" id="hint">↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
     <div class="cap" id="cap" aria-live="polite"></div>
@@ -215,6 +219,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button id="botToggle" type="button">테스트 봇</button></div>
       <label for="k-figBlur"><span>피규어 윤곽 블러 (px) <output id="o-figBlur"></output></span><input type="range" id="k-figBlur" min="0" max="14" step="0.1"></label>
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
+      <label for="k-helloY"><span>말 걸기·말풍선 높이 (머리 위 m) <output id="o-helloY"></output></span><input type="range" id="k-helloY" min="-0.1" max="0.6" step="0.01"></label>
       <label for="k-figUp"><span>피규어 등 펴기 <output id="o-figUp"></output></span><input type="range" id="k-figUp" min="-0.5" max="2" step="0.01"></label>
       <p class="credit" style="font-size:11px;opacity:.6;margin:2px 0 6px">기본 피규어 얼굴: “Genshin Style Anime Female Base Mesh For Blender” by David Onizaki, CC BY 4.0 · 동작 일부: Mesh2Motion / Quaternius, CC0</p>
       <label class="chk" for="k-bob"><input type="checkbox" id="k-bob"><span>걸을 때 머리 흔들림</span></label>
@@ -773,9 +778,14 @@ window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.valu
 function showOnline(){ const n=online+BOTS.length; onlineEl.hidden=n<2; onlineEl.textContent=n+' online'; }
 // speech bubbles over a visitor's head; your own line shows above the input
 const _hp=new THREE.Vector3();
-function headScreen(p){ const r=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect(); _hp.set(p.pos.x,(p.h/100)*1.08+0.18,-p.pos.y).project(camera);
+function headScreen(p){ const r=canvas.getBoundingClientRect(), sr=stage.getBoundingClientRect(); _hp.set(p.pos.x,(p.h/100)*0.985+(tune.helloY??0.12),-p.pos.y).project(camera);
   if(_hp.z>1) return null; return [( _hp.x+1)/2*r.width+r.left-sr.left,(1-_hp.y)/2*r.height+r.top-sr.top]; }
-function showSay(id,m){
+// running chat log under "N online": newest at the bottom, old lines float up and fade
+const chatlog=document.getElementById('chatlog'); const GB_LANG=(()=>{ try{ const t=localStorage.getItem('lysLang'); if(t==='ko'||t==='en') return t; }catch(e){} return /^ko/i.test(navigator.language||'')?'ko':'en'; })();
+const peerName=id=>{ if(id===roomMe) return GB_LANG==='ko'?'나':'You'; const ids=[...PEERS.keys()]; const i=ids.indexOf(id); return (GB_LANG==='ko'?'관람객 ':'Visitor ')+(i<0?'':i+1); };
+function logLine(id,m){ const d=document.createElement('div'), b=document.createElement('b'); b.textContent=peerName(id); d.append(b,document.createTextNode(m)); chatlog.appendChild(d);
+  while(chatlog.children.length>6) chatlog.firstChild.remove(); setTimeout(()=>{ d.classList.add('out'); setTimeout(()=>d.remove(),800); },14000); }
+function showSay(id,m){ const nearEnough=id===roomMe||((p=>p&&Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)<=8)(PEERS.get(id))); if(nearEnough) logLine(id,m);
   if(id===roomMe){ sayMine.textContent=m; sayMine.style.opacity='1'; clearTimeout(sayMine._t); sayMine._t=setTimeout(()=>sayMine.style.opacity='0',6000); return; }
   const p=PEERS.get(id); if(!p) return; if(Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>8) return; // only people nearby hear it
   if(!p.bub){ const el=document.createElement('div'); el.className='bub'; stage.appendChild(el); p.bub={el,t:0}; }
@@ -788,12 +798,13 @@ function chatTick(now){
   for(const p of PEERS.values()) if(p.bub){ const s=headScreen(p); const live=now<p.bub.t;
     if(!s||!live){ p.bub.el.style.opacity='0'; if(now>p.bub.t+800){ p.bub.el.remove(); p.bub=null; } continue; }
     p.bub.el.style.left=s[0]+'px'; p.bub.el.style.top=(s[1]-10)+'px'; } }
+function sendSay(m){ m=m.slice(0,140); if(room&&room.readyState===1&&roomMe) room.send(JSON.stringify({t:'say',m})); else showSay(roomMe,m); botHear(m); }
 function openSay(){ sayEl.hidden=false; helloEl.hidden=true; keys.clear(); setTimeout(()=>sayIn.focus({preventScroll:true}),0); }
 function closeSay(){ sayEl.hidden=true; sayIn.value=''; sayIn.blur(); stage.focus({preventScroll:true}); }
-helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); openSay(); };
+helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); openSay(); sendSay(GB_LANG==='ko'?'안녕하세요':'Hello'); }; // the first line is said for you
 sayEl.addEventListener('pointerdown',e=>e.stopPropagation());
 sayIn.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Escape'){ closeSay(); return; }
-  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m){ if(room&&room.readyState===1&&roomMe) room.send(JSON.stringify({t:'say',m:m.slice(0,140)})); else showSay(roomMe,m.slice(0,140)); botHear(m); } sayIn.value='';
+  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m) sendSay(m); sayIn.value='';
     if(!nearPeer) closeSay(); } });
 sayIn.addEventListener('blur',()=>{ if(!sayIn.value.trim()) setTimeout(()=>{ if(document.activeElement!==sayIn) sayEl.hidden=true; },150); });
 
@@ -804,7 +815,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,
+  people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,helloY:0.12,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -818,7 +829,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','figBlur','figUp','figNear'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','figBlur','figUp','figNear','helloY'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
