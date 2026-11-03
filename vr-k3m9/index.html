@@ -787,6 +787,8 @@ window.__tapSculptMesh=n=>{const g=sculptures().find(q=>q[0]===n); if(!g) return
 window.__tapSculpt=n=>{const g=sculptures().find(q=>q[0]===n); if(!g) return null; const bb=new THREE.Box3().setFromObject(g[1]), v=bb.getCenter(new THREE.Vector3()).project(camera), r=canvas.getBoundingClientRect(); tapMove((v.x+1)/2*r.width+r.left,(1-v.y)/2*r.height+r.top); return true;}; // for checks
 window.__auto=()=>({go:autoGo,walk:{...walk}}); // for checks
 window.__gates=()=>JSON.stringify(GATES);
+window.__floorScreen=(x,y)=>{ const v=new THREE.Vector3(x,0,-y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
+window.__tap=(x,y)=>tapMove(x,y);
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1215,17 +1217,18 @@ function pathCore(ax,ay,bx,by){
 function goTo(x,y,yaw,pitch){ const path=findPath(walk.x,walk.y,x,y); if(!path||!path.length) return false; const e=path[path.length-1]; autoGo={x:e[0],y:e[1],path,yaw,pitch}; return true; }
 // can the work be seen from here, or does a sculpture stand in front of it?
 const _sr=new THREE.Raycaster(), _so=new THREE.Vector3(), _sp=new THREE.Vector3();
-function workSeen(w,sx,sy){ const m=w.mesh, rx=Math.cos(m.rotation.y), rz=-Math.sin(m.rotation.y); let hit=0;
+function workSeen(w,sx,sy,strict){ const m=w.mesh, rx=Math.cos(m.rotation.y), rz=-Math.sin(m.rotation.y); let hit=0;
   const gs=sculptures().map(([,g])=>[g,new THREE.Box3().setFromObject(g)]).filter(([,b])=>!b.isEmpty());
   for(const [u,v] of [[0,0],[-0.35,0.3],[0.35,0.3],[-0.35,-0.3],[0.35,-0.3]]){ _sp.set(m.position.x+rx*u*w.p.w,m.position.y+v*w.p.h,m.position.z+rz*u*w.p.w); _so.set(sx,EYE,-sy);
     const far=_so.distanceTo(_sp); _sr.set(_so,_sp.sub(_so).normalize()); _sr.far=far-0.05;
     if(gs.some(([g,b])=>_sr.ray.intersectsBox(b)&&_sr.intersectObject(g,true).length)) hit++; }
-  return hit<=1; }
+  return hit<=(strict?0:1); }
 // which way is the room open from here (for a stop after a door: look into the room, not at the wall)
 function openYaw(x,y,cur){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a); let t=0.2; while(t<14&&okPos(x+dx*t,y+dy*t)) t+=0.15; return t; };
   const here=reach(cur); if(here>2.6) return null; let best=null, bs=-1;
   for(let i=0;i<32;i++){ const a=i/32*Math.PI*2, r=reach(a), sc=r*(0.65+0.35*Math.cos(a-cur)); if(sc>bs){ bs=sc; best=a; } }
   return reach(best)>here*1.8?cur+Math.atan2(Math.sin(best-cur),Math.cos(best-cur)):null; }
+const doorTap=(x,y)=>GATES.some(G=>{ const ax=x-G.c[0], ay=y-G.c[1]; return Math.abs(ax*G.ax[0]+ay*G.ax[1])<1.6&&Math.abs(-ax*G.ax[1]+ay*G.ax[0])<G.h+0.9; });
 let lastWork=null, lastSculpt=null; const _sph2=new THREE.Sphere(), _pt2=new THREE.Vector3();
 // the usual viewing distance for a work (the one-click stop); captions show from here
 // a multi-panel work (same caption on one wall, "panels" in it — Zodiac's nine canvases) counts as one work
@@ -1253,12 +1256,14 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     if(hd!=null&&(!best||hd<best.d)) best={kind:'sculpt',d:hd,name,bb,g}; }
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
   if(!best) return; showMark(cx,cy);
-  { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
+  { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
     const far=workDist(w), close=lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     const d0=close?Math.max(1.0,far*0.55):far; let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
+    if(close&&!workSeen(w,walk.x,walk.y,true)){ const tx=-ny, ty=nx, o=(walk.x-x)*tx+(walk.y-y)*ty, D=(walk.x-x)*nx+(walk.y-y)*ny; // straight in from where you stand, to the first clear spot
+      for(let d=D-0.3; d>=0.9; d-=0.2){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o; if(canWalk(sx,sy)&&workSeen(w,sx,sy,true)){ s=[sx,sy]; break; } } }
     let yaw=lookYaw(-nx,-ny);
     if(!workSeen(w,s[0],s[1])){ // something stands in front of it: step a little to the side and a little closer, whichever needs the least change
       const tx=-ny, ty=nx, D=Math.hypot(s[0]-x,s[1]-y); let pick=null, ps=1e9;
@@ -1275,7 +1280,13 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     if(atFront){ autoGo={orbit:{x,y,r:Math.max(l,rad*0.9),a:Math.atan2(walk.y-y,walk.x-x),left:Math.PI*2,top:tc}}; lastSculpt=null; return; } // second click: once around it
     const s=standAt(x,y,rad,fx,fy)||standAt(x,y,rad,dx,dy); if(!s) return; if(goTo(s[0],s[1],lookYaw(x-s[0],y-s[1]),Math.atan2(tc-EYE,rad))){ autoGo.sculpt=best.name; autoGo.face=[x,y]; lastSculpt={name:best.name,s}; } return;
   }
-  else { const x=best.p.x, y=-best.p.z; goTo(x,y,null,null); } }
+  else { const x=best.p.x, y=-best.p.z;
+    for(const G of GATES){ const ax=x-G.c[0], ay=y-G.c[1], along=ax*G.ax[0]+ay*G.ax[1], across=-ax*G.ax[1]+ay*G.ax[0], side=(walk.x-G.c[0])*G.ax[0]+(walk.y-G.c[1])*G.ax[1];
+      if(Math.abs(along)<1.6&&Math.abs(across)<G.h+0.9&&Math.abs(side)>0.3){ // the floor by the door: go on through
+        const sg=-Math.sign(side); let tx=G.c[0]+G.ax[0]*sg*2.4, ty=G.c[1]+G.ax[1]*sg*2.4; for(let k=2.4;k>1&&!canWalk(tx,ty);k-=0.2){ tx=G.c[0]+G.ax[0]*sg*k; ty=G.c[1]+G.ax[1]*sg*k; }
+        const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), yaw=r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null;
+        if(goTo(tx,ty,yaw,yaw==null?null:-0.02)) return; } }
+    goTo(x,y,null,null); } }
 // one step of the walk you asked for (called from the main loop)
 function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   // smooth head turn: the turning speed eases in and out and never goes past ~60°/s
