@@ -483,6 +483,7 @@ const mwG=mkMed(whiteMat), mgdG=mkMed(goldMat);
 const tg=new THREE.Group(); scene.add(tg);
 {const tm=meshFrom(dt,resin); tm.position.z=-3.5; tm.castShadow=true; tg.add(tm);} // world-space mesh re-centred on its pedestal (blender y=-3.5); faces the Medusa (+y)
 const sculptCap=L.sculptures.map(s=>({s,pos:b2t(s.x,s.y,s.z)}));
+const MOBCAP={s:{caption:'Inside of Light|2019, Mirror Stainless Steel, 160 × 160 × 200 cm'},pos:new THREE.Vector3()}; if(MOB){const r2=ROOMS[1]||ROOMS[0]; MOBCAP.pos.copy(b2t((r2.x0+r2.x1)/2,(r2.y0+r2.y1)/2,1.8)); sculptCap.push(MOBCAP);}
 // soft cast shadow of each sculpture onto its pedestal top, from the ceiling light (the light itself adds no brightness)
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap; renderer.shadowMap.autoUpdate=false; // static: redrawn in applyTune
 function sculptShadow(){
@@ -598,7 +599,7 @@ function applyTune(){
   SK.map(p=>[tune[p+'X'],tune[p+'Y'],tune[p+'R'],tune[p+'W'],tune[p+'D']]).forEach(([x,y,r,w,d])=>{
     const c=Math.abs(Math.cos(r*Math.PI/180)), sn=Math.abs(Math.sin(r*Math.PI/180)), ex=c*w/2+sn*d/2+0.28, ey=sn*w/2+c*d/2+0.28;
     blocks.push({x0:x-ex,x1:x+ex,y0:y-ey,y1:y+ey});});
-  if(MOB){ MOB.setHeight(tune.mobH); const r2=ROOMS[1]||ROOMS[0], cx=(r2.x0+r2.x1)/2, cy=(r2.y0+r2.y1)/2, e=0.8; // arms reach about 0.75 m from the wire
+  if(MOB){ MOB.setHeight(tune.mobH); MOBCAP.pos.y=tune.mobH+0.33; const r2=ROOMS[1]||ROOMS[0], cx=(r2.x0+r2.x1)/2, cy=(r2.y0+r2.y1)/2, e=0.8; // arms reach about 0.75 m from the wire
     if(MOB.lowest()<1.85) blocks.push({x0:cx-e,x1:cx+e,y0:cy-e,y1:cy+e}); }
   mg.position.set(tune.medX,mTop,-tune.medY); mg.rotation.y=-tune.medR*Math.PI/180;
   tg.position.set(tune.torX,tTop-TOR_BASE+0.0015,-tune.torY); tg.rotation.y=-tune.torR*Math.PI/180; // 1.5 mm lift avoids flicker where the base meets the pedestal
