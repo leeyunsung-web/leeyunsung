@@ -65,7 +65,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .tune .grp>button{align-self:flex-start;margin-top:4px}
 .tune .mapgrp{grid-column:1/-1}
 .mapwrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
-#map{width:300px;height:500px;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--stage);touch-action:none;cursor:crosshair}
+#map{width:300px;height:640px;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--stage);touch-action:none;cursor:crosshair}
 .mapside{display:flex;flex-direction:column;gap:10px;min-width:200px;flex:1;max-width:360px}
 .mapside input[type=number]{font:13px var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);width:100%;box-sizing:border-box}
 .maphelp{margin:0;font-size:12px;line-height:1.55;color:var(--muted)}
@@ -112,6 +112,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <button data-v="entry">입구</button>
         <button data-v="medusa">메두사 앞</button>
         <button data-v="torso">토르소 앞</button>
+        <button data-v="room2">2번 방</button>
         <button class="emb-only" id="orbitT" aria-pressed="false">돌려 보기</button>
         <button class="emb-only" id="openPanel">조절 창 열기</button>
       </div>
@@ -124,11 +125,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="tt">조절 (바꾼 값은 이 브라우저에 계속 저장돼요 · 높이는 m 단위)</div>
     <div class="grp mapgrp"><div class="gt">배치 (조감도)</div>
       <div class="mapwrap">
-        <canvas id="map" width="300" height="500" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
+        <canvas id="map" width="300" height="640" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
         <div class="mapside">
-          <div class="pick" role="group" aria-label="옮길 조각" id="selPick"><button data-s="M">메두사 조각</button><button data-s="T">토르소 조각</button></div>
+          <div class="pick" role="group" aria-label="옮길 조각" id="selPick"><button data-s="M">메두사(은)</button><button data-s="T">토르소</button><button data-s="W">메두사(흰)</button><button data-s="G">메두사(금)</button></div>
           <label for="n-x"><span>왼쪽 벽에서 (m)</span><input type="number" id="n-x" step="0.05"></label>
-          <label for="n-y"><span>입구 벽에서 (m)</span><input type="number" id="n-y" step="0.05"></label>
+          <label for="n-y"><span>맨 안쪽(2번 방 끝) 벽에서 (m)</span><input type="number" id="n-y" step="0.05"></label>
           <label for="n-r"><span>회전 (°, 시계 방향)</span><input type="number" id="n-r" step="5"></label>
           <p class="maphelp">조각(좌대)을 끌어서 옮기거나 숫자로 맞춥니다. 빈 바닥을 누르면 그 자리로 걸어갑니다. 파란 점과 부채꼴이 지금 내 위치와 보는 방향, 위쪽이 메두사 쪽 정면 벽, 아래쪽이 입구입니다.</p>
         </div>
@@ -155,6 +156,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">그림</div>
       <div class="pick" role="group" aria-label="조절할 벽" id="wallPick">
         <button data-w="F">정면 벽</button><button data-w="L">왼쪽 벽</button><button data-w="R">오른쪽 벽</button><button data-w="B">입구 벽</button>
+        <button data-w="L2">2번 방 라오콘 벽</button><button data-w="R2">2번 방 토르소 벽</button><button data-w="S2">2번 방 메두사 벽</button>
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
@@ -246,6 +248,9 @@ const orbit=new OrbitControls(camera,canvas); orbit.enableDamping=true; orbit.da
 
 const L=await (await fetch('live/layout.json')).json();
 const W=L.room.W, LL=L.room.L, H=L.room.H;
+const ROOMS=(L.rooms||[{x0:-W/2,x1:W/2,y0:-LL/2,y1:LL/2}]), DOOR=L.door||null; // blender ground coords
+const inRoom3=(x,z,m=0)=>ROOMS.some(r=>x>r.x0+m&&x<r.x1-m&&-z>r.y0+m&&-z<r.y1-m); // three.js x,z
+const MY0=Math.min(...ROOMS.map(r=>r.y0)), MY1=Math.max(...ROOMS.map(r=>r.y1)), MCY=(MY0+MY1)/2;
 
 // pedestal: unit box (base on the floor), vertex-shaded from the baked values so it can be resized freely
 const PED_SHADE={G_Pedestal:{'-x':[0.80,0.845],'+x':[0.80,0.845],'-z':[0.76,0.82],'+z':[0.86,0.885]},
@@ -260,7 +265,7 @@ const FLOORSH=(()=>{const c=document.createElement('canvas'); c.width=c.height=2
   pass(0.16,0.35); pass(0.04,0.5); pass(0.01,0.5); return new THREE.CanvasTexture(c);})();
 function makePedestal(name,cx,cz,w,d){
   const g=new THREE.BoxGeometry(1,1,1,1,10,1); g.translate(0,0.5,0);
-  const P=g.attributes.position, N=g.attributes.normal, col=new Float32Array(P.count*3), C=new THREE.Color(), sh=PED_SHADE[name];
+  const P=g.attributes.position, N=g.attributes.normal, col=new Float32Array(P.count*3), C=new THREE.Color(), sh=PED_SHADE[name]||PED_SHADE.G_Pedestal;
   for(let i=0;i<P.count;i++){
     const ny=N.getY(i), nx=N.getX(i), nz=N.getZ(i), t=P.getY(i);
     let v; if(ny>0.5) v=0.93; else if(ny<-0.5) v=0.5;
@@ -275,7 +280,7 @@ function makePedestal(name,cx,cz,w,d){
   fs.rotation.order='YXZ'; fs.rotation.x=-Math.PI/2; fs.position.set(cx,0.003,cz); fs.renderOrder=2; scene.add(fs); m.userData.fs=fs; return m;
 }
 // baked surfaces
-let floorMat=null; const peds={}; const blocks=[];
+const floorMats=[]; const peds={}; const blocks=[];
 function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
   for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k), xs=vs.map(v=>P[v*3]);
     if(xs.every(x=>Math.abs(x)>lim+0.01)) continue; // end cap inside the side band
@@ -286,28 +291,31 @@ function trimBand(s,lim){const P=s.pos.slice(),U=s.uv.slice(),keep=[];
     keep.push(f);}
   const idx=[]; for(const f of keep) for(const t of s.idx.slice(f*6,f*6+6)) idx.push(t);
   return {...s,pos:P,uv:U,idx};}
-function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice(), inner=(s.name==='G_WallF'||s.name==='G_WallB')?(v=>Math.abs(Math.abs(P[v*3+2])-LL/2)<1e-3):(v=>Math.abs(Math.abs(P[v*3])-W/2)<1e-3);
-  for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k); if(!vs.every(inner)) continue;
+function liftWallFoot(s){const P=s.pos.slice(),U=s.uv.slice();
+  for(let f=0;f<P.length/12;f++){const vs=[0,1,2,3].map(k=>f*4+k);
+    const xs=vs.map(v=>P[v*3]), zs=vs.map(v=>P[v*3+2]), cx=xs.reduce((a,b)=>a+b)/4, cz=zs.reduce((a,b)=>a+b)/4;
+    const cX=Math.max(...xs)-Math.min(...xs)<1e-4, cZ=Math.max(...zs)-Math.min(...zs)<1e-4; if(!cX&&!cZ) continue;
+    const faces=cX?(inRoom3(cx+0.1,cz,0.01)||inRoom3(cx-0.1,cz,0.01)):(inRoom3(cx,cz+0.1,0.01)||inRoom3(cx,cz-0.1,0.01)); if(!faces) continue;
     for(const v of vs){ if(P[v*3+1]>0.001) continue; const q=vs.find(o=>o!==v&&P[o*3+1]>1&&Math.abs(P[o*3]-P[v*3])<1e-4&&Math.abs(P[o*3+2]-P[v*3+2])<1e-4); if(q===undefined) continue;
       const t=0.03/P[q*3+1]; U[v*2]+=(U[q*2]-U[v*2])*t; U[v*2+1]+=(U[q*2+1]-U[v*2+1])*t; P[v*3+1]=0.03; }}
   return {...s,pos:P,uv:U};}
 for(let s of L.baked){
-  if(s.name.startsWith('G_Wall')) s=liftWallFoot(s);
+  if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')) s=liftWallFoot(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
   geo.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(s.uv),2));
   geo.setIndex(s.idx);
-  if(s.name.startsWith('G_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
+  if(s.name.startsWith('G_Soffit')||s.name.startsWith('G2_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
     const P=s.pos, col=new Float32Array(P.length), C=new THREE.Color();
     for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0,ys=[];for(let k=0;k<4;k++){const v=f*4+k;cx+=P[v*3]/4;cy+=P[v*3+1]/4;cz+=P[v*3+2]/4;ys.push(P[v*3+1]);}
-      const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=Math.abs(cx)<W/2-1e-3&&Math.abs(cz)<LL/2-1e-3;
+      const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=inRoom3(cx,cz,1e-3);
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
-    if(s.name==='G_SoffitF'||s.name==='G_SoffitB') geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
+    if(/Soffit[FB]$/.test(s.name)) geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
     geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
-  const isFloor=s.name==='G_FloorBox';
+  const isFloor=/FloorBox$/.test(s.name);
   const m=new THREE.MeshBasicMaterial({map:tex('live/'+s.img),transparent:isFloor,opacity:isFloor?0.80:1});
-  const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMat=m;} scene.add(mesh);
+  const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh);
   if(s.name.startsWith('G_Pedestal')){ // rebuilt below as a resizable box shaded like its bake
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
@@ -326,10 +334,16 @@ const GH=0.03, GD=0.02;
    if(!ePos){const c=new THREE.Mesh(new THREE.PlaneGeometry(GD+0.006,GH+0.006),black); c.rotation.y=-Math.PI/2; c.position.set(len/2,GH/2,-GD/2); g.add(c);}
    g.traverse(o=>o.layers.set(1));}; // layer 1: seen by the camera, left out of the floor mirror
  // local +x of the left wall points to the front wall, of the right wall to the entrance wall
- reveal(LL,-W/2,0,Math.PI/2,GD,GD); reveal(LL,W/2,0,-Math.PI/2,GD,GD); reveal(W,0,-LL/2,0,GD,GD); reveal(W,0,LL/2,Math.PI,GD,GD); // all four walls float
+ reveal(LL,-W/2,0,Math.PI/2,GD,GD); reveal(LL,W/2,0,-Math.PI/2,GD,GD); reveal(W,0,-LL/2,0,GD,GD); // room 1: all walls float
+ if(DOOR){ const zA=-DOOR.y1, zB=-DOOR.y0, la=DOOR.x0+W/2, lb=W/2-DOOR.x1, ca=(-W/2+DOOR.x0)/2, cb=(DOOR.x1+W/2)/2;
+   reveal(la,ca,zA,Math.PI,GD,0); reveal(lb,cb,zA,Math.PI,0,GD);   // room 1 entrance wall, either side of the doorway
+   reveal(la,ca,zB,0,0,GD); reveal(lb,cb,zB,0,GD,0);               // room 2 side of the same wall
+   const r2=ROOMS[1], zc=-(r2.y0+r2.y1)/2, l2=r2.y1-r2.y0;
+   reveal(l2,-W/2,zc,Math.PI/2,GD,GD); reveal(l2,W/2,zc,-Math.PI/2,GD,GD); reveal(W,0,-r2.y0,Math.PI,GD,GD);
+ } else reveal(W,0,LL/2,Math.PI,GD,GD);
  // fill the empty column where two wall boxes meet at each corner (it showed as a thin light line)
  const wallC=new THREE.Color().setRGB(0.86,0.858,0.852,THREE.SRGBColorSpace);
- for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],[W/2+0.05,LL/2+0.05,GH]]){
+ for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],[W/2+0.05,LL/2+0.05,GH],...(DOOR?[[-W/2-0.05,-ROOMS[1].y0+0.05,GH],[W/2+0.05,-ROOMS[1].y0+0.05,GH]]:[])]){
    const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-y0,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(cx,y0+(H-y0)/2,cz); scene.add(m);}}
 const BlurReflectorShader={name:'BlurReflectorShader',uniforms:{color:{value:null},tDiffuse:{value:null},textureMatrix:{value:null},uBlur:{value:0}},
   vertexShader:Reflector.ReflectorShader.vertexShader,
@@ -347,11 +361,12 @@ const BlurReflectorShader={name:'BlurReflectorShader',uniforms:{color:{value:nul
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
     }`};
-const mir=new Reflector(new THREE.PlaneGeometry(W,LL),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a,shader:BlurReflectorShader});
+const mir=new Reflector(new THREE.PlaneGeometry(W,MY1-MY0),{clipBias:0.003,textureWidth:1024,textureHeight:1024,color:0x9a9a9a,shader:BlurReflectorShader});
 mir.material.uniforms.uBlur=uBlur;
-mir.rotation.x=-Math.PI/2; mir.position.y=-0.002; scene.add(mir);
+mir.rotation.x=-Math.PI/2; mir.position.set(0,-0.002,-MCY); scene.add(mir);
 const glow=new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,LL-1.6),new THREE.MeshBasicMaterial({color:0xffffff}));
 glow.rotation.x=Math.PI/2; glow.position.copy(b2t(0,0,H-0.03)); scene.add(glow);
+for(const r of ROOMS.slice(1)){const g2=glow.clone(); g2.position.copy(b2t((r.x0+r.x1)/2,(r.y0+r.y1)/2,H-0.03)); scene.add(g2);}
 
 // paintings with captions
 // canvas edges lit from the ceiling: top bright, sides mid, bottom in shade
@@ -366,7 +381,7 @@ function shadowTex(w,h){
   const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return {t,M};
 }
 const works=[], shadowMats=[];
-const wallOf=p=>p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R';
+const wallOf=p=>p.wall||(p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R');
 for(const p of L.paintings){
   const front=new THREE.MeshBasicMaterial({map:tex('/images/'+p.file),color:new THREE.Color(0.93,0.93,0.93)});
   front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
@@ -392,7 +407,9 @@ for(const p of L.paintings){
   works.push({mesh:m,p,wall,baseY:p.z,pos:m.position.clone(),caption:p.caption||''});
 }
 // per-wall layout: order along the wall, original centre and gap
-const WALLS={F:{u:'x',sgn:1,len:W},B:{u:'x',sgn:-1,len:W},L:{u:'y',sgn:1,len:LL},R:{u:'y',sgn:-1,len:LL}};
+const WALLS={F:{u:'x',sgn:1,len:W},B:{u:'x',sgn:-1,len:W},L:{u:'y',sgn:1,len:LL},R:{u:'y',sgn:-1,len:LL},
+  L2:{u:'y',sgn:1,len:LL},R2:{u:'y',sgn:-1,len:LL},S2:{u:'x',sgn:-1,len:W}};
+for(const k of Object.keys(WALLS)) if(!works.some(w=>w.wall===k)) delete WALLS[k];
 for(const [k,wd] of Object.entries(WALLS)){
   wd.items=works.filter(w=>w.wall===k).sort((a,b)=>a.p[wd.u]-b.p[wd.u]);
   const lo=wd.items[0], hi=wd.items[wd.items.length-1];
@@ -439,6 +456,10 @@ resin.onBeforeCompile=sh=>{sh.uniforms.uAO=uAO;
 const updKey=()=>uKeyDir.value.copy(KEYW).transformDirection(camera.matrixWorldInverse);
 const dt=await (await fetch('torso_mesh.json')).json();
 const TOR_BASE=0.8, MED_BASE=L.medusa.z; // original pedestal tops (m)
+const whiteMat=new THREE.MeshStandardMaterial({color:0xf3f2ef,roughness:0.55,metalness:0,envMap:env,envMapIntensity:0.9});
+const goldMat=chrome.clone(); goldMat.onBeforeCompile=chrome.onBeforeCompile;
+const mkMed=mat=>{const g=mg.clone(); g.traverse(o=>{if(o.isMesh){o.material=mat; o.castShadow=true;}}); scene.add(g); return g;};
+const mwG=mkMed(whiteMat), mgdG=mkMed(goldMat);
 const tg=new THREE.Group(); scene.add(tg);
 {const tm=meshFrom(dt,resin); tm.position.z=-3.5; tm.castShadow=true; tg.add(tm);} // world-space mesh re-centred on its pedestal (blender y=-3.5); faces the Medusa (+y)
 const sculptCap=L.sculptures.map(s=>({s,pos:b2t(s.x,s.y,s.z)}));
@@ -451,7 +472,7 @@ function sculptShadow(){
   const rcv=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.ShadowMaterial({opacity:0.4,depthWrite:false}));
   rcv.rotation.order='YXZ'; rcv.rotation.x=-Math.PI/2; rcv.receiveShadow=true; rcv.renderOrder=3; scene.add(rcv);
   return {L1,rcv};}
-const SSH=[sculptShadow(),sculptShadow()];
+const SSH=[sculptShadow(),sculptShadow(),sculptShadow(),sculptShadow()];
 
 // tuning (Medusa / Torso / room)
 const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
@@ -460,7 +481,8 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M'};
+  medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
+  mwX:-1.0,mwY:-18.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:1.0,mgdY:-18.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 const KEY='medusa-room-tune-v2';
 let tune={...DEF};
@@ -480,27 +502,34 @@ function layoutWall(k){
 }
 function applyTune(){
   uC.value=tune.contrast; chrome.color.setScalar(tune.bright); chrome.envMapIntensity=tune.refl; chrome.roughness=tune.gloss;
+  goldMat.color.setRGB(1.0,0.77,0.40).multiplyScalar(tune.bright); goldMat.envMapIntensity=tune.refl; goldMat.roughness=tune.gloss;
   uC2.value=tune.tContrast; uDark.value=tune.tDark; resin.color.copy(RESIN).multiplyScalar(tune.tBright); resin.roughness=tune.tRough;
   const mTop=Math.max(0.1,tune.medH+tune.sculptOff), tTop=Math.max(0.1,tune.torH+tune.sculptOff);
   const P1=peds.G_Pedestal, P2=peds.G_Pedestal2;
+  if(!peds.G_Pedestal3){peds.G_Pedestal3=makePedestal('G_Pedestal3',0,0,1,1); peds.G_Pedestal4=makePedestal('G_Pedestal4',0,0,1,1);}
+  const P3=peds.G_Pedestal3, P4=peds.G_Pedestal4, wTop=Math.max(0.1,tune.mwH+tune.sculptOff), gTop=Math.max(0.1,tune.mgdH+tune.sculptOff);
   clampPlace();
   const place=(P,x,y,r,w,d,top,bw,bd)=>{ if(!P) return; const rad=-r*Math.PI/180;
     P.position.set(x,0,-y); P.rotation.y=rad; P.scale.set(w,top,d);
     const b=P.userData.blob; b.position.set(x,top+0.001,-y); b.rotation.y=rad; b.scale.set(bw,bd,1);
     const f=P.userData.fs; f.position.set(x,0.003,-y); f.rotation.y=rad; f.scale.set(w*1.6,d*1.6,1); };
   place(P1,tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop,0.26,0.26);
-  [[SSH[0],tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop],[SSH[1],tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop]].forEach(([o,x,y,r,w,d,top])=>{
+  place(P3,tune.mwX,tune.mwY,tune.mwR,tune.mwW,tune.mwD,wTop,0.26,0.26); place(P4,tune.mgdX,tune.mgdY,tune.mgdR,tune.mgdW,tune.mgdD,gTop,0.26,0.26);
+  [[SSH[0],tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop],[SSH[1],tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop],
+   [SSH[2],tune.mwX,tune.mwY,tune.mwR,tune.mwW,tune.mwD,wTop],[SSH[3],tune.mgdX,tune.mgdY,tune.mgdR,tune.mgdW,tune.mgdD,gTop]].forEach(([o,x,y,r,w,d,top])=>{
     o.rcv.position.set(x,top+0.0012,-y); o.rcv.rotation.y=-r*Math.PI/180; o.rcv.scale.set(w,d,1); o.rcv.material.opacity=tune.sshadow;
     o.L1.position.set(x-0.35,top+2.6,-y+0.55); o.L1.target.position.set(x,top,-y); o.L1.target.updateMatrixWorld();});
   renderer.shadowMap.needsUpdate=true;
   place(P2,tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop,0.42,0.36);
   // walking collision follows the (rotated) pedestal footprints; R = body radius 0.28 m
   blocks.length=0;
-  [[tune.medX,tune.medY,tune.medR,tune.medW,tune.medD],[tune.torX,tune.torY,tune.torR,tune.torW,tune.torD]].forEach(([x,y,r,w,d])=>{
+  SK.map(p=>[tune[p+'X'],tune[p+'Y'],tune[p+'R'],tune[p+'W'],tune[p+'D']]).forEach(([x,y,r,w,d])=>{
     const c=Math.abs(Math.cos(r*Math.PI/180)), sn=Math.abs(Math.sin(r*Math.PI/180)), ex=c*w/2+sn*d/2+0.28, ey=sn*w/2+c*d/2+0.28;
     blocks.push({x0:x-ex,x1:x+ex,y0:y-ey,y1:y+ey});});
   mg.position.set(tune.medX,mTop,-tune.medY); mg.rotation.y=-tune.medR*Math.PI/180;
-  tg.position.set(tune.torX,tTop-TOR_BASE+0.0015,-tune.torY); // 1.5 mm lift avoids flicker where the base meets the pedestal tg.rotation.y=-tune.torR*Math.PI/180;
+  tg.position.set(tune.torX,tTop-TOR_BASE+0.0015,-tune.torY); tg.rotation.y=-tune.torR*Math.PI/180; // 1.5 mm lift avoids flicker where the base meets the pedestal
+  mwG.position.set(tune.mwX,wTop,-tune.mwY); mwG.rotation.y=-tune.mwR*Math.PI/180; mgdG.position.set(tune.mgdX,gTop,-tune.mgdY); mgdG.rotation.y=-tune.mgdR*Math.PI/180;
+  if(sculptCap[2]) sculptCap[2].pos.set(tune.mwX,wTop+0.15,-tune.mwY); if(sculptCap[3]) sculptCap[3].pos.set(tune.mgdX,gTop+0.15,-tune.mgdY);
   sculptCap[0].pos.set(tune.medX,L.sculptures[0].z+(mTop-MED_BASE),-tune.medY); sculptCap[1].pos.set(tune.torX,L.sculptures[1].z+(tTop-TOR_BASE),-tune.torY);
   syncPlaceUI(); drawMap();
   for(const w of works){w.mesh.position.y=w.baseY+(tune.paintY-1.55); w.pos.y=w.mesh.position.y;}
@@ -513,7 +542,7 @@ function applyTune(){
   PD.querySelectorAll('#fovPick button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.f===+tune.fov)));
   PD.getElementById('k-bob').checked=!!tune.bob;
   if(applyTune.live && mode==='walk'){camera.fov=tune.fov; camera.updateProjectionMatrix();}
-  if(floorMat) floorMat.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
+  for(const fm of floorMats) fm.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
   uPBlur.value=tune.pblur; setQuality();
   uBlur.value=tune.rblur; uAO.value=tune.ao; bloom.enabled=tune.bloom>0.001; bloom.strength=tune.bloom*1.2;
   lens.uniforms.uVig.value=tune.vig; lens.uniforms.uGrain.value=tune.grain; uWeave.value=tune.weave;
@@ -524,45 +553,46 @@ function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringi
   el.textContent=ok?(manual?'저장했어요 ('+hm+')':'자동 저장됨 ('+hm+')'):'이 브라우저에서는 저장이 안 돼요 (사생활 보호 모드인지 확인해 주세요)';}
 for(const [k,id] of Object.entries(ui)) document.getElementById(id).addEventListener('input',e=>{tune[k]=parseFloat(e.target.value); applyTune();});
 // ---------- placement + bird's-eye map ----------
-const pk=()=>tune.msel==='T'?'tor':'med';
-function clampPlace(){for(const p of ['med','tor']){const w=tune[p+'W'],d=tune[p+'D'],m=Math.max(w,d)/2+0.05;
-  tune[p+'X']=Math.max(-W/2+m,Math.min(W/2-m,+tune[p+'X']||0)); tune[p+'Y']=Math.max(-LL/2+m,Math.min(LL/2-m,+tune[p+'Y']||0)); tune[p+'R']=((+tune[p+'R']||0)%360+360)%360;}}
+const SK=['med','tor','mw','mgd'], SEL={M:'med',T:'tor',W:'mw',G:'mgd'}, SELR={med:'M',tor:'T',mw:'W',mgd:'G'}, SNAME={med:'메두사(은)',tor:'토르소',mw:'메두사(흰)',mgd:'메두사(금)'};
+const pk=()=>SEL[tune.msel]||'med';
+function clampPlace(){for(const p of SK){const w=tune[p+'W'],d=tune[p+'D'],m=Math.max(w,d)/2+0.05; const x=+tune[p+'X']||0, y=+tune[p+'Y']||0;
+  let best=null,bd=1e9; for(const r of ROOMS){const cx=Math.max(r.x0+m,Math.min(r.x1-m,x)), cy=Math.max(r.y0+m,Math.min(r.y1-m,y)); const dd=(cx-x)**2+(cy-y)**2; if(dd<bd){bd=dd;best=[cx,cy];}}
+  tune[p+'X']=best[0]; tune[p+'Y']=best[1]; tune[p+'R']=((+tune[p+'R']||0)%360+360)%360;}}
 function syncPlaceUI(){const p=pk();
   PD.querySelectorAll('#selPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.s===tune.msel)));
   const set=(id,v)=>{const el=PD.getElementById(id); if(el&&PD.activeElement!==el) el.value=v;};
-  set('n-x',(tune[p+'X']+W/2).toFixed(2)); set('n-y',(tune[p+'Y']+LL/2).toFixed(2)); set('n-r',Math.round(tune[p+'R']));}
+  set('n-x',(tune[p+'X']+W/2).toFixed(2)); set('n-y',(tune[p+'Y']-MY0).toFixed(2)); set('n-r',Math.round(tune[p+'R']));}
 document.querySelectorAll('#selPick button').forEach(b=>b.onclick=()=>{tune.msel=b.dataset.s; applyTune();});
 document.getElementById('n-x').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'X']=v-W/2; applyTune();}});
-document.getElementById('n-y').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'Y']=v-LL/2; applyTune();}});
+document.getElementById('n-y').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'Y']=v+MY0; applyTune();}});
 document.getElementById('n-r').addEventListener('input',e=>{const v=parseFloat(e.target.value); if(!isNaN(v)){tune[pk()+'R']=v; applyTune();}});
 ['n-x','n-y','n-r'].forEach(id=>document.getElementById(id).addEventListener('change',()=>syncPlaceUI()));
 const mapEl=document.getElementById('map'); const MM=14; // map margin px
-function mapScale(){const r=mapEl.getBoundingClientRect(); const w=r.width||300,h=r.height||500; return {w,h,s:Math.min((w-2*MM)/W,(h-2*MM)/LL)};}
-function toMap(x,y,S){return [S.w/2+x*S.s, S.h/2-y*S.s];}
-function fromMap(px,py,S){return [(px-S.w/2)/S.s, (S.h/2-py)/S.s];}
+function mapScale(){const r=mapEl.getBoundingClientRect(); const w=r.width||300,h=r.height||500; return {w,h,s:Math.min((w-2*MM)/W,(h-2*MM)/(MY1-MY0))};}
+function toMap(x,y,S){return [S.w/2+x*S.s, S.h/2-(y-MCY)*S.s];}
+function fromMap(px,py,S){return [(px-S.w/2)/S.s, (S.h/2-py)/S.s+MCY];}
 function drawMap(){
   if(!applyTune.live||!mapEl||!mapEl.isConnected) return; const S=mapScale(); const dpr=(mapEl.ownerDocument.defaultView||window).devicePixelRatio||1;
   if(mapEl.width!==Math.round(S.w*dpr)){mapEl.width=Math.round(S.w*dpr); mapEl.height=Math.round(S.h*dpr);}
   const c=mapEl.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,S.w,S.h);
   const cs=getComputedStyle(panelEl), col=v=>cs.getPropertyValue(v).trim()||'#888';
-  const [ax,ay]=toMap(-W/2,LL/2,S); c.fillStyle=col('--panel'); c.fillRect(ax,ay,W*S.s,LL*S.s);
-  c.strokeStyle=col('--line'); c.lineWidth=1; for(let gx=-W/2+1;gx<W/2;gx++){const [x]=toMap(gx,0,S); c.beginPath(); c.moveTo(x,ay); c.lineTo(x,ay+LL*S.s); c.stroke();}
-  for(let gy=-LL/2+1;gy<LL/2;gy++){const [,y]=toMap(0,gy,S); c.beginPath(); c.moveTo(ax,y); c.lineTo(ax+W*S.s,y); c.stroke();}
-  c.strokeStyle=col('--fg'); c.lineWidth=3; c.strokeRect(ax,ay,W*S.s,LL*S.s);
-  // entrance mark + labels
-  c.fillStyle=col('--muted'); c.font='11px '+(cs.getPropertyValue('--ui')||'sans-serif'); c.textAlign='center';
-  c.fillText('정면 벽',S.w/2,ay-3>9?ay-3:ay+12); c.fillText('입구',S.w/2,ay+LL*S.s+12>S.h?ay+LL*S.s-5:ay+LL*S.s+12);
+  c.font='11px '+(cs.getPropertyValue('--ui')||'sans-serif'); c.textAlign='center';
+  ROOMS.forEach((r,ri)=>{const [ax,ay]=toMap(r.x0,r.y1,S), rw=(r.x1-r.x0)*S.s, rh=(r.y1-r.y0)*S.s; c.fillStyle=col('--panel'); c.fillRect(ax,ay,rw,rh);
+    c.strokeStyle=col('--line'); c.lineWidth=1; for(let gx=Math.ceil(r.x0+0.01);gx<r.x1;gx++){const [x]=toMap(gx,0,S); c.beginPath(); c.moveTo(x,ay); c.lineTo(x,ay+rh); c.stroke();}
+    for(let gy=Math.ceil(r.y0+0.01);gy<r.y1;gy++){const [,y]=toMap(0,gy,S); c.beginPath(); c.moveTo(ax,y); c.lineTo(ax+rw,y); c.stroke();}
+    c.strokeStyle=col('--fg'); c.lineWidth=3; c.strokeRect(ax,ay,rw,rh); c.fillStyle=col('--muted'); c.fillText((ri+1)+'번 방',ax+rw/2,ay+rh/2);});
+  if(DOOR){const [dx0,dy0]=toMap(DOOR.x0,DOOR.y1,S), [dx1,dy1]=toMap(DOOR.x1,DOOR.y0,S); c.fillStyle=col('--panel'); c.fillRect(dx0+1,dy0-3,dx1-dx0-2,dy1-dy0+6);}
   // paintings
   c.strokeStyle=col('--accent'); c.lineWidth=4;
   for(const w of works){const p=w.p, cx=w.mesh.position.x, cy=-w.mesh.position.z, half=p.w/2;
-    let x1,y1,x2,y2; if(w.wall==='F'||w.wall==='B'){x1=cx-half;x2=cx+half;y1=y2=cy;} else {x1=x2=cx;y1=cy-half;y2=cy+half;}
+    let x1,y1,x2,y2; if(w.wall==='F'||w.wall==='B'||w.wall==='S2'){x1=cx-half;x2=cx+half;y1=y2=cy;} else {x1=x2=cx;y1=cy-half;y2=cy+half;}
     const a=toMap(x1,y1,S), b=toMap(x2,y2,S); c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(b[0],b[1]); c.stroke();}
   // pedestals
-  for(const p of ['med','tor']){const sel=(p==='med')===(tune.msel!=='T'); const [x,y]=toMap(tune[p+'X'],tune[p+'Y'],S);
+  for(const p of SK){const sel=p===pk(); const [x,y]=toMap(tune[p+'X'],tune[p+'Y'],S);
     c.save(); c.translate(x,y); c.rotate(tune[p+'R']*Math.PI/180); const w=tune[p+'W']*S.s, d=tune[p+'D']*S.s;
     c.fillStyle=sel?col('--fg'):col('--muted'); c.fillRect(-w/2,-d/2,w,d);
     c.fillStyle=col('--panel'); c.beginPath(); c.moveTo(0,-d/2+2); c.lineTo(-4,-d/2+8); c.lineTo(4,-d/2+8); c.fill(); // front mark (faces up = toward front wall at 0°)
-    c.restore(); c.fillStyle=sel?col('--fg'):col('--muted'); c.textAlign='left'; c.fillText(p==='med'?'메두사':'토르소',x+Math.max(w,d)/2+5,y+4);}
+    c.restore(); c.fillStyle=sel?col('--fg'):col('--muted'); c.textAlign='left'; c.fillText(SNAME[p],x+Math.max(w,d)/2+5,y+4);}
   // viewer
   const [vx,vy]=toMap(walk.x,walk.y,S), yaw=walk.yaw; const dir=[-Math.sin(yaw),Math.cos(yaw)];
   const fov=(camera.fov*camera.aspect)*Math.PI/360; c.fillStyle='rgba(60,110,230,0.18)'; c.beginPath(); c.moveTo(vx,vy);
@@ -571,8 +601,8 @@ function drawMap(){
 }
 let mdrag=null;
 mapEl.addEventListener('pointerdown',e=>{const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
-  let hit=null; for(const p of ['med','tor']){const h=Math.max(tune[p+'W'],tune[p+'D'])/2+0.12; if(Math.abs(x-tune[p+'X'])<h&&Math.abs(y-tune[p+'Y'])<h) hit=p;}
-  if(hit){tune.msel=hit==='tor'?'T':'M'; mdrag={p:hit,dx:tune[hit+'X']-x,dy:tune[hit+'Y']-y}; mapEl.setPointerCapture(e.pointerId); applyTune();}
+  let hit=null; for(const p of SK){const h=Math.max(tune[p+'W'],tune[p+'D'])/2+0.12; if(Math.abs(x-tune[p+'X'])<h&&Math.abs(y-tune[p+'Y'])<h) hit=p;}
+  if(hit){tune.msel=SELR[hit]; mdrag={p:hit,dx:tune[hit+'X']-x,dy:tune[hit+'Y']-y}; mapEl.setPointerCapture(e.pointerId); applyTune();}
   else {[walk.x,walk.y]=collide(x,y); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true; drawMap();}});
 mapEl.addEventListener('pointermove',e=>{if(!mdrag) return; const r=mapEl.getBoundingClientRect(), S=mapScale(); const [x,y]=fromMap(e.clientX-r.left,e.clientY-r.top,S);
   tune[mdrag.p+'X']=Math.round((x+mdrag.dx)*100)/100; tune[mdrag.p+'Y']=Math.round((y+mdrag.dy)*100)/100; applyTune();});
@@ -634,8 +664,12 @@ const EYE=1.6, R=0.28;
 const walk={x:0,y:-6.2,yaw:0,pitch:-0.04}; // blender ground coords, yaw 0 = facing +y (into the room)
 const SKEY='medusa-room-state-v1'; let saved=null; try{saved=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
 function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){}}
+const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(DOOR?[{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
+const okPos=(x,y)=>WALK.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
 function collide(nx,ny){
-  nx=Math.max(-W/2+R,Math.min(W/2-R,nx)); ny=Math.max(-LL/2+R,Math.min(LL/2-R,ny));
+  if(!okPos(nx,ny)){ const ox=walk.x, oy=walk.y;
+    if(okPos(nx,oy)) ny=oy; else if(okPos(ox,ny)) nx=ox;
+    else { let best=[ox,oy],bd=1e9; for(const r of WALK){const cx=Math.max(r.x0,Math.min(r.x1,nx)), cy=Math.max(r.y0,Math.min(r.y1,ny)), d=(cx-nx)**2+(cy-ny)**2; if(d<bd){bd=d;best=[cx,cy];}} [nx,ny]=best; } }
   for(const b of blocks){ if(nx>b.x0&&nx<b.x1&&ny>b.y0&&ny<b.y1){ // push out along shortest axis
     const dx=Math.min(nx-b.x0,b.x1-nx), dy=Math.min(ny-b.y0,b.y1-ny);
     if(dx<dy) nx = (nx-b.x0<b.x1-nx)?b.x0:b.x1; else ny = (ny-b.y0<b.y1-ny)?b.y0:b.y1; } }
@@ -646,7 +680,7 @@ function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
   camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
 }
-const VIEWS={entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
+const VIEWS={room2:{x:0,y:-8.2,yaw:Math.PI,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 function goView(k){
   const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
   document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
@@ -705,7 +739,7 @@ document.getElementById('m-orbit').onclick=()=>setMode('orbit');
 document.getElementById('orbitT').onclick=()=>setMode(mode==='walk'?'orbit':'walk');
 if(document.documentElement.classList.contains('embed')) setTimeout(()=>stage.focus({preventScroll:true}),300);
 const lim={x:W/2-0.3,z:LL/2-0.3};
-orbit.addEventListener('change',()=>{const p=camera.position; p.x=Math.max(-lim.x,Math.min(lim.x,p.x)); p.z=Math.max(-lim.z,Math.min(lim.z,p.z)); p.y=Math.max(0.3,Math.min(H-0.4,p.y)); dirty=true;});
+orbit.addEventListener('change',()=>{const p=camera.position; p.x=Math.max(-lim.x,Math.min(lim.x,p.x)); p.z=Math.max(-MY1+0.3,Math.min(-MY0-0.3,p.z)); p.y=Math.max(0.3,Math.min(H-0.4,p.y)); dirty=true;});
 
 // loop
 function resize(){const r=stage.getBoundingClientRect(); if(!r.width) return; renderer.setSize(r.width,r.height,false); composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(r.width,r.height); camera.aspect=r.width/r.height; camera.updateProjectionMatrix(); dirty=true;}
