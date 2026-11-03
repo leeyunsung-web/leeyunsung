@@ -216,7 +216,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="시야" id="fovPick">
         <button data-f="58">넓게 (지금)</button><button data-f="45">사람 눈</button><button data-f="32">표준 50mm</button>
       </div>
-      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button id="botToggle" type="button">테스트 봇</button></div>
+      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button id="botToggle" type="button">테스트 봇</button><button id="joyToggle" type="button">휴대폰 조이스틱</button></div>
       <label for="k-figBlur"><span>피규어 윤곽 블러 (px) <output id="o-figBlur"></output></span><input type="range" id="k-figBlur" min="0" max="14" step="0.1"></label>
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
       <label for="k-helloY"><span>말 걸기 높이 (머리 위 m) <output id="o-helloY"></output></span><input type="range" id="k-helloY" min="-0.1" max="0.6" step="0.01"></label>
@@ -777,6 +777,8 @@ addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
 let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
   if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) if(!PEERS.get(id).bot) removePeer(id); online=1; showOnline(); },60000); });
 const onlineEl=document.getElementById('online'), helloEl=document.getElementById('hello'), sayEl=document.getElementById('say'), sayIn=document.getElementById('sayIn'), sayMine=document.getElementById('sayMine');
+window.__tapWork=i=>{const w=works[i], v=w.mesh.position.clone().project(camera), r=canvas.getBoundingClientRect(); const x=(v.x+1)/2*r.width+r.left, y=(1-v.y)/2*r.height+r.top; tapMove(x,y); return {x,y,cap:w.caption.slice(0,40)};}; // for checks
+window.__auto=()=>({go:autoGo,walk:{...walk}}); // for checks
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
 window.__room=()=>({me:roomMe,online,mode:pplMode,kit:!!KIT,peers:[...PEERS.values()].map(p=>({id:p.id,h:p.h,x:+p.pos.x.toFixed(2),y:+p.pos.y.toFixed(2),tx:p.tgt.x,ty:p.tgt.y,vis:!!(p.F&&p.F.o.visible),bub:!!p.bub}))}); // for checks
 function showOnline(){ const n=online+BOTS.length; onlineEl.hidden=n<2; onlineEl.textContent=n+' online'; }
@@ -820,7 +822,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,helloY:0.12,bubY:0.18,bubS:1,
+  people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,helloY:0.12,bubY:0.18,bubS:1,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -892,7 +894,7 @@ function applyTune(){
   PD.getElementById('k-bob').checked=!!tune.bob; PD.getElementById('k-mobSpin').checked=!!tune.mobSpin;
   if(+tune.people===1||+tune.people===2) tune.people=3; // mannequin and silhouette are retired: only the base figure
   PD.querySelectorAll('#pplPick button[data-p]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.p===+tune.people))); setPeople(+tune.people);
-  {const bt=PD.getElementById('botToggle'); if(bt) bt.setAttribute('aria-pressed',String(!!tune.bots));}
+  {const bt=PD.getElementById('botToggle'); if(bt) bt.setAttribute('aria-pressed',String(!!tune.bots)); const jt=PD.getElementById('joyToggle'); if(jt) jt.setAttribute('aria-pressed',String(!!tune.joy));}
   if(applyTune.live && mode==='walk'){camera.fov=tune.fov; camera.updateProjectionMatrix();}
   for(const fm of floorMats) fm.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
   uPBlur.value=tune.pblur; setQuality();
@@ -994,6 +996,7 @@ document.getElementById('k-bob').addEventListener('change',e=>{tune.bob=e.target
 document.getElementById('k-mobSpin').addEventListener('change',e=>{tune.mobSpin=e.target.checked; applyTune();});
 document.querySelectorAll('#pplPick button[data-p]').forEach(b=>b.onclick=()=>{tune.people=+b.dataset.p; applyTune();});
 // 세부사항: the full figure editor in its own window; its “전시장에 적용” comes back through window.__applyFigure
+document.getElementById('joyToggle').onclick=()=>{tune.joy=!tune.joy; applyTune(); if(COARSE) joy.hidden=mode!=='walk'||!tune.joy;};
 document.getElementById('botToggle').onclick=()=>{tune.bots=!tune.bots; applyTune(); showOnline();};
 document.getElementById('figDetail').onclick=()=>{const w=(PD.defaultView||window); const e=w.open(new URL('figure-edit.html?home=1',location.href).href,'figEdit','width=1200,height=920'); if(!e) showHint('팝업이 막혔어요. 주소창 오른쪽에서 팝업을 허용해 주세요.');};
 document.getElementById('k-reset').onclick=()=>{tune={...DEF}; applyTune();};
@@ -1127,20 +1130,51 @@ addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
 // drag to look
 let drag=null;
-canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(e.pointerType!=='mouse'&&autoGo&&autoGo.orbit) autoGo=null; drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag) return;
   if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
-    walk.yaw=drag.yaw+(e.clientX-drag.x)*hf/canvas.clientWidth; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch+(e.clientY-drag.y)*vf/canvas.clientHeight));
+    walk.yaw=drag.yaw+(e.clientX-drag.x)*hf/canvas.clientWidth*0.75; walk.pitch=Math.max(-0.45,Math.min(0.45,drag.pitch+(e.clientY-drag.y)*vf/canvas.clientHeight*0.6)); if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6) autoGo=null;
   } else { // mouse: look around like a game (drag right = turn right)
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
     walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); }
   dirty=true;});
 const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
-  if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY; setTimeout(()=>tryOpenGuestbook(x,y),0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+  if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY, touch=e.pointerType!=='mouse'; setTimeout(()=>{ if(!tryOpenGuestbook(x,y)&&touch&&tune.tapWalk!==false) tapMove(x,y); },0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+// ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
+let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
+const lookYaw=(dx,dy)=>Math.atan2(-dx,dy); // camera yaw that looks along blender (dx,dy)
+const tapMark=document.createElement('div'); tapMark.style.cssText='position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(0,0,0,.15);pointer-events:none;opacity:0;transition:opacity .5s,transform .5s;z-index:3'; stage.appendChild(tapMark);
+function showMark(cx,cy){ const r=stage.getBoundingClientRect(); tapMark.style.left=(cx-r.left)+'px'; tapMark.style.top=(cy-r.top)+'px'; tapMark.style.transition='none'; tapMark.style.opacity='1'; tapMark.style.transform='scale(.6)'; tapMark.getBoundingClientRect(); tapMark.style.transition='opacity .6s,transform .6s'; tapMark.style.opacity='0'; tapMark.style.transform='scale(1.25)'; }
+function sculptures(){ return [['medusa',mg],['torso',tg],['mob',MOB&&MOB.group],['mw',mwG],['mgd',mgdG]].filter(([,g])=>g&&g.visible!==false); }
+function standAt(x,y,d0,nx,ny){ for(let d=d0; d>0.5; d-=0.15){ const sx=x+nx*d, sy=y+ny*d; if(okPos(sx,sy)&&!blocks.some(b=>sx>b.x0&&sx<b.x1&&sy>b.y0&&sy<b.y1)) return [sx,sy]; } return null; }
+function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingClientRect(); _n2.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
+  let best=null;
+  const hw=_r2.intersectObjects(works.map(w=>w.mesh),false)[0]; if(hw) best={kind:'work',d:hw.distance,w:works.find(w=>w.mesh===hw.object)};
+  for(const [name,g] of sculptures()){ const bb=new THREE.Box3().setFromObject(g); if(bb.isEmpty()) continue; const p=_r2.ray.intersectBox(bb,_pt); if(p){ const d=p.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'sculpt',d,name,bb}; } }
+  const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
+  if(!best) return; showMark(cx,cy);
+  if(best.kind==='work'){ const w=best.w, m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
+    const d0=Math.max(1.6,Math.min(3.2,Math.max(w.p.w,w.p.h)*1.15)), s=standAt(x,y,d0,nx,ny); if(!s) return;
+    autoGo={x:s[0],y:s[1],yaw:lookYaw(-nx,-ny),pitch:Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9}; }
+  else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=best.bb.max.y;
+    let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const rad=Math.max(1.6,Math.min(3,Math.max(best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z)*1.3+0.8));
+    if(l<rad+0.6&&!(autoGo&&autoGo.orbit)){ autoGo={orbit:{x,y,r:Math.max(l,rad*0.9),a:Math.atan2(walk.y-y,walk.x-x),left:Math.PI*2,top}}; return; } // already here: walk once around it
+    const s=standAt(x,y,rad,dx,dy); if(!s) return; autoGo={x:s[0],y:s[1],yaw:lookYaw(x-s[0],y-s[1]),pitch:Math.atan2(Math.min(top,1.7)-EYE*0.92,rad)}; }
+  else { const x=best.p.x, y=-best.p.z; const s=okPos(x,y)?[x,y]:null; if(!s) return; autoGo={x,y,yaw:null}; } }
+// one step of the walk you asked for (called from the main loop)
+function autoStep(dt){ if(!autoGo) return false; const g=autoGo, turn=(to,k)=>{ walk.yaw+=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw))*Math.min(1,dt*k); };
+  if(g.orbit){ const o=g.orbit, st=Math.min(o.left,dt*0.45); o.a+=st; o.left-=st; const nx=o.x+Math.cos(o.a)*o.r, ny=o.y+Math.sin(o.a)*o.r;
+    if(okPos(nx,ny)) [walk.x,walk.y]=collide(nx,ny); turn(lookYaw(o.x-walk.x,o.y-walk.y),6); walk.pitch+=(Math.atan2(Math.min(o.top,1.7)-EYE*0.92,o.r)-walk.pitch)*Math.min(1,dt*3); if(o.left<=0) autoGo=null; return true; }
+  const dx=g.x-walk.x, dy=g.y-walk.y, d=Math.hypot(dx,dy);
+  if(d>0.04){ const st=Math.min(d,1.3*dt), ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+dx/d*st,walk.y+dy/d*st); turn(d>0.6||g.yaw==null?lookYaw(dx,dy):g.yaw,4);
+    if(Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ autoGo=null; return true; } // blocked: stop here
+    if(g.pitch!=null&&d<1.2) walk.pitch+=(g.pitch-walk.pitch)*Math.min(1,dt*2.5); return true; }
+  if(g.yaw!=null){ turn(g.yaw,5); if(g.pitch!=null) walk.pitch+=(g.pitch-walk.pitch)*Math.min(1,dt*3); if(Math.abs(Math.atan2(Math.sin(g.yaw-walk.yaw),Math.cos(g.yaw-walk.yaw)))>0.01) return true; }
+  autoGo=null; return true; }
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
-if(matchMedia('(pointer:coarse)').matches) joy.hidden=false;
+if(matchMedia('(pointer:coarse)').matches) joy.hidden=!(typeof tune!=='undefined'&&tune.joy);
 joy.addEventListener('pointerdown',e=>{jid=e.pointerId; joy.setPointerCapture(jid); moveJoy(e);});
 joy.addEventListener('pointermove',e=>{if(e.pointerId===jid) moveJoy(e);});
 const endJoy=()=>{jid=null; jv={x:0,y:0}; joyK.style.transform='';};
@@ -1170,7 +1204,7 @@ function setMode(m){
   document.getElementById('hint').textContent= m==='walk' ? '↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기' : '끌어서 돌리기 · 휠로 확대 · 오른쪽 버튼으로 이동';
   if(m==='orbit'){ orbit.enabled=true; camera.fov=40; camera.updateProjectionMatrix(); camera.position.copy(b2t(tune.medX+1.4,tune.medY-2.45,1.55)); orbit.target.set(tune.medX,mg.position.y+0.15,-tune.medY); orbit.update(); }
   else { orbit.enabled=false; camera.fov=tune.fov; camera.updateProjectionMatrix(); placeWalkCam(); }
-  if(matchMedia('(pointer:coarse)').matches) joy.hidden=m!=='walk';
+  if(matchMedia('(pointer:coarse)').matches) joy.hidden=m!=='walk'||!tune.joy;
   dirty=true; updateCaption();
 }
 document.getElementById('m-walk').onclick=()=>setMode('walk');
@@ -1204,6 +1238,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(keys.has('a')) strafe-=1; if(keys.has('d')) strafe+=1;
     if(keys.has('arrowleft')) turn+=1; if(keys.has('arrowright')) turn-=1;
     fwd+=-jv.y; walk.yaw+=-jv.x*1.6*dt;
+    if(fwd||strafe||turn||jv.x||jv.y) autoGo=null; else if(autoStep(dt)){ dirty=true; if(tune.bob){bobT+=dt*1.8; bobA=Math.min(1,bobA+dt*3);} }
     if(fwd||strafe||turn||jv.x||jv.y){
       walk.yaw+=turn*1.5*dt;
       const sp=1.3*dt, sy=Math.sin(walk.yaw), cy=Math.cos(walk.yaw);
