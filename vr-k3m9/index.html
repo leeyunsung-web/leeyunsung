@@ -161,7 +161,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">화질·속도</div>
       <label for="k-res"><span>화면 해상도 (낮추면 빨라짐) <output id="o-res"></output></span><input type="range" id="k-res" min="0.5" max="1" step="0.05"></label>
       <label for="k-aa"><span>계단 현상 줄이기 (0 끔 · 3 최대) <output id="o-aa"></output></span><input type="range" id="k-aa" min="0" max="3" step="1"></label>
-      <label for="k-pblur"><span>멀리 있는 그림 부드럽게 <output id="o-pblur"></output></span><input type="range" id="k-pblur" min="0" max="2" step="0.05"></label>
+      <label for="k-pblur"><span>그림 계단 현상 줄이기 (0 끔) <output id="o-pblur"></output></span><input type="range" id="k-pblur" min="0" max="2" step="0.05"></label>
       <p class="maphelp" id="perfInfo">움직일 때 화면 왼쪽 아래 숫자가 초당 프레임이에요.</p>
     </div>
     <div class="grp"><div class="gt">사실감 (0이면 꺼짐)</div>
@@ -204,11 +204,11 @@ const manager=new THREE.LoadingManager();
 manager.onProgress=(u,l,t)=>{document.getElementById('fill').style.width=(l/t*100)+'%';};
 manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true;};
 const tl=new THREE.TextureLoader(manager);
-const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;};
+const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; return t;};
 const b64=s=>{const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
 const b2t=(x,y,z)=>new THREE.Vector3(x,z,-y);
 
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true}); const MAXANI=Math.min(16,renderer.capabilities.getMaxAnisotropy()||8);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.info.autoReset=false;
 renderer.toneMapping=THREE.NoToneMapping; renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f6f6);
@@ -367,11 +367,16 @@ for(const p of L.paintings){
   const front=new THREE.MeshBasicMaterial({map:tex('/images/'+p.file),color:new THREE.Color(0.93,0.93,0.93)});
   front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
     sh.vertexShader='varying float vDist;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vDist=-mvPosition.z;');
-    // softer with distance: push the texture toward its blurrier mip levels as you walk away (stops the far-away pixel shimmer)
+    // texture anti-aliasing: 4 sub-pixel samples per pixel (rotated grid) so fine lines stop shimmering when far away,
+    // with a slightly sharper mip so it does not turn blurry up close. uPBlur = spread (0 = off)
     sh.fragmentShader='uniform float uWeave; uniform float uPBlur; uniform vec2 uSize; varying float vDist;\n'+sh.fragmentShader.replace('#include <map_fragment>',`
-      vec4 sampledDiffuseColor=texture2D(map,vMapUv,uPBlur*(0.25+smoothstep(1.5,7.0,vDist)));
+      vec4 sampledDiffuseColor;
+      if(uPBlur<0.01){ sampledDiffuseColor=texture2D(map,vMapUv); }
+      else { vec2 ddx=dFdx(vMapUv)*uPBlur, ddy=dFdy(vMapUv)*uPBlur; float b=-0.5;
+        sampledDiffuseColor=0.25*( texture2D(map,vMapUv+ddx*0.125+ddy*0.375,b)+texture2D(map,vMapUv-ddx*0.375+ddy*0.125,b)
+                                  +texture2D(map,vMapUv+ddx*0.375-ddy*0.125,b)+texture2D(map,vMapUv-ddx*0.125-ddy*0.375,b) ); }
       diffuseColor*=sampledDiffuseColor;
-      { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*1.6,0.0,1.0); // fades out where threads get smaller than a pixel
+      { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0); // fades out where threads get smaller than a pixel
         float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
   const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,0.04),[sLR,sLR,sTop,sBot,front,sLR]);
@@ -449,8 +454,8 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   medW:0.36,medD:0.36,torW:0.5,torD:0.5,
   tContrast:1.12,tBright:1.0,tDark:0.5,tRough:0.92,torH:TOR_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
-  res:1,aa:2,pblur:0.8,
-  rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.5,
+  res:1,aa:2,pblur:1,
+  rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M'};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 const KEY='medusa-room-tune-v2';
@@ -616,10 +621,15 @@ addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
 // drag to look
 let drag=null;
-canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch}; canvas.setPointerCapture(e.pointerId);});
-canvas.addEventListener('pointermove',e=>{if(!drag) return; // grab-and-pull: the spot you hold follows your finger/mouse
-  const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
-  walk.yaw=drag.yaw+(e.clientX-drag.x)*hf/canvas.clientWidth; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch+(e.clientY-drag.y)*vf/canvas.clientHeight)); dirty=true;});
+canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{if(!drag) return;
+  if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
+    const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
+    walk.yaw=drag.yaw+(e.clientX-drag.x)*hf/canvas.clientWidth; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch+(e.clientY-drag.y)*vf/canvas.clientHeight));
+  } else { // mouse: look around like a game (drag right = turn right)
+    const k=2.2/canvas.clientWidth*Math.PI*0.5;
+    walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); }
+  dirty=true;});
 const endDrag=()=>drag=null; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
