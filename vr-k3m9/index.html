@@ -123,6 +123,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <button data-v="torso">토르소 앞</button>
         <button data-v="room2">2번 방</button>
         <button data-v="mobile">모빌 아래</button>
+        <button data-v="guest">방명록</button>
         <button class="emb-only" id="orbitT" aria-pressed="false">돌려 보기</button>
         <button class="emb-only" id="openPanel">조절 창 열기</button>
       </div>
@@ -229,6 +230,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js';
+import { createGuestbook } from './guestbook.js';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -239,6 +241,7 @@ const tl=new THREE.TextureLoader(manager);
 const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; return t;};
 const b64=s=>{const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
 const b2t=(x,y,z)=>new THREE.Vector3(x,z,-y);
+let GB=null; // guestbook lectern (built with the exit corridor)
 let MOB=null, mobT=0; // HC-UAS hanging mobile in room 2
 
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true}); const MAXANI=Math.min(16,renderer.capabilities.getMaxAnisotropy()||8);
@@ -420,9 +423,10 @@ const GH=0.03, GD=0.02;
    const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}
 // exit from room 2's far corner: opening floor to ceiling, then a plain corridor (walls float 3 cm like the rooms)
 if(L.door2){const D=L.door2, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=-D.y0, zB=-D.y1, zc=(zA+zB)/2, wd=zA-zB;
-  const wallT=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867,0.863,0.855,THREE.SRGBColorSpace)});
-  const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66,0.655,0.64,THREE.SRGBColorSpace)});
-  const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93,0.928,0.92,THREE.SRGBColorSpace)});
+  // lights off in the exit corridor: only the guestbook keeps a soft pool of light
+  const DIM=0.42, wallT=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867*DIM,0.863*DIM,0.855*DIM,THREE.SRGBColorSpace)});
+  const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66*DIM,0.655*DIM,0.64*DIM,THREE.SRGBColorSpace)});
+  const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93*DIM*0.8,0.928*DIM*0.8,0.92*DIM*0.8,THREE.SRGBColorSpace)});
   const pl=(w,h,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
   pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,Math.PI);          // back wall continues
   pl(CL,H-GH,wallT,(x0+x1)/2,GH+(H-GH)/2,zB,0);                        // inner wall
@@ -433,7 +437,8 @@ if(L.door2){const D=L.door2, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=-D.y0, zB=-D.y
   reveal(CL+0.1,(x0-0.1+x1)/2,zA,Math.PI,0,GD); reveal(CL,(x0+x1)/2,zB,0,GD,0); reveal(wd,x1,zc,-Math.PI/2,GD,GD);
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
    const br=new THREE.Mesh(new THREE.BoxGeometry(D.x1-D.x0+0.004,H-y0,wd),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
-   br.position.set((D.x0+D.x1)/2,(H+y0)/2,zc); scene.add(br);}}
+   br.position.set((D.x0+D.x1)/2,(H+y0)/2,zc); scene.add(br);}
+  buildGuestbookCorner(x1,zc,wd);}
 // thin strips over the joints where two back walls meet, so the seam never shows
 for(const x of [DOOR&&DOORX?DOOR.x1:null, L.door2?L.door2.x0:null].filter(v=>v!==null)){
   const m=new THREE.Mesh(new THREE.PlaneGeometry(0.03,H-GH),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867,0.863,0.855,THREE.SRGBColorSpace)}));
@@ -950,7 +955,7 @@ const EYE=1.6, R=0.28;
 const walk={x:0,y:-6.2,yaw:0,pitch:-0.04}; // blender ground coords, yaw 0 = facing +y (into the room)
 const SKEY='medusa-room-state-v1'; let saved=null; try{saved=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
 function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){}}
-const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door2?[{x0:L.door2.x0-R-0.02,x1:L.door2.x1+(L.door2.len||4)-R,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
+const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door2?[{x0:L.door2.x0-R-0.02,x1:L.door2.x1+(L.door2.len||4)-R-0.55,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
 const okPos=(x,y)=>WALK.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
 function collide(nx,ny){
   if(!okPos(nx,ny)){ const ox=walk.x, oy=walk.y;
@@ -966,7 +971,7 @@ function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
   camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
 }
-const VIEWS={mobile:{x:9.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
+const VIEWS={guest:{x:15.75,y:-6.1,yaw:-Math.PI/2,pitch:-0.3},mobile:{x:9.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 function goView(k){
   const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
   document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
@@ -974,6 +979,42 @@ function goView(k){
 document.querySelectorAll('#views button[data-v]').forEach(b=>b.onclick=()=>goView(b.dataset.v));
 
 const keys=new Set();
+
+// ---------- guestbook: an open book on a lectern at the end of the exit corridor, the wall text above it ----------
+function buildGuestbookCorner(xEnd,zc,wd){
+  const g=new THREE.Group(); const px=xEnd-0.62; g.position.set(px,0,zc); scene.add(g);
+  const sRGB=(r,gg,b)=>new THREE.Color().setRGB(r,gg,b,THREE.SRGBColorSpace);
+  // pool of light on the floor
+  {const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d'), gr=x.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0,'rgba(255,246,228,.55)'); gr.addColorStop(.55,'rgba(255,246,228,.16)'); gr.addColorStop(1,'rgba(255,246,228,0)'); x.fillStyle=gr; x.fillRect(0,0,256,256);
+   const m=new THREE.Mesh(new THREE.PlaneGeometry(1.9,1.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})); m.rotation.x=-Math.PI/2; m.position.set(0,0.003,0); g.add(m);}
+  // lectern: a slim white pedestal with a sloped top
+  const PH=1.0, ped=new THREE.Mesh(new THREE.BoxGeometry(0.42,PH,0.52),new THREE.MeshBasicMaterial({color:sRGB(0.62,0.615,0.6)})); ped.position.y=PH/2; g.add(ped);
+  const side=new THREE.MeshBasicMaterial({color:sRGB(0.5,0.497,0.49)}); const edge=new THREE.Mesh(new THREE.BoxGeometry(0.4201,PH,0.0015),side); edge.position.set(0,PH/2,0.26); g.add(edge);
+  // the open book, tilted toward whoever walks up (visitors come from -x)
+  const top=new THREE.Group(); top.position.set(0,PH+0.035,0); top.rotation.z=0.24; g.add(top);
+  const c=document.createElement('canvas'); c.width=1024; c.height=720; const x=c.getContext('2d');
+  x.fillStyle='#b9b2a2'; x.fillRect(0,0,1024,720); for(let i=0;i<720;i+=3){x.fillStyle='rgba(0,0,0,.035)'; x.fillRect(0,i,1024,1);}           // linen cover
+  const pg=x.createLinearGradient(24,0,1000,0); pg.addColorStop(0,'#efe9da'); pg.addColorStop(.47,'#f6f1e4'); pg.addColorStop(.5,'#d9d1bd'); pg.addColorStop(.53,'#f6f1e4'); pg.addColorStop(1,'#efe9da');
+  x.fillStyle=pg; x.fillRect(26,22,972,676);
+  const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=4;
+  const bookM=new THREE.Mesh(new THREE.BoxGeometry(0.33,0.025,0.46),[side,side,new THREE.MeshBasicMaterial({map:tex}),side,side,side]);
+  bookM.material[2].map.center.set(0.5,0.5); bookM.material[2].map.rotation=Math.PI/2; top.add(bookM);
+  // wall text, light letters on the dark end wall
+  const t=document.createElement('canvas'); t.width=1400; t.height=420; const y=t.getContext('2d'); y.fillStyle='rgba(0,0,0,0)'; y.clearRect(0,0,1400,420);
+  y.textAlign='center'; y.fillStyle='rgba(232,228,220,.92)'; y.font='italic 400 92px Georgia,"Times New Roman",serif'; y.fillText('An Ongoing Exhibition',700,150);
+  y.font='400 40px Georgia,"Times New Roman",serif'; y.fillStyle='rgba(232,228,220,.72)'; y.fillText('This exhibition is continually updated.',700,250); y.fillText('New works will be added over time.',700,305);
+  const tt=new THREE.CanvasTexture(t); tt.colorSpace=THREE.SRGBColorSpace;
+  const plq=new THREE.Mesh(new THREE.PlaneGeometry(1.5,0.45),new THREE.MeshBasicMaterial({map:tt,transparent:true,depthWrite:false})); plq.rotation.y=-Math.PI/2; plq.position.set(xEnd-0.004,1.75,zc); scene.add(plq);
+  GB={g,ped,bookM,hits:[bookM,ped]};
+}
+const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onOpen:()=>{keys.clear(); dirty=true;},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
+const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
+function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=canvas.getBoundingClientRect();
+  _nv.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _ray.setFromCamera(_nv,camera); const hit=_ray.intersectObjects(GB.hits,false)[0];
+  if(!hit||hit.distance>7) return false;
+  const bb=new THREE.Box3().setFromObject(GB.bookM), pts=[]; for(const ix of [0,1]) for(const iy of [0,1]) for(const iz of [0,1]) pts.push(new THREE.Vector3(ix?bb.max.x:bb.min.x,iy?bb.max.y:bb.min.y,iz?bb.max.z:bb.min.z).project(camera));
+  const xs=pts.map(p=>(p.x+1)/2*r.width+r.left), ys=pts.map(p=>(1-p.y)/2*r.height+r.top);
+  guest.open({left:Math.min(...xs),top:Math.min(...ys),width:Math.max(4,Math.max(...xs)-Math.min(...xs)),height:Math.max(4,Math.max(...ys)-Math.min(...ys))}); return true;}
 stage.addEventListener('keydown',e=>{const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
@@ -988,7 +1029,7 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
     walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); }
   dirty=true;});
-const endDrag=()=>drag=null; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+const endDrag=e=>{ if(drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6) tryOpenGuestbook(e.clientX,e.clientY); drag=null;}; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
 if(matchMedia('(pointer:coarse)').matches) joy.hidden=false;
