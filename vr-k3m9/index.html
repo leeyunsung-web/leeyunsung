@@ -1152,6 +1152,15 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
   dirty=true;});
 const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
   if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY, touch=e.pointerType!=='mouse'; setTimeout(()=>{ if(!tryOpenGuestbook(x,y)&&tune.tapWalk!==false) tapMove(x,y); },0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
+// phones: two fingers — spread them to walk forward, pinch them to step back
+const TCH=new Map(); let pinch=null; canvas.style.touchAction='none';
+const tdist=()=>{ const [a,b]=[...TCH.values()]; return Math.hypot(a.x-b.x,a.y-b.y); };
+canvas.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; TCH.set(e.pointerId,{x:e.clientX,y:e.clientY}); try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+  if(TCH.size===2&&mode==='walk'){ pinch={d:tdist()}; drag=null; autoGo=null; } });
+canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) return; t.x=e.clientX; t.y=e.clientY; if(!pinch||TCH.size<2) return;
+  const d=tdist(), step=(d-pinch.d)/Math.max(200,Math.min(canvas.clientWidth,canvas.clientHeight))*3.2; pinch.d=d; // about 3 m for a full spread
+  [walk.x,walk.y]=collide(walk.x-Math.sin(walk.yaw)*step,walk.y+Math.cos(walk.yaw)*step); lastWork=null; dirty=true; });
+const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
 const lookYaw=(dx,dy)=>Math.atan2(-dx,dy); // camera yaw that looks along blender (dx,dy)
@@ -1351,8 +1360,17 @@ orbit.addEventListener('change',()=>{const p=camera.position; p.x=Math.max(MX0+0
 function resize(){const r=stage.getBoundingClientRect(); if(!r.width) return; renderer.setSize(r.width,r.height,false); composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(r.width,r.height); camera.aspect=r.width/r.height; camera.updateProjectionMatrix(); dirty=true;}
 new ResizeObserver(resize).observe(stage); resize();
 // on the homepage: open facing one wall head-on, a different wall each visit
+let startFit=null; // phone start: step back until the whole work fits the tall screen (done behind the loading screen)
+function startFitStep(){ const f=startFit, m=f.u.mesh; placeWalkCam(); camera.updateMatrixWorld();
+  if(fitsView(f.u)||f.k++>40){ startFit=null; return; } const bx=walk.x+f.nx*0.2, by=walk.y+f.ny*0.2; if(!canWalk(bx,by)){ startFit=null; return; }
+  walk.x=bx; walk.y=by; walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z))*0.9; dirty=true; }
 function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return false; const k=ks[Math.floor(Math.random()*ks.length)], it=WALLS[k].items;
   const cx=it.reduce((a,w)=>a+w.mesh.position.x,0)/it.length, cy=-it.reduce((a,w)=>a+w.mesh.position.z,0)/it.length;
+  { const asp=canvas.clientWidth/Math.max(1,canvas.clientHeight); if(asp&&asp<1){ // phone (tall screen): start in front of one work, framed for the phone
+      if(Math.abs(camera.aspect-asp)>0.01){ camera.aspect=asp; camera.updateProjectionMatrix(); }
+      const w0=it.reduce((b,w)=>!b||Math.hypot(w.mesh.position.x-cx,-w.mesh.position.z-cy)<Math.hypot(b.mesh.position.x-cx,-b.mesh.position.z-cy)?w:b,null), u=unitOf(w0), m=u.mesh;
+      const wx=m.position.x, wy=-m.position.z, wnx=Math.sin(m.rotation.y), wny=-Math.cos(m.rotation.y), st=standAt(wx,wy,Math.min(workDist(u),8),wnx,wny);
+      if(st){ [walk.x,walk.y]=st; startFit={u,nx:wnx,ny:wny,k:0}; walk.yaw=lookYaw(-wnx,-wny); walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(st[0]-wx,st[1]-wy))*0.9; setMode('walk'); placeWalkCam(); return true; } } }
   const room=ROOMS.find(r=>cx>r.x0-0.3&&cx<r.x1+0.3&&cy>r.y0-0.3&&cy<r.y1+0.3)||ROOMS[0], horiz=WALLS[k].u==='x';
   let nx=0,ny=0; if(horiz) ny=cy>(room.y0+room.y1)/2?-1:1; else nx=cx>(room.x0+room.x1)/2?-1:1;   // into the room
   const span=horiz?(room.y1-room.y0):(room.x1-room.x0), d=Math.min(4.2,span*0.45);
@@ -1363,7 +1381,7 @@ setInterval(saveState,1000); addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function loop(now){
-  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1;
+  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep();
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
   if(mode==='walk'){
     let fwd=0, strafe=0, turn=0;
