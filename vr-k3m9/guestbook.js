@@ -5,6 +5,7 @@ const PEN_CUR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 const CSS = `
 .gbx{position:absolute;inset:0;z-index:20;cursor:default;display:grid;place-items:center;padding:clamp(12px,4vw,40px);background:rgba(14,13,11,0);transition:background .55s ease;touch-action:none}
 .gbx.on{background:rgba(14,13,11,.72)}
+.gbx.full{position:fixed;inset:0;z-index:1000;padding:max(8px,env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) max(8px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .gbx.inline,.gbx.inline.on{position:relative;inset:auto;min-height:100%;background:transparent}
 .gbx .book{position:relative;width:min(100%,920px);background:repeating-linear-gradient(0deg,rgba(0,0,0,.025) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 1px,transparent 1px 3px),#e6dfcf;
   border-radius:6px 6px 8px 8px;padding:1.2%;box-shadow:0 24px 60px rgba(0,0,0,.45),0 2px 0 #d9d0bc inset;user-select:none;-webkit-user-select:none;transform-origin:50% 50%;
@@ -32,6 +33,7 @@ const b64d = s => { const t = atob(s), u = new Uint8Array(t.length); for (let i 
 const cl = v => Math.min(1, Math.max(0, v));
 const packStroke = s => ({ p: b64e(Uint16Array.from(s.pts.flatMap(([x, y]) => [Math.round(cl(x) * 65535), Math.round(cl(y) * 65535)]))) });
 const unpack = arr => (arr || []).map(s => { const q = b64d(s.p), pts = []; for (let i = 0; i < q.length; i += 2) pts.push([q[i] / 65535, q[i + 1] / 65535]); return { pts, p: s.p }; });
+const PHONE = () => matchMedia('(pointer:coarse)').matches && Math.min(innerWidth, innerHeight) < 760;
 const MAXP = 10, BOOK = 100; // pages one visitor can fill; pages in a fresh book
 function strokePath(g, s, W) { const p = s.pts, H = g.canvas.height; if (!p.length) return; g.strokeStyle = g.fillStyle = INK; g.lineWidth = Math.max(1, PEN_W * W * 0.0042); g.lineCap = 'round'; g.lineJoin = 'round';
   if (p.length < 3) { g.beginPath(); g.arc(p[0][0] * W, p[0][1] * H, g.lineWidth / 2, 0, 7); g.fill(); return; }
@@ -92,7 +94,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     return d;
   }
   // fit the book inside the room view (not the window)
-  function fit() { if (!book) return; const cs = getComputedStyle(wrap), pw = host.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), ph = host.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  function fit() { if (!book) return; const box = wrap.classList.contains('full') ? wrap : host, cs = getComputedStyle(wrap), pw = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), ph = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const ar = (single ? PAGE_AR : PAGE_AR * 2), w = Math.min(pw, (ph * 0.975) * ar, single ? 560 : 980); book.style.width = Math.max(120, w) + 'px'; }
   let cPrev = null, cNext = null;
   function render() {
@@ -173,19 +175,21 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     } catch (e) { loaded = true; render(); }
   }
 
-  function layout() { if (!book || busy) return; const s = host.clientWidth < 620; if (s !== single) { single = s; if (!single) cur -= cur % 2; } render(); }
+  function layout() { if (!book || busy) return; const s = false; /* always the two-page spread */ if (s !== single) { single = s; if (!single) cur -= cur % 2; } render(); }
   function open(fromRect) {
     if (isOpen) return; isOpen = true; onOpen && onOpen();
     wrap = document.createElement('div'); wrap.className = 'gbx'; wrap.innerHTML = '<div class="book"><div class="spread"></div></div>';
-    book = wrap.firstChild; spreadEl = book.firstChild; cPrev = cNext = null; host.appendChild(wrap);
-    single = host.clientWidth < 620; pages(); cur = mineStart - (single ? 0 : mineStart % 2); render();
+    book = wrap.firstChild; spreadEl = book.firstChild; cPrev = cNext = null;
+    if (!inline && PHONE()) wrap.classList.add('full'); // phones: the open book fills the screen so both pages read well
+    host.appendChild(wrap);
+    single = false; pages(); cur = mineStart - (single ? 0 : mineStart % 2); render();
     // grow out of the book on the pedestal
     const hb = host.getBoundingClientRect(), bb = book.getBoundingClientRect();
     if (fromRect && bb.width) { const sx = Math.max(0.04, fromRect.width / bb.width), cx = fromRect.left + fromRect.width / 2 - (bb.left + bb.width / 2), cy = fromRect.top + fromRect.height / 2 - (bb.top + bb.height / 2);
       book.style.transition = 'none'; book.style.transform = `translate(${cx}px,${cy}px) scale(${sx})`; book.style.opacity = '0.2'; book.getBoundingClientRect(); book.style.transition = ''; }
     requestAnimationFrame(() => { wrap.classList.add('on'); book.style.transform = ''; book.style.opacity = '1'; });
     if (inline) wrap.classList.add('inline'); else wrap.addEventListener('pointerdown', e => { if (!book.contains(e.target)) { e.preventDefault(); close(); } });
-    ro = new ResizeObserver(layout); ro.observe(host);
+    ro = new ResizeObserver(layout); ro.observe(host); ro.observe(wrap);
     load(false);
     void hb;
   }
