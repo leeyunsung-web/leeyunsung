@@ -1271,12 +1271,15 @@ function moveJoy(e){const r=joy.getBoundingClientRect(); let x=(e.clientX-r.left
 
 // captions near works
 const capEl=document.getElementById('cap');
+// is the work on this side of the wall? (a straight line to it, stopping just short of the wall, stays inside the walkable space)
+function sameRoom(pos){ const tx=pos.x, ty=-pos.z, dx=tx-walk.x, dy=ty-walk.y, d=Math.hypot(dx,dy); if(d<0.5) return true; const e=Math.max(0,d-0.45), n=Math.ceil(e/0.1);
+  for(let i=1;i<=n;i++){ const t=i/n*e/d; if(!okPos(walk.x+dx*t,walk.y+dy*t)) return false; } return true; }
 function updateCaption(){
   if(mode!=='walk'){ if(lastCap){lastCap=''; showCap('');} return;}
   const p=b2t(walk.x,walk.y,EYE); const f=new THREE.Vector3(); camera.getWorldDirection(f);
   let best=null,bd=1e9;
   for(const w of [...works,...sculptCap.filter(c=>c.s.caption).map(c=>({pos:c.pos,caption:c.s.caption}))]){
-    const v=w.pos.clone().sub(p); const d=v.length(); if(d>3.2) continue; v.normalize(); if(v.dot(f)<0.9) continue; if(d<bd){bd=d;best=w;}
+    const v=w.pos.clone().sub(p); const d=v.length(); if(d>3.2) continue; v.normalize(); if(v.dot(f)<0.9) continue; if(d<bd&&sameRoom(w.pos)){bd=d;best=w;}
   }
   const c=best?best.caption:''; if(c!==lastCap){lastCap=c; showCap(c);}
 }
