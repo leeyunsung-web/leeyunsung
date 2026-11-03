@@ -346,7 +346,7 @@ const GH=0.03, GD=0.02;
    g.traverse(o=>o.layers.set(1));}; // layer 1: seen by the camera, left out of the floor mirror
  // local +x of the left wall points to the front wall, of the right wall to the entrance wall
  reveal(LL,-W/2,0,Math.PI/2,GD,GD); reveal(W,0,-LL/2,0,GD,GD); // room 1: all walls float
- reveal(W,0,LL/2,Math.PI,GD,GD); // room 1 entrance wall
+ reveal(W,0,LL/2,Math.PI,GD,GD+(DOOR&&DOORX&&DOOR.y0<=-LL/2+1e-3?0.1:0)); // room 1 entrance wall (runs on past the doorway when it opens into the corner)
  if(DOOR&&DOORX){ // doorway in room 1's right wall near the entrance corner, opening into room 2
    const zN=-DOOR.y1, zS=-DOOR.y0;            // three.js z of the doorway's two jambs (zN < zS)
    const la=zN+LL/2, ca=(-LL/2+zN)/2, lb=LL/2-zS, cb=(zS+LL/2)/2;
@@ -357,11 +357,13 @@ const GH=0.03, GD=0.02;
  } else reveal(LL,W/2,0,-Math.PI/2,GD,GD);
  // fill the empty column where two wall boxes meet at each corner (it showed as a thin light line)
  const wallC=new THREE.Color().setRGB(0.86,0.858,0.852,THREE.SRGBColorSpace);
- for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],[W/2+0.05,LL/2+0.05,GH],...(ROOMS[1]?[[ROOMS[1].x1+0.05,-ROOMS[1].y1-0.05,GH],[ROOMS[1].x1+0.05,-ROOMS[1].y0+0.05,GH]]:[])]){
+ for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],...(DOOR&&DOORX&&DOOR.y0<=-LL/2+1e-3?[]:[[W/2+0.05,LL/2+0.05,GH]]),...(ROOMS[1]?[[ROOMS[1].x1+0.05,-ROOMS[1].y1-0.05,GH],[ROOMS[1].x1+0.05,-ROOMS[1].y0+0.05,GH]]:[])]){
    const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-y0,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(cx,y0+(H-y0)/2,cz); scene.add(m);}
  if(DOOR&&DOORX){ // inside faces of the doorway (two jambs and the head), same wall white
    const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=DOOR.x1-DOOR.x0, dx=(DOOR.x0+DOOR.x1)/2, zN=-DOOR.y1, zS=-DOOR.y0;
-   for(const z of [zN,zS]){const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,DOOR.h-GH),jm); j.position.set(dx,GH+(DOOR.h-GH)/2,z); scene.add(j);}
+   for(const z of [zN,zS]){ if(Math.abs(z)>=LL/2-1e-3) continue; // the doorway runs into the corner: the back wall continues there, no jamb
+     const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,DOOR.h-GH),jm); j.position.set(dx,GH+(DOOR.h-GH)/2,z); scene.add(j);}
+   if(Math.abs(zS)>=LL/2-1e-3){const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(DOOR.x1,H/2,LL/2+0.05); scene.add(bk);} // backing where the two back walls meet, so their seam never shows light
    const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}}
 const BlurReflectorShader={name:'BlurReflectorShader',uniforms:{color:{value:null},tDiffuse:{value:null},textureMatrix:{value:null},uBlur:{value:0}},
   vertexShader:Reflector.ReflectorShader.vertexShader,
