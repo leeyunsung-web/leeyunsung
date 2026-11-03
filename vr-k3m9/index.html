@@ -319,7 +319,7 @@ for(let s of L.baked){
   if(s.name.startsWith('G_Soffit')||s.name.startsWith('G2_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
     const P=s.pos, col=new Float32Array(P.length), C=new THREE.Color();
     for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0,ys=[];for(let k=0;k<4;k++){const v=f*4+k;cx+=P[v*3]/4;cy+=P[v*3+1]/4;cz+=P[v*3+2]/4;ys.push(P[v*3+1]);}
-      const inDoor=DOOR&&DOORX&&DOOR.h>=H-1e-3&&cx>=DOOR.x0-0.02&&cx<=DOOR.x1+0.02; // with the opening up to the ceiling, the bands' backs on the shared wall line show through it
+      const inDoor=(DOOR&&DOORX&&DOOR.h>=H-1e-3&&cx>=DOOR.x0-0.02&&cx<=DOOR.x1+0.02)||(L.door2&&cx>=L.door2.x0-0.02&&cx<=L.door2.x1+0.02); // with the opening up to the ceiling, the bands' backs on the shared wall line show through it
       const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=inRoom3(cx,cz,1e-3)||inDoor;
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
@@ -354,11 +354,11 @@ const GH=0.03, GD=0.02;
    reveal(la,W/2,ca,-Math.PI/2,0,GD); reveal(lb,W/2,cb,-Math.PI/2,GD,0);      // room 1 side (local +x = +z)
    reveal(la,DOOR.x1,ca,Math.PI/2,GD,0); reveal(lb,DOOR.x1,cb,Math.PI/2,0,GD); // room 2 side (local +x = -z)
    const r2=ROOMS[1], xc=(r2.x0+r2.x1)/2, w2=r2.x1-r2.x0;
-   reveal(w2,xc,-r2.y1,0,GD,GD); reveal(w2,xc,-r2.y0,Math.PI,GD,GD); reveal(r2.y1-r2.y0,r2.x1,-(r2.y0+r2.y1)/2,-Math.PI/2,GD,GD);
+   reveal(w2,xc,-r2.y1,0,GD,GD); reveal(w2,xc,-r2.y0,Math.PI,GD+(L.door2?0.1:0),GD); if(L.door2){const y0=L.door2.y1; reveal(r2.y1-y0,r2.x1,-(r2.y1+y0)/2,-Math.PI/2,GD,0);} else reveal(r2.y1-r2.y0,r2.x1,-(r2.y0+r2.y1)/2,-Math.PI/2,GD,GD);
  } else reveal(LL,W/2,0,-Math.PI/2,GD,GD);
  // fill the empty column where two wall boxes meet at each corner (it showed as a thin light line)
  const wallC=new THREE.Color().setRGB(0.86,0.858,0.852,THREE.SRGBColorSpace);
- for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],...(DOOR&&DOORX&&DOOR.y0<=-LL/2+1e-3?[]:[[W/2+0.05,LL/2+0.05,GH]]),...(ROOMS[1]?[[ROOMS[1].x1+0.05,-ROOMS[1].y1-0.05,GH],[ROOMS[1].x1+0.05,-ROOMS[1].y0+0.05,GH]]:[])]){
+ for(const [cx,cz,y0] of [[-W/2-0.05,-LL/2-0.05,GH],[W/2+0.05,-LL/2-0.05,GH],[-W/2-0.05,LL/2+0.05,GH],...(DOOR&&DOORX&&DOOR.y0<=-LL/2+1e-3?[]:[[W/2+0.05,LL/2+0.05,GH]]),...(ROOMS[1]?[[ROOMS[1].x1+0.05,-ROOMS[1].y1-0.05,GH],...(L.door2?[]:[[ROOMS[1].x1+0.05,-ROOMS[1].y0+0.05,GH]])]:[])]){
    const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-y0,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(cx,y0+(H-y0)/2,cz); scene.add(m);}
  if(DOOR&&DOORX){ // inside faces of the doorway (two jambs and the head), same wall white
    const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=DOOR.x1-DOOR.x0, dx=(DOOR.x0+DOOR.x1)/2, zN=-DOOR.y1, zS=-DOOR.y0;
@@ -369,7 +369,28 @@ const GH=0.03, GD=0.02;
      const sb=L.baked.find(b=>b.name==='G_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
      const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
      br.position.set(dx,(H+y0)/2,(zN+zS)/2); scene.add(br); }
-   const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}}
+   const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}
+// exit from room 2's far corner: opening floor to ceiling, then a plain corridor (walls float 3 cm like the rooms)
+if(L.door2){const D=L.door2, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=-D.y0, zB=-D.y1, zc=(zA+zB)/2, wd=zA-zB;
+  const wallT=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867,0.863,0.855,THREE.SRGBColorSpace)});
+  const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66,0.655,0.64,THREE.SRGBColorSpace)});
+  const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93,0.928,0.92,THREE.SRGBColorSpace)});
+  const pl=(w,h,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
+  pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,Math.PI);          // back wall continues
+  pl(CL,H-GH,wallT,(x0+x1)/2,GH+(H-GH)/2,zB,0);                        // inner wall
+  pl(wd,H-GH,wallT,x1,GH+(H-GH)/2,zc,-Math.PI/2);                       // end wall
+  pl(CL+0.1,wd,flo,(x0-0.1+x1)/2,0.001,zc,0,-Math.PI/2);               // floor
+  pl(CL+0.1,wd,ceilM,(x0-0.1+x1)/2,H,zc,0,Math.PI/2);                  // ceiling
+  pl(0.1,H-GH,wallT,(D.x0+D.x1)/2,GH+(H-GH)/2,zB,0);                   // jamb face
+  reveal(CL+0.1,(x0-0.1+x1)/2,zA,Math.PI,0,GD); reveal(CL,(x0+x1)/2,zB,0,GD,0); reveal(wd,x1,zc,-Math.PI/2,GD,GD);
+  {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
+   const br=new THREE.Mesh(new THREE.BoxGeometry(D.x1-D.x0+0.004,H-y0,wd),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
+   br.position.set((D.x0+D.x1)/2,(H+y0)/2,zc); scene.add(br);}}
+// thin strips over the joints where two back walls meet, so the seam never shows
+for(const x of [DOOR&&DOORX?DOOR.x1:null, L.door2?L.door2.x0:null].filter(v=>v!==null)){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(0.03,H-GH),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867,0.863,0.855,THREE.SRGBColorSpace)}));
+  m.rotation.y=Math.PI; m.position.set(x,GH+(H-GH)/2,LL/2-0.0008); scene.add(m);}
+}
 const BlurReflectorShader={name:'BlurReflectorShader',uniforms:{color:{value:null},tDiffuse:{value:null},textureMatrix:{value:null},uBlur:{value:0}},
   vertexShader:Reflector.ReflectorShader.vertexShader,
   fragmentShader:`uniform vec3 color; uniform sampler2D tDiffuse; uniform float uBlur; varying vec4 vUv;
@@ -754,7 +775,7 @@ const EYE=1.6, R=0.28;
 const walk={x:0,y:-6.2,yaw:0,pitch:-0.04}; // blender ground coords, yaw 0 = facing +y (into the room)
 const SKEY='medusa-room-state-v1'; let saved=null; try{saved=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
 function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){}}
-const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
+const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door2?[{x0:L.door2.x0-R-0.02,x1:L.door2.x1+(L.door2.len||4)-R,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
 const okPos=(x,y)=>WALK.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
 function collide(nx,ny){
   if(!okPos(nx,ny)){ const ox=walk.x, oy=walk.y;
