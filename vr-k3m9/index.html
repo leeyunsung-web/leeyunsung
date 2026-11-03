@@ -56,7 +56,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .load .fill{height:100%;width:0;background:var(--accent)}
 .joy{position:absolute;left:18px;bottom:64px;width:108px;height:108px;border-radius:50%;background:color-mix(in srgb,var(--panel) 70%,transparent);border:1px solid var(--line);touch-action:none}
 .joy i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--fg);opacity:.55}
-.tune{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px 22px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tune{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 22px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
 .tune .tt{grid-column:1/-1;font-size:12px;letter-spacing:.05em;color:var(--muted);font-weight:500}
 .tune .grp{display:flex;flex-direction:column;gap:10px;min-width:0}
 .tune .gt{font-size:13px;font-weight:600;padding-bottom:4px;border-bottom:1px solid var(--line)}
@@ -80,7 +80,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .tune button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer;white-space:nowrap}
 .keys{color:var(--muted);font-size:12px;line-height:1.6;margin:0}
 .keys kbd{font:11px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 5px;background:var(--panel);color:var(--fg)}
-@media (max-width:720px){.tune{grid-template-columns:minmax(0,1fr)}.hint{display:none}.cap{font-size:11px;padding:5px 8px;max-width:72%}.cap b{font-size:12px}.chip{display:none}}
+@media (max-width:720px){.tune{grid-template-columns:minmax(0,1fr)}.hint{display:none}.cap{font-size:11px;padding:5px 8px;max-width:72%}.cap b{font-size:12px}}
 </style>
 </head>
 <body>
@@ -158,6 +158,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label for="k-paintY"><span>그림 높이 (중심, 모든 벽) <output id="o-paintY"></output></span><input type="range" id="k-paintY" min="1.0" max="2.6" step="0.01"></label>
       <label for="k-shadow"><span>그림자 진하기 <output id="o-shadow"></output></span><input type="range" id="k-shadow" min="0" max="1.5" step="0.05"></label>
     </div>
+    <div class="grp"><div class="gt">화질·속도</div>
+      <label for="k-res"><span>화면 해상도 (낮추면 빨라짐) <output id="o-res"></output></span><input type="range" id="k-res" min="0.5" max="1" step="0.05"></label>
+      <label for="k-aa"><span>계단 현상 줄이기 (0 끔 · 3 최대) <output id="o-aa"></output></span><input type="range" id="k-aa" min="0" max="3" step="1"></label>
+      <label for="k-pblur"><span>멀리 있는 그림 부드럽게 <output id="o-pblur"></output></span><input type="range" id="k-pblur" min="0" max="2" step="0.05"></label>
+      <p class="maphelp" id="perfInfo">움직일 때 화면 왼쪽 아래 숫자가 초당 프레임이에요.</p>
+    </div>
     <div class="grp"><div class="gt">사실감 (0이면 꺼짐)</div>
       <label for="k-rblur"><span>바닥 반사 흐림 <output id="o-rblur"></output></span><input type="range" id="k-rblur" min="0" max="1" step="0.02"></label>
       <label for="k-sshadow"><span>조각이 좌대에 드리우는 그림자 <output id="o-sshadow"></output></span><input type="range" id="k-sshadow" min="0" max="0.9" step="0.02"></label>
@@ -198,22 +204,23 @@ const manager=new THREE.LoadingManager();
 manager.onProgress=(u,l,t)=>{document.getElementById('fill').style.width=(l/t*100)+'%';};
 manager.onLoad=()=>{document.getElementById('load').hidden=true; dirty=true;};
 const tl=new THREE.TextureLoader(manager);
-const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; return t;};
+const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;};
 const b64=s=>{const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
 const b2t=(x,y,z)=>new THREE.Vector3(x,z,-y);
 
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.info.autoReset=false;
 renderer.toneMapping=THREE.NoToneMapping; renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f6f6);
 const camera=new THREE.PerspectiveCamera(58,16/9,0.05,60);
 camera.rotation.order='YXZ'; camera.layers.enable(1);
 // ---------- realism: post-processing chain (MSAA target -> light bloom -> output -> vignette/grain)
-const uBlur={value:0}, uWeave={value:0}, COARSE=matchMedia('(pointer:coarse)').matches;
+const uBlur={value:0}, uWeave={value:0}, uPBlur={value:0.8}, COARSE=matchMedia('(pointer:coarse)').matches;
 const composer=new EffectComposer(renderer,new THREE.WebGLRenderTarget(16,16,{type:THREE.HalfFloatType,samples:4}));
 composer.addPass(new RenderPass(scene,camera));
 const uAO={value:0.8}; // strength of the sculpture's baked crevice shading (ambient occlusion from Blender)
 const bloom=new UnrealBloomPass(new THREE.Vector2(16,16),0.3,0.6,0.92); composer.addPass(bloom);
+{const s0=bloom.setSize.bind(bloom); bloom.setSize=(w,h)=>s0(Math.max(1,w>>1),Math.max(1,h>>1));} // bloom is soft anyway: half resolution is plenty
 composer.addPass(new OutputPass());
 const lens=new ShaderPass({uniforms:{tDiffuse:{value:null},uVig:{value:0},uGrain:{value:0},uTime:{value:0}},
   vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
@@ -222,6 +229,15 @@ const lens=new ShaderPass({uniforms:{tDiffuse:{value:null},uVig:{value:0},uGrain
     void main(){vec4 c=texture2D(tDiffuse,vUv); vec2 d=vUv-0.5; float v=1.0-uVig*0.55*smoothstep(0.25,0.85,length(d*vec2(1.0,0.8)));
       float g=(h(vUv*vec2(1733.0,977.0)+fract(uTime))-0.5)*uGrain*0.07; gl_FragColor=vec4(c.rgb*v+g,c.a);}`});
 composer.addPass(lens);
+// quality: render scale, multisample level, reflection size; shadow maps redraw only when something moved
+const MAXS=renderer.capabilities.maxSamples||4; let qKey='';
+function setQuality(){
+  const pr=Math.min(devicePixelRatio,2)*(+tune.res||1), samples=Math.min([0,2,4,8][Math.round(tune.aa)]??4,MAXS), rr=tune.rblur>0.2?512:1024;
+  const k=pr+'|'+samples+'|'+rr; if(k===qKey) return; qKey=k;
+  renderer.setPixelRatio(pr); composer.setPixelRatio(pr);
+  for(const rt of [composer.renderTarget1,composer.renderTarget2]){ if(rt.samples!==samples){rt.samples=samples; rt.dispose();} }
+  if(typeof mir!=='undefined') mir.getRenderTarget().setSize(rr,rr);
+  resize(); renderer.shadowMap.needsUpdate=true;}
 const orbit=new OrbitControls(camera,canvas); orbit.enableDamping=true; orbit.dampingFactor=0.1; orbit.maxPolarAngle=Math.PI*0.62; orbit.enabled=false;
 
 const L=await (await fetch('live/layout.json')).json();
@@ -349,8 +365,12 @@ const works=[], shadowMats=[];
 const wallOf=p=>p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R';
 for(const p of L.paintings){
   const front=new THREE.MeshBasicMaterial({map:tex('/images/'+p.file),color:new THREE.Color(0.93,0.93,0.93)});
-  front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
-    sh.fragmentShader='uniform float uWeave; uniform vec2 uSize;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+  front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
+    sh.vertexShader='varying float vDist;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vDist=-mvPosition.z;');
+    // softer with distance: push the texture toward its blurrier mip levels as you walk away (stops the far-away pixel shimmer)
+    sh.fragmentShader='uniform float uWeave; uniform float uPBlur; uniform vec2 uSize; varying float vDist;\n'+sh.fragmentShader.replace('#include <map_fragment>',`
+      vec4 sampledDiffuseColor=texture2D(map,vMapUv,uPBlur*(0.25+smoothstep(1.5,7.0,vDist)));
+      diffuseColor*=sampledDiffuseColor;
       { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*1.6,0.0,1.0); // fades out where threads get smaller than a pixel
         float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
@@ -414,7 +434,7 @@ const tg=new THREE.Group(); scene.add(tg);
 {const tm=meshFrom(dt,resin); tm.position.z=-3.5; tm.castShadow=true; tg.add(tm);} // world-space mesh re-centred on its pedestal (blender y=-3.5); faces the Medusa (+y)
 const sculptCap=L.sculptures.map(s=>({s,pos:b2t(s.x,s.y,s.z)}));
 // soft cast shadow of each sculpture onto its pedestal top, from the ceiling light (the light itself adds no brightness)
-renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap; renderer.shadowMap.autoUpdate=false; // static: redrawn in applyTune
 function sculptShadow(){
   const L1=new THREE.DirectionalLight(0xffffff,0); L1.castShadow=true; const sc=L1.shadow;
   sc.mapSize.set(1024,1024); sc.radius=10; sc.blurSamples=16; sc.bias=-0.0004;
@@ -429,6 +449,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   medW:0.36,medD:0.36,torW:0.5,torD:0.5,
   tContrast:1.12,tBright:1.0,tDark:0.5,tRough:0.92,torH:TOR_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
+  res:1,aa:2,pblur:0.8,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.5,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M'};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -438,7 +459,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null');
   if(s) tune={...DEF,...s};
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','rblur','sshadow','ao','bloom','vig','grain','weave'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
@@ -460,6 +481,7 @@ function applyTune(){
   [[SSH[0],tune.medX,tune.medY,tune.medR,tune.medW,tune.medD,mTop],[SSH[1],tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop]].forEach(([o,x,y,r,w,d,top])=>{
     o.rcv.position.set(x,top+0.0012,-y); o.rcv.rotation.y=-r*Math.PI/180; o.rcv.scale.set(w,d,1); o.rcv.material.opacity=tune.sshadow;
     o.L1.position.set(x-0.35,top+2.6,-y+0.55); o.L1.target.position.set(x,top,-y); o.L1.target.updateMatrixWorld();});
+  renderer.shadowMap.needsUpdate=true;
   place(P2,tune.torX,tune.torY,tune.torR,tune.torW,tune.torD,tTop,0.42,0.36);
   // walking collision follows the (rotated) pedestal footprints; R = body radius 0.28 m
   blocks.length=0;
@@ -481,6 +503,7 @@ function applyTune(){
   PD.getElementById('k-bob').checked=!!tune.bob;
   if(applyTune.live && mode==='walk'){camera.fov=tune.fov; camera.updateProjectionMatrix();}
   if(floorMat) floorMat.opacity=1-tune.floor; mir.visible=tune.floor>0.001;
+  uPBlur.value=tune.pblur; setQuality();
   uBlur.value=tune.rblur; uAO.value=tune.ao; bloom.enabled=tune.bloom>0.001; bloom.strength=tune.bloom*1.2;
   lens.uniforms.uVig.value=tune.vig; lens.uniforms.uGrain.value=tune.grain; uWeave.value=tune.weave;
   for(const [k,id] of Object.entries(ui)){PD.getElementById(id).value=tune[k]; PD.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
@@ -641,7 +664,7 @@ function resize(){const r=stage.getBoundingClientRect(); if(!r.width) return; re
 new ResizeObserver(resize).observe(stage); resize();
 if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
 setInterval(saveState,1000); addEventListener('pagehide',saveState);
-const fpsEl=document.getElementById('fps'); let fc=0, ft=performance.now(), last=performance.now();
+const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function loop(now){
   requestAnimationFrame(loop);
@@ -664,8 +687,11 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(!(fwd||strafe)&&bobA>0){bobA=Math.max(0,bobA-dt*3); dirty=true;}
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
   } else if(orbit.update()) dirty=true;
-  if(dirty||!reduce){ camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; composer.render(); dirty=false; fc++; }
-  if(now-ft>1000){fpsEl.textContent=Math.round(fc*1000/(now-ft))+' fps'; fc=0; ft=now;}
+  if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
+  if(now-ft>1000){ const idle=now-moved>600;
+    fpsEl.textContent=idle?'멈춤 (움직이면 측정)':Math.round(fc*1000/(now-ft))+' fps · '+(fc?(fms/fc).toFixed(1):'–')+' ms';
+    try{const pi=PD.getElementById('perfInfo'); if(pi) pi.textContent='한 장면 그리기 '+lastCalls+'회 · 삼각형 '+Math.round(lastTris/1000)+'천 개 · 해상도 '+renderer.getPixelRatio().toFixed(2)+'배';}catch(e){}
+    fc=0; fms=0; ft=now;}
 })(performance.now());
 </script>
 
