@@ -169,6 +169,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp"><div class="gt">토르소 조각</div>
       <label for="k-tContrast"><span>대비 <output id="o-tContrast"></output></span><input type="range" id="k-tContrast" min="0.6" max="2.4" step="0.05"></label>
       <label for="k-tBright"><span>밝기 <output id="o-tBright"></output></span><input type="range" id="k-tBright" min="0.5" max="1.3" step="0.02"></label>
+      <label for="k-tWhite"><span>흰색 느낌 (회색 빼기, 그늘은 남김) <output id="o-tWhite"></output></span><input type="range" id="k-tWhite" min="0" max="1" step="0.02"></label>
       <label for="k-tDark"><span>어두운 부분만 더 어둡게 <output id="o-tDark"></output></span><input type="range" id="k-tDark" min="0" max="1.5" step="0.05"></label>
       <label for="k-tDeepR"><span>가장 어두운 영역 범위 <output id="o-tDeepR"></output></span><input type="range" id="k-tDeepR" min="0.05" max="0.9" step="0.01"></label>
       <label for="k-tDeep"><span>가장 어두운 영역 어둡게 <output id="o-tDeep"></output></span><input type="range" id="k-tDeep" min="0" max="1" step="0.01"></label>
@@ -583,11 +584,11 @@ const RESIN=new THREE.Color(0xf7f7f7); // neutral matte white resin, matched to 
 const resin=new THREE.MeshStandardMaterial({color:RESIN.clone(),roughness:0.92,metalness:0,envMap:env,envMapIntensity:0.7});
 const uC2={value:1.0};
 // soft ceiling key light, applied to the resin only (world dir -> view space each frame)
-const KEYW=b2t(-0.25,0.35,1).normalize(), uKeyDir={value:new THREE.Vector3()}, uKey={value:0.45}, uDark={value:0.5}, uDeep={value:0}, uDeepR={value:0.4};
+const KEYW=b2t(-0.25,0.35,1).normalize(), uKeyDir={value:new THREE.Vector3()}, uKey={value:0.45}, uDark={value:0.5}, uDeep={value:0}, uDeepR={value:0.4}, uWhite={value:0.35};
 resin.onBeforeCompile=sh=>{sh.uniforms.uAO=uAO;
   sh.vertexShader='attribute float ao; varying float vAO;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n vAO=ao;');
-  sh.uniforms.uContrast=uC2; sh.uniforms.uKeyDir=uKeyDir; sh.uniforms.uKey=uKey; sh.uniforms.uDark=uDark; sh.uniforms.uDeep=uDeep; sh.uniforms.uDeepR=uDeepR;
-  sh.fragmentShader='uniform float uContrast; uniform vec3 uKeyDir; uniform float uKey; uniform float uDark; uniform float uDeep; uniform float uDeepR; uniform float uAO; varying float vAO;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','outgoingLight += diffuseColor.rgb*uKey*(0.5+0.5*dot(normal,uKeyDir))*(0.5+0.5*dot(normal,uKeyDir));\n outgoingLight*=mix(1.0,sqrt(vAO),uAO);\n#include <opaque_fragment>\n gl_FragColor.rgb=clamp((gl_FragColor.rgb-vec3(0.72))*uContrast+vec3(0.72),0.0,1.0);\n float lum=dot(gl_FragColor.rgb,vec3(0.2126,0.7152,0.0722));\n gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(lum),0.9);\n gl_FragColor.rgb*=1.0-uDark*0.45*smoothstep(0.9,0.45,lum);\n float lum2=dot(gl_FragColor.rgb,vec3(0.2126,0.7152,0.0722)); gl_FragColor.rgb*=1.0-uDeep*0.9*smoothstep(uDeepR,uDeepR*0.3,lum2*mix(1.0,vAO,0.5));');};
+  sh.uniforms.uContrast=uC2; sh.uniforms.uKeyDir=uKeyDir; sh.uniforms.uKey=uKey; sh.uniforms.uDark=uDark; sh.uniforms.uDeep=uDeep; sh.uniforms.uDeepR=uDeepR; sh.uniforms.uWhite=uWhite;
+  sh.fragmentShader='uniform float uWhite; uniform float uContrast; uniform vec3 uKeyDir; uniform float uKey; uniform float uDark; uniform float uDeep; uniform float uDeepR; uniform float uAO; varying float vAO;\n'+sh.fragmentShader.replace('#include <opaque_fragment>','outgoingLight += diffuseColor.rgb*uKey*(0.5+0.5*dot(normal,uKeyDir))*(0.5+0.5*dot(normal,uKeyDir));\n outgoingLight*=mix(1.0,sqrt(vAO),uAO);\n#include <opaque_fragment>\n gl_FragColor.rgb=clamp((gl_FragColor.rgb-vec3(0.72))*uContrast+vec3(0.72),0.0,1.0);\n float lum=dot(gl_FragColor.rgb,vec3(0.2126,0.7152,0.0722));\n gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(lum),0.9);\n gl_FragColor.rgb*=1.0-uDark*0.45*smoothstep(0.9,0.45,lum);\n float lum2=dot(gl_FragColor.rgb,vec3(0.2126,0.7152,0.0722)); gl_FragColor.rgb*=1.0-uDeep*0.9*smoothstep(uDeepR,uDeepR*0.3,lum2*mix(1.0,vAO,0.5));\n gl_FragColor.rgb=vec3(1.0)-(vec3(1.0)-gl_FragColor.rgb)*(1.0-uWhite*0.6); // lift the grey toward white resin, shading keeps its shape');};
 const updKey=()=>uKeyDir.value.copy(KEYW).transformDirection(camera.matrixWorldInverse);
 const dt=await meshData('torso_mesh');
 const TOR_BASE=0.8, MED_BASE=L.medusa.z; // original pedestal tops (m)
@@ -799,7 +800,7 @@ sayIn.addEventListener('blur',()=>{ if(!sayIn.value.trim()) setTimeout(()=>{ if(
 // tuning (Medusa / Torso / room)
 const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   medW:0.36,medD:0.36,torW:0.5,torD:0.5,
-  tContrast:1.12,tBright:1.0,tDark:0.5,tDeepR:0.4,tDeep:0,tRough:0.92,torH:TOR_BASE,
+  tContrast:1.12,tBright:1.0,tWhite:0.35,tDark:0.5,tDeepR:0.4,tDeep:0,tRough:0.92,torH:TOR_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
@@ -817,7 +818,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','figBlur','figUp','figNear'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','figBlur','figUp','figNear'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
@@ -831,7 +832,7 @@ function applyTune(){
   if(!WALLS[tune.wsel]) tune.wsel='F';
   uC.value=tune.contrast; chrome.color.setScalar(tune.bright); chrome.envMapIntensity=tune.refl; chrome.roughness=tune.gloss;
   goldMat.color.setRGB(1.0,0.77,0.40).multiplyScalar(tune.bright); goldMat.envMapIntensity=tune.refl; goldMat.roughness=tune.gloss;
-  uC2.value=tune.tContrast; uDark.value=tune.tDark; uDeep.value=tune.tDeep??0; uDeepR.value=tune.tDeepR??0.4; resin.color.copy(RESIN).multiplyScalar(tune.tBright); resin.roughness=tune.tRough;
+  uC2.value=tune.tContrast; uWhite.value=tune.tWhite??0.35; uDark.value=tune.tDark; uDeep.value=tune.tDeep??0; uDeepR.value=tune.tDeepR??0.4; resin.color.copy(RESIN).multiplyScalar(tune.tBright); resin.roughness=tune.tRough;
   const mTop=Math.max(0.1,tune.medH+tune.sculptOff), tTop=Math.max(0.1,tune.torH+tune.sculptOff);
   const P1=peds.G_Pedestal, P2=peds.G_Pedestal2;
   if(!peds.G_Pedestal3){peds.G_Pedestal3=makePedestal('G_Pedestal3',0,0,1,1); peds.G_Pedestal4=makePedestal('G_Pedestal4',0,0,1,1);}
