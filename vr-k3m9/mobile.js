@@ -37,7 +37,7 @@ function partGeo(def){
   return mergeGeometries(gs.map(flat));
 }
 // crescent at the upper-right spike (2019 photos; not on PLAN B01) — plate mm: centre x,y, outer radius r, widest band t, turn rot (deg), flip
-export const MOON_DEFAULT={x:406,y:-120,r:26,t:6,rot:180,flip:false};
+export const MOON_DEFAULT={x:398.0,y:-270.2,r:26,t:6,rot:140,flip:false}; // set by 윤성 against the 2019 photos (2026-11-04)
 export function moonPts(m){m={...MOON_DEFAULT,...(m||{})}; const R=m.r, c=Math.max(0.5,Math.min(m.t,R*1.6)), r=R*0.97;
   const ix=(R*R-r*r+c*c)/(2*c), iy=Math.sqrt(Math.max(0,R*R-ix*ix)), a=Math.atan2(iy,ix), b=Math.atan2(iy,ix-c), pts=[];
   for(let i=0;i<=36;i++){const t=a+i/36*(2*Math.PI-2*a); pts.push([R*Math.cos(t),R*Math.sin(t)]);}           // outer arc through the back
