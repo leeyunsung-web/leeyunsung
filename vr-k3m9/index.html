@@ -810,6 +810,7 @@ window.__ptNdc=(x,y)=>{ const g=sculptures().map(q=>q[1]).find(gg=>{ const c=new
 window.__viewReach=()=>{ const dx=-Math.sin(walk.yaw), dy=Math.cos(walk.yaw); let t=0.1; while(t<15&&okPos(walk.x+dx*t,walk.y+dy*t)) t+=0.1; return +t.toFixed(1); };
 window.__sim=(n)=>{ const pts=[[walk.x,walk.y]]; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); pts.push([walk.x,walk.y]); } return {steps:k,pts,go:!!autoGo}; };
 window.__floorTap=(x,y)=>{ autoGo=null; lastWork=null; goTo(x,y,null,null); return autoGo&&{x:autoGo.x,y:autoGo.y,path:autoGo.path}; };
+window.__tapAt=(x,y)=>{ const xy=window.__floorScreen(x,y); tapMove(xy.x,xy.y); const g=autoGo; return g&&{x:g.x,y:g.y,yaw:g.yaw,path:g.path}; };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1235,7 +1236,7 @@ function gateCross(ax,ay,bx,by){ for(const G of GATES){ const [cx,cy]=G.c, [ux,u
 // stepping through a door: look at the works of the room you enter (the biggest one roughly ahead), not at a bare wall
 function roomGaze(x,y,dx,dy){ const r=ROOMS.find(q=>x>=q.x0-0.5&&x<=q.x1+0.5&&y>=q.y0-0.5&&y<=q.y1+0.5); if(!r||typeof works==='undefined') return null; let best=null, bs=0;
   for(const u of new Set(works.map(unitOf))){ const px=u.mesh.position.x, py=-u.mesh.position.z; if(px<r.x0-0.3||px>r.x1+0.3||py<r.y0-0.3||py>r.y1+0.3) continue;
-    const vx=px-x, vy=py-y, d=Math.hypot(vx,vy)||1, c=(vx*dx+vy*dy)/d; if(c<0.5||d<2.5) continue; const sc=c*c*Math.sqrt(u.p.w*u.p.h)/d; /* the nearest work across, roughly ahead (not one right beside the door) */ if(sc>bs){ bs=sc; best=[px,py]; } } return best; }
+    const vx=px-x, vy=py-y, d=Math.hypot(vx,vy)||1, c=(vx*dx+vy*dy)/d; if(c<0.35||d<3) continue; const sc=u.p.w*u.p.h*c*c*Math.min(d,9); /* a work across the room, roughly ahead, not one right beside the door */ if(sc>bs){ bs=sc; best=[px,py]; } } return best; }
 // while walking: keep your eyes on the nearest work you can actually see, roughly ahead (checked a few times a second, with a little stickiness)
 function lookAhead(g,L){ let px=walk.x, py=walk.y, left=L; const pts=g.path&&g.path.length?g.path:[[g.x,g.y]];
   for(const q of pts){ const sx=q[0]-px, sy=q[1]-py, sl=Math.hypot(sx,sy); if(sl>=left) return [px+sx/sl*left,py+sy/sl*left]; left-=sl; px=q[0]; py=q[1]; } return [px,py]; }
@@ -1352,8 +1353,10 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   else { const x=best.p.x, y=-best.p.z;
     for(const G of GATES){ const ax=x-G.c[0], ay=y-G.c[1], along=ax*G.ax[0]+ay*G.ax[1], across=-ax*G.ax[1]+ay*G.ax[0], side=(walk.x-G.c[0])*G.ax[0]+(walk.y-G.c[1])*G.ax[1];
       if(Math.abs(along)<1.6&&Math.abs(across)<G.h+0.9&&Math.abs(side)>0.3){ // the floor by the door: go on through
-        const sg=-Math.sign(side); let tx=G.c[0]+G.ax[0]*sg*2.4, ty=G.c[1]+G.ax[1]*sg*2.4; for(let k=2.4;k>1&&!canWalk(tx,ty);k-=0.2){ tx=G.c[0]+G.ax[0]*sg*k; ty=G.c[1]+G.ax[1]*sg*k; }
-        const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), gz=roomGaze(tx,ty,G.ax[0]*sg,G.ax[1]*sg), yaw=gz?lookYaw(gz[0]-tx,gz[1]-ty):r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null;
+        const sg=-Math.sign(side), R2=ROOMS.find(r=>{ const px=G.c[0]+G.ax[0]*sg*1.5, py=G.c[1]+G.ax[1]*sg*1.5; return px>=r.x0&&px<=r.x1&&py>=r.y0&&py<=r.y1; });
+        let ix=-G.ax[1], iy=G.ax[0]; if(R2&&((R2.x0+R2.x1)/2-G.c[0])*ix+((R2.y0+R2.y1)/2-G.c[1])*iy<0){ ix=-ix; iy=-iy; } // sideways toward the middle of the room you enter
+        let tx=G.c[0], ty=G.c[1]; for(const [k,j] of [[2,0.9],[1.8,0.7],[1.6,0.5],[1.6,0.3],[1.4,0]]){ const qx=G.c[0]+G.ax[0]*sg*k+ix*j, qy=G.c[1]+G.ax[1]*sg*k+iy*j; if(canWalk(qx,qy)&&lineClear(G.c[0]+G.ax[0]*sg*0.9,G.c[1]+G.ax[1]*sg*0.9,qx,qy)){ tx=qx; ty=qy; break; } } /* through the door, then curve a little into the room (like stepping in and turning to look) */
+        const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), yaw=r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null; /* end up facing into the room */
         if(goTo(tx,ty,yaw,yaw==null?null:-0.02)) return; } }
     goTo(x,y,null,null); } }
 // one step of the walk you asked for (called from the main loop)
@@ -1384,7 +1387,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
       if(!canWalk(walk.x+mvx*0.35,walk.y+mvy*0.35)){ mvx=lx/(Math.hypot(lx,ly)||1); mvy=ly/(Math.hypot(lx,ly)||1); g.hd=wa; } } // never cut into a wall or pedestal: fall back to the path itself
     else g.hd=Math.atan2(mvy,mvx);
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mvx*st,walk.y+mvy*st);
-    let look=g.yaw==null?lookYaw(dx,dy):(g.near||rem<2.2?(g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw):lookYaw(dx,dy)); const hp=g.path&&g.path[0], fin=g.yaw!=null&&(g.near||rem<2.2), nw=fin?null:nearWork(g,dx/d,dy/d); if(nw) look=lookYaw(nw[0]-walk.x,nw[1]-walk.y); else if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look,fin?1.05:0.7); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
+    let look=g.yaw==null?lookYaw(dx,dy):(g.near||rem<2.2?(g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw):lookYaw(dx,dy)); const hp=g.path&&g.path[0], fin=g.yaw!=null&&(g.near||rem<2.2); if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look,fin?1.05:0.7); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
     if(g.v>0.2&&Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ // blocked: back off along the way you came, then find a new way
       g.stuck=(g.stuck||0)+1; if(g.stuck>2){ autoGo=null; return true; }
       const bx=walk.x-dx/d*0.45, by=walk.y-dy/d*0.45, back=canWalk(bx,by)?[bx,by,1]:null, from=back||[walk.x,walk.y], np=findPath(from[0],from[1],g.x,g.y);
