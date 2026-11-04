@@ -808,7 +808,7 @@ window.__workRects=()=>{ const r=canvas.getBoundingClientRect(), out=[]; for(con
 window.__gaze=(x,y,dx,dy)=>roomGaze(x,y,dx,dy);
 window.__ptNdc=(x,y)=>{ const g=sculptures().map(q=>q[1]).find(gg=>{ const c=new THREE.Box3().setFromObject(gg).getCenter(new THREE.Vector3()); return Math.hypot(c.x-x,-c.z-y)<0.05; }); const c=g?new THREE.Box3().setFromObject(g).getCenter(new THREE.Vector3()):new THREE.Vector3(x,1.2,-y); const v=c.project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2)]; };
 window.__viewReach=()=>{ const dx=-Math.sin(walk.yaw), dy=Math.cos(walk.yaw); let t=0.1; while(t<15&&okPos(walk.x+dx*t,walk.y+dy*t)) t+=0.1; return +t.toFixed(1); };
-window.__sim=(n)=>{ const pts=[[walk.x,walk.y]]; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); pts.push([walk.x,walk.y]); } return {steps:k,pts,go:!!autoGo}; };
+window.__sim=(n)=>{ const pts=[[walk.x,walk.y]], yaws=[walk.yaw]; window.__simY=yaws; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); pts.push([walk.x,walk.y]); yaws.push(walk.yaw); } return {steps:k,pts,go:!!autoGo}; };
 window.__floorTap=(x,y)=>{ autoGo=null; lastWork=null; goTo(x,y,null,null); return autoGo&&{x:autoGo.x,y:autoGo.y,path:autoGo.path}; };
 window.__tapAt=(x,y)=>{ const xy=window.__floorScreen(x,y); tapMove(xy.x,xy.y); const g=autoGo; return g&&{x:g.x,y:g.y,yaw:g.yaw,path:g.path}; };
 window.__workPos=i=>{ const m=works[i].mesh; return {x:m.position.x,y:-m.position.z,nx:Math.sin(m.rotation.y),ny:-Math.cos(m.rotation.y),t:(works[i].caption||'').split('|')[0]}; };
@@ -1326,6 +1326,8 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     if(hd!=null&&(!best||hd<best.d)) best={kind:'sculpt',d:hd,name,bb,g}; }
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
   if(!best) return; showMark(cx,cy); GT.tap=best;
+  { const hp=_r2.ray.at(best.d,new THREE.Vector3()), hx=hp.x, hy=-hp.z; // anything in the guestbook corner (floor, walls, the lectern): stand right in front of the book, facing it
+    if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>L.door2.x0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
   if(best.kind==='peer'){ lastWork=null; lastSculpt=null; autoGo={peer:best.p.id,x:walk.x,y:walk.y,path:null,re:0}; return; } // walk up until "Say hello" shows; any other tap cancels
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
@@ -1343,7 +1345,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       for(let d=slid?Math.min(D,Math.hypot(walk.x-x,walk.y-y)):D; d>=0.9; d-=0.2) for(const o of [0,0.25,-0.25,0.5,-0.5,0.75,-0.75,1.0,-1.0,1.3,-1.3]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=Math.abs(o)*1.2+(D-d)*0.5;
         if(sc>=ps||!roomy(sx,sy)||!workSeen(w,sx,sy,close)) continue; ps=sc; pick=[sx,sy]; } /* keep a little room around you (not pressed against a pedestal) */
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; autoGo.cy=m.position.y; if(window.hiRes) window.hiRes(w); lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; if(window.hiRes) window.hiRes(w); lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1393,7 +1395,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
       if(!canWalk(walk.x+mvx*0.35,walk.y+mvy*0.35)){ mvx=lx/(Math.hypot(lx,ly)||1); mvy=ly/(Math.hypot(lx,ly)||1); g.hd=wa; } } // never cut into a wall or pedestal: fall back to the path itself
     else g.hd=Math.atan2(mvy,mvx);
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mvx*st,walk.y+mvy*st);
-    let look=g.yaw==null?lookYaw(dx,dy):(g.near||rem<2.2?(g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw):lookYaw(dx,dy)); const hp=g.path&&g.path[0], fin=g.yaw!=null&&(g.near||rem<2.2); if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look,fin?1.05:0.7); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
+    let look=g.yaw==null?lookYaw(dx,dy):g.slide?g.yaw:(g.near||rem<2.2?(g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw):lookYaw(dx,dy)); /* sliding along a wall: keep facing the wall square on the whole way */ const hp=g.path&&g.path[0], fin=g.yaw!=null&&(g.near||rem<2.2); if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look,fin?1.05:0.7); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
     if(g.v>0.2&&Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ // blocked: back off along the way you came, then find a new way
       g.stuck=(g.stuck||0)+1; if(g.stuck>2){ autoGo=null; return true; }
       const bx=walk.x-dx/d*0.45, by=walk.y-dy/d*0.45, back=canWalk(bx,by)?[bx,by,1]:null, from=back||[walk.x,walk.y], np=findPath(from[0],from[1],g.x,g.y);
