@@ -548,7 +548,7 @@ for(const p of L.paintings){
   const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,0.04),[sLR,sLR,sTop,sBot,front,sLR]);
   m.position.copy(b2t(p.x,p.y,p.z)); m.rotation.y=THREE.MathUtils.degToRad(p.rot); scene.add(m);
   const {t,M}=shadowTex(p.w,p.h);
-  const sm=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+  const sm=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-28}); // must out-pull the walls' own offset (-2/-12), or the wall flickers through the shadow as you move
   const sh=new THREE.Mesh(new THREE.PlaneGeometry(p.w+2*M,p.h+2*M),sm); sh.position.z=-0.0185; sh.layers.set(1); m.add(sh); shadowMats.push(sm); // layer 1: the floor mirror skips it (its skewed depth drew the shadow over the canvas)
   const wall=wallOf(p);
   works.push({mesh:m,p,wall,baseY:p.z,pos:m.position.clone(),caption:p.caption||'',file:(SMALL?'tex/m/':'tex/')+p.file,full:'/images/'+p.file,mat:front});
