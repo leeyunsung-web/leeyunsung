@@ -1063,8 +1063,8 @@ window.__applyFigure=async bin=>{ const u8=new Uint8Array(bin); const F=await lo
   const t=new Date(); return '전시장에 적용하고 홈페이지에도 저장했어요 ('+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+') · 1~2분 뒤 다른 기기에도 보여요.';};
 let waitGesture=false;
 function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.style.display='block';}
-// embedded in the site (master mode): open the control window right away; if the browser blocks it, open it on the first click in the room
-if(document.documentElement.classList.contains('embed')){
+// embedded in the site (master mode, computer only): open the control window right away; if the browser blocks it, open it on the first click in the room
+if(document.documentElement.classList.contains('embed')&&!matchMedia('(pointer:coarse)').matches){ // phones only look: no control window there
   setTimeout(openPanel,400);
   stage.addEventListener('pointerdown',()=>{ if(waitGesture&&!(pop&&!pop.closed)){ waitGesture=false; document.getElementById('panelAsk').hidden=true; openPanel(); } },true);
 }
