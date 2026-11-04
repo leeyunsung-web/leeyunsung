@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>View on your wall — Lee Yunsung</title>
+<style>
+:root{--ink:#1d1c1a;--soft:#6f6b65;--line:#e4e1db;--bg:#f6f5f2}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
+header{padding:28px 20px 10px;max-width:1100px;margin:0 auto}
+h1{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;font-size:clamp(24px,4vw,34px);margin:0}
+.sub{color:var(--soft);font-size:13px;margin-top:6px;line-height:1.5}
+.tabs{display:flex;gap:8px;margin:18px 0 0}
+.tabs button{border:1px solid var(--line);background:#fff;padding:7px 14px;border-radius:999px;font-size:12px;letter-spacing:.06em;cursor:pointer;color:var(--ink)}
+.tabs button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+main{max-width:1100px;margin:0 auto;padding:14px 20px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 16px}
+.tile{all:unset;cursor:pointer;display:block}
+.tile .im{aspect-ratio:1;background:#fff;display:flex;align-items:center;justify-content:center;padding:12px;border:1px solid var(--line)}
+.tile img{max-width:100%;max-height:100%;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.tile b{display:block;font-weight:500;font-size:13px;margin-top:8px;line-height:1.35}
+.tile span{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+.tile .hid{color:#b04a2f}
+#view{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:5}
+#view.on{display:flex}
+#view .top{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fff}
+#back{all:unset;cursor:pointer;font-size:22px;line-height:1;padding:2px 8px}
+#vt b{display:block;font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:18px}
+#vt span{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--poster-color:transparent}
+#arBtn{position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;border:0;border-radius:999px;padding:15px 26px;font-size:15px;letter-spacing:.02em;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer;white-space:nowrap}
+#arBtn small{display:block;font-size:11px;opacity:.75;margin-top:2px}
+.note{position:absolute;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;text-align:center;line-height:1.5;max-width:88%}
+#shopLink{margin-left:auto;font-size:12px;color:var(--ink);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid currentColor;white-space:nowrap}
+#lock{max-width:520px;margin:80px auto;text-align:center;color:var(--soft);font-size:14px;display:none}
+</style>
+</head>
+<body>
+<div id="lock">Coming soon.<br>준비 중입니다.</div>
+<header id="hd" hidden>
+  <h1>View on your wall</h1>
+  <div class="sub">Pick a work, then point your phone at a wall: it appears at its real size.<br>작품을 고른 뒤 휴대폰으로 벽을 비추면 실제 크기로 걸려요.</div>
+  <div class="tabs" id="tabs"><button data-k="original" aria-pressed="true">Originals</button><button data-k="edition" aria-pressed="false">Posters</button></div>
+</header>
+<main id="grid" hidden></main>
+<div id="view">
+  <div class="top"><button id="back" aria-label="Back">←</button><div id="vt"><b></b><span></span></div><a id="shopLink" href="#" target="_top">Shop →</a></div>
+  <model-viewer id="mv" ar ar-modes="webxr scene-viewer quick-look" ar-placement="wall" ar-scale="fixed" camera-controls disable-pan
+    environment-image="neutral" exposure="1" shadow-intensity="0" camera-orbit="0deg 90deg auto" min-camera-orbit="-55deg 55deg auto" max-camera-orbit="55deg 125deg auto" interaction-prompt="none">
+    <button slot="ar-button" id="arBtn">View on your wall<small>내 벽에 걸어 보기 (AR)</small></button>
+  </model-viewer>
+  <div class="note" id="noAR" hidden>AR opens on a phone or tablet.<br>휴대폰이나 태블릿에서 이 페이지를 열어 주세요.</div>
+</div>
+<script type="module" src="model-viewer.min.js"></script>
+<script>
+(function(){
+  var master=/(?:^|;\s*)lysM=1/.test(document.cookie);   // master preview only for now
+  if(!master){ document.getElementById('lock').style.display='block'; return; }
+  document.getElementById('hd').hidden=false; document.getElementById('grid').hidden=false;
+  var grid=document.getElementById('grid'), view=document.getElementById('view'), mv=document.getElementById('mv'), items=[], kind='original';
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function render(){ grid.innerHTML=''; items.filter(function(x){return x.kind===kind;}).forEach(function(x){
+      var b=document.createElement('button'); b.className='tile';
+      b.innerHTML='<div class="im"><img loading="lazy" alt="" src="'+esc(x.thumb)+'"></div><b>'+esc(x.title)+'</b><span>'+esc(x.size)+(x.hidden?' · <i class="hid">비공개</i>':'')+'</span>';
+      b.onclick=function(){ open(x,true); }; grid.appendChild(b); }); }
+  function open(x,push){
+    view.classList.add('on'); document.querySelector('#vt b').textContent=x.title;
+    document.querySelector('#vt span').textContent=[x.year,x.medium,x.size].filter(Boolean).join(', ');
+    var sl=document.getElementById('shopLink'); sl.hidden=!x.url; sl.href=x.url||'#';
+    mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
+    if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));
+    setTimeout(function(){ document.getElementById('noAR').hidden=!!mv.canActivateAR; },1200);
+  }
+  function close(){ view.classList.remove('on'); mv.removeAttribute('src'); }
+  document.getElementById('back').onclick=function(){ if(history.state&&history.state.id) history.back(); else { close(); history.replaceState(null,'',location.pathname); } };
+  addEventListener('popstate',function(){ var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x) open(x,false); else close(); });
+  document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick=function(){ kind=b.dataset.k; document.querySelectorAll('#tabs button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));}); render(); }; });
+  mv.addEventListener('ar-status',function(e){ if(e.detail.status==='failed') alert('AR could not start on this device. / 이 기기에서는 AR을 열 수 없어요.'); });
+  fetch('works.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){ items=j.items; render();
+    var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x){ kind=x.kind; render(); open(x,false); } });
+})();
+</script>
+</body>
+</html>
