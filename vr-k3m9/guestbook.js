@@ -47,7 +47,7 @@ const rnd = (n, abc) => { const a = new Uint8Array(n); crypto.getRandomValues(a)
 // store (default: the exhibition server at api):
 //   index() -> [{id, g, at}] every visible page, light;  pages(keys) -> {"id:g": [strokes]};  save(g, strokes) -> 'ok'|'conflict'|'fail'
 //   hide(id, g) -> owner only;  canHide() -> true when the owner is looking
-export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, doc }) {
+export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, onWrite, doc }) {
   const D = doc || (host && host.ownerDocument) || document; // works in another window too (the master's control window)
   if (!D.getElementById('gb-css')) { const st = D.createElement('style'); st.id = 'gb-css'; st.textContent = CSS; D.head.appendChild(st); }
   let me = meIn || null; if (!me) try { me = JSON.parse(localStorage.getItem('gb-me') || 'null'); } catch (e) {}
@@ -59,7 +59,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
   store = store || {
     index: async () => ((await (await fetch(api, { cache: 'no-store' })).json()).idx || []),
     pages: async keys => ((await (await fetch(api + '/p?k=' + encodeURIComponent(keys.join(',')), { cache: 'no-store' })).json()).pages || {}),
-    save: async (g, strokes) => { const r = await fetch(api, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: me.id, key: me.key, g, strokes }) }); return r.ok ? 'ok' : (r.status === 409 || r.status === 403) ? 'conflict' : 'fail'; },
+    save: async (g, strokes) => { const r = await fetch(api, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: me.id, key: me.key, g, strokes }) }); if (r.ok && onWrite) try { onWrite(g); } catch (e) {} return r.ok ? 'ok' : (r.status === 409 || r.status === 403) ? 'conflict' : 'fail'; },
     hide: async (id, g) => { const r = await fetch(api + '/hide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: masterPass(), id, g }) }); return r.ok; },
     canHide: async () => !!masterPass() };
   // pages: everyone's (in the order they came), then yours (one blank page always ahead, up to MAXP), then the rest of the book

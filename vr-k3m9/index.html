@@ -134,7 +134,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="load" id="load"><div class="lys-ld"><div class="lys-ld-row" id="ldRow"></div><div class="lys-ld-label">LOADING</div><div class="fill" id="fill" hidden></div></div></div>
     <script>/* 무지개 십자별 로딩 — 속도 2 / 파도 높이 0 / 파도 간격 0.7 / 별 크기 10 / 반짝임 0.7 */
 (function(){var L={speed:2,amp:0,phase:0.7,size:10,twinkle:0.7,colors:["#FF3B30","#FF9500","#FFD60A","#00B400","#0A84FF","#3F51F5","#AF52DE"]};var row=document.getElementById("ldRow"),box=document.getElementById("load");if(!row||!box)return;var st=L.colors.map(function(c){var d=document.createElement("div");d.className="lys-ld-star";d.style.background=c;d.style.setProperty("--w",(L.size*1.6)+"px");row.appendChild(d);return d;});function f(ms){if(box.hidden)return;var t=ms/1000*L.speed,tw=L.twinkle;st.forEach(function(s,i){var w=t*4-i*L.phase*2,p=(Math.sin(w)+1)/2;s.style.transform="translateY("+(-Math.sin(w)*L.amp).toFixed(2)+"px) scale("+(0.6+0.55*p*tw+(1-tw)*0.3).toFixed(3)+")";s.style.opacity=(0.45+0.55*(tw*p+(1-tw))).toFixed(3);});requestAnimationFrame(f);}requestAnimationFrame(f);var pend=0,t0=performance.now();window.__ldLast=t0;var of=window.fetch;if(of){window.fetch=function(){pend++;window.__ldLast=performance.now();return of.apply(this,arguments).finally(function(){pend--;window.__ldLast=performance.now();});};}var fontsOk=false;try{document.fonts.ready.then(function(){fontsOk=true;});}catch(e){fontsOk=true;}var fr0=null;function chk(){if(box.hidden)return;var now=performance.now(),tx=window.__ldTex;var idle=pend===0&&window.__ldTexDone&&(!tx||tx[0]>=tx[1])&&now-window.__ldLast>800&&fontsOk;if(idle&&fr0===null)fr0=window.__ldFrames||0;if(!idle)fr0=null;if((idle&&(window.__ldFrames||0)-fr0>=10)||now-t0>40000){box.style.transition='opacity .45s ease';box.style.opacity='0';setTimeout(function(){box.hidden=true;box.style.opacity='';},460);return;}setTimeout(chk,100);}setTimeout(chk,300);})();</script>
-    <div class="bar">
+    <div class="bar" hidden><!-- clean screen: no view buttons in the room (the control window keeps its own) -->
       <span class="chip" id="fps" hidden>–</span>
       <div class="ctl" id="views">
         <button data-v="entry">입구</button>
@@ -258,7 +258,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js?v=1104moon';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
-import { createGuestbook } from './guestbook.js?v=1104panel';
+import { createGuestbook } from './guestbook.js?v=1104stats';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -796,6 +796,7 @@ window.__tap=(x,y)=>tapMove(x,y);
 window.__gbScreen=()=>{ if(!GB) return null; const v=new THREE.Box3().setFromObject(GB.bookM).getCenter(new THREE.Vector3()).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
 window.__gbState=()=>({open:guest.isOpen,dlg:!!document.querySelector('.gbx')});
 window.__gbOpen=()=>{ gbOpenFromView(); return guest.isOpen; };
+window.__gt=GT;
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -827,10 +828,10 @@ function chatTick(now){
 function sendSay(m){ m=m.slice(0,140); if(room&&room.readyState===1&&roomMe) room.send(JSON.stringify({t:'say',m})); else showSay(roomMe,m); botHear(m); }
 function openSay(){ sayEl.hidden=false; helloEl.hidden=true; keys.clear(); setTimeout(()=>sayIn.focus({preventScroll:true}),0); }
 function closeSay(){ sayEl.hidden=true; sayIn.value=''; sayIn.blur(); stage.focus({preventScroll:true}); }
-helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); openSay(); sendSay(GB_LANG==='ko'?'안녕하세요':'Hello'); }; // the first line is said for you
+helloEl.addEventListener('pointerdown',e=>e.stopPropagation()); helloEl.onclick=e=>{ e.stopPropagation(); GT('g_hello'); openSay(); sendSay(GB_LANG==='ko'?'안녕하세요':'Hello'); }; // the first line is said for you
 sayEl.addEventListener('pointerdown',e=>e.stopPropagation());
 sayIn.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Escape'){ closeSay(); return; }
-  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m) sendSay(m); sayIn.value='';
+  if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); const m=sayIn.value.trim(); if(m){ sendSay(m); GT('g_chat'); } sayIn.value='';
     if(!nearPeer) closeSay(); } });
 sayIn.addEventListener('blur',()=>{ if(!sayIn.value.trim()) setTimeout(()=>{ if(document.activeElement!==sayIn) sayEl.hidden=true; },150); });
 
@@ -1143,7 +1144,7 @@ function gbPanelToggle(){ const host=PD.getElementById('gbPanelHost'), btn=PD.ge
   if(!gbPanel||gbPanelDoc!==PD){ host.innerHTML=''; gbPanelDoc=PD; gbPanel=createGuestbook({host,doc:PD,inline:true,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb'}); }
   setTimeout(()=>{ try{ gbPanel.open(); }catch(e){ console.error(e); } },30); }
 document.getElementById('gbPanelBtn').onclick=gbPanelToggle;
-const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onOpen:()=>{keys.clear(); dirty=true;},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
+const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onWrite:g=>{ if(!GT.wrote.has(g)){ GT.wrote.add(g); GT('g_gb_write'); } },onOpen:()=>{keys.clear(); dirty=true; GT('g_gb_open');},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
 const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
 function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=canvas.getBoundingClientRect();
   _nv.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _ray.setFromCamera(_nv,camera); const hit=_ray.intersectObjects(GB.hits,false)[0];
@@ -1273,7 +1274,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const hd=h?h.distance:null; // exact surface only: clicks in the gaps (the mobile's open space, behind its wires) go through to what is behind
     if(hd!=null&&(!best||hd<best.d)) best={kind:'sculpt',d:hd,name,bb,g}; }
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
-  if(!best) return; showMark(cx,cy);
+  if(!best) return; showMark(cx,cy); GT.tap=best;
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
@@ -1287,16 +1288,16 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       const tx=-ny, ty=nx, D=Math.hypot(s[0]-x,s[1]-y); let pick=null, ps=1e9;
       for(let d=D; d>=1.2; d-=0.25) for(const o of [0,0.35,-0.35,0.7,-0.7,1.05,-1.05]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=(D-d)+Math.abs(o)*0.8; if(sc>=ps||!canWalk(sx,sy)||!workSeen(w,sx,sy)) continue; ps=sc; pick=[sx,sy]; }
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; lastWork={w,s,close}; } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
     const rad=Math.max(1.3,Math.min(4,sz2/(2*Math.tan(vf/2)*0.5)));
     const ry=best.g.rotation.y+(best.name==='torso'?Math.PI:0), fx=Math.sin(ry), fy=-Math.cos(ry); // its front on the floor plan (the torso model faces local -Z)
     const atFront=lastSculpt&&lastSculpt.name===best.name&&(autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit||Math.hypot(walk.x-lastSculpt.s[0],walk.y-lastSculpt.s[1])<0.7);
-    if(atFront&&autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit){ autoGo.then={x,y,r:rad*0.95,top:tc}; lastSculpt=null; return; } // still on the way: go round once there
-    if(atFront){ autoGo={orbit:{x,y,r:Math.max(l,rad*0.9),a:Math.atan2(walk.y-y,walk.x-x),left:Math.PI*2,top:tc}}; lastSculpt=null; return; } // second click: once around it
-    const s=standAt(x,y,rad,fx,fy)||standAt(x,y,rad,dx,dy); if(!s) return; if(goTo(s[0],s[1],lookYaw(x-s[0],y-s[1]),Math.atan2(tc-EYE,rad))){ autoGo.sculpt=best.name; autoGo.face=[x,y]; lastSculpt={name:best.name,s}; } return;
+    if(atFront&&autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit){ autoGo.then={x,y,r:rad*0.95,top:tc}; lastSculpt=null; GT('g_orbit',GT.sTitle(x,y)); return; } // still on the way: go round once there
+    if(atFront){ GT('g_orbit',GT.sTitle(x,y)); autoGo={orbit:{x,y,r:Math.max(l,rad*0.9),a:Math.atan2(walk.y-y,walk.x-x),left:Math.PI*2,top:tc}}; lastSculpt=null; return; } // second click: once around it
+    const s=standAt(x,y,rad,fx,fy)||standAt(x,y,rad,dx,dy); if(!s) return; if(goTo(s[0],s[1],lookYaw(x-s[0],y-s[1]),Math.atan2(tc-EYE,rad))){ autoGo.sculpt=best.name; autoGo.face=[x,y]; lastSculpt={name:best.name,s}; GT('g_click',GT.sTitle(x,y)); } return;
   }
   else { const x=best.p.x, y=-best.p.z;
     for(const G of GATES){ const ax=x-G.c[0], ay=y-G.c[1], along=ax*G.ax[0]+ay*G.ax[1], across=-ax*G.ax[1]+ay*G.ax[0], side=(walk.x-G.c[0])*G.ax[0]+(walk.y-G.c[1])*G.ax[1];
@@ -1343,6 +1344,21 @@ const endJoy=()=>{jid=null; jv={x:0,y:0}; joyK.style.transform='';};
 joy.addEventListener('pointerup',endJoy); joy.addEventListener('pointercancel',endJoy);
 function moveJoy(e){const r=joy.getBoundingClientRect(); let x=(e.clientX-r.left-r.width/2)/(r.width/2), y=(e.clientY-r.top-r.height/2)/(r.height/2); const m=Math.hypot(x,y); if(m>1){x/=m;y/=m;} jv={x,y}; joyK.style.transform=`translate(${x*32}px,${y*32}px)`;}
 
+// ---------- visit stats for the gallery (same pipeline as the site's visit stats; the master's own visits are not counted) ----------
+var GTQ=[], GTT=0;
+function GT(t,k,n){ if(GT.off) return; GTQ.push([t,'/vr-k3m9/',String(k||'').slice(0,120),Math.round(n||0)]); if(GTQ.length>=15) GT.flush(); else if(!GTT) GTT=setTimeout(GT.flush,5000); }
+GT.off=/(^|; )lysM=1/.test(document.cookie)||/[?&]room=ws/.test(location.search); GT.wrote=new Set(); GT.rooms=new Set(); GT.peak=0; GT.t0=Date.now(); GT.act=0; GT.last=Date.now();
+GT.flush=()=>{ clearTimeout(GTT); GTT=0; if(!GTQ.length) return; let sid=''; try{ sid=sessionStorage.getItem('lysSid')||''; if(!sid){ sid=Math.random().toString(36).slice(2,10); sessionStorage.setItem('lysSid',sid); } }catch(e){}
+  const b=JSON.stringify({ev:GTQ.splice(0,40),l:GB_LANG==='en'?'en':'ko',r:'',s:sid}), A='https://leeyunsung-shop.nu-layer.workers.dev/api/t';
+  try{ if(!(navigator.sendBeacon&&navigator.sendBeacon(A,new Blob([b],{type:'text/plain'})))) fetch(A,{method:'POST',body:b,keepalive:true}); }catch(e){} };
+GT.title=c=>String(c||'').split('|')[0].trim();
+GT.sTitle=(x,y)=>{ let best=null,bd=1e9; for(const c of sculptCap){ if(!c.s||!c.s.caption) continue; const d=Math.hypot(c.pos.x-x,-c.pos.z-y); if(d<bd){bd=d;best=c;} } return best?GT.title(best.s.caption):''; };
+GT.cap=c=>{ const t=GT.title(c), now=Date.now(); if(GT.cv&&GT.cv.t!==t){ const sec=(now-GT.cv.at)/1000; if(sec>=2) GT('g_view',GT.cv.t,Math.min(600,sec)); } if(!GT.cv||GT.cv.t!==t) GT.cv=t?{t,at:now}:null; };
+GT.tick=()=>{ const now=Date.now(); if(!document.hidden) GT.act+=Math.min(5,(now-GT.last)/1000); GT.last=now; // active seconds only
+  const n=(typeof online!=='undefined'?online:0); if(n>GT.peak) GT.peak=n;
+  const r=WALK&&L.door2&&walk.x>L.door2.x0?'guestbook':(ROOMS.findIndex(q=>walk.x>=q.x0&&walk.x<=q.x1&&walk.y>=q.y0&&walk.y<=q.y1)===1?'room2':'room1'); if(!GT.rooms.has(r)){ GT.rooms.add(r); GT('g_room',r); } };
+GT.leave=()=>{ if(GT.cv){ GT.cap(''); } if(GT.act>=1){ GT('g_time','',Math.min(3600,GT.act)); GT.act=0; } if(GT.peak>0) GT('g_peak','',GT.peak); GT.flush(); };
+{ let from=''; try{ const u=new URL(document.referrer); if(u.host===location.host) from=u.pathname; }catch(e){} if(!GT.off){ GT('g_enter',from); setInterval(GT.tick,1000); addEventListener('pagehide',GT.leave); document.addEventListener('visibilitychange',()=>{ if(document.hidden) GT.leave(); }); } }
 // captions near works
 const capEl=document.getElementById('cap');
 // is the work on this side of the wall? (a straight line to it, stopping just short of the wall, stays inside the walkable space)
@@ -1365,7 +1381,7 @@ function updateCaption(){
 }
 // like film subtitles: low and centred, fades out, then the next line fades in
 let capT=0;
-function showCap(c){ clearTimeout(capT); const set=()=>{ if(!c){capEl.innerHTML=''; return;} const [t,...rest]=c.split('|'); capEl.innerHTML='<b></b><span></span>'; capEl.firstChild.textContent=t; capEl.lastChild.textContent=rest.join(', '); capEl.classList.add('on'); };
+function showCap(c){ GT.cap(c); clearTimeout(capT); const set=()=>{ if(!c){capEl.innerHTML=''; return;} const [t,...rest]=c.split('|'); capEl.innerHTML='<b></b><span></span>'; capEl.firstChild.textContent=t; capEl.lastChild.textContent=rest.join(', '); capEl.classList.add('on'); };
   if(capEl.classList.contains('on')){ capEl.classList.remove('on'); capT=setTimeout(set,c?450:700); } else set(); }
 
 // modes
