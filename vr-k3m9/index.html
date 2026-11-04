@@ -682,10 +682,13 @@ function shootEnv(){ if(!LIVE.length) return; const ctl=[];
   dirty=true;}
 // the mobile reflects the room live (people walking by, you moving) while it is in view: every third frame, smaller capture, mirror floor left out
 let mobFrame=0; const _fr=new THREE.Frustum(), _pm=new THREE.Matrix4(), _sph=new THREE.Sphere();
+let mobLast=new THREE.Vector3(1e9,0,0), mobIdle=0;
 function liveMobileTick(){const e=LIVE[0]; if(!MOB||!e||(mobFrame++%3)) return;
+  /* only re-capture when you actually moved (just turning your head changes nothing in the mirror); otherwise now and then for people walking by. This capture is 6 extra renders, the main cause of judder while looking round */
+  const still=camera.position.distanceToSquared(mobLast)<1e-4; if(still&&(mobIdle++%(PEERS.size?4:40))) return; if(!still) mobIdle=0;
   _pm.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse); _fr.setFromProjectionMatrix(_pm); _sph.set(e.getPos(),1.2);
   if(!_fr.intersectsSphere(_sph)||camera.position.distanceTo(_sph.center)>11) return;
-  const mv=mir.visible; mir.visible=false; MOB.group.visible=false; e.cc.position.copy(e.getPos()); e.cc.update(renderer,scene); e.rt.texture.needsPMREMUpdate=true; MOB.group.visible=true; mir.visible=mv;}
+  mobLast.copy(camera.position); const mv=mir.visible; mir.visible=false; MOB.group.visible=false; e.cc.position.copy(e.getPos()); e.cc.update(renderer,scene); e.rt.texture.needsPMREMUpdate=true; MOB.group.visible=true; mir.visible=mv;}
 let envTimer=0; const scheduleEnv=(ms=400)=>{clearTimeout(envTimer); envTimer=setTimeout(shootEnv,ms);};
 if(MOB){const mm=[]; MOB.group.traverse(o=>{if(o.material) (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.envMap===env&&!mm.includes(m)) mm.push(m);});});
   liveEnv(()=>MOB.group.position.clone().add(new THREE.Vector3(0,(typeof tune!=='undefined'?tune.mobH:1.5)+0.25,0)),()=>[MOB.group],()=>mm);}
@@ -1280,7 +1283,7 @@ canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(
 canvas.addEventListener('pointermove',e=>{if(!drag) return;
   if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
-    drag.lx=e.clientX; drag.ly=e.clientY; drag.mt=performance.now(); drag.hf=hf; drag.vf=vf; if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){ autoGo=null; drag.moved=true; } /* the view itself follows in the hold loop below, eased */
+    if(drag.lx==null||Math.hypot(e.clientX-drag.lx,e.clientY-(drag.ly??e.clientY))>2) drag.mt=performance.now(); drag.lx=e.clientX; drag.ly=e.clientY; drag.hf=hf; drag.vf=vf; if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){ autoGo=null; drag.moved=true; } /* the view itself follows in the hold loop below, eased */
   } else { // mouse: look around like a game (drag right = turn right)
     if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6) autoGo=null;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
@@ -1313,11 +1316,11 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
 // phones: slide left/right and keep the finger there -> the view keeps turning, smoothly, the further out the faster
 { let hv=0, lt=performance.now(), aim=null; (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
   let want=0; const td=drag&&drag.touch&&!pinch&&drag.lx!=null?drag:null;
-  if(td){ const w=canvas.clientWidth||1, off=(td.lx-td.x)/w; if(Math.abs(off)>0.05) want=Math.sign(off)*Math.min(0.3,0.08+(Math.abs(off)-0.05)*0.7); }
-  hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?7:2.2)); /* kicks in almost at once, but the top speed is gentle */ if(Math.abs(hv)<0.002) hv=0;
-  if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.6,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.5))}; }
+  if(td){ const w=canvas.clientWidth||1, off=(td.lx-td.x)/w; if(Math.abs(off)>0.06&&now-(td.mt||0)>120) want=Math.sign(off)*Math.min(0.24,0.07+(Math.abs(off)-0.06)*0.5); }
+  hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?4:2)); /* keeps turning only once the finger rests out to the side (not while it is still sliding), easing in to a gentle top speed */ if(Math.abs(hv)<0.002) hv=0;
+  if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.45,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.4))}; }
   else if(!drag&&hv){ if(aim) aim.yaw+=hv*dt; else walk.yaw+=hv*dt; dirty=true; }
-  if(aim){ if(autoGo){ aim=null; return; } const k=1-Math.exp(-dt*(drag?9:6)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
+  if(aim){ if(autoGo){ aim=null; return; } const k=1-Math.exp(-dt*(drag?5.5:4)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
     if(!drag&&!hv&&Math.abs(dy)<0.0008&&Math.abs(dp)<0.0008) aim=null; } })(lt); }
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
