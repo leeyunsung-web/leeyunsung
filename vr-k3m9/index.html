@@ -54,6 +54,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chatlog div b{font-weight:600;margin-right:6px;opacity:.85}
 .chatlog div.out{opacity:0;transform:translateY(-10px)}
 .online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.snd{position:absolute;right:12px;top:10px;z-index:3;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(20,19,17,.42);color:#f3f0ea;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.snd svg{width:16px;height:16px}.snd .x{display:none}.snd[aria-pressed="false"] .w{display:none}.snd[aria-pressed="false"] .x{display:inline}
 .online::before{content:"";position:absolute;left:10px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7fd18b}
 .hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 calc(12px * var(--bs,1)) var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:calc(5px * var(--bs,1)) calc(12px * var(--bs,1));cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .bub{position:absolute;z-index:4;transform:translate(-50%,-100%);max-width:calc(min(260px,60%) * var(--bs,1));font:400 calc(13px * var(--bs,1))/1.35 var(--ui);color:#2a2824;background:rgba(250,248,243,.94);border-radius:12px;padding:6px 10px;pointer-events:none;box-shadow:0 2px 12px rgba(0,0,0,.18);transition:opacity .6s;overflow-wrap:anywhere}
@@ -125,7 +126,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   <div class="stage" id="stage" tabindex="0" aria-label="가상 전시실. 화살표 키로 걷고 끌어서 둘러봅니다.">
     <canvas id="cv"></canvas>
-    <div class="online" id="online" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div><button class="hello" id="hello" type="button" hidden>Say hello</button>
+    <div class="online" id="online" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div><button class="hello" id="hello" type="button" hidden>Say hello</button><button class="snd" id="snd" type="button" aria-pressed="true" aria-label="소리"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h2.2L8 3.2v9.6L4.7 10H2.5z" fill="currentColor" stroke="none"/><path class="w" d="M10.5 5.6a3.2 3.2 0 0 1 0 4.8M12.3 3.8a5.8 5.8 0 0 1 0 8.4"/><path class="x" d="M10.6 6l3.6 4M14.2 6l-3.6 4"/></svg></button>
     <div class="say" id="say" hidden><input id="sayIn" maxlength="140" placeholder="Say something…" autocomplete="off" enterkeyhint="send"><div class="mine" id="sayMine"></div></div>
     <div class="hint" id="hint" hidden>↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
     <div class="cap" id="cap" aria-live="polite"></div>
@@ -259,6 +260,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js?v=1104moon';
+import { createRoomTone } from './sound.js?v=1104snd';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
 import { createGuestbook } from './guestbook.js?v=1104view';
@@ -1192,7 +1194,7 @@ canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(
 canvas.addEventListener('pointermove',e=>{if(!drag) return;
   if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
-    drag.lx=e.clientX; drag.mt=performance.now(); walk.yaw=drag.yaw+(e.clientX-drag.x)*hf/canvas.clientWidth*0.75; walk.pitch=Math.max(-0.45,Math.min(0.45,drag.pitch+(e.clientY-drag.y)*vf/canvas.clientHeight*0.6)); if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6) autoGo=null;
+    drag.lx=e.clientX; drag.ly=e.clientY; drag.mt=performance.now(); drag.hf=hf; drag.vf=vf; if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){ autoGo=null; drag.moved=true; } /* the view itself follows in the hold loop below, eased */
   } else { // mouse: look around like a game (drag right = turn right)
     if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6) autoGo=null;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
@@ -1223,9 +1225,14 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
     if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ const side=[wside||1,-(wside||1)].find(q=>canWalk(walk.x+fx*0.6+sx*q*0.55,walk.y+fy*0.6+sy*q*0.55)&&canWalk(walk.x+sx*q*0.3,walk.y+sy*q*0.3)); if(side){ wside=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else wside=0;
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); if(Math.hypot(walk.x-ox,walk.y-oy)<a*0.2){ wq=0; wv=0; } lastWork=null; dirty=true; })(wt); }
 // phones: slide left/right and keep the finger there -> the view keeps turning, smoothly, the further out the faster
-{ let hv=0, lt=performance.now(); (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
-  let want=0; if(drag&&drag.touch&&!pinch&&drag.lx!=null){ const w=canvas.clientWidth||1, off=(drag.lx-drag.x)/w; if(Math.abs(off)>0.08&&now-(drag.mt||0)>40) want=Math.sign(off)*Math.min(0.45,0.12+(Math.abs(off)-0.08)*1.2); }
-  hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?3.2:1.6)); /* starts the moment you stop sliding, eases in; same slow top speed */ if(Math.abs(hv)<0.002){ hv=0; return; } if(drag){ drag.yaw+=hv*dt; walk.yaw+=hv*dt; } else walk.yaw+=hv*dt; dirty=true; })(lt); }
+{ let hv=0, lt=performance.now(), aim=null; (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
+  let want=0; const td=drag&&drag.touch&&!pinch&&drag.lx!=null?drag:null;
+  if(td){ const w=canvas.clientWidth||1, off=(td.lx-td.x)/w; if(Math.abs(off)>0.05) want=Math.sign(off)*Math.min(0.3,0.08+(Math.abs(off)-0.05)*0.7); }
+  hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?7:2.2)); /* kicks in almost at once, but the top speed is gentle */ if(Math.abs(hv)<0.002) hv=0;
+  if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.6,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.5))}; }
+  else if(!drag&&hv){ if(aim) aim.yaw+=hv*dt; else walk.yaw+=hv*dt; dirty=true; }
+  if(aim){ if(autoGo){ aim=null; return; } const k=1-Math.exp(-dt*(drag?9:6)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
+    if(!drag&&!hv&&Math.abs(dy)<0.0008&&Math.abs(dp)<0.0008) aim=null; } })(lt); }
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
 const lookYaw=(dx,dy)=>Math.atan2(-dx,dy); // camera yaw that looks along blender (dx,dy)
@@ -1527,6 +1534,13 @@ if(COARSE){ let f0=0, slow=0; setInterval(()=>{ const f=window.__ldFrames||0, fp
   slow=fps<40?slow+1:0; if(slow>=3&&Math.min(devicePixelRatio,2)>1.5){ perfK=0.75; setQuality(); dirty=true; } },2000); } addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// room tone: starts quietly on the first touch / click / key, follows the room you are in, your steps and other visitors' steps
+const tone=createRoomTone(), sndEl=document.getElementById('snd');
+const roomAt=(x,y)=>WALK&&L.door2&&x>L.door2.x0?'guestbook':(ROOMS.findIndex(q=>x>=q.x0&&x<=q.x1&&y>=q.y0&&y<=q.y1)===1?'room2':'room1');
+const mobXY=(()=>{ const r2=ROOMS[1]; return r2?{x:(r2.x0+r2.x1)/2,y:(r2.y0+r2.y1)/2}:null; })();
+sndEl.setAttribute('aria-pressed',String(!tone.muted)); sndEl.addEventListener('pointerdown',e=>e.stopPropagation());
+sndEl.addEventListener('click',e=>{ e.stopPropagation(); tone.setMuted(!tone.muted); sndEl.setAttribute('aria-pressed',String(!tone.muted)); stage.focus({preventScroll:true}); });
+const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touchend','keydown']) stage.addEventListener(ev,toneGo); window.__tone=tone;
 (function loop(now){
   requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep(); if(gbPending&&!autoGo){ gbPending=false; const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)<1.0) setTimeout(gbOpenFromView,250); }
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
@@ -1551,6 +1565,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
   botTick(dt); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
+  if(tone.running&&mode==='walk'){ const pl=[]; for(const p of PEERS.values()) pl.push({id:p.id,x:p.pos.x,y:p.pos.y,room:roomAt(p.pos.x,p.pos.y)}); tone.tick({room:roomAt(walk.x,walk.y),x:walk.x,y:walk.y,yaw:walk.yaw,peers:pl,mobile:mobXY}); }
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
