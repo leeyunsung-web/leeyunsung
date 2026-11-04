@@ -1213,6 +1213,15 @@ canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) 
     if(side){ pinch.side=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else pinch.side=0;
   [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); lastWork=null; dirty=true; });
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
+// computers: mouse wheel walks forward / back — however fast you spin it, you still walk at an easy pace (the spins queue up, up to ~2.5 m)
+{ let wq=0, wv=0, wside=0, wt=performance.now();
+  canvas.addEventListener('wheel',e=>{ if(mode!=='walk'||(typeof guest!=='undefined'&&guest.isOpen)) return; e.preventDefault(); autoGo=null; const k=e.deltaMode===1?40:e.deltaMode===2?800:1;
+    wq=Math.max(-2.5,Math.min(2.5,wq-e.deltaY*k*0.004)); },{passive:false});
+  (function wheelWalk(now){ requestAnimationFrame(wheelWalk); const dt=Math.min(0.05,(now-wt)/1000); wt=now; if(Math.abs(wq)<0.003&&Math.abs(wv)<0.01){ wq=0; wv=0; return; }
+    const want=Math.sign(wq)*Math.min(1.0,Math.sqrt(2*1.2*Math.abs(wq))); wv+=Math.max(-1.6*dt,Math.min(1.6*dt,want-wv)); const step=wv*dt; wq-=step; if(Math.sign(wq)!==Math.sign(wv)&&Math.abs(wq)<0.02) wq=0;
+    const fx=-Math.sin(walk.yaw)*Math.sign(step), fy=Math.cos(walk.yaw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); let mx=fx*a, my=fy*a;
+    if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ const side=[wside||1,-(wside||1)].find(q=>canWalk(walk.x+fx*0.6+sx*q*0.55,walk.y+fy*0.6+sy*q*0.55)&&canWalk(walk.x+sx*q*0.3,walk.y+sy*q*0.3)); if(side){ wside=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else wside=0;
+    const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); if(Math.hypot(walk.x-ox,walk.y-oy)<a*0.2){ wq=0; wv=0; } lastWork=null; dirty=true; })(wt); }
 // phones: slide left/right and keep the finger there -> the view keeps turning, smoothly, the further out the faster
 { let hv=0, lt=performance.now(); (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
   let want=0; if(drag&&drag.touch&&!pinch&&drag.lx!=null){ const w=canvas.clientWidth||1, off=(drag.lx-drag.x)/w; if(Math.abs(off)>0.08&&now-(drag.mt||0)>40) want=Math.sign(off)*Math.min(0.45,0.12+(Math.abs(off)-0.08)*1.2); }
