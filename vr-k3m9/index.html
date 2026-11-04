@@ -800,6 +800,7 @@ window.__gbScreen=()=>{ if(!GB) return null; const v=new THREE.Box3().setFromObj
 window.__gbState=()=>({open:guest.isOpen,dlg:!!document.querySelector('.gbx')});
 window.__gbOpen=()=>{ gbOpenFromView(); return guest.isOpen; };
 window.__gt=GT;
+window.__addPeer=m=>{ addPeer(m); return PEERS.has(m.id); }; window.__peerScreen=id=>{ const p=PEERS.get(id); if(!p) return null; const v=new THREE.Vector3(p.pos.x,1.0,-p.pos.y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1284,6 +1285,8 @@ function standAt(x,y,d0,nx,ny){ for(let d=d0; d>0.5; d-=0.15){ const sx=x+nx*d, 
 function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingClientRect(); _n2.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
   let best=null;
   const hw=_r2.intersectObjects(works.map(w=>w.mesh),false)[0]; if(hw) best={kind:'work',d:hw.distance,w:works.find(w=>w.mesh===hw.object)};
+  for(const p of PEERS.values()){ const hm=(p.h||165)/100, a=new THREE.Vector3(p.pos.x,0.1,-p.pos.y), b=new THREE.Vector3(p.pos.x,hm,-p.pos.y), q=new THREE.Vector3();
+    if(_r2.ray.distanceSqToSegment(a,b,q)<0.38*0.38){ const d=q.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'peer',d,p}; } }
   for(const [name,g] of sculptures()){ const bb=new THREE.Box3().setFromObject(g); if(bb.isEmpty()||!_r2.ray.intersectsBox(bb)) continue; // the sculpture itself, not its box: a work behind it stays clickable
     const h=_r2.intersectObject(g,true).find(x=>{ const gm=x.object.geometry; if(!x.object.isMesh||(x.object.material&&x.object.material.depthWrite===false)||(gm&&gm.type==='CylinderGeometry'&&gm.parameters.radiusTop<0.01)) return false; for(let o=x.object;o;o=o.parent) if(o.visible===false) return false; return true; });
     const hd=h?h.distance:null; // exact surface only: clicks in the gaps (the mobile's open space, behind its wires) go through to what is behind
@@ -1291,6 +1294,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
   if(!best) return; showMark(cx,cy); GT.tap=best;
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
+  if(best.kind==='peer'){ lastWork=null; lastSculpt=null; autoGo={peer:best.p.id,x:walk.x,y:walk.y,path:null,re:0}; return; } // walk up until "Say hello" shows; any other tap cancels
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
@@ -1326,6 +1330,12 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   // smooth head turn: the turning speed eases in and out and never goes past ~60°/s
   const turn=(to,max=1.05)=>{ const df=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw)), want=Math.max(-max,Math.min(max,df*2.2)); g.wv=(g.wv||0)+(want-(g.wv||0))*Math.min(1,dt*3.5); walk.yaw+=g.wv*dt; return Math.abs(df); };
   const tilt=(to,k=1.6)=>{ walk.pitch+=(to-walk.pitch)*Math.min(1,dt*k); };
+  if(g.peer){ const p=PEERS.get(g.peer); if(!p){ autoGo=null; return true; } const pdx=p.pos.x-walk.x, pdy=p.pos.y-walk.y, pd=Math.hypot(pdx,pdy);
+    if(pd<1.8){ g.path=null; const left=turn(lookYaw(pdx,pdy)); tilt(-0.02,2); if(left<0.03&&Math.abs(g.wv||0)<0.02) autoGo=null; return true; } // close enough to say hello: face them and stop
+    const now=performance.now(); if(!g.path||now-g.re>600){ g.re=now; const tx=p.pos.x-pdx/pd*1.4, ty=p.pos.y-pdy/pd*1.4, pt=findPath(walk.x,walk.y,tx,ty); if(!pt){ autoGo=null; return true; } g.path=pt; const e=pt[pt.length-1]; g.x=e[0]; g.y=e[1]; g.v=g.v||0; }
+    const wp=g.path[0], last=g.path.length<=1; if(!last&&Math.hypot(wp[0]-walk.x,wp[1]-walk.y)<0.35) g.path.shift();
+    const tx=g.path[0][0]-walk.x, ty=g.path[0][1]-walk.y, td=Math.hypot(tx,ty); if(td<0.05){ g.re=0; return true; }
+    g.v=Math.min(1.1,(g.v||0)+dt*0.9); const st=Math.min(td,g.v*dt); [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
   if(g.orbit){ const o=g.orbit; o.v=Math.min(0.45,(o.v||0)+dt*0.3); const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const nx=o.x+Math.cos(o.a)*o.r, ny=o.y+Math.sin(o.a)*o.r;
     if(!canWalk(nx,ny)){ autoGo=null; return true; } [walk.x,walk.y]=collide(nx,ny); turn(lookYaw(o.x-walk.x,o.y-walk.y),1.4); tilt(Math.atan2(o.top-EYE,o.r)); if(o.left<=0) autoGo=null; return true; }
   if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; if(Math.hypot(tx-walk.x,ty-walk.y)<(g.path[0][2]?0.12:0.35)){ const q=g.path.shift(); if(q.length>4) g.room={c:[q[3],q[4]],left:3}; } }
