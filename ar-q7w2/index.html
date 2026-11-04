@@ -51,6 +51,8 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     <button slot="ar-button" id="arBtn">View on your wall<small>내 벽에 걸어 보기 (AR)</small></button>
   </model-viewer>
   <div class="note" id="noAR" hidden>AR opens on a phone or tablet.<br>휴대폰이나 태블릿에서 이 페이지를 열어 주세요.</div>
+  <div class="note" id="inApp" hidden><span id="inAppMsg"></span><br><button id="extBtn" type="button" style="margin-top:8px;border:0;background:#1d1c1a;color:#fff;border-radius:999px;padding:9px 16px;font-size:13px" hidden>Open in browser · 브라우저로 열기</button></div>
+  <a id="qlLink" rel="ar" href="#" hidden style="position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);line-height:0"><img alt="View on your wall (AR)" src="ar-button.png" width="260" height="58" style="filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))"></a>
 </div>
 <script type="module" src="model-viewer.min.js"></script>
 <script>
@@ -68,9 +70,25 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     view.classList.add('on'); document.querySelector('#vt b').textContent=x.title;
     document.querySelector('#vt span').textContent=[x.year,x.medium,x.size].filter(Boolean).join(', ');
     var sl=document.getElementById('shopLink'); sl.hidden=!x.url; sl.href=x.url||'#';
-    mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
+    mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
+    var ql=document.getElementById('qlLink'); ql.href=(x.usdz||'')+'#allowsContentScaling=0';
     if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));
-    setTimeout(function(){ document.getElementById('noAR').hidden=!!mv.canActivateAR; },1200);
+    setTimeout(arFallback,1200);
+  }
+  // AR everywhere: Safari / Chrome / Edge / Firefox on iPhone use the ready-made Quick Look file, Android uses Scene Viewer or WebXR;
+  // in-app browsers (KakaoTalk, Instagram, NAVER, LINE, Facebook) cannot open the camera view, so we offer the outside browser
+  var UA=navigator.userAgent, IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), MOBILE=IOS||/Android/i.test(UA);
+  var APP=/KAKAOTALK/i.test(UA)?'kakao':/Instagram/i.test(UA)?'instagram':/NAVER\(inapp|NAVER/i.test(UA)?'naver':/\bLine\//i.test(UA)?'line':/FBAN|FBAV|FB_IAB/i.test(UA)?'facebook':'';
+  function arFallback(){
+    var noAR=document.getElementById('noAR'), inApp=document.getElementById('inApp'), ql=document.getElementById('qlLink'), btn=document.getElementById('arBtn');
+    noAR.hidden=true; inApp.hidden=true; ql.hidden=true;
+    if(mv.canActivateAR) return;
+    if(APP){ var msg={kakao:'KakaoTalk cannot open the camera view.<br>카카오톡 안에서는 AR이 열리지 않아요.',instagram:'Tap ··· (top right) → Open in external browser.<br>오른쪽 위 ··· → 외부 브라우저로 열기를 눌러 주세요.',naver:'Open this page in Safari or Chrome.<br>사파리나 크롬에서 열어 주세요.',line:'LINE cannot open the camera view.<br>LINE 안에서는 AR이 열리지 않아요.',facebook:'Tap ··· → Open in browser.<br>··· → 브라우저로 열기를 눌러 주세요.'}[APP];
+      document.getElementById('inAppMsg').innerHTML=msg; var eb=document.getElementById('extBtn'); eb.hidden=!(APP==='kakao'||APP==='line');
+      eb.onclick=function(){ var u=location.href; if(APP==='kakao') location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(u); else location.href=u+(u.indexOf('?')<0?'?':'&')+'openExternalBrowser=1'; };
+      inApp.hidden=false; return; }
+    if(IOS){ ql.hidden=false; return; }            // other iPhone browsers: a plain Quick Look link to the same file
+    if(!MOBILE) noAR.hidden=false;
   }
   function close(){ view.classList.remove('on'); mv.removeAttribute('src'); }
   document.getElementById('back').onclick=function(){ if(history.state&&history.state.id) history.back(); else { close(); history.replaceState(null,'',location.pathname); } };

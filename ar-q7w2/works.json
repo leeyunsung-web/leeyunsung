@@ -13,7 +13,8 @@
    "url": "/shop/head-of-torso/",
    "hidden": false,
    "glb": "glb/s-1793710000000-hdtr1.glb",
-   "thumb": "tex/t/s-1793710000000-hdtr1.jpg"
+   "thumb": "tex/t/s-1793710000000-hdtr1.jpg",
+   "usdz": "usdz/s-1793710000000-hdtr1.usdz"
   },
   {
    "id": "s-1793361059290-jkp8o",
@@ -28,7 +29,8 @@
    "url": "/shop/laocoon-2024-1/",
    "hidden": false,
    "glb": "glb/s-1793361059290-jkp8o.glb",
-   "thumb": "tex/t/s-1793361059290-jkp8o.jpg"
+   "thumb": "tex/t/s-1793361059290-jkp8o.jpg",
+   "usdz": "usdz/s-1793361059290-jkp8o.usdz"
   },
   {
    "id": "s-1793361286578-y3ojg",
@@ -43,7 +45,8 @@
    "url": "/shop/laocoon-2024-2/",
    "hidden": false,
    "glb": "glb/s-1793361286578-y3ojg.glb",
-   "thumb": "tex/t/s-1793361286578-y3ojg.jpg"
+   "thumb": "tex/t/s-1793361286578-y3ojg.jpg",
+   "usdz": "usdz/s-1793361286578-y3ojg.usdz"
   },
   {
    "id": "s-1793361496234-dyrzp",
@@ -58,7 +61,8 @@
    "url": "/shop/laocoon-2024-3/",
    "hidden": false,
    "glb": "glb/s-1793361496234-dyrzp.glb",
-   "thumb": "tex/t/s-1793361496234-dyrzp.jpg"
+   "thumb": "tex/t/s-1793361496234-dyrzp.jpg",
+   "usdz": "usdz/s-1793361496234-dyrzp.usdz"
   },
   {
    "id": "s-1790778508840-1dfbv",
@@ -73,7 +77,8 @@
    "url": "/shop/sd-zodiac-aries/",
    "hidden": true,
    "glb": "glb/s-1790778508840-1dfbv.glb",
-   "thumb": "tex/t/s-1790778508840-1dfbv.jpg"
+   "thumb": "tex/t/s-1790778508840-1dfbv.jpg",
+   "usdz": "usdz/s-1790778508840-1dfbv.usdz"
   },
   {
    "id": "s-1790774155257-fht69",
@@ -88,7 +93,8 @@
    "url": "/shop/sd-zodiac-helios/",
    "hidden": true,
    "glb": "glb/s-1790774155257-fht69.glb",
-   "thumb": "tex/t/s-1790774155257-fht69.jpg"
+   "thumb": "tex/t/s-1790774155257-fht69.jpg",
+   "usdz": "usdz/s-1790774155257-fht69.usdz"
   },
   {
    "id": "s-1790778537358-887zs",
@@ -103,7 +109,8 @@
    "url": "/shop/sd-zodiac-pisces/",
    "hidden": true,
    "glb": "glb/s-1790778537358-887zs.glb",
-   "thumb": "tex/t/s-1790778537358-887zs.jpg"
+   "thumb": "tex/t/s-1790778537358-887zs.jpg",
+   "usdz": "usdz/s-1790778537358-887zs.usdz"
   },
   {
    "id": "s-1790770248545-hgcaz",
@@ -118,7 +125,8 @@
    "url": "/shop/the-three-graces-pixel-props-05/",
    "hidden": false,
    "glb": "glb/s-1790770248545-hgcaz.glb",
-   "thumb": "tex/t/s-1790770248545-hgcaz.jpg"
+   "thumb": "tex/t/s-1790770248545-hgcaz.jpg",
+   "usdz": "usdz/s-1790770248545-hgcaz.usdz"
   },
   {
    "id": "s-1790773205085-h4d9d",
@@ -133,7 +141,8 @@
    "url": "/shop/the-three-graces-pixel-props-07/",
    "hidden": false,
    "glb": "glb/s-1790773205085-h4d9d.glb",
-   "thumb": "tex/t/s-1790773205085-h4d9d.jpg"
+   "thumb": "tex/t/s-1790773205085-h4d9d.jpg",
+   "usdz": "usdz/s-1790773205085-h4d9d.usdz"
   },
   {
    "id": "s-1790770433538-xp87a",
@@ -148,7 +157,8 @@
    "url": "/shop/the-three-graces-pixel-props-08/",
    "hidden": false,
    "glb": "glb/s-1790770433538-xp87a.glb",
-   "thumb": "tex/t/s-1790770433538-xp87a.jpg"
+   "thumb": "tex/t/s-1790770433538-xp87a.jpg",
+   "usdz": "usdz/s-1790770433538-xp87a.usdz"
   },
   {
    "id": "s-1790770458879-rgl4h",
@@ -163,7 +173,8 @@
    "url": "/shop/the-three-graces-pixel-props-09/",
    "hidden": false,
    "glb": "glb/s-1790770458879-rgl4h.glb",
-   "thumb": "tex/t/s-1790770458879-rgl4h.jpg"
+   "thumb": "tex/t/s-1790770458879-rgl4h.jpg",
+   "usdz": "usdz/s-1790770458879-rgl4h.usdz"
   },
   {
    "id": "s-1791254521015-hvrt2",
@@ -178,7 +189,8 @@
    "url": "/shop/torso-10/",
    "hidden": false,
    "glb": "glb/s-1791254521015-hvrt2.glb",
-   "thumb": "tex/t/s-1791254521015-hvrt2.jpg"
+   "thumb": "tex/t/s-1791254521015-hvrt2.jpg",
+   "usdz": "usdz/s-1791254521015-hvrt2.usdz"
   },
   {
    "id": "s-1793432663182-q6pra",
@@ -193,7 +205,8 @@
    "url": "/shop/torso-16/",
    "hidden": false,
    "glb": "glb/s-1793432663182-q6pra.glb",
-   "thumb": "tex/t/s-1793432663182-q6pra.jpg"
+   "thumb": "tex/t/s-1793432663182-q6pra.jpg",
+   "usdz": "usdz/s-1793432663182-q6pra.usdz"
   },
   {
    "id": "s-1791255439727-qkh2e",
@@ -208,7 +221,8 @@
    "url": "/shop/torso-18/",
    "hidden": false,
    "glb": "glb/s-1791255439727-qkh2e.glb",
-   "thumb": "tex/t/s-1791255439727-qkh2e.jpg"
+   "thumb": "tex/t/s-1791255439727-qkh2e.jpg",
+   "usdz": "usdz/s-1791255439727-qkh2e.usdz"
   },
   {
    "id": "s-1790622121911-1dl7b",
@@ -223,7 +237,8 @@
    "url": "/shop/at-the-last-judgment-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790622121911-1dl7b.glb",
-   "thumb": "tex/t/s-1790622121911-1dl7b.jpg"
+   "thumb": "tex/t/s-1790622121911-1dl7b.jpg",
+   "usdz": "usdz/s-1790622121911-1dl7b.usdz"
   },
   {
    "id": "s-1790623028311-pavmn",
@@ -238,7 +253,8 @@
    "url": "/shop/cronos-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790623028311-pavmn.glb",
-   "thumb": "tex/t/s-1790623028311-pavmn.jpg"
+   "thumb": "tex/t/s-1790623028311-pavmn.jpg",
+   "usdz": "usdz/s-1790623028311-pavmn.usdz"
   },
   {
    "id": "s-1792489302614-f6t8c",
@@ -253,7 +269,8 @@
    "url": "/shop/danae-blue-art-poster/",
    "hidden": false,
    "glb": "glb/s-1792489302614-f6t8c.glb",
-   "thumb": "tex/t/s-1792489302614-f6t8c.jpg"
+   "thumb": "tex/t/s-1792489302614-f6t8c.jpg",
+   "usdz": "usdz/s-1792489302614-f6t8c.usdz"
   },
   {
    "id": "s-1792489319925-j2ldo",
@@ -268,7 +285,8 @@
    "url": "/shop/danae-pink-art-poster/",
    "hidden": false,
    "glb": "glb/s-1792489319925-j2ldo.glb",
-   "thumb": "tex/t/s-1792489319925-j2ldo.jpg"
+   "thumb": "tex/t/s-1792489319925-j2ldo.jpg",
+   "usdz": "usdz/s-1792489319925-j2ldo.usdz"
   },
   {
    "id": "s-1792489341201-sstw5",
@@ -283,7 +301,8 @@
    "url": "/shop/danae-yellow-art-poster/",
    "hidden": false,
    "glb": "glb/s-1792489341201-sstw5.glb",
-   "thumb": "tex/t/s-1792489341201-sstw5.jpg"
+   "thumb": "tex/t/s-1792489341201-sstw5.jpg",
+   "usdz": "usdz/s-1792489341201-sstw5.usdz"
   },
   {
    "id": "s-1790623313493-6o5cs",
@@ -298,7 +317,8 @@
    "url": "/shop/laocoon-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790623313493-6o5cs.glb",
-   "thumb": "tex/t/s-1790623313493-6o5cs.jpg"
+   "thumb": "tex/t/s-1790623313493-6o5cs.jpg",
+   "usdz": "usdz/s-1790623313493-6o5cs.usdz"
   },
   {
    "id": "s-1792489283261-h6hij",
@@ -313,7 +333,8 @@
    "url": "/shop/annunciation-central-panels-art-poster/",
    "hidden": false,
    "glb": "glb/s-1792489283261-h6hij.glb",
-   "thumb": "tex/t/s-1792489283261-h6hij.jpg"
+   "thumb": "tex/t/s-1792489283261-h6hij.jpg",
+   "usdz": "usdz/s-1792489283261-h6hij.usdz"
   },
   {
    "id": "s-1790624929547-vad9p",
@@ -328,7 +349,8 @@
    "url": "/shop/torso-01-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624929547-vad9p.glb",
-   "thumb": "tex/t/s-1790624929547-vad9p.jpg"
+   "thumb": "tex/t/s-1790624929547-vad9p.jpg",
+   "usdz": "usdz/s-1790624929547-vad9p.usdz"
   },
   {
    "id": "s-1790624935331-clud2",
@@ -343,7 +365,8 @@
    "url": "/shop/torso-02-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624935331-clud2.glb",
-   "thumb": "tex/t/s-1790624935331-clud2.jpg"
+   "thumb": "tex/t/s-1790624935331-clud2.jpg",
+   "usdz": "usdz/s-1790624935331-clud2.usdz"
   },
   {
    "id": "s-1790624943259-8qxbq",
@@ -358,7 +381,8 @@
    "url": "/shop/torso-03-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624943259-8qxbq.glb",
-   "thumb": "tex/t/s-1790624943259-8qxbq.jpg"
+   "thumb": "tex/t/s-1790624943259-8qxbq.jpg",
+   "usdz": "usdz/s-1790624943259-8qxbq.usdz"
   },
   {
    "id": "s-1790624948985-2vkw6",
@@ -373,7 +397,8 @@
    "url": "/shop/torso-04-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624948985-2vkw6.glb",
-   "thumb": "tex/t/s-1790624948985-2vkw6.jpg"
+   "thumb": "tex/t/s-1790624948985-2vkw6.jpg",
+   "usdz": "usdz/s-1790624948985-2vkw6.usdz"
   },
   {
    "id": "s-1790624955390-u6892",
@@ -388,7 +413,8 @@
    "url": "/shop/torso-05-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624955390-u6892.glb",
-   "thumb": "tex/t/s-1790624955390-u6892.jpg"
+   "thumb": "tex/t/s-1790624955390-u6892.jpg",
+   "usdz": "usdz/s-1790624955390-u6892.usdz"
   },
   {
    "id": "s-1790624960499-n3l60",
@@ -403,7 +429,8 @@
    "url": "/shop/torso-06-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624960499-n3l60.glb",
-   "thumb": "tex/t/s-1790624960499-n3l60.jpg"
+   "thumb": "tex/t/s-1790624960499-n3l60.jpg",
+   "usdz": "usdz/s-1790624960499-n3l60.usdz"
   },
   {
    "id": "s-1790624979413-mam24",
@@ -418,7 +445,8 @@
    "url": "/shop/torso-07-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624979413-mam24.glb",
-   "thumb": "tex/t/s-1790624979413-mam24.jpg"
+   "thumb": "tex/t/s-1790624979413-mam24.jpg",
+   "usdz": "usdz/s-1790624979413-mam24.usdz"
   },
   {
    "id": "s-1790624985943-p3hci",
@@ -433,7 +461,8 @@
    "url": "/shop/torso-08-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624985943-p3hci.glb",
-   "thumb": "tex/t/s-1790624985943-p3hci.jpg"
+   "thumb": "tex/t/s-1790624985943-p3hci.jpg",
+   "usdz": "usdz/s-1790624985943-p3hci.usdz"
   },
   {
    "id": "s-1790624990900-t4w8b",
@@ -448,7 +477,8 @@
    "url": "/shop/torso-09-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624990900-t4w8b.glb",
-   "thumb": "tex/t/s-1790624990900-t4w8b.jpg"
+   "thumb": "tex/t/s-1790624990900-t4w8b.jpg",
+   "usdz": "usdz/s-1790624990900-t4w8b.usdz"
   },
   {
    "id": "s-1790624996756-xnr3j",
@@ -463,7 +493,8 @@
    "url": "/shop/torso-10-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790624996756-xnr3j.glb",
-   "thumb": "tex/t/s-1790624996756-xnr3j.jpg"
+   "thumb": "tex/t/s-1790624996756-xnr3j.jpg",
+   "usdz": "usdz/s-1790624996756-xnr3j.usdz"
   },
   {
    "id": "s-1790625359809-iikzl",
@@ -478,7 +509,8 @@
    "url": "/shop/torso-14-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790625359809-iikzl.glb",
-   "thumb": "tex/t/s-1790625359809-iikzl.jpg"
+   "thumb": "tex/t/s-1790625359809-iikzl.jpg",
+   "usdz": "usdz/s-1790625359809-iikzl.usdz"
   },
   {
    "id": "s-1790625368565-3m6dk",
@@ -493,7 +525,8 @@
    "url": "/shop/torso-16-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790625368565-3m6dk.glb",
-   "thumb": "tex/t/s-1790625368565-3m6dk.jpg"
+   "thumb": "tex/t/s-1790625368565-3m6dk.jpg",
+   "usdz": "usdz/s-1790625368565-3m6dk.usdz"
   },
   {
    "id": "s-1790625378337-5f333",
@@ -508,7 +541,8 @@
    "url": "/shop/torso-18-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790625378337-5f333.glb",
-   "thumb": "tex/t/s-1790625378337-5f333.jpg"
+   "thumb": "tex/t/s-1790625378337-5f333.jpg",
+   "usdz": "usdz/s-1790625378337-5f333.usdz"
   },
   {
    "id": "s-1790625066588-fg7t1",
@@ -523,7 +557,8 @@
    "url": "/shop/torso-digital-art-poster/",
    "hidden": false,
    "glb": "glb/s-1790625066588-fg7t1.glb",
-   "thumb": "tex/t/s-1790625066588-fg7t1.jpg"
+   "thumb": "tex/t/s-1790625066588-fg7t1.jpg",
+   "usdz": "usdz/s-1790625066588-fg7t1.usdz"
   }
  ]
 }
