@@ -1598,12 +1598,21 @@ function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return fal
       if(Math.abs(camera.aspect-asp)>0.01){ camera.aspect=asp; camera.updateProjectionMatrix(); }
       const w0=it.reduce((b,w)=>!b||Math.hypot(w.mesh.position.x-cx,-w.mesh.position.z-cy)<Math.hypot(b.mesh.position.x-cx,-b.mesh.position.z-cy)?w:b,null), u=unitOf(w0), m=u.mesh;
       const wx=m.position.x, wy=-m.position.z, wnx=Math.sin(m.rotation.y), wny=-Math.cos(m.rotation.y), st=standAt(wx,wy,Math.min(workDist(u),8),wnx,wny);
-      if(st){ [walk.x,walk.y]=st; startFit={u,nx:wnx,ny:wny,k:0}; walk.yaw=lookYaw(-wnx,-wny); walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(st[0]-wx,st[1]-wy)); setMode('walk'); placeWalkCam(); return true; } } }
+      if(st){ [walk.x,walk.y]=st; startFit={u,nx:wnx,ny:wny,k:0}; introLook=m.position; walk.yaw=lookYaw(-wnx,-wny); walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(st[0]-wx,st[1]-wy)); setMode('walk'); placeWalkCam(); return true; } } }
   const room=ROOMS.find(r=>cx>r.x0-0.3&&cx<r.x1+0.3&&cy>r.y0-0.3&&cy<r.y1+0.3)||ROOMS[0], horiz=WALLS[k].u==='x';
   let nx=0,ny=0; if(horiz) ny=cy>(room.y0+room.y1)/2?-1:1; else nx=cx>(room.x0+room.x1)/2?-1:1;   // into the room
   const span=horiz?(room.y1-room.y0):(room.x1-room.x0), d=Math.min(4.2,span*0.45);
   [walk.x,walk.y]=collide(cx+nx*d,cy+ny*d); walk.yaw=Math.atan2(nx,-ny); walk.pitch=-0.02; setMode('walk'); placeWalkCam(); return true;}
-if(document.documentElement.classList.contains('embed')&&randomWallView()){}
+let intro=null, introLook=null; // homepage opening: the work fills the screen, then a second or two later you ease back a little
+function introStep(now){ const box=document.getElementById('load');
+  if(intro.wait){ if(box&&!box.hidden) return; intro={t0:now+1500,x:walk.x,y:walk.y,bx:Math.sin(walk.yaw),by:-Math.cos(walk.yaw),d:COARSE?0.8:1.0,dur:2800}; return; }
+  if(autoGo||drag||pinch||keys.size){ intro=null; return; } if(now<intro.t0) return;
+  const t=Math.min(1,(now-intro.t0)/intro.dur), e=t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, nx=intro.x+intro.bx*intro.d*e, ny=intro.y+intro.by*intro.d*e; /* smooth start, smooth stop */
+  if(!canWalk(nx,ny)){ intro=null; return; } walk.x=nx; walk.y=ny;
+  if(introLook) walk.pitch=Math.atan2(introLook.y-EYE,Math.hypot(nx-introLook.x,ny+introLook.z)); /* keep the work centred as you step back */
+  dirty=true; if(t>=1) intro=null; }
+if(document.documentElement.classList.contains('embed')&&randomWallView()){ intro={wait:true};
+  const stopIntro=()=>{ intro=null; }; for(const ev of ['pointerdown','wheel','keydown']) stage.addEventListener(ev,stopIntro,{capture:true}); }
 else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
 { // which paintings come first: the ones in the room you stand in (and anything within 7 m, e.g. through the doorway)
   const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4), here=roomOf(walk.x,walk.y);
@@ -1632,7 +1641,7 @@ sndEl.setAttribute('aria-pressed',String(!tone.muted)); sndEl.addEventListener('
 sndEl.addEventListener('click',e=>{ e.stopPropagation(); tone.setMuted(!tone.muted); sndEl.setAttribute('aria-pressed',String(!tone.muted)); stage.focus({preventScroll:true}); });
 const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touchend','keydown']) stage.addEventListener(ev,toneGo); window.__tone=tone;
 (function loop(now){
-  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep(); if(gbPending&&!autoGo){ gbPending=false; const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)<1.0) setTimeout(gbOpenFromView,250); }
+  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep(); else if(intro) introStep(now); if(gbPending&&!autoGo){ gbPending=false; const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)<1.0) setTimeout(gbOpenFromView,250); }
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
   if(mode==='walk'){
     let fwd=0, strafe=0, turn=0;
