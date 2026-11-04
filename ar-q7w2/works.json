@@ -559,6 +559,34 @@
    "glb": "glb/s-1790625066588-fg7t1.glb",
    "thumb": "tex/t/s-1790625066588-fg7t1.jpg",
    "usdz": "usdz/s-1790625066588-fg7t1.usdz"
+  },
+  {
+   "id": "s-1793281860372-q9sg2",
+   "title": "Torso Sculpture 01",
+   "year": "2026",
+   "kind": "sculpture",
+   "medium": "Painted 3D-printed resin",
+   "size": "50 × 43 × 38 cm",
+   "url": "/shop/torso-sculpture/",
+   "hidden": false,
+   "glb": "glb/s-1793281860372-q9sg2.glb",
+   "usdz": "usdz/s-1793281860372-q9sg2.usdz",
+   "thumb": "tex/t/s-1793281860372-q9sg2.jpg",
+   "floor": true
+  },
+  {
+   "id": "s-1793370000000-mdsv1",
+   "title": "Head of Medusa (Silver Edition)",
+   "year": "2021",
+   "kind": "sculpture",
+   "medium": "Painted 3D-printed resin",
+   "size": "30 × 24 × 24 cm",
+   "url": "/shop/head-of-medusa-silver-edition/",
+   "hidden": false,
+   "glb": "glb/s-1793370000000-mdsv1.glb",
+   "usdz": "usdz/s-1793370000000-mdsv1.usdz",
+   "thumb": "tex/t/s-1793370000000-mdsv1.jpg",
+   "floor": true
   }
  ]
 }

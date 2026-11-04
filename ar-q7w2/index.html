@@ -41,7 +41,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
 <header id="hd" hidden>
   <h1>View on your wall</h1>
   <div class="sub">Pick a work, then point your phone at a wall: it appears at its real size.<br>작품을 고른 뒤 휴대폰으로 벽을 비추면 실제 크기로 걸려요.</div>
-  <div class="tabs" id="tabs"><button data-k="original" aria-pressed="true">Originals</button><button data-k="edition" aria-pressed="false">Posters</button></div>
+  <div class="tabs" id="tabs"><button data-k="original" aria-pressed="true">Originals</button><button data-k="edition" aria-pressed="false">Posters</button><button data-k="sculpture" aria-pressed="false">Sculpture</button></div>
 </header>
 <main id="grid" hidden></main>
 <div id="view">
@@ -69,6 +69,8 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     view.classList.add('on'); document.querySelector('#vt b').textContent=x.title;
     document.querySelector('#vt span').textContent=[x.year,x.medium,x.size].filter(Boolean).join(', ');
     var sl=document.getElementById('shopLink'); sl.hidden=!x.url; sl.href=x.url||'#';
+    mv.setAttribute('ar-placement',x.floor?'floor':'wall'); mv.setAttribute('camera-orbit',x.floor?'0deg 75deg auto':'0deg 90deg auto'); mv.setAttribute('min-camera-orbit',x.floor?'-Infinity 20deg auto':'-55deg 55deg auto'); mv.setAttribute('max-camera-orbit',x.floor?'Infinity 100deg auto':'55deg 125deg auto');
+    document.getElementById('arBtn').firstChild.textContent=x.floor?'View in your space':'View on your wall'; document.querySelector('#arBtn small').textContent=x.floor?'내 공간에 놓아 보기 (AR)':'내 벽에 걸어 보기 (AR)';
     mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
     var ql=document.getElementById('qlLink'); ql.href=(x.usdz||'')+'#allowsContentScaling=0';
     if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));

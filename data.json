@@ -5297,7 +5297,8 @@
         "workId": "w-1793283604373-y69no",
         "image": "./images/s-1793281860372-q9sg2-cover.jpg"
       },
-      "dimImage": "./images/s-1793281860372-q9sg2-dim.jpg"
+      "dimImage": "./images/s-1793281860372-q9sg2-dim.jpg",
+      "arModel": true
     },
     {
       "id": "s-1793370000000-mdsv1",
@@ -5367,7 +5368,8 @@
         "workId": "w6",
         "image": "./images/w6-p-1789630543552-aqba3.jpg"
       },
-      "dimImage": "./images/s-1793370000000-mdsv1-dim.jpg"
+      "dimImage": "./images/s-1793370000000-mdsv1-dim.jpg",
+      "arModel": true
     },
     {
       "id": "s-1793361496234-dyrzp",
