@@ -526,9 +526,11 @@ function shadowTex(w,h){
   const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return {t,M};
 }
 const works=[], shadowMats=[];
+// paintings load near-first: the room you start in comes with the loading screen, the rest streams in afterwards (nearest first)
+const PH=new THREE.DataTexture(new Uint8Array([228,226,222,255]),1,1); PH.colorSpace=THREE.SRGBColorSpace; PH.needsUpdate=true;
 const wallOf=p=>p.wall||(p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R');
 for(const p of L.paintings){
-  const front=new THREE.MeshBasicMaterial({map:tex('/images/'+p.file),color:new THREE.Color(0.93,0.93,0.93)});
+  const front=new THREE.MeshBasicMaterial({map:PH,color:new THREE.Color(0.93,0.93,0.93)});
   front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
     sh.vertexShader='varying float vDist;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vDist=-mvPosition.z;');
     // texture anti-aliasing: 4 sub-pixel samples per pixel (rotated grid) so fine lines stop shimmering when far away,
@@ -549,7 +551,7 @@ for(const p of L.paintings){
   const sm=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
   const sh=new THREE.Mesh(new THREE.PlaneGeometry(p.w+2*M,p.h+2*M),sm); sh.position.z=-0.0185; sh.layers.set(1); m.add(sh); shadowMats.push(sm); // layer 1: the floor mirror skips it (its skewed depth drew the shadow over the canvas)
   const wall=wallOf(p);
-  works.push({mesh:m,p,wall,baseY:p.z,pos:m.position.clone(),caption:p.caption||''});
+  works.push({mesh:m,p,wall,baseY:p.z,pos:m.position.clone(),caption:p.caption||'',file:'tex/'+p.file,full:'/images/'+p.file,mat:front});
 }
 // per-wall layout: order along the wall, original centre and gap
 const WALLS={F:{u:'x',sgn:1,len:W},B:{u:'x',sgn:-1,len:W},L:{u:'y',sgn:1,len:LL},R:{u:'y',sgn:-1,len:LL},
@@ -1313,7 +1315,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       const tx=-ny, ty=nx, D=Math.hypot(s[0]-x,s[1]-y); let pick=null, ps=1e9;
       for(let d=D; d>=1.2; d-=0.25) for(const o of [0,0.35,-0.35,0.7,-0.7,1.05,-1.05]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=(D-d)+Math.abs(o)*0.8; if(sc>=ps||!canWalk(sx,sy)||!workSeen(w,sx,sy)) continue; ps=sc; pick=[sx,sy]; }
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; autoGo.cy=m.position.y; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; autoGo.cy=m.position.y; if(window.hiRes) window.hiRes(w); lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1409,6 +1411,7 @@ function updateCaption(){
   if(lastWork&&lastWork.w&&sameRoom(lastWork.w.pos)){ const w=lastWork.w; _cv.copy(w.pos).project(camera); // the work you clicked always wins while it is on screen
     const nx=Math.sin(w.mesh.rotation.y), nz=Math.cos(w.mesh.rotation.y), front=(p.x-w.pos.x)*nx+(p.z-w.pos.z)*nz>0.2;
     if(front&&_cv.z<1&&Math.abs(_cv.x)<0.85&&Math.abs(_cv.y)<0.9) best=w; }
+  if(best&&best.mesh&&window.hiRes) window.hiRes(best);
   const c=best?best.caption:''; if(c!==lastCap){lastCap=c; showCap(c);}
 }
 // like film subtitles: low and centred, fades out, then the next line fades in
@@ -1454,6 +1457,19 @@ function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return fal
   [walk.x,walk.y]=collide(cx+nx*d,cy+ny*d); walk.yaw=Math.atan2(nx,-ny); walk.pitch=-0.02; setMode('walk'); placeWalkCam(); return true;}
 if(document.documentElement.classList.contains('embed')&&randomWallView()){}
 else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
+{ // which paintings come first: the ones in the room you stand in (and anything within 7 m, e.g. through the doorway)
+  const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4), here=roomOf(walk.x,walk.y);
+  const dist=w=>Math.hypot(w.mesh.position.x-walk.x,-w.mesh.position.z-walk.y), first=[], later=[];
+  for(const w of works){ ((here>=0&&roomOf(w.mesh.position.x,-w.mesh.position.z)===here)||dist(w)<7?first:later).push(w); }
+  const put=(w,t)=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; w.mat.map=t; w.mat.needsUpdate=true; dirty=true; };
+  const tl2=new THREE.TextureLoader();
+  for(const w of first){ const t=tl.load(w.file,undefined,undefined,()=>{ if(!w.hi) tl2.load(w.full,t2=>put(w,t2)); }); put(w,t); } // light copy (1024 px); falls back to the full image
+  later.sort((a,b)=>dist(a)-dist(b)); let li=0;
+  const next=()=>{ const w=later[li++]; if(!w) return; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); setTimeout(next,30); },undefined,()=>tl2.load(w.full,t=>{ put(w,t); setTimeout(next,30); },undefined,()=>setTimeout(next,30))); };
+  // full-resolution image only for the work you are actually looking at (or clicked)
+  window.hiRes=u=>{ for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t)); } };
+  const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); for(let k=0;k<3;k++) next(); }; // three at a time once the room is on screen
+  setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
 setInterval(saveState,1000); addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
