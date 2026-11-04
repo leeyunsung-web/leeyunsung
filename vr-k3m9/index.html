@@ -771,7 +771,7 @@ function updatePeople(dt){
 // the room: a websocket to the exhibition server (positions and short messages only, nothing stored)
 let room=null, roomMe=null, roomBack=1000, roomSent={x:1e9,y:1e9,a:1e9,t:0}, online=1;
 function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSocket(ROOM_URL); }catch(e){ return; }
-  room.onopen=()=>{ roomBack=1000; room.send(JSON.stringify({t:'hi',h:MY_H,x:walk.x,y:walk.y,a:walk.yaw})); };
+  room.onopen=()=>{ roomBack=1000; let v=0, sid=''; try{ const o=JSON.parse(localStorage.getItem('lysV')||'null'); v=o&&o.n|0; sid=sessionStorage.getItem('lysSid')||''; }catch(e){} room.send(JSON.stringify({t:'hi',h:MY_H,x:walk.x,y:walk.y,a:walk.yaw,v,sid})); };
   room.onmessage=e=>{ let m; try{ m=JSON.parse(e.data); }catch(err){ return; }
     if(m.t==='welcome'){ roomMe=m.id; for(const q of m.peers||[]) addPeer(q); }
     else if(m.t==='join') addPeer(m);
@@ -1153,7 +1153,11 @@ document.getElementById('chatLogBtn').onclick=async()=>{ const box=PD.getElement
   try{ const r=await fetch('https://leeyunsung-shop.nu-layer.workers.dev/api/room/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t})}); const j=await r.json(); if(!r.ok) throw new Error(j.error||r.status);
     box.innerHTML=''; box.hidden=false; const rows=(j.rows||[]).slice().reverse(); note.textContent=rows.length?('최근 '+rows.length+'개 · 같은 방문자는 같은 번호'):'아직 남은 대화가 없어요.';
     const fmt=ts=>new Date(ts+9*36e5).toISOString().slice(5,16).replace('T',' ');
-    for(const q of rows){ const d=PD.createElement('div'), a=PD.createElement('span'), b=PD.createElement('span'), c=PD.createElement('b'); a.textContent=fmt(q.ts); b.textContent='#'+String(q.id||'').slice(0,4); c.textContent=q.m; c.style.fontWeight='400'; d.append(a,b,c); box.appendChild(d); }
+    const DEVN={desktop:'PC',mobile:'휴대폰',tablet:'태블릿'}, cn=c=>{ try{ return new Intl.DisplayNames(['ko'],{type:'region'}).of(c)||c; }catch(e){ return c||''; } };
+    for(const q of rows){ const d=PD.createElement('div'), a=PD.createElement('span'), b=PD.createElement('span'), c=PD.createElement('b'), w=PD.createElement('small');
+      a.textContent=fmt(q.ts); b.textContent='#'+String(q.id||'').slice(0,4); c.textContent=q.m; c.style.fontWeight='400';
+      w.textContent=[q.cc?cn(q.cc):'', q.city||q.rg||'', DEVN[q.dev]||q.dev||'', q.v>0?q.v+'번째 방문':'', q.n>1?'함께 '+q.n+'명':''].filter(Boolean).join(' · '); w.style.cssText='display:block;color:var(--muted);font-size:11.5px;margin-top:1px'; c.appendChild(w);
+      d.append(a,b,c); box.appendChild(d); }
     box.scrollTop=box.scrollHeight; }catch(e){ note.textContent='불러오지 못했어요 ('+e.message+')'; } };
 const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onWrite:g=>{ if(!GT.wrote.has(g)){ GT.wrote.add(g); GT('g_gb_write'); } },onOpen:()=>{keys.clear(); dirty=true; GT('g_gb_open');},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
 const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
@@ -1358,7 +1362,7 @@ function moveJoy(e){const r=joy.getBoundingClientRect(); let x=(e.clientX-r.left
 // ---------- visit stats for the gallery (same pipeline as the site's visit stats; the master's own visits are not counted) ----------
 var GTQ=[], GTT=0;
 function GT(t,k,n){ if(GT.off) return; GTQ.push([t,'/vr-k3m9/',String(k||'').slice(0,120),Math.round(n||0)]); if(GTQ.length>=15) GT.flush(); else if(!GTT) GTT=setTimeout(GT.flush,5000); }
-GT.off=/(^|; )lysM=1/.test(document.cookie)||/[?&]room=ws/.test(location.search); GT.wrote=new Set(); GT.rooms=new Set(); GT.peak=0; GT.t0=Date.now(); GT.act=0; GT.last=Date.now();
+GT.off=/(^|; )lysM=1/.test(document.cookie)||(()=>{ try{ return localStorage.getItem('lysNoTrack')==='1'; }catch(e){ return false; } })()||navigator.webdriver||/[?&]room=ws/.test(location.search); GT.wrote=new Set(); GT.rooms=new Set(); GT.peak=0; GT.t0=Date.now(); GT.act=0; GT.last=Date.now();
 GT.flush=()=>{ clearTimeout(GTT); GTT=0; if(!GTQ.length) return; let sid=''; try{ sid=sessionStorage.getItem('lysSid')||''; if(!sid){ sid=Math.random().toString(36).slice(2,10); sessionStorage.setItem('lysSid',sid); } }catch(e){}
   const b=JSON.stringify({ev:GTQ.splice(0,40),l:GB_LANG==='en'?'en':'ko',r:'',s:sid}), A='https://leeyunsung-shop.nu-layer.workers.dev/api/t';
   try{ if(!(navigator.sendBeacon&&navigator.sendBeacon(A,new Blob([b],{type:'text/plain'})))) fetch(A,{method:'POST',body:b,keepalive:true}); }catch(e){} };
