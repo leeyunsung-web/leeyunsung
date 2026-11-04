@@ -805,6 +805,7 @@ window.__gt=GT;
 window.__addPeer=m=>{ addPeer(m); return PEERS.has(m.id); }; window.__peerScreen=id=>{ const p=PEERS.get(id); if(!p) return null; const v=new THREE.Vector3(p.pos.x,1.0,-p.pos.y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
 window.__workNdc=i=>{ const u=unitOf(works[i]), v=u.mesh.position.clone().project(camera); return [+v.x.toFixed(3),+v.y.toFixed(3)]; };
 window.__workRects=()=>{ const r=canvas.getBoundingClientRect(), out=[]; for(const w of works){ const b=new THREE.Box3().setFromObject(w.mesh), xs=[], ys=[]; let ok=true; for(let i=0;i<8;i++){ const v=new THREE.Vector3(i&1?b.max.x:b.min.x,i&2?b.max.y:b.min.y,i&4?b.max.z:b.min.z).project(camera); if(v.z>1) ok=false; xs.push((v.x+1)/2*r.width); ys.push((1-v.y)/2*r.height); } if(ok) out.push({t:(w.caption||'').split('|')[0],x0:Math.min(...xs),y0:Math.min(...ys),x1:Math.max(...xs),y1:Math.max(...ys)}); } return out.filter(q=>q.x1>0&&q.x0<r.width&&q.y1>0&&q.y0<r.height); };
+window.__gaze=(x,y,dx,dy)=>roomGaze(x,y,dx,dy);
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1227,11 +1228,15 @@ const GATES=[]; { const W=WALK[WALK.length-1];
   if(L.door2) GATES.push({c:[L.door2.x0,(L.door2.y0+L.door2.y1)/2],ax:[1,0],h:(L.door2.y1-L.door2.y0)/2-R}); }
 function gateCross(ax,ay,bx,by){ for(const G of GATES){ const [cx,cy]=G.c, [ux,uy]=G.ax, sa=(ax-cx)*ux+(ay-cy)*uy, sb=(bx-cx)*ux+(by-cy)*uy; if(sa*sb>=0) continue;
     const t=sa/(sa-sb), px=ax+(bx-ax)*t-cx, py=ay+(by-ay)*t-cy; if(Math.abs(px*-uy+py*ux)<G.h+0.6) return {G,s:Math.sign(sb-sa)}; } return null; }
+// stepping through a door: look at the works of the room you enter (the biggest one roughly ahead), not at a bare wall
+function roomGaze(x,y,dx,dy){ const r=ROOMS.find(q=>x>=q.x0-0.5&&x<=q.x1+0.5&&y>=q.y0-0.5&&y<=q.y1+0.5); if(!r||typeof works==='undefined') return null; let best=null, bs=0;
+  for(const u of new Set(works.map(unitOf))){ const px=u.mesh.position.x, py=-u.mesh.position.z; if(px<r.x0-0.3||px>r.x1+0.3||py<r.y0-0.3||py>r.y1+0.3) continue;
+    const vx=px-x, vy=py-y, d=Math.hypot(vx,vy)||1, c=(vx*dx+vy*dy)/d; if(c<0.35||d<3) continue; const sc=u.p.w*u.p.h*c*c*Math.min(d,9); /* a work across the room, roughly ahead, not one right beside the door */ if(sc>bs){ bs=sc; best=[px,py]; } } return best; }
 function gatePt(G,k){ const sg=Math.sign(k); for(let d=Math.abs(k);d>0.2;d-=0.1){ const x=G.c[0]+G.ax[0]*d*sg, y=G.c[1]+G.ax[1]*d*sg; if(canWalk(x,y)) return [x,y,1]; } return [G.c[0],G.c[1],1]; }
 function findPath(ax,ay,bx,by){ const raw=pathCore(ax,ay,bx,by); if(!raw) return raw;
   const poly=[[ax,ay],...raw], out=[]; let cur=[ax,ay], used=new Set();
   for(let i=1;i<poly.length;i++){ const x=gateCross(poly[i-1][0],poly[i-1][1],poly[i][0],poly[i][1]); if(!x||used.has(x.G)) continue; used.add(x.G);
-    const pin=gatePt(x.G,-0.9*x.s), pout=gatePt(x.G,0.9*x.s); { const r=ROOMS.find(r=>pout[0]>=r.x0&&pout[0]<=r.x1&&pout[1]>=r.y0&&pout[1]<=r.y1); if(r) pout.push((r.x0+r.x1)/2,(r.y0+r.y1)/2); } const leg=pathCore(cur[0],cur[1],pin[0],pin[1])||[];
+    const pin=gatePt(x.G,-0.9*x.s), pout=gatePt(x.G,0.9*x.s); { const r=ROOMS.find(r=>pout[0]>=r.x0&&pout[0]<=r.x1&&pout[1]>=r.y0&&pout[1]<=r.y1); const gz=roomGaze(pout[0],pout[1],x.G.ax[0]*x.s,x.G.ax[1]*x.s); if(gz) pout.push(gz[0],gz[1]); else if(r) pout.push((r.x0+r.x1)/2,(r.y0+r.y1)/2); } const leg=pathCore(cur[0],cur[1],pin[0],pin[1])||[];
     if(leg.length) leg[leg.length-1]=pin; else out.push(pin); out.push(...leg, pout); cur=pout; }
   if(!used.size) return raw; out.push(...(pathCore(cur[0],cur[1],bx,by)||[[bx,by]])); return out; }
 function pathCore(ax,ay,bx,by){
@@ -1334,7 +1339,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     for(const G of GATES){ const ax=x-G.c[0], ay=y-G.c[1], along=ax*G.ax[0]+ay*G.ax[1], across=-ax*G.ax[1]+ay*G.ax[0], side=(walk.x-G.c[0])*G.ax[0]+(walk.y-G.c[1])*G.ax[1];
       if(Math.abs(along)<1.6&&Math.abs(across)<G.h+0.9&&Math.abs(side)>0.3){ // the floor by the door: go on through
         const sg=-Math.sign(side); let tx=G.c[0]+G.ax[0]*sg*2.4, ty=G.c[1]+G.ax[1]*sg*2.4; for(let k=2.4;k>1&&!canWalk(tx,ty);k-=0.2){ tx=G.c[0]+G.ax[0]*sg*k; ty=G.c[1]+G.ax[1]*sg*k; }
-        const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), yaw=r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null;
+        const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), gz=roomGaze(tx,ty,G.ax[0]*sg,G.ax[1]*sg), yaw=gz?lookYaw(gz[0]-tx,gz[1]-ty):r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null;
         if(goTo(tx,ty,yaw,yaw==null?null:-0.02)) return; } }
     goTo(x,y,null,null); } }
 // one step of the walk you asked for (called from the main loop)
