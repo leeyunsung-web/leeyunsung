@@ -1452,7 +1452,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       for(let d=slid?Math.min(D,Math.hypot(walk.x-x,walk.y-y)):D; d>=0.9; d-=0.2) for(const o of [0,0.25,-0.25,0.5,-0.5,0.75,-0.75,1.0,-1.0,1.3,-1.3]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=Math.abs(o)*1.2+(D-d)*0.5;
         if(sc>=ps||!roomy(sx,sy)||!workSeen(w,sx,sy,close)) continue; ps=sc; pick=[sx,sy]; } /* keep a little room around you (not pressed against a pedestal) */
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; if(window.hiRes) window.hiRes(w); lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; hiWant=w; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1562,7 +1562,7 @@ function updateCaption(){
     const nx=Math.sin(w.mesh.rotation.y), nz=Math.cos(w.mesh.rotation.y), front=(p.x-w.pos.x)*nx+(p.z-w.pos.z)*nz>0.2;
     if(front&&_cv.z<1&&Math.abs(_cv.x)<0.85&&Math.abs(_cv.y)<0.9) best=w; }
   window.capWork=best&&best.mesh?best:null; // the work whose caption is on screen now
-  if(best&&best.mesh&&window.hiRes) window.hiRes(best);
+  if(best&&best.mesh) hiWant=best; /* the full image loads once you have stopped on it (see the loop) */
   const c=best?best.caption:''; if(c!==lastCap){lastCap=c; showCap(c);}
 }
 // like film subtitles: low and centred, fades out, then the next line fades in
@@ -1606,6 +1606,8 @@ function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return fal
   let nx=0,ny=0; if(horiz) ny=cy>(room.y0+room.y1)/2?-1:1; else nx=cx>(room.x0+room.x1)/2?-1:1;   // into the room
   const span=horiz?(room.y1-room.y0):(room.x1-room.x0), d=Math.min(4.2,span*0.45);
   [walk.x,walk.y]=collide(cx+nx*d,cy+ny*d); walk.yaw=Math.atan2(nx,-ny); walk.pitch=-0.02; setMode('walk'); placeWalkCam(); return true;}
+let upQ=[], hiWant=null, lookT=0, lookY=0, lookX=0, lookZ=0;
+window.__upQ=()=>({q:upQ.length,hi:works.filter(w=>w.hi).length,ph:works.filter(w=>w.mat.map===PH).length,n:works.length}); // textures waiting to be sent; the work whose full image is wanted; when the view last moved
 let intro=null, introLook=null; // homepage opening: the work fills the screen, then a second or two later you ease back a little
 function introStep(now){ const box=document.getElementById('load');
   if(intro.wait){ if(box&&!box.hidden) return; intro={t0:now+1500,x:walk.x,y:walk.y,bx:Math.sin(walk.yaw),by:-Math.cos(walk.yaw),d:COARSE?0.8:1.0,dur:2800}; return; }
@@ -1621,13 +1623,14 @@ else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode===
   const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4), here=roomOf(walk.x,walk.y);
   const dist=w=>Math.hypot(w.mesh.position.x-walk.x,-w.mesh.position.z-walk.y), first=[], later=[];
   for(const w of works){ ((here>=0&&roomOf(w.mesh.position.x,-w.mesh.position.z)===here)||dist(w)<7?first:later).push(w); }
-  const put=(w,t)=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; w.mat.map=t; w.mat.needsUpdate=true; dirty=true; };
+  /* a loaded picture is not put on the wall straight away: it waits until the view is still, then goes to the graphics card one per frame. Sending (and decoding) a big picture takes a moment, and doing it mid-turn was the stutter you felt */
+  const put=(w,t)=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; upQ.push([w,t]); };
   const tl2=new THREE.TextureLoader();
   for(const w of first){ const t=tl.load(w.file,undefined,undefined,()=>{ if(!w.hi) tl2.load(w.full,t2=>put(w,t2)); }); put(w,t); } // light copy (1024 px); falls back to the full image
   later.sort((a,b)=>dist(a)-dist(b)); let li=0;
   const next=()=>{ const w=later[li++]; if(!w) return; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); setTimeout(next,30); },undefined,()=>tl2.load(w.full,t=>{ put(w,t); setTimeout(next,30); },undefined,()=>setTimeout(next,30))); };
   // full-resolution image only for the work you are actually looking at (or clicked)
-  window.hiRes=u=>{ for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t)); } };
+  window.hiRes=u=>{ hiWant=null; for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t)); } };
   const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); for(let k=0;k<3;k++) next(); }; // three at a time once the room is on screen
   setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
 setInterval(saveState,1000);
@@ -1669,6 +1672,10 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
   botTick(dt); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
   if(tone.running&&mode==='walk'){ const pl=[]; for(const p of PEERS.values()) pl.push({id:p.id,x:p.pos.x,y:p.pos.y,room:roomAt(p.pos.x,p.pos.y)}); tone.tick({room:roomAt(walk.x,walk.y),x:walk.x,y:walk.y,yaw:walk.yaw,peers:pl,mobile:mobXY}); }
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
+  { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
+  { const box=document.getElementById('load'), loading=box&&!box.hidden, still=now-lookT>350;
+    if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} w.mat.map=t; dirty=true; } }
+    if(hiWant&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant); }
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
     fpsEl.textContent=idle?'멈춤 (움직이면 측정)':Math.round(fc*1000/(now-ft))+' fps · '+(fc?(fms/fc).toFixed(1):'–')+' ms';
