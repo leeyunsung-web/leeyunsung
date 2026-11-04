@@ -1208,8 +1208,8 @@ canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) 
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
 // phones: slide left/right and keep the finger there -> the view keeps turning, smoothly, the further out the faster
 { let hv=0, lt=performance.now(); (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
-  let want=0; if(drag&&drag.touch&&!pinch&&drag.lx!=null){ const w=canvas.clientWidth||1, off=(drag.lx-drag.x)/w; if(Math.abs(off)>0.16&&now-(drag.mt||0)>140) want=Math.sign(off)*Math.min(1.1,(Math.abs(off)-0.16)*3.2); }
-  hv+=(want-hv)*Math.min(1,dt*4); if(Math.abs(hv)<0.002){ hv=0; return; } if(drag){ drag.yaw+=hv*dt; walk.yaw+=hv*dt; } else walk.yaw+=hv*dt; dirty=true; })(lt); }
+  let want=0; if(drag&&drag.touch&&!pinch&&drag.lx!=null){ const w=canvas.clientWidth||1, off=(drag.lx-drag.x)/w; if(Math.abs(off)>0.16&&now-(drag.mt||0)>140) want=Math.sign(off)*Math.min(0.45,(Math.abs(off)-0.16)*1.1); }
+  hv+=(want-hv)*Math.min(1,dt*1.6); if(Math.abs(hv)<0.002){ hv=0; return; } if(drag){ drag.yaw+=hv*dt; walk.yaw+=hv*dt; } else walk.yaw+=hv*dt; dirty=true; })(lt); }
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
 const lookYaw=(dx,dy)=>Math.atan2(-dx,dy); // camera yaw that looks along blender (dx,dy)
