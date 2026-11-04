@@ -33,6 +33,17 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
 #arBtn small{display:block;font-size:11px;opacity:.75;margin-top:2px}
 .note{position:absolute;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;text-align:center;line-height:1.5;max-width:88%}
 #shopLink{margin-left:auto;font-size:12px;color:var(--ink);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid currentColor;white-space:nowrap}
+#tune{flex:none;max-height:42vh;overflow:auto;background:#fff;border-top:1px solid var(--line);padding:12px 16px calc(14px + env(safe-area-inset-bottom));font-size:13px}
+#tune h3{margin:0 0 8px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px}
+#tune h3 small{font-weight:400;color:var(--soft)}
+#tune .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 22px}
+#tune label{display:grid;grid-template-columns:7.5em 1fr 3.2em;align-items:center;gap:8px;color:var(--ink)}
+#tune input[type=range]{width:100%}
+#tune output{font-variant-numeric:tabular-nums;color:var(--soft);text-align:right}
+#tune .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+#tune .btns button{border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;font-size:12px;cursor:pointer}
+#tune .btns button.pri{background:var(--ink);color:#fff}
+#tune .info{color:var(--soft);font-size:12px}
 #lock{max-width:520px;margin:80px auto;text-align:center;color:var(--soft);font-size:14px;display:none}
 </style>
 </head>
@@ -52,6 +63,11 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
   </model-viewer>
   <div class="note" id="noAR" hidden>AR opens on a phone or tablet.<br>휴대폰이나 태블릿에서 이 페이지를 열어 주세요.</div>
   <div class="note" id="inApp" hidden><span id="inAppMsg"></span><br><button id="extBtn" type="button" style="margin-top:8px;border:0;background:#1d1c1a;color:#fff;border-radius:999px;padding:9px 16px;font-size:13px" hidden>Open in browser · 브라우저로 열기</button></div>
+  <div id="tune" hidden>
+    <h3>조각 이미지 설정 <small>마스터 전용 · 바꾸는 즉시 이 기기에 자동 저장</small></h3>
+    <div class="grid" id="tuneGrid"></div>
+    <div class="btns"><button class="pri" id="tSave" type="button">홈페이지에 저장</button><button id="tReset" type="button">기본값으로 초기화</button><span class="info" id="tInfo"></span></div>
+  </div>
   <a id="qlLink" rel="ar" href="#" hidden style="position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);line-height:0"><img alt="View on your wall (AR)" src="ar-button.png" width="260" height="58" style="filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))"></a>
 </div>
 <script type="module" src="model-viewer.min.js"></script>
@@ -73,7 +89,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     document.getElementById('arBtn').firstChild.textContent=x.floor?'View in your space':'View on your wall'; document.querySelector('#arBtn small').textContent=x.floor?'내 공간에 놓아 보기 (AR)':'내 벽에 걸어 보기 (AR)';
     mv.setAttribute('environment-image',x.floor?(x.id==='s-1793370000000-mdsv1'?'env_medusa.jpg':'env_torso.jpg'):'neutral');   // sculptures: the gallery room's light, with the gallery's contrast for each material
     mv.setAttribute('shadow-intensity',x.floor?'0.7':'0'); mv.setAttribute('shadow-softness',x.floor?'0.8':'1'); mv.setAttribute('tone-mapping','neutral'); mv.setAttribute('exposure',x.id==='s-1793370000000-mdsv1'?'0.85':'1');
-    mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
+    cur=x; mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; siteReady.then(function(){ buildTune(x); }); mv.alt=x.title+' by Lee Yunsung';
     var ql=document.getElementById('qlLink'); ql.href=(x.usdz||'')+'#allowsContentScaling=0';
     if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));
     setTimeout(arFallback,1200);
@@ -93,7 +109,48 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     if(IOS){ ql.hidden=false; return; }            // other iPhone browsers: a plain Quick Look link to the same file
     if(!MOBILE) noAR.hidden=false;
   }
-  function close(){ view.classList.remove('on'); mv.removeAttribute('src'); }
+  // ---------- sculpture image settings (master): saved per work, kept until reset ----------
+  var TDEF={'s-1793281860372-q9sg2':{exposure:1,contrast:1.25,keyAmt:0.28,keyAz:225,keyEl:35,shadow:0.7,soft:0.8,color:0.93,rough:0.92,metal:0},
+            's-1793370000000-mdsv1':{exposure:0.85,contrast:2.6,keyAmt:0,keyAz:225,keyEl:35,shadow:0.7,soft:0.8,color:0.82,rough:0.04,metal:1}};
+  var TROWS=[['exposure','밝기',0.3,2,0.01],['contrast','대비',0.6,3.5,0.01],['keyAmt','측면 조명 세기',0,1,0.01],['keyAz','측면 조명 방향',0,360,1],['keyEl','측면 조명 높이',0,80,1],
+             ['shadow','바닥 그림자',0,1.5,0.01],['soft','그림자 부드러움',0,1,0.01],['color','재질 밝기',0.3,1,0.01],['rough','거칠기',0,1,0.01],['metal','금속감',0,1,0.01]];
+  var LKEY='lys-ar-tune-v1', SITE={}, LOCAL={}, cur=null, envSrc=null, envTimer=0;
+  try{ LOCAL=JSON.parse(localStorage.getItem(LKEY)||'{}')||{}; }catch(e){ LOCAL={}; }
+  var siteReady=fetch('settings.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():{};}).then(function(j){ SITE=(j&&j.tune)||{}; }).catch(function(){});
+  function tuneOf(id){ var d=TDEF[id]; if(!d) return null; return Object.assign({},d,SITE[id]||{},master?(LOCAL[id]||{}):{}); }
+  function loadEnv(){ if(envSrc) return Promise.resolve(envSrc); return new Promise(function(res,rej){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'); c.width=1024; c.height=512; var x=c.getContext('2d'); x.drawImage(im,0,0,1024,512); envSrc=x.getImageData(0,0,1024,512); res(envSrc); }; im.onerror=rej; im.src='/vr-k3m9/live/env.jpg'; }); }
+  // the gallery's look: final = (surface - 0.70) * contrast + 0.70, baked into the room reflection; plus a side light
+  function makeEnv(t){ return loadEnv().then(function(src){ var W=src.width,H=src.height,o=new ImageData(W,H),d=src.data,od=o.data,b=t.color,k=t.contrast,az=t.keyAz*Math.PI/180,el=t.keyEl*Math.PI/180;
+      for(var y=0;y<H;y++){ var lat=(0.5-y/H)*Math.PI; for(var x=0;x<W;x++){ var i=(y*W+x)*4, lon=x/W*2*Math.PI, m=Math.max(0,Math.cos(lon-az)*Math.cos(lat-el)); m=m*m*m; var g=(1-0.3*t.keyAmt)+t.keyAmt*m;
+        for(var c=0;c<3;c++){ var v=d[i+c]/255; v=((v*b-0.70)*k+0.70)/b; v=Math.min(1,Math.max(0,v))*g; od[i+c]=Math.min(255,Math.max(0,v*255)); } od[i+3]=255; } }
+      var c=document.createElement('canvas'); c.width=W; c.height=H; c.getContext('2d').putImageData(o,0,0); return new Promise(function(r){ c.toBlob(function(bl){ r(URL.createObjectURL(bl)); },'image/jpeg',0.92); }); }); }
+  function liftNotes(){ var b=document.getElementById('tune'), h=b.hidden?0:b.offsetHeight; document.querySelectorAll('#view .note').forEach(function(n){ n.style.bottom=h?(h+16)+'px':''; }); }
+  addEventListener('resize',liftNotes);
+  var lastEnv=null;
+  function applyTune(x,t,envToo){ if(!t) return;
+    mv.exposure=t.exposure; mv.shadowIntensity=t.shadow; mv.shadowSoftness=t.soft;
+    var mats=mv.model&&mv.model.materials; if(mats) mats.forEach(function(mt){ var p=mt.pbrMetallicRoughness; p.setBaseColorFactor([t.color,t.color,t.color,1]); p.setRoughnessFactor(t.rough); p.setMetallicFactor(t.metal); });
+    if(envToo!==false){ clearTimeout(envTimer); envTimer=setTimeout(function(){ makeEnv(t).then(function(u){ if(cur!==x) return; mv.environmentImage=u; if(lastEnv) setTimeout(function(o){ URL.revokeObjectURL(o); }.bind(null,lastEnv),2000); lastEnv=u; }).catch(function(){}); },120); } }
+  function buildTune(x){ var box=document.getElementById('tune'), grid=document.getElementById('tuneGrid'); var t=tuneOf(x.id);
+    box.hidden=!(master&&t); liftNotes(); if(box.hidden) return; grid.innerHTML='';
+    TROWS.forEach(function(r){ var l=document.createElement('label'); l.innerHTML='<span>'+r[1]+'</span><input type="range" min="'+r[2]+'" max="'+r[3]+'" step="'+r[4]+'"><output></output>'; var inp=l.querySelector('input'), out=l.querySelector('output');
+      inp.value=t[r[0]]; out.textContent=(+t[r[0]]).toFixed(r[4]<1?2:0);
+      inp.oninput=function(){ var v=+inp.value; out.textContent=v.toFixed(r[4]<1?2:0); var tt=tuneOf(x.id); tt[r[0]]=v; LOCAL[x.id]=tt; try{ localStorage.setItem(LKEY,JSON.stringify(LOCAL)); }catch(e){} applyTune(x,tt,/contrast|keyAmt|keyAz|keyEl|color/.test(r[0])); document.getElementById('tInfo').textContent='이 기기에 저장됨 · 모든 방문자에게 적용하려면 "홈페이지에 저장"'; };
+      grid.appendChild(l); }); liftNotes(); }
+  document.getElementById('tReset').onclick=function(){ if(!cur||!TDEF[cur.id]) return; if(!confirm('이 조각의 이미지 설정을 기본값으로 되돌릴까요?')) return; delete LOCAL[cur.id]; delete SITE[cur.id]; LOCAL[cur.id]=Object.assign({},TDEF[cur.id]); try{ localStorage.setItem(LKEY,JSON.stringify(LOCAL)); }catch(e){} buildTune(cur); applyTune(cur,tuneOf(cur.id)); document.getElementById('tInfo').textContent='기본값으로 되돌렸어요 (홈페이지에도 적용하려면 "홈페이지에 저장")'; };
+  document.getElementById('tSave').onclick=async function(){ var info=function(t){ document.getElementById('tInfo').textContent=t; }; if(!cur) return;
+    var cfg=null, token=''; try{ cfg=JSON.parse(localStorage.getItem('leeArchiveGhConfig_v2')||'null'); token=sessionStorage.getItem('leeArchiveGhToken_v2')||localStorage.getItem('leeArchiveGhTokenKeep_v2')||''; }catch(e){}
+    if(!cfg||!cfg.owner||!cfg.repo||!token){ info('홈페이지 연결(GitHub)이 없어 이 기기에만 저장돼 있어요. 홈페이지 마스터 바의 ⇪ 버튼으로 한 번 연결한 뒤 다시 눌러 주세요.'); return; }
+    info('홈페이지에 저장하는 중…');
+    try{ await siteReady; var all=Object.assign({},SITE); Object.keys(TDEF).forEach(function(id){ var t=tuneOf(id); if(t) all[id]=t; });
+      var path='ar-q7w2/settings.json', url='https://api.github.com/repos/'+cfg.owner+'/'+cfg.repo+'/contents/'+path, br=cfg.branch||'main', H={Authorization:'token '+token,Accept:'application/vnd.github+json'}, sha;
+      var g=await fetch(url+'?ref='+encodeURIComponent(br)+'&_='+Date.now(),{headers:H,cache:'no-store'}); if(g.ok) sha=(await g.json()).sha;
+      var txt=JSON.stringify({savedAt:Date.now(),tune:all},null,1), u=new TextEncoder().encode(txt), bin=''; for(var i=0;i<u.length;i++) bin+=String.fromCharCode(u[i]);
+      var r=await fetch(url,{method:'PUT',headers:H,body:JSON.stringify(Object.assign({message:'AR sculpture image settings',content:btoa(bin),branch:br},sha?{sha:sha}:{}))});
+      if(!r.ok) throw new Error(r.status); SITE=all; var d=new Date(); info('홈페이지에 저장했어요 ('+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+') · 1분쯤 뒤 모든 방문자에게 적용돼요');
+    }catch(e){ info('홈페이지 저장 실패 ('+e.message+'). 이 기기에는 저장돼 있어요. 잠시 뒤 다시 눌러 주세요.'); } };
+  mv.addEventListener('load',function(){ if(cur&&TDEF[cur.id]) siteReady.then(function(){ applyTune(cur,tuneOf(cur.id)); }); });
+  function close(){ view.classList.remove('on'); mv.removeAttribute('src'); cur=null; document.getElementById('tune').hidden=true; liftNotes(); }
   document.getElementById('back').onclick=function(){ if(history.state&&history.state.id) history.back(); else { close(); history.replaceState(null,'',location.pathname); } };
   addEventListener('popstate',function(){ var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x) open(x,false); else close(); });
   document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick=function(){ kind=b.dataset.k; document.querySelectorAll('#tabs button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));}); render(); }; });
