@@ -801,6 +801,7 @@ window.__gbState=()=>({open:guest.isOpen,dlg:!!document.querySelector('.gbx')});
 window.__gbOpen=()=>{ gbOpenFromView(); return guest.isOpen; };
 window.__gt=GT;
 window.__addPeer=m=>{ addPeer(m); return PEERS.has(m.id); }; window.__peerScreen=id=>{ const p=PEERS.get(id); if(!p) return null; const v=new THREE.Vector3(p.pos.x,1.0,-p.pos.y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
+window.__workNdc=i=>{ const u=unitOf(works[i]), v=u.mesh.position.clone().project(camera); return [+v.x.toFixed(3),+v.y.toFixed(3)]; };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1307,7 +1308,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       const tx=-ny, ty=nx, D=Math.hypot(s[0]-x,s[1]-y); let pick=null, ps=1e9;
       for(let d=D; d>=1.2; d-=0.25) for(const o of [0,0.35,-0.35,0.7,-0.7,1.05,-1.05]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=(D-d)+Math.abs(o)*0.8; if(sc>=ps||!canWalk(sx,sy)||!workSeen(w,sx,sy)) continue; ps=sc; pick=[sx,sy]; }
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y))*0.9)){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close) autoGo.fit={w,nx,ny,back:0}; autoGo.face=[x,y]; autoGo.cy=m.position.y; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1353,10 +1354,11 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
       if(!np){ autoGo=null; return true; } g.path=back?[back,...np]:np; g.v=0; g.near=false; g.back=!!back; return true; }
     if(g.pitch!=null&&(g.near||rem<2.2)) tilt(g.pitch); else if(g.pitch!=null) tilt(0,1); return true; }
   if(g.then&&!g.orbit){ const o=g.then; autoGo={orbit:{x:o.x,y:o.y,r:Math.max(o.r,Math.hypot(walk.x-o.x,walk.y-o.y)),a:Math.atan2(walk.y-o.y,walk.x-o.x),left:Math.PI*2,top:o.top}}; return true; }
+  if(g.face&&g.cy!=null&&!g.aimed){ g.aimed=1; const fx=g.face[0]-walk.x, fy=g.face[1]-walk.y; if(Math.hypot(fx,fy)>0.3){ g.yaw=lookYaw(fx,fy); g.pitch=Math.atan2(g.cy-EYE,Math.hypot(fx,fy)); } }
   if(g.yaw==null&&!g.looked){ g.looked=1; const a=openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=0; } }
   if(g.yaw!=null){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
   if(g.fit&&g.fit.back<0.85&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
-    if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z))*0.9; return true; } }
+    if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); return true; } }
   autoGo=null; return true; }
 const _fb=new THREE.Box3(), _fv=new THREE.Vector3();
 function fitsView(w){ _fb.makeEmpty(); for(const o of (w.members||[w])) _fb.expandByObject(o.mesh); for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); if(Math.abs(_fv.x)>0.93||Math.abs(_fv.y)>0.9) return false; } return true; }
@@ -1433,14 +1435,14 @@ new ResizeObserver(resize).observe(stage); resize();
 let startFit=null; // phone start: step back until the whole work fits the tall screen (done behind the loading screen)
 function startFitStep(){ const f=startFit, m=f.u.mesh; placeWalkCam(); camera.updateMatrixWorld();
   if(fitsView(f.u)||f.k++>40){ startFit=null; return; } const bx=walk.x+f.nx*0.2, by=walk.y+f.ny*0.2; if(!canWalk(bx,by)){ startFit=null; return; }
-  walk.x=bx; walk.y=by; walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z))*0.9; dirty=true; }
+  walk.x=bx; walk.y=by; walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); dirty=true; }
 function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return false; const k=ks[Math.floor(Math.random()*ks.length)], it=WALLS[k].items;
   const cx=it.reduce((a,w)=>a+w.mesh.position.x,0)/it.length, cy=-it.reduce((a,w)=>a+w.mesh.position.z,0)/it.length;
   { const asp=canvas.clientWidth/Math.max(1,canvas.clientHeight); if(asp&&asp<1){ // phone (tall screen): start in front of one work, framed for the phone
       if(Math.abs(camera.aspect-asp)>0.01){ camera.aspect=asp; camera.updateProjectionMatrix(); }
       const w0=it.reduce((b,w)=>!b||Math.hypot(w.mesh.position.x-cx,-w.mesh.position.z-cy)<Math.hypot(b.mesh.position.x-cx,-b.mesh.position.z-cy)?w:b,null), u=unitOf(w0), m=u.mesh;
       const wx=m.position.x, wy=-m.position.z, wnx=Math.sin(m.rotation.y), wny=-Math.cos(m.rotation.y), st=standAt(wx,wy,Math.min(workDist(u),8),wnx,wny);
-      if(st){ [walk.x,walk.y]=st; startFit={u,nx:wnx,ny:wny,k:0}; walk.yaw=lookYaw(-wnx,-wny); walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(st[0]-wx,st[1]-wy))*0.9; setMode('walk'); placeWalkCam(); return true; } } }
+      if(st){ [walk.x,walk.y]=st; startFit={u,nx:wnx,ny:wny,k:0}; walk.yaw=lookYaw(-wnx,-wny); walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(st[0]-wx,st[1]-wy)); setMode('walk'); placeWalkCam(); return true; } } }
   const room=ROOMS.find(r=>cx>r.x0-0.3&&cx<r.x1+0.3&&cy>r.y0-0.3&&cy<r.y1+0.3)||ROOMS[0], horiz=WALLS[k].u==='x';
   let nx=0,ny=0; if(horiz) ny=cy>(room.y0+room.y1)/2?-1:1; else nx=cx>(room.x0+room.x1)/2?-1:1;   // into the room
   const span=horiz?(room.y1-room.y0):(room.x1-room.x0), d=Math.min(4.2,span*0.45);
