@@ -71,6 +71,8 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     var sl=document.getElementById('shopLink'); sl.hidden=!x.url; sl.href=x.url||'#';
     mv.setAttribute('ar-placement',x.floor?'floor':'wall'); mv.setAttribute('camera-orbit',x.floor?'0deg 75deg auto':'0deg 90deg auto'); mv.setAttribute('min-camera-orbit',x.floor?'-Infinity 20deg auto':'-55deg 55deg auto'); mv.setAttribute('max-camera-orbit',x.floor?'Infinity 100deg auto':'55deg 125deg auto');
     document.getElementById('arBtn').firstChild.textContent=x.floor?'View in your space':'View on your wall'; document.querySelector('#arBtn small').textContent=x.floor?'내 공간에 놓아 보기 (AR)':'내 벽에 걸어 보기 (AR)';
+    mv.setAttribute('environment-image',x.floor?(x.id==='s-1793370000000-mdsv1'?'env_medusa.jpg':'env_torso.jpg'):'neutral');   // sculptures: the gallery room's light, with the gallery's contrast for each material
+    mv.setAttribute('shadow-intensity',x.floor?'0.7':'0'); mv.setAttribute('shadow-softness',x.floor?'0.8':'1'); mv.setAttribute('tone-mapping','neutral'); mv.setAttribute('exposure',x.id==='s-1793370000000-mdsv1'?'0.85':'1');
     mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; mv.alt=x.title+' by Lee Yunsung';
     var ql=document.getElementById('qlLink'); ql.href=(x.usdz||'')+'#allowsContentScaling=0';
     if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));
