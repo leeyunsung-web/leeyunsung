@@ -808,6 +808,8 @@ window.__workRects=()=>{ const r=canvas.getBoundingClientRect(), out=[]; for(con
 window.__gaze=(x,y,dx,dy)=>roomGaze(x,y,dx,dy);
 window.__ptNdc=(x,y)=>{ const g=sculptures().map(q=>q[1]).find(gg=>{ const c=new THREE.Box3().setFromObject(gg).getCenter(new THREE.Vector3()); return Math.hypot(c.x-x,-c.z-y)<0.05; }); const c=g?new THREE.Box3().setFromObject(g).getCenter(new THREE.Vector3()):new THREE.Vector3(x,1.2,-y); const v=c.project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2)]; };
 window.__viewReach=()=>{ const dx=-Math.sin(walk.yaw), dy=Math.cos(walk.yaw); let t=0.1; while(t<15&&okPos(walk.x+dx*t,walk.y+dy*t)) t+=0.1; return +t.toFixed(1); };
+window.__sim=(n)=>{ const pts=[[walk.x,walk.y]]; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); pts.push([walk.x,walk.y]); } return {steps:k,pts,go:!!autoGo}; };
+window.__floorTap=(x,y)=>{ autoGo=null; lastWork=null; goTo(x,y,null,null); return autoGo&&{x:autoGo.x,y:autoGo.y,path:autoGo.path}; };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1367,7 +1369,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     g.v=Math.min(1.1,(g.v||0)+dt*0.9); const st=Math.min(td,g.v*dt); [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
   if(g.orbit){ const o=g.orbit; o.v=Math.min(0.45,(o.v||0)+dt*0.3); const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const nx=o.x+Math.cos(o.a)*o.r, ny=o.y+Math.sin(o.a)*o.r;
     if(!canWalk(nx,ny)){ autoGo=null; return true; } [walk.x,walk.y]=collide(nx,ny); { const ty=lookYaw(o.x-walk.x,o.y-walk.y), tp=Math.atan2(o.top-EYE,Math.hypot(o.x-walk.x,o.y-walk.y)); if(o.oy==null){ o.oy=Math.atan2(Math.sin(walk.yaw-ty),Math.cos(walk.yaw-ty)); o.op=walk.pitch-tp; } o.oy*=Math.max(0,1-dt*2.2); o.op*=Math.max(0,1-dt*2.2); walk.yaw=ty+o.oy; walk.pitch=tp+o.op; } if(o.left<=0) autoGo=null; return true; }
-  if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; if(Math.hypot(tx-walk.x,ty-walk.y)<(g.path[0][2]?0.3:0.6)){ const q=g.path.shift(); if(q.length>4) g.room={c:[q[3],q[4]],left:3}; } }
+  if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; const n1=g.path[1], past=n1&&((tx-walk.x)*(n1[0]-tx)+(ty-walk.y)*(n1[1]-ty))<0; if(Math.hypot(tx-walk.x,ty-walk.y)<(g.path[0][2]?0.3:0.6)||(past&&Math.hypot(tx-walk.x,ty-walk.y)<1.2)){ const q=g.path.shift(); if(q.length>4) g.room={c:[q[3],q[4]],left:3}; } }
   const wp=g.path&&g.path.length?g.path[0]:[g.x,g.y], last=!g.path||g.path.length<=1;
   const dx=(last?g.x:wp[0])-walk.x, dy=(last?g.y:wp[1])-walk.y, d=Math.hypot(dx,dy);
   let rem=d; if(g.path) for(let i=1;i<g.path.length;i++) rem+=Math.hypot(g.path[i][0]-g.path[i-1][0],g.path[i][1]-g.path[i-1][1]);
@@ -1375,9 +1377,11 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   if(d>0.03||!last){ // speed eases up from 0 and slows down into the stop
     const vmax=g.near?(rem>3?1.0:0.75):1.3, want=Math.min(vmax,Math.sqrt(2*0.8*rem)+0.02); g.v=(g.v||0)+Math.max(-1.6*dt,Math.min(0.9*dt,want-(g.v||0)));
     let mvx=dx/d, mvy=dy/d, st=Math.min(d,g.v*dt);
-    if(!g.near&&!g.back&&!(last&&d<0.7)){ const la=lookAhead(g,1.2), lx=la[0]-walk.x, ly=la[1]-walk.y, wa=Math.atan2(ly,lx);
-      if(g.hd==null){ const fa=Math.atan2(Math.cos(walk.yaw),-Math.sin(walk.yaw)), df=Math.atan2(Math.sin(wa-fa),Math.cos(wa-fa)); g.hd=Math.abs(df)<1.6?fa:wa; }
-      const df=Math.atan2(Math.sin(wa-g.hd),Math.cos(wa-g.hd)), mr=Math.max(0.9,(g.v||0)/0.6)*dt; g.hd+=Math.max(-mr,Math.min(mr,df)); mvx=Math.cos(g.hd); mvy=Math.sin(g.hd); st=g.v*dt; }
+    if(!g.near&&!g.back&&!(last&&d<0.7)){ const la=lookAhead(g,0.8), lx=la[0]-walk.x, ly=la[1]-walk.y, wa=Math.atan2(ly,lx);
+      if(g.hd==null) g.hd=wa; // start straight toward the path (no wide swing from where you happened to face)
+      let df=Math.atan2(Math.sin(wa-g.hd),Math.cos(wa-g.hd)); const mr=Math.max(1.6,(g.v||0)/0.45)*(Math.abs(df)>0.9?2:1)*dt; g.hd+=Math.max(-mr,Math.min(mr,df));
+      mvx=Math.cos(g.hd); mvy=Math.sin(g.hd); st=g.v*dt;
+      if(!canWalk(walk.x+mvx*0.35,walk.y+mvy*0.35)){ mvx=lx/(Math.hypot(lx,ly)||1); mvy=ly/(Math.hypot(lx,ly)||1); g.hd=wa; } } // never cut into a wall or pedestal: fall back to the path itself
     else g.hd=Math.atan2(mvy,mvx);
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mvx*st,walk.y+mvy*st);
     let look=g.yaw==null?lookYaw(dx,dy):(g.near||rem<2.2?(g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw):lookYaw(dx,dy)); const hp=g.path&&g.path[0], fin=g.yaw!=null&&(g.near||rem<2.2), nw=fin?null:nearWork(g,dx/d,dy/d); if(nw) look=lookYaw(nw[0]-walk.x,nw[1]-walk.y); else if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else if(g.yaw!=null||d>0.3) turn(look,fin?1.05:0.7); if(g.back&&g.path&&!g.path[0][2]) g.back=false;
