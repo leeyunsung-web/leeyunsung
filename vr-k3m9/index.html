@@ -802,6 +802,7 @@ window.__gbOpen=()=>{ gbOpenFromView(); return guest.isOpen; };
 window.__gt=GT;
 window.__addPeer=m=>{ addPeer(m); return PEERS.has(m.id); }; window.__peerScreen=id=>{ const p=PEERS.get(id); if(!p) return null; const v=new THREE.Vector3(p.pos.x,1.0,-p.pos.y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
 window.__workNdc=i=>{ const u=unitOf(works[i]), v=u.mesh.position.clone().project(camera); return [+v.x.toFixed(3),+v.y.toFixed(3)]; };
+window.__workRects=()=>{ const r=canvas.getBoundingClientRect(), out=[]; for(const w of works){ const b=new THREE.Box3().setFromObject(w.mesh), xs=[], ys=[]; let ok=true; for(let i=0;i<8;i++){ const v=new THREE.Vector3(i&1?b.max.x:b.min.x,i&2?b.max.y:b.min.y,i&4?b.max.z:b.min.z).project(camera); if(v.z>1) ok=false; xs.push((v.x+1)/2*r.width); ys.push((1-v.y)/2*r.height); } if(ok) out.push({t:(w.caption||'').split('|')[0],x0:Math.min(...xs),y0:Math.min(...ys),x1:Math.max(...xs),y1:Math.max(...ys)}); } return out.filter(q=>q.x1>0&&q.x0<r.width&&q.y1>0&&q.y0<r.height); };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1197,7 +1198,11 @@ canvas.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; T
   if(TCH.size===2&&mode==='walk'){ pinch={d:tdist()}; drag=null; autoGo=null; } });
 canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) return; t.x=e.clientX; t.y=e.clientY; if(!pinch||TCH.size<2) return;
   const d=tdist(), step=(d-pinch.d)/Math.max(200,Math.min(canvas.clientWidth,canvas.clientHeight))*3.2; pinch.d=d; // about 3 m for a full spread
-  [walk.x,walk.y]=collide(walk.x-Math.sin(walk.yaw)*step,walk.y+Math.cos(walk.yaw)*step); lastWork=null; dirty=true; });
+  const fx=-Math.sin(walk.yaw)*Math.sign(step), fy=Math.cos(walk.yaw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); let mx=fx*a, my=fy*a;
+  if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ // a pedestal ahead (or behind): ease sideways round it while still going on (a wall just stops you)
+    const side=[pinch.side||1,-(pinch.side||1)].find(k=>canWalk(walk.x+fx*0.6+sx*k*0.55,walk.y+fy*0.6+sy*k*0.55)&&canWalk(walk.x+sx*k*0.3,walk.y+sy*k*0.3));
+    if(side){ pinch.side=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else pinch.side=0;
+  [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); lastWork=null; dirty=true; });
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
