@@ -346,7 +346,7 @@ const L=await (await fetch('live/layout.json')).json();
 // master preview (2026-11-04): room 3 (Digital), then the guestbook corridor, then the gift shop. Master mode only; visitors keep the public layout untouched
 const M3=document.documentElement.classList.contains('master');
 if(M3){ const E=await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
-  if(E){ for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=E.dx; L.baked.push({...b,name:'G3_'+b.name.slice(3),pos:P}); } // room 3 = room 2's shell moved along
+  if(E){ for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=E.dx; let I=b.idx; if(E.mirrorR3&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:'G3_'+b.name.slice(3),pos:P,idx:I}); } // room 3 = room 2's shell moved along (its far wall flipped when the exit is on the other side)
     L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door2=E.door2; L.shop=E.shop; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
 const W=L.room.W, LL=L.room.L, H=L.room.H;
 const ROOMS=(L.rooms||[{x0:-W/2,x1:W/2,y0:-LL/2,y1:LL/2}]), DOOR=L.door||null; // blender ground coords
@@ -479,8 +479,8 @@ const GH=0.03, GD=0.02;
 // master preview: room 3's floating-wall gaps, its outer corner, and the doorway from room 2 (same dressing as room 1 -> 2)
 if(L.m3&&ROOMS[2]){ const r3=ROOMS[2], xc=(r3.x0+r3.x1)/2, w3=r3.x1-r3.x0, D=L.door23;
   reveal(w3,xc,-r3.y1,0,GD,GD); reveal(w3,xc,-r3.y0,Math.PI,GD+0.1,GD);
-  reveal(r3.y1-L.door2.y1,r3.x1,-(r3.y1+L.door2.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0);
-  {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,-r3.y1-0.05); scene.add(m);}
+  if(L.door2.north) reveal(L.door2.y0-r3.y0,r3.x1,-(r3.y0+L.door2.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-L.door2.y1,r3.x1,-(r3.y1+L.door2.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0);
+  {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,L.door2.north?-r3.y0+0.05:-r3.y1-0.05); scene.add(m);}
   const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=D.x1-D.x0, dxm=(D.x0+D.x1)/2, zN=-D.y1, zS=-D.y0;
   {const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,D.h-GH),jm); j.position.set(dxm,GH+(D.h-GH)/2,zN); scene.add(j);}
   {const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(D.x1,H/2,LL/2+0.05); scene.add(bk);}
@@ -494,21 +494,21 @@ if(L.m3&&ROOMS[2]){ const r3=ROOMS[2], xc=(r3.x0+r3.x1)/2, w3=r3.x1-r3.x0, D=L.d
     const pq=new THREE.Mesh(new THREE.PlaneGeometry(2.4,0.75),new THREE.MeshBasicMaterial({map:tt,transparent:true,depthWrite:false})); pq.rotation.y=Math.PI; pq.position.set(T.x,1.62,-T.y-0.004); scene.add(pq); }
 }
 // exit from room 2's far corner: opening floor to ceiling, then a plain corridor (walls float 3 cm like the rooms)
-if(L.door2){const D=L.door2, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=-D.y0, zB=-D.y1, zc=(zA+zB)/2, wd=zA-zB;
+if(L.door2){const D=L.door2, NO=!!D.north, CL=D.len||4, x0=D.x1, x1=D.x1+CL, zA=NO?-D.y1:-D.y0, zB=NO?-D.y0:-D.y1, zc=(zA+zB)/2, wd=Math.abs(zA-zB), rA=NO?0:Math.PI, rB=NO?Math.PI:0;
   // lights off in the exit corridor: only the guestbook keeps a soft pool of light
   const DIM=0.42, wallT=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867*DIM,0.863*DIM,0.855*DIM,THREE.SRGBColorSpace)});
   const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66*DIM,0.655*DIM,0.64*DIM,THREE.SRGBColorSpace)});
   const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93*DIM*0.8,0.928*DIM*0.8,0.92*DIM*0.8,THREE.SRGBColorSpace)});
   const pl=(w,h,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
-  pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,Math.PI);          // back wall continues
+  pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,rA);          // back wall continues
   if(L.shop){ const S=L.shop.door; // master preview: the inner wall opens into the gift shop just before the guestbook
-    pl(S.x0-x0,H-GH,wallT,(x0+S.x0)/2,GH+(H-GH)/2,zB,0); pl(x1-S.x1,H-GH,wallT,(S.x1+x1)/2,GH+(H-GH)/2,zB,0); pl(S.x1-S.x0,H-S.h,wallT,(S.x0+S.x1)/2,S.h+(H-S.h)/2,zB,0);
+    pl(S.x0-x0,H-GH,wallT,(x0+S.x0)/2,GH+(H-GH)/2,zB,rB); pl(x1-S.x1,H-GH,wallT,(S.x1+x1)/2,GH+(H-GH)/2,zB,rB); pl(S.x1-S.x0,H-S.h,wallT,(S.x0+S.x1)/2,S.h+(H-S.h)/2,zB,rB);
   } else pl(CL,H-GH,wallT,(x0+x1)/2,GH+(H-GH)/2,zB,0);                        // inner wall
   pl(wd,H-GH,wallT,x1,GH+(H-GH)/2,zc,-Math.PI/2);                       // end wall
   pl(CL+0.1,wd,flo,(x0-0.1+x1)/2,0.001,zc,0,-Math.PI/2);               // floor
   pl(CL+0.1,wd,ceilM,(x0-0.1+x1)/2,H,zc,0,Math.PI/2);                  // ceiling
-  pl(0.1,H-GH,wallT,(D.x0+D.x1)/2,GH+(H-GH)/2,zB,0);                   // jamb face
-  reveal(CL+0.1,(x0-0.1+x1)/2,zA,Math.PI,0,GD); if(L.shop){ const S=L.shop.door; reveal(S.x0-x0,(x0+S.x0)/2,zB,0,0,0); reveal(x1-S.x1,(S.x1+x1)/2,zB,0,GD,0); } else reveal(CL,(x0+x1)/2,zB,0,GD,0); reveal(wd,x1,zc,-Math.PI/2,GD,GD);
+  pl(0.1,H-GH,wallT,(D.x0+D.x1)/2,GH+(H-GH)/2,zB,rB);                   // jamb face
+  reveal(CL+0.1,(x0-0.1+x1)/2,zA,rA,NO?GD:0,NO?0:GD); if(L.shop){ const S=L.shop.door; reveal(S.x0-x0,(x0+S.x0)/2,zB,rB,0,0); reveal(x1-S.x1,(S.x1+x1)/2,zB,rB,NO?0:GD,NO?GD:0); } else reveal(CL,(x0+x1)/2,zB,0,GD,0); reveal(wd,x1,zc,-Math.PI/2,GD,GD);
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
    const br=new THREE.Mesh(new THREE.BoxGeometry(D.x1-D.x0+0.004,H-y0,wd),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
    br.position.set((D.x0+D.x1)/2,(H+y0)/2,zc); scene.add(br);}
@@ -1149,7 +1149,7 @@ function placeWalkCam(){
   camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
 }
 const VIEWS={guest:{x:15.75,y:-6.1,yaw:-Math.PI/2,pitch:-0.3},mobile:{x:9.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
-if(L.m3) VIEWS.guest.x=L.door2.x1+(L.door2.len||4)-1.95;
+if(L.m3){ VIEWS.guest.x=L.door2.x1+(L.door2.len||4)-1.95; VIEWS.guest.y=(L.door2.y0+L.door2.y1)/2; }
 function goView(k){
   const v=k==='medusa'?{x:tune.medX,y:tune.medY-1.85,yaw:-tune.medR*Math.PI/180*0,pitch:-0.12}:k==='torso'?{x:tune.torX+0.7,y:tune.torY+1.5,yaw:Math.PI-0.44,pitch:-0.2}:VIEWS[k]; Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;
   document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k)));
@@ -1165,11 +1165,12 @@ function buildShop(S,reveal){
   const gt=new THREE.CanvasTexture(gc); gt.colorSpace=THREE.SRGBColorSpace; const wallM=new THREE.MeshBasicMaterial({map:gt});
   const sRGB=(r,g,b)=>new THREE.Color().setRGB(r,g,b,THREE.SRGBColorSpace), {x0,x1,y0,y1}=S, D=S.door, cx=(x0+x1)/2, cy=(y0+y1)/2, w=x1-x0, d=y1-y0, wy=GH+(H-GH)/2, wh=H-GH;
   const pl=(pw,ph,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,ph),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
-  pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD);                                  // back wall (2026 posters)
+  const DN=D.y0>=y1-0.05; // doorway in the north wall (corridor runs along the north side)
+  if(DN){ pl(w,wh,wallM,cx,wy,-y0,Math.PI); reveal(w,cx,-y0,Math.PI,GD,GD); } else { pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD); } // back wall (2026 posters)
   pl(d,wh,wallM,x0,wy,-cy,Math.PI/2); reveal(d,x0,-cy,Math.PI/2,GD,GD);                  // left wall (2021 Torso, salon hang)
   pl(d,wh,wallM,x1,wy,-cy,-Math.PI/2); reveal(d,x1,-cy,-Math.PI/2,GD,GD);                // right wall
-  pl(D.x0-x0,wh,wallM,(x0+D.x0)/2,wy,-y0,Math.PI); pl(x1-D.x1,wh,wallM,(D.x1+x1)/2,wy,-y0,Math.PI); pl(D.x1-D.x0,H-D.h,wallM,(D.x0+D.x1)/2,D.h+(H-D.h)/2,-y0,Math.PI); // entrance wall with the doorway
-  reveal(D.x0-x0,(x0+D.x0)/2,-y0,Math.PI,0,GD); reveal(x1-D.x1,(D.x1+x1)/2,-y0,Math.PI,GD,0);
+  { const ez=DN?-y1:-y0, er=DN?0:Math.PI; pl(D.x0-x0,wh,wallM,(x0+D.x0)/2,wy,ez,er); pl(x1-D.x1,wh,wallM,(D.x1+x1)/2,wy,ez,er); pl(D.x1-D.x0,H-D.h,wallM,(D.x0+D.x1)/2,D.h+(H-D.h)/2,ez,er); // entrance wall with the doorway
+    reveal(D.x0-x0,(x0+D.x0)/2,ez,er,DN?GD:0,DN?0:GD); reveal(x1-D.x1,(D.x1+x1)/2,ez,er,DN?0:GD,DN?GD:0); }
   const jm=new THREE.MeshBasicMaterial({color:sRGB(0.84,0.838,0.832)}), dz=(-D.y1-D.y0)/2, dd=D.y1-D.y0;  // doorway jambs and head
   pl(dd,D.h,jm,D.x0,D.h/2,dz,Math.PI/2); pl(dd,D.h,jm,D.x1,D.h/2,dz,-Math.PI/2); pl(D.x1-D.x0,dd,jm,(D.x0+D.x1)/2,D.h,dz,0,Math.PI/2);
   const fm=new THREE.MeshBasicMaterial({color:sRGB(0.74,0.735,0.72),transparent:true,opacity:0.8}); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm); // floor (the soft mirror shows through, like the rooms)
@@ -1404,7 +1405,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
   if(!best) return; showMark(cx,cy); GT.tap=best;
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), hx=hp.x, hy=-hp.z; // anything in the guestbook corner (floor, walls, the lectern): stand right in front of the book, facing it
-    if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>L.door2.x0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2&&!(L.shop&&hy>L.door2.y1-0.05)){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
+    if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>L.door2.x0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2&&!(L.shop&&(L.door2.north?hy<L.door2.y0+0.05:hy>L.door2.y1-0.05))){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ goTo(stop[0],stop[1],null,null); lastWork=null; return; } } // the wall is in the way: walk up to it, not past it
   if(best.kind==='peer'){ lastWork=null; lastSculpt=null; autoGo={peer:best.p.id,x:walk.x,y:walk.y,path:null,re:0}; return; } // walk up until "Say hello" shows; any other tap cancels
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
@@ -1599,7 +1600,7 @@ const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, las
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 // room tone: starts quietly on the first touch / click / key, follows the room you are in, your steps and other visitors' steps
 const tone=createRoomTone(), sndEl=document.getElementById('snd');
-const roomAt=(x,y)=>L.shop&&x>=L.shop.x0&&y>=L.shop.y0-0.05?'room1':WALK&&L.door2&&x>L.door2.x0?'guestbook':([1,2].includes(ROOMS.findIndex(q=>x>=q.x0&&x<=q.x1&&y>=q.y0&&y<=q.y1))?'room2':'room1');
+const roomAt=(x,y)=>L.shop&&x>=L.shop.x0&&y>=L.shop.y0-0.05&&y<=L.shop.y1+0.05?'room1':WALK&&L.door2&&x>L.door2.x0?'guestbook':([1,2].includes(ROOMS.findIndex(q=>x>=q.x0&&x<=q.x1&&y>=q.y0&&y<=q.y1))?'room2':'room1');
 const mobXY=(()=>{ const r2=ROOMS[1]; return r2?{x:(r2.x0+r2.x1)/2,y:(r2.y0+r2.y1)/2}:null; })();
 sndEl.setAttribute('aria-pressed',String(!tone.muted)); sndEl.addEventListener('pointerdown',e=>e.stopPropagation());
 sndEl.addEventListener('click',e=>{ e.stopPropagation(); tone.setMuted(!tone.muted); sndEl.setAttribute('aria-pressed',String(!tone.muted)); stage.focus({preventScroll:true}); });
