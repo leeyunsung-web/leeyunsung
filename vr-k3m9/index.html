@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<script>try{if(!/(?:^|;\s*)lysM=1/.test(document.cookie))location.replace("/#works")}catch(e){location.replace("/#works")}</script>
+<script>try{document.documentElement.classList.add(/(?:^|;\s*)lysM=1/.test(document.cookie)?"master":"pub")}catch(e){document.documentElement.classList.add("pub")}</script><style>html.pub #panelHome,html.pub .keys,html.pub #panelAsk{display:none!important}</style>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
 <title>메두사 가상 전시실</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,7 +64,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .cap{position:absolute;left:50%;bottom:clamp(58px,11%,96px);transform:translate(-50%,6px);width:max-content;max-width:min(760px,86%);text-align:center;pointer-events:none;
   color:#f5f3ee;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 10px rgba(0,0,0,.55),0 0 22px rgba(0,0,0,.35);opacity:0;transition:opacity .7s ease,transform .7s ease;text-wrap:balance}
 .cap.on{opacity:1;transform:translate(-50%,0)}
-.gbgrp{grid-column:1/-1}.gbbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.gbnote{font-size:12px;color:var(--muted)}.gbhost .gbx.inline{position:absolute;inset:0;min-height:0;padding:30px}.gbhost .gbx .book{max-width:calc((min(560px,70vh) - 70px)*1.42)}.gbhost{position:relative;height:min(560px,70vh);margin-top:8px;border:1px solid var(--line);border-radius:6px;background:#d9d6cf;overflow:hidden}
+.gbgrp{grid-column:1/-1}.chatlogbox{margin-top:8px;max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-size:13px}.chatlogbox div{display:grid;grid-template-columns:120px 70px minmax(0,1fr);gap:8px;padding:5px 10px;border-bottom:1px solid var(--line)}.chatlogbox div span{color:var(--muted);font-variant-numeric:tabular-nums}.gbbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.gbnote{font-size:12px;color:var(--muted)}.gbhost .gbx.inline{position:absolute;inset:0;min-height:0;padding:30px}.gbhost .gbx .book{max-width:calc((min(560px,70vh) - 70px)*1.42)}.gbhost{position:relative;height:min(560px,70vh);margin-top:8px;border:1px solid var(--line);border-radius:6px;background:#d9d6cf;overflow:hidden}
 .cap b{display:block;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;font-size:clamp(15px,1.9vw,21px);letter-spacing:.01em}
 .cap span{display:block;font-size:clamp(11px,1.2vw,13.5px);letter-spacing:.03em;opacity:.88;margin-top:2px}
 .ask{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;font:600 15px var(--ui);padding:14px 22px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.18)}
@@ -156,6 +156,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="grp gbgrp"><div class="gt">방명록</div>
       <div class="gbbar"><button type="button" id="gbPanelBtn">방명록 펼치기</button><span class="gbnote">갤러리에 있는 것과 같은 방명록이에요. 페이지마다 '지우기'로 내릴 수 있어요.</span></div>
       <div id="gbPanelHost" class="gbhost" hidden></div></div>
+    <div class="grp gbgrp"><div class="gt">채팅 기록 (마스터만 볼 수 있어요)</div>
+      <div class="gbbar"><button type="button" id="chatLogBtn">불러오기</button><span class="gbnote" id="chatLogNote">관람객이 갤러리에서 주고받은 말이 시간순으로 남아요.</span></div>
+      <div id="chatLogBox" class="chatlogbox" hidden></div></div>
     <div class="grp mapgrp"><div class="gt">배치 (조감도)</div>
       <div class="mapwrap">
         <canvas id="map" width="440" height="400" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
@@ -1072,7 +1075,7 @@ window.__applyFigure=async bin=>{ const u8=new Uint8Array(bin); const F=await lo
 let waitGesture=false;
 function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.hidden=false; clearTimeout(showHint.t); showHint.t=setTimeout(()=>h.hidden=true,5000);} // only for notices (e.g. popup blocked); the room itself shows no help text
 // embedded in the site (master mode, computer only): open the control window right away; if the browser blocks it, open it on the first click in the room
-if(document.documentElement.classList.contains('embed')&&!matchMedia('(pointer:coarse)').matches){ // phones only look: no control window there
+if(document.documentElement.classList.contains('embed')&&document.documentElement.classList.contains('master')&&!matchMedia('(pointer:coarse)').matches){ // phones only look: no control window there
   setTimeout(openPanel,400);
   stage.addEventListener('pointerdown',()=>{ if(waitGesture&&!(pop&&!pop.closed)){ waitGesture=false; document.getElementById('panelAsk').hidden=true; openPanel(); } },true);
 }
@@ -1144,6 +1147,14 @@ function gbPanelToggle(){ const host=PD.getElementById('gbPanelHost'), btn=PD.ge
   if(!gbPanel||gbPanelDoc!==PD){ host.innerHTML=''; gbPanelDoc=PD; gbPanel=createGuestbook({host,doc:PD,inline:true,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb'}); }
   setTimeout(()=>{ try{ gbPanel.open(); }catch(e){ console.error(e); } },30); }
 document.getElementById('gbPanelBtn').onclick=gbPanelToggle;
+// chat log (master only: the server checks the master pass)
+document.getElementById('chatLogBtn').onclick=async()=>{ const box=PD.getElementById('chatLogBox'), note=PD.getElementById('chatLogNote'); let t=''; try{ const v=JSON.parse(localStorage.getItem('lysSnsPass')||'null'); t=v&&v.t&&v.exp>Date.now()?v.t:''; }catch(e){}
+  if(!t){ note.textContent='마스터 로그인이 필요해요 (홈페이지 마스터 모드로 들어온 뒤 다시 눌러 주세요).'; return; } note.textContent='불러오는 중…';
+  try{ const r=await fetch('https://leeyunsung-shop.nu-layer.workers.dev/api/room/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t})}); const j=await r.json(); if(!r.ok) throw new Error(j.error||r.status);
+    box.innerHTML=''; box.hidden=false; const rows=(j.rows||[]).slice().reverse(); note.textContent=rows.length?('최근 '+rows.length+'개 · 같은 방문자는 같은 번호'):'아직 남은 대화가 없어요.';
+    const fmt=ts=>new Date(ts+9*36e5).toISOString().slice(5,16).replace('T',' ');
+    for(const q of rows){ const d=PD.createElement('div'), a=PD.createElement('span'), b=PD.createElement('span'), c=PD.createElement('b'); a.textContent=fmt(q.ts); b.textContent='#'+String(q.id||'').slice(0,4); c.textContent=q.m; c.style.fontWeight='400'; d.append(a,b,c); box.appendChild(d); }
+    box.scrollTop=box.scrollHeight; }catch(e){ note.textContent='불러오지 못했어요 ('+e.message+')'; } };
 const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onWrite:g=>{ if(!GT.wrote.has(g)){ GT.wrote.add(g); GT('g_gb_write'); } },onOpen:()=>{keys.clear(); dirty=true; GT('g_gb_open');},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
 const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
 function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=canvas.getBoundingClientRect();
