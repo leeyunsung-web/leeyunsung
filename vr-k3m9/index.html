@@ -64,6 +64,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .cap{position:absolute;left:50%;bottom:clamp(58px,11%,96px);transform:translate(-50%,6px);width:max-content;max-width:min(760px,86%);text-align:center;pointer-events:none;
   color:#f5f3ee;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 10px rgba(0,0,0,.55),0 0 22px rgba(0,0,0,.35);opacity:0;transition:opacity .7s ease,transform .7s ease;text-wrap:balance}
 .cap.on{opacity:1;transform:translate(-50%,0)}
+.gbgrp{grid-column:1/-1}.gbbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.gbnote{font-size:12px;color:var(--muted)}.gbhost .gbx.inline{position:absolute;inset:0;min-height:0;padding:30px}.gbhost .gbx .book{max-width:calc((min(560px,70vh) - 70px)*1.42)}.gbhost{position:relative;height:min(560px,70vh);margin-top:8px;border:1px solid var(--line);border-radius:6px;background:#d9d6cf;overflow:hidden}
 .cap b{display:block;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;font-size:clamp(15px,1.9vw,21px);letter-spacing:.01em}
 .cap span{display:block;font-size:clamp(11px,1.2vw,13.5px);letter-spacing:.03em;opacity:.88;margin-top:2px}
 .ask{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;font:600 15px var(--ui);padding:14px 22px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.18)}
@@ -126,7 +127,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <canvas id="cv"></canvas>
     <div class="online" id="online" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div><button class="hello" id="hello" type="button" hidden>Say hello</button>
     <div class="say" id="say" hidden><input id="sayIn" maxlength="140" placeholder="Say something…" autocomplete="off" enterkeyhint="send"><div class="mine" id="sayMine"></div></div>
-    <div class="hint" id="hint">↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
+    <div class="hint" id="hint" hidden>↑↓ 앞뒤 · ←→ 돌기 · W A S D 걷기 · 화면을 잡고 끌어 둘러보기</div>
     <div class="cap" id="cap" aria-live="polite"></div>
     <div class="joy" id="joy" hidden aria-hidden="true"><i id="joyK"></i></div>
     <button class="ask" id="panelAsk" hidden>조절 창 열기<small>브라우저가 새 창을 막았어요 · 이 사이트의 팝업을 허용하면 다음부터 저절로 떠요</small></button>
@@ -134,7 +135,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <script>/* 무지개 십자별 로딩 — 속도 2 / 파도 높이 0 / 파도 간격 0.7 / 별 크기 10 / 반짝임 0.7 */
 (function(){var L={speed:2,amp:0,phase:0.7,size:10,twinkle:0.7,colors:["#FF3B30","#FF9500","#FFD60A","#00B400","#0A84FF","#3F51F5","#AF52DE"]};var row=document.getElementById("ldRow"),box=document.getElementById("load");if(!row||!box)return;var st=L.colors.map(function(c){var d=document.createElement("div");d.className="lys-ld-star";d.style.background=c;d.style.setProperty("--w",(L.size*1.6)+"px");row.appendChild(d);return d;});function f(ms){if(box.hidden)return;var t=ms/1000*L.speed,tw=L.twinkle;st.forEach(function(s,i){var w=t*4-i*L.phase*2,p=(Math.sin(w)+1)/2;s.style.transform="translateY("+(-Math.sin(w)*L.amp).toFixed(2)+"px) scale("+(0.6+0.55*p*tw+(1-tw)*0.3).toFixed(3)+")";s.style.opacity=(0.45+0.55*(tw*p+(1-tw))).toFixed(3);});requestAnimationFrame(f);}requestAnimationFrame(f);var pend=0,t0=performance.now();window.__ldLast=t0;var of=window.fetch;if(of){window.fetch=function(){pend++;window.__ldLast=performance.now();return of.apply(this,arguments).finally(function(){pend--;window.__ldLast=performance.now();});};}var fontsOk=false;try{document.fonts.ready.then(function(){fontsOk=true;});}catch(e){fontsOk=true;}var fr0=null;function chk(){if(box.hidden)return;var now=performance.now(),tx=window.__ldTex;var idle=pend===0&&window.__ldTexDone&&(!tx||tx[0]>=tx[1])&&now-window.__ldLast>800&&fontsOk;if(idle&&fr0===null)fr0=window.__ldFrames||0;if(!idle)fr0=null;if((idle&&(window.__ldFrames||0)-fr0>=10)||now-t0>40000){box.style.transition='opacity .45s ease';box.style.opacity='0';setTimeout(function(){box.hidden=true;box.style.opacity='';},460);return;}setTimeout(chk,100);}setTimeout(chk,300);})();</script>
     <div class="bar">
-      <span class="chip" id="fps">–</span>
+      <span class="chip" id="fps" hidden>–</span>
       <div class="ctl" id="views">
         <button data-v="entry">입구</button>
         <button data-v="medusa">메두사 앞</button>
@@ -152,6 +153,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   <div id="panelHome"><div class="tune" id="tunePanel">
     <div class="tt">조절 (바꾼 값은 이 브라우저에 계속 저장돼요 · 높이는 m 단위)</div>
+    <div class="grp gbgrp"><div class="gt">방명록</div>
+      <div class="gbbar"><button type="button" id="gbPanelBtn">방명록 펼치기</button><span class="gbnote">갤러리에 있는 것과 같은 방명록이에요. 페이지마다 '지우기'로 내릴 수 있어요.</span></div>
+      <div id="gbPanelHost" class="gbhost" hidden></div></div>
     <div class="grp mapgrp"><div class="gt">배치 (조감도)</div>
       <div class="mapwrap">
         <canvas id="map" width="440" height="400" aria-label="전시실 조감도: 조각을 끌어 옮기고, 빈 바닥을 누르면 그 자리로 이동합니다"></canvas>
@@ -220,7 +224,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="시야" id="fovPick">
         <button data-f="58">넓게 (지금)</button><button data-f="45">사람 눈</button><button data-f="32">표준 50mm</button>
       </div>
-      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button id="botToggle" type="button">테스트 봇</button><button id="joyToggle" type="button">휴대폰 조이스틱</button></div>
+      <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button hidden id="botToggle" type="button">테스트 봇</button><button id="joyToggle" type="button">휴대폰 조이스틱</button></div>
       <label for="k-figBlur"><span>피규어 윤곽 블러 (px) <output id="o-figBlur"></output></span><input type="range" id="k-figBlur" min="0" max="14" step="0.1"></label>
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
       <label for="k-helloY"><span>말 걸기 높이 (머리 위 m) <output id="o-helloY"></output></span><input type="range" id="k-helloY" min="-0.1" max="0.6" step="0.01"></label>
@@ -254,7 +258,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js?v=1104moon';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
-import { createGuestbook } from './guestbook.js?v=1104spread';
+import { createGuestbook } from './guestbook.js?v=1104panel';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -734,7 +738,7 @@ const ROUTES=[
   [[12.25,3.2,90],[12.25,0.0,90],[12.25,-3.0,90],[12.25,-5.6,null],[9.1,-5.7,180],[6.34,-5.6,null],[6.34,-1.5,null],[9.1,5.2,0],[6.61,4.6,0]],
   [[1.35,-1.8,180],[3.6,-5.9,null],[4.55,-5.9,null],[5.29,-5.9,null],[9.1,-1.2,null],[9.1,5.0,0],[12.12,1.5,90],[5.82,-3.0,null],[5.29,-5.9,null],[4.55,-5.9,null],[3.6,-5.9,null]]];
 const BOTS=[], BOT_LINES=['Hello!','Hi there :)','Beautiful work.','I love the Medusa.','First time here?','The colors are amazing.','Nice to meet you!','This room feels calm.'];
-function botsOn(){ return !!(typeof tune!=='undefined'&&tune.bots); }
+function botsOn(){ return false; } // test bots retired: only real visitors are shown
 function botTick(dt){
   if(botsOn()&&KIT&&!BOTS.length) ROUTES.forEach((r,i)=>{ const id='bot'+i, p0=r[0]; addPeer({id,h:[160,170,180][i%3],x:p0[0],y:p0[1],a:0}); const p=PEERS.get(id); if(p){ p.bot=true; BOTS.push({id,route:r,k:1,wait:i*1.5,x:p0[0],y:p0[1],yaw:0}); } });
   if(!botsOn()&&BOTS.length){ for(const b of BOTS) removePeer(b.id); BOTS.length=0; showOnline(); }
@@ -789,6 +793,9 @@ window.__auto=()=>({go:autoGo,walk:{...walk}}); // for checks
 window.__gates=()=>JSON.stringify(GATES);
 window.__floorScreen=(x,y)=>{ const v=new THREE.Vector3(x,0,-y).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
 window.__tap=(x,y)=>tapMove(x,y);
+window.__gbScreen=()=>{ if(!GB) return null; const v=new THREE.Box3().setFromObject(GB.bookM).getCenter(new THREE.Vector3()).project(camera), r=canvas.getBoundingClientRect(); return {x:(v.x+1)/2*r.width+r.left,y:(1-v.y)/2*r.height+r.top}; };
+window.__gbState=()=>({open:guest.isOpen,dlg:!!document.querySelector('.gbx')});
+window.__gbOpen=()=>{ gbOpenFromView(); return guest.isOpen; };
 window.__stop=()=>{ autoGo=null; lastWork=null; lastSculpt=null; };
 window.__path=(a,b,c,d)=>({path:findPath(a,b,c,d),wide:lineWide(a,b,c,d),clear:lineClear(a,b,c,d),blocks,ok:[canWalk(a,b),canWalk(c,d)]});
 window.__walkTo=v=>{Object.assign(walk,v); if(mode!=='walk') setMode('walk'); placeWalkCam(); dirty=true;}; // for checks
@@ -1062,7 +1069,7 @@ window.__applyFigure=async bin=>{ const u8=new Uint8Array(bin); const F=await lo
   await ghPut('settings.json',JSON.stringify({savedAt:Date.now(),tune},null,1),'Virtual exhibition settings',cfg,token);
   const t=new Date(); return '전시장에 적용하고 홈페이지에도 저장했어요 ('+t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+') · 1~2분 뒤 다른 기기에도 보여요.';};
 let waitGesture=false;
-function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.style.display='block';}
+function showHint(t){const h=document.getElementById('hint'); h.textContent=t; h.hidden=false; clearTimeout(showHint.t); showHint.t=setTimeout(()=>h.hidden=true,5000);} // only for notices (e.g. popup blocked); the room itself shows no help text
 // embedded in the site (master mode, computer only): open the control window right away; if the browser blocks it, open it on the first click in the room
 if(document.documentElement.classList.contains('embed')&&!matchMedia('(pointer:coarse)').matches){ // phones only look: no control window there
   setTimeout(openPanel,400);
@@ -1129,14 +1136,25 @@ function buildGuestbookCorner(xEnd,zc,wd){
   const plq=new THREE.Mesh(new THREE.PlaneGeometry(1.5,0.45),new THREE.MeshBasicMaterial({map:tt,transparent:true,depthWrite:false})); plq.rotation.y=-Math.PI/2; plq.position.set(xEnd-0.004,1.75,zc); scene.add(plq);
   GB={g,ped,bookM,hits:[bookM,ped]};
 }
+let gbPanel=null, gbPanelDoc=null;
+function gbPanelToggle(){ const host=PD.getElementById('gbPanelHost'), btn=PD.getElementById('gbPanelBtn'); if(!host) return;
+  if(!host.hidden){ try{ gbPanel&&gbPanel.close(); }catch(e){} host.hidden=true; btn.textContent='방명록 펼치기'; return; }
+  host.hidden=false; btn.textContent='방명록 접기';
+  if(!gbPanel||gbPanelDoc!==PD){ host.innerHTML=''; gbPanelDoc=PD; gbPanel=createGuestbook({host,doc:PD,inline:true,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb'}); }
+  setTimeout(()=>{ try{ gbPanel.open(); }catch(e){ console.error(e); } },30); }
+document.getElementById('gbPanelBtn').onclick=gbPanelToggle;
 const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onOpen:()=>{keys.clear(); dirty=true;},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
 const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
 function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=canvas.getBoundingClientRect();
   _nv.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _ray.setFromCamera(_nv,camera); const hit=_ray.intersectObjects(GB.hits,false)[0];
-  if(!hit||hit.distance>7) return false;
+  if(!hit) return false; if(wallStop(hit.point.x,-hit.point.z)) return false;
+  const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)>0.6){ if(goTo(V.x,V.y,V.yaw,V.pitch)){ gbPending=true; autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; return true; } }
+  gbOpenFromView(); return true; }
+let gbPending=false; // walking up to the guestbook: it opens when you get there
+function gbOpenFromView(){ if(!GB||guest.isOpen) return; const r=canvas.getBoundingClientRect(); placeWalkCam(); camera.updateMatrixWorld();
   const bb=new THREE.Box3().setFromObject(GB.bookM), pts=[]; for(const ix of [0,1]) for(const iy of [0,1]) for(const iz of [0,1]) pts.push(new THREE.Vector3(ix?bb.max.x:bb.min.x,iy?bb.max.y:bb.min.y,iz?bb.max.z:bb.min.z).project(camera));
   const xs=pts.map(p=>(p.x+1)/2*r.width+r.left), ys=pts.map(p=>(1-p.y)/2*r.height+r.top);
-  guest.open({left:Math.min(...xs),top:Math.min(...ys),width:Math.max(4,Math.max(...xs)-Math.min(...xs)),height:Math.max(4,Math.max(...ys)-Math.min(...ys))}); return true;}
+  guest.open({left:Math.min(...xs),top:Math.min(...ys),width:Math.max(4,Math.max(...xs)-Math.min(...xs)),height:Math.max(4,Math.max(...ys)-Math.min(...ys))}); }
 stage.addEventListener('keydown',e=>{ if(e.target&&e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
@@ -1392,7 +1410,7 @@ setInterval(saveState,1000); addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function loop(now){
-  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep();
+  requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep(); if(gbPending&&!autoGo){ gbPending=false; const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)<1.0) setTimeout(gbOpenFromView,250); }
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
   if(mode==='walk'){
     let fwd=0, strafe=0, turn=0;

@@ -47,8 +47,9 @@ const rnd = (n, abc) => { const a = new Uint8Array(n); crypto.getRandomValues(a)
 // store (default: the exhibition server at api):
 //   index() -> [{id, g, at}] every visible page, light;  pages(keys) -> {"id:g": [strokes]};  save(g, strokes) -> 'ok'|'conflict'|'fail'
 //   hide(id, g) -> owner only;  canHide() -> true when the owner is looking
-export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose }) {
-  if (!document.getElementById('gb-css')) { const st = document.createElement('style'); st.id = 'gb-css'; st.textContent = CSS; document.head.appendChild(st); }
+export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, doc }) {
+  const D = doc || (host && host.ownerDocument) || document; // works in another window too (the master's control window)
+  if (!D.getElementById('gb-css')) { const st = D.createElement('style'); st.id = 'gb-css'; st.textContent = CSS; D.head.appendChild(st); }
   let me = meIn || null; if (!me) try { me = JSON.parse(localStorage.getItem('gb-me') || 'null'); } catch (e) {}
   if (!me || !me.id) { me = { id: rnd(24, 'abcdefghijklmnopqrstuvwxyz0123456789'), key: rnd(40, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789') }; try { localStorage.setItem('gb-me', JSON.stringify(me)); } catch (e) {} }
   let others = [], mine = { strokes: [] }, single = false, cur = 0, busy = false, full = false, drawing = false, pendingRender = false, isOpen = false, loaded = false, owner = false;
@@ -81,11 +82,11 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     if (drawing) pendingRender = true; else if (!busy) render(); }
 
   function pageEl(pg, side, live) {
-    const d = document.createElement('div'); d.className = 'page ' + side;
+    const d = D.createElement('div'); d.className = 'page ' + side;
     if (!pg || pg.kind === 'blank') return d;
-    const cv = document.createElement('canvas'); d.appendChild(cv);
+    const cv = D.createElement('canvas'); d.appendChild(cv);
     if (pg.kind === 'entry') { const st = cache.get(pg.key); if (st) requestAnimationFrame(() => paint(cv, st));
-      if (live && owner) { const b = document.createElement('button'); b.className = 'rm'; b.textContent = '지우기'; let armed = false;
+      if (live && owner) { const b = D.createElement('button'); b.className = 'rm'; b.textContent = '지우기'; let armed = false;
         b.onpointerdown = e => e.stopPropagation();
         b.onclick = async e => { e.stopPropagation(); if (!armed) { armed = true; b.textContent = '정말 지울까요?'; setTimeout(() => { armed = false; b.textContent = '지우기'; }, 3000); return; }
           if (await store.hide(pg.id, pg.g)) { others = others.filter(o => !(o.id === pg.id && o.g === pg.g)); render(); } else b.textContent = '못 지웠어요'; };
@@ -104,21 +105,21 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     const first = spreadEl.firstChild;
     if (single) spreadEl.insertBefore(pageEl(P[cur], 'r', true), first);
     else { spreadEl.insertBefore(pageEl(P[cur], 'l', true), first); spreadEl.insertBefore(pageEl(P[cur + 1], 'r', true), first); }
-    if (!cPrev) { cPrev = document.createElement('div'); cPrev.className = 'corner prev'; cPrev.onpointerdown = e => dragFlip(e, -1); cNext = document.createElement('div'); cNext.className = 'corner next'; cNext.onpointerdown = e => dragFlip(e, 1); spreadEl.append(cPrev, cNext); }
+    if (!cPrev) { cPrev = D.createElement('div'); cPrev.className = 'corner prev'; cPrev.onpointerdown = e => dragFlip(e, -1); cNext = D.createElement('div'); cNext.className = 'corner next'; cNext.onpointerdown = e => dragFlip(e, 1); spreadEl.append(cPrev, cNext); }
     cPrev.hidden = !(cur > 0); cNext.hidden = !(cur < lastStart());
     if (loaded) fetchNear();
   }
   function makeLeaf(dir) {
     const P = pages(), r = spreadEl.getBoundingClientRect(), half = single ? r.width : r.width / 2;
-    const leaf = document.createElement('div'); leaf.className = 'leaf'; leaf.style.width = half + 'px';
-    const front = document.createElement('div'), back = document.createElement('div'); front.className = 'side front'; back.className = 'side back';
+    const leaf = D.createElement('div'); leaf.className = 'leaf'; leaf.style.width = half + 'px';
+    const front = D.createElement('div'), back = D.createElement('div'); front.className = 'side front'; back.className = 'side back';
     let fIdx, bIdx;
     if (dir > 0) { fIdx = single ? cur : cur + 1; bIdx = single ? null : cur + 2; leaf.style.left = (single ? 0 : half) + 'px'; leaf.style.transformOrigin = 'left center'; }
     else { fIdx = single ? cur - 1 : cur; bIdx = single ? null : cur - 1; leaf.style.left = '0px'; leaf.style.transformOrigin = single ? 'left center' : 'right center'; }
     const fe = pageEl(P[fIdx], single ? 'r' : (dir > 0 ? 'r' : 'l'), false), be = pageEl(bIdx == null ? null : P[bIdx], dir > 0 ? 'l' : 'r', false);
     for (const x of [fe, be]) { x.style.position = 'absolute'; x.style.inset = '0'; }
     front.appendChild(fe); back.appendChild(be);
-    const s1 = document.createElement('div'), s2 = document.createElement('div'); s1.className = 'shade'; s2.className = 'shade'; front.appendChild(s1); back.appendChild(s2);
+    const s1 = D.createElement('div'), s2 = D.createElement('div'); s1.className = 'shade'; s2.className = 'shade'; front.appendChild(s1); back.appendChild(s2);
     leaf.append(front, back);
     if (!(single && dir < 0)) {
       const under = pageEl(dir > 0 ? P[single ? cur + 1 : cur + 3] : P[cur - 2], dir > 0 ? 'r' : 'l', false);
@@ -178,7 +179,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
   function layout() { if (!book || busy) return; const s = false; /* always the two-page spread */ if (s !== single) { single = s; if (!single) cur -= cur % 2; } render(); }
   function open(fromRect) {
     if (isOpen) return; isOpen = true; onOpen && onOpen();
-    wrap = document.createElement('div'); wrap.className = 'gbx'; wrap.innerHTML = '<div class="book"><div class="spread"></div></div>';
+    wrap = D.createElement('div'); wrap.className = 'gbx'; wrap.innerHTML = '<div class="book"><div class="spread"></div></div>';
     book = wrap.firstChild; spreadEl = book.firstChild; cPrev = cNext = null;
     if (!inline && PHONE()) wrap.classList.add('full'); // phones: the open book fills the screen so both pages read well
     host.appendChild(wrap);
@@ -198,7 +199,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     w.classList.remove('on'); b.style.transform = 'scale(.12)'; b.style.opacity = '0';
     setTimeout(() => w.remove(), 560); onClose && onClose();
   }
-  addEventListener('keydown', e => { if (!isOpen) return; if (e.key === 'Escape') { if (!inline) close(); return; }
+  D.defaultView.addEventListener('keydown', e => { if (!isOpen) return; if (e.key === 'Escape') { if (!inline) close(); return; }
     if (e.key === 'ArrowRight') { flip(1); e.preventDefault(); e.stopPropagation(); } else if (e.key === 'ArrowLeft') { flip(-1); e.preventDefault(); e.stopPropagation(); }
     else if (!inline && /^(w|a|s|d|arrowup|arrowdown)$/i.test(e.key)) close(); }, true);
   return { open, close, get isOpen() { return isOpen; } };
