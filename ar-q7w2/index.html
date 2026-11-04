@@ -57,8 +57,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
 <script type="module" src="model-viewer.min.js"></script>
 <script>
 (function(){
-  var master=/(?:^|;\s*)lysM=1/.test(document.cookie);   // master preview only for now
-  if(!master){ document.getElementById('lock').style.display='block'; return; }
+  var master=/(?:^|;\s*)lysM=1/.test(document.cookie);   // public since 2026-11-04; hidden works stay master-only
   document.getElementById('hd').hidden=false; document.getElementById('grid').hidden=false;
   var grid=document.getElementById('grid'), view=document.getElementById('view'), mv=document.getElementById('mv'), items=[], kind='original';
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -95,7 +94,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
   addEventListener('popstate',function(){ var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x) open(x,false); else close(); });
   document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick=function(){ kind=b.dataset.k; document.querySelectorAll('#tabs button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));}); render(); }; });
   mv.addEventListener('ar-status',function(e){ if(e.detail.status==='failed') alert('AR could not start on this device. / 이 기기에서는 AR을 열 수 없어요.'); });
-  fetch('works.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){ items=j.items; render();
+  fetch('works.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){ items=j.items.filter(function(x){ return master||!x.hidden; }); render();
     var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x){ kind=x.kind; render(); open(x,false); } });
 })();
 </script>
