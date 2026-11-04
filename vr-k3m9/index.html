@@ -1333,8 +1333,8 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
     const far=workDist(w), close=lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
-    { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const fromNext=lastWork&&lastWork.w!==w&&(lastWork.w.wall===w.wall||(lastWork.w.members&&lastWork.w.members[0].wall===w.wall)||(w.members&&w.members[0].wall===lastWork.w.wall))&&(Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.9||(autoGo&&autoGo.face));
-      if(!close&&fromNext&&dw>Math.min(0.9,0.4*far)&&dw<1.6*far&&lat<6&&wallStop(x,y)==null){ d0=dw; slid=true; } } /* next work along the same wall: keep your distance, just slide sideways */
+    { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const cw=window.capWork, wallOfU=u=>u.wall||(u.members&&u.members[0].wall), fromNext=!!cw&&cw!==w&&wallOfU(cw)===wallOfU(w); /* a caption is showing and you tap another work on that same wall: just slide sideways */
+      if(!close&&fromNext&&dw>0.6&&wallStop(x,y)==null){ d0=dw; slid=true; } } /* next work along the same wall: keep your distance, just slide sideways */
     let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
     let yaw=lookYaw(-nx,-ny);
     const roomy=(sx,sy)=>[[0,0],[0.3,0],[-0.3,0],[0,0.3],[0,-0.3]].every(([ex,ey])=>canWalk(sx+ex,sy+ey));
@@ -1450,6 +1450,7 @@ function updateCaption(){
   if(lastWork&&lastWork.w&&sameRoom(lastWork.w.pos)){ const w=lastWork.w; _cv.copy(w.pos).project(camera); // the work you clicked always wins while it is on screen
     const nx=Math.sin(w.mesh.rotation.y), nz=Math.cos(w.mesh.rotation.y), front=(p.x-w.pos.x)*nx+(p.z-w.pos.z)*nz>0.2;
     if(front&&_cv.z<1&&Math.abs(_cv.x)<0.85&&Math.abs(_cv.y)<0.9) best=w; }
+  window.capWork=best&&best.mesh?best:null; // the work whose caption is on screen now
   if(best&&best.mesh&&window.hiRes) window.hiRes(best);
   const c=best?best.caption:''; if(c!==lastCap){lastCap=c; showCap(c);}
 }
