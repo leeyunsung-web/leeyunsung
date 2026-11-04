@@ -554,7 +554,33 @@ function shadowTex(w,h){
   pass(0.10,0.45,0.035,0); pass(0.025,0.68,0.012,0); pass(0.006,0.53,0.004,0);
   const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return {t,M};
 }
-const works=[], shadowMats=[]; const FRAME_M=new THREE.MeshBasicMaterial({color:0x1d1d1d});
+const works=[], shadowMats=[];
+// style A frame (chosen 2026-11-04): 2.2 cm natural-oak moulding, 3.2 cm deep, 6 cm white mat, the print 1 cm behind the glass
+const FRAMEA=(()=>{ const FW=0.022, FD=0.032, MB=0.06, sR=(r,g,b)=>new THREE.Color().setRGB(r,g,b,THREE.SRGBColorSpace);
+  const cv=(w,h,fn)=>{const c=document.createElement('canvas'); c.width=w; c.height=h; fn(c.getContext('2d'),w,h); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;};
+  const grain=cv(512,64,(x,w,h)=>{ x.fillStyle='#c9a77c'; x.fillRect(0,0,w,h); let sd=7; const rnd=()=>((sd=(sd*16807)%2147483647)/2147483647);
+    for(let i=0;i<70;i++){ x.strokeStyle='rgba(90,55,25,'+(0.05+rnd()*0.12).toFixed(2)+')'; x.lineWidth=0.6+rnd()*1.4; x.beginPath(); let y=rnd()*h; x.moveTo(0,y); for(let k=0;k<=w;k+=32){ y+=(rnd()-0.5)*1.6; x.lineTo(k,y); } x.stroke(); } });
+  grain.wrapS=grain.wrapT=THREE.RepeatWrapping; grain.anisotropy=MAXANI;
+  const grainV=grain.clone(); grainV.center.set(0.5,0.5); grainV.rotation=Math.PI/2; grainV.needsUpdate=true; // the grain runs along each bar
+  const fH=new THREE.MeshBasicMaterial({map:grain}), fV=new THREE.MeshBasicMaterial({map:grainV});
+  const top=new THREE.MeshBasicMaterial({color:sR(0.86,0.73,0.56)}), side=new THREE.MeshBasicMaterial({color:sR(0.70,0.56,0.40)}), bot=new THREE.MeshBasicMaterial({color:sR(0.52,0.40,0.28)});
+  const inT=new THREE.MeshBasicMaterial({color:sR(0.60,0.47,0.33)}), inS=new THREE.MeshBasicMaterial({color:sR(0.74,0.60,0.44)}), inB=new THREE.MeshBasicMaterial({color:sR(0.84,0.71,0.54)}); // inner lips: the top one in shade, the bottom one catching the light
+  const matM=new THREE.MeshBasicMaterial({color:sR(0.955,0.948,0.925)});
+  const bevel=new THREE.MeshBasicMaterial({color:sR(0.99,0.99,0.985)});
+  const inner=cv(256,256,(x,w,h)=>{ const g=x.createLinearGradient(0,0,0,44); g.addColorStop(0,'rgba(0,0,0,.26)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.fillRect(0,0,w,44);
+    const l=x.createLinearGradient(0,0,24,0); l.addColorStop(0,'rgba(0,0,0,.14)'); l.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=l; x.fillRect(0,0,24,h); });
+  const glass=cv(256,256,(x,w,h)=>{ const g=x.createLinearGradient(0,0,w,h); g.addColorStop(0,'rgba(255,255,255,0)'); g.addColorStop(0.44,'rgba(255,255,255,0)'); g.addColorStop(0.52,'rgba(255,255,255,.09)'); g.addColorStop(0.62,'rgba(255,255,255,0)'); x.fillStyle=g; x.fillRect(0,0,w,h); });
+  const innerM=new THREE.MeshBasicMaterial({map:inner,transparent:true,depthWrite:false}), glassM=new THREE.MeshBasicMaterial({map:glass,transparent:true,depthWrite:false});
+  return { build(m,pw,ph){ // m: the print sheet (local z: wall at -0.02, print face at +0.002)
+    const iw=pw+2*MB, ih=ph+2*MB, ow=iw+2*FW, oh=ih+2*FW, z0=-0.02, zc=z0+FD/2;
+    const bar=(w,h,x,y,mats)=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,FD),mats); b.position.set(x,y,zc); m.add(b); };
+    bar(ow,FW,0,ih/2+FW/2,[side,side,top,inT,fH,fH]); bar(ow,FW,0,-ih/2-FW/2,[side,side,inB,bot,fH,fH]);   // BoxGeometry faces: +x,-x,+y,-y,+z,-z
+    bar(FW,ih,-iw/2-FW/2,0,[inS,side,top,bot,fV,fV]); bar(FW,ih,iw/2+FW/2,0,[side,inS,top,bot,fV,fV]);
+    for(const [w,h,x,y] of [[iw,MB,0,ph/2+MB/2],[iw,MB,0,-ph/2-MB/2],[MB,ph,-pw/2-MB/2,0],[MB,ph,pw/2+MB/2,0]]){ const q=new THREE.Mesh(new THREE.PlaneGeometry(w,h),matM); q.position.set(x,y,0.0015); m.add(q); } // the mat around the print window
+    for(const [w,h,x,y] of [[pw+0.006,0.003,0,ph/2+0.0015],[pw+0.006,0.003,0,-ph/2-0.0015],[0.003,ph,-pw/2-0.0015,0],[0.003,ph,pw/2+0.0015,0]]){ const q=new THREE.Mesh(new THREE.PlaneGeometry(w,h),bevel); q.position.set(x,y,0.0017); m.add(q); } // cut bevel: a fine bright line round the window
+    const ish=new THREE.Mesh(new THREE.PlaneGeometry(iw,ih),innerM); ish.position.z=0.0025; m.add(ish);
+    const gl=new THREE.Mesh(new THREE.PlaneGeometry(iw,ih),glassM); gl.position.z=z0+FD-0.003; m.add(gl);
+    return {ow,oh}; } }; })();
 // paintings load near-first: the room you start in comes with the loading screen, the rest streams in afterwards (nearest first)
 const PH=new THREE.DataTexture(new Uint8Array([228,226,222,255]),1,1); PH.colorSpace=THREE.SRGBColorSpace; PH.needsUpdate=true;
 const wallOf=p=>p.wall||(p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R');
@@ -574,12 +600,12 @@ for(const p of L.paintings){
       { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0); // fades out where threads get smaller than a pixel
         float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
-  const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,0.04),[sLR,sLR,sTop,sBot,front,sLR]);
+  const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,p.frame?0.004:0.04),[sLR,sLR,sTop,sBot,front,sLR]); // framed prints: a thin sheet behind glass
   m.position.copy(b2t(p.x,p.y,p.z)); m.rotation.y=THREE.MathUtils.degToRad(p.rot); scene.add(m);
-  if(p.frame){ const fm=FRAME_M, t=0.02, dp=0.045; for(const [bw,bh,fx,fy] of [[p.w+2*t,t,0,p.h/2+t/2],[p.w+2*t,t,0,-p.h/2-t/2],[t,p.h,p.w/2+t/2,0],[t,p.h,-p.w/2-t/2,0]]){ const b=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,dp),fm); b.position.set(fx,fy,0.003); m.add(b); } } // posters hang in thin black frames
-  const {t,M}=shadowTex(p.w,p.h);
+  const FR=p.frame?FRAMEA.build(m,p.w,p.h):null; // posters: natural-oak frame with a white mat (style A)
+  const {t,M}=FR?shadowTex(FR.ow,FR.oh):shadowTex(p.w,p.h);
   const sm=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-28}); // must out-pull the walls' own offset (-2/-12), or the wall flickers through the shadow as you move
-  const sh=new THREE.Mesh(new THREE.PlaneGeometry(p.w+2*M,p.h+2*M),sm); sh.position.z=-0.0185; sh.layers.set(1); m.add(sh); shadowMats.push(sm); // layer 1: the floor mirror skips it (its skewed depth drew the shadow over the canvas)
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry((FR?FR.ow:p.w)+2*M,(FR?FR.oh:p.h)+2*M),sm); sh.position.z=-0.0185; sh.layers.set(1); m.add(sh); shadowMats.push(sm); // layer 1: the floor mirror skips it (its skewed depth drew the shadow over the canvas)
   const wall=wallOf(p);
   works.push({mesh:m,p,wall,baseY:p.z,pos:m.position.clone(),caption:p.caption||'',file:(SMALL?'tex/m/':'tex/')+p.file,full:'/images/'+p.file,mat:front});
 }
