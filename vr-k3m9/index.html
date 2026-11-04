@@ -261,7 +261,7 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { buildMobile } from './mobile.js?v=1104moon';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
-import { createGuestbook } from './guestbook.js?v=1104stats';
+import { createGuestbook } from './guestbook.js?v=1104view';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -1149,7 +1149,7 @@ let gbPanel=null, gbPanelDoc=null;
 function gbPanelToggle(){ const host=PD.getElementById('gbPanelHost'), btn=PD.getElementById('gbPanelBtn'); if(!host) return;
   if(!host.hidden){ try{ gbPanel&&gbPanel.close(); }catch(e){} host.hidden=true; btn.textContent='방명록 펼치기'; return; }
   host.hidden=false; btn.textContent='방명록 접기';
-  if(!gbPanel||gbPanelDoc!==PD){ host.innerHTML=''; gbPanelDoc=PD; gbPanel=createGuestbook({host,doc:PD,inline:true,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb'}); }
+  if(!gbPanel||gbPanelDoc!==PD){ host.innerHTML=''; gbPanelDoc=PD; gbPanel=createGuestbook({host,doc:PD,inline:true,viewOnly:true,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb'}); }
   setTimeout(()=>{ try{ gbPanel.open(); }catch(e){ console.error(e); } },30); }
 document.getElementById('gbPanelBtn').onclick=gbPanelToggle;
 // chat log (master only: the server checks the master pass)

@@ -47,7 +47,7 @@ const rnd = (n, abc) => { const a = new Uint8Array(n); crypto.getRandomValues(a)
 // store (default: the exhibition server at api):
 //   index() -> [{id, g, at}] every visible page, light;  pages(keys) -> {"id:g": [strokes]};  save(g, strokes) -> 'ok'|'conflict'|'fail'
 //   hide(id, g) -> owner only;  canHide() -> true when the owner is looking
-export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, onWrite, doc }) {
+export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, onWrite, doc, viewOnly }) {
   const D = doc || (host && host.ownerDocument) || document; // works in another window too (the master's control window)
   if (!D.getElementById('gb-css')) { const st = D.createElement('style'); st.id = 'gb-css'; st.textContent = CSS; D.head.appendChild(st); }
   let me = meIn || null; if (!me) try { me = JSON.parse(localStorage.getItem('gb-me') || 'null'); } catch (e) {}
@@ -91,7 +91,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
         b.onclick = async e => { e.stopPropagation(); if (!armed) { armed = true; b.textContent = '정말 지울까요?'; setTimeout(() => { armed = false; b.textContent = '지우기'; }, 3000); return; }
           if (await store.hide(pg.id, pg.g)) { others = others.filter(o => !(o.id === pg.id && o.g === pg.g)); render(); } else b.textContent = '못 지웠어요'; };
         d.appendChild(b); } }
-    else { const g = pg.g, mineG = () => mine.strokes.filter(s => (s.g | 0) === g); requestAnimationFrame(() => paint(cv, mineG())); if (live) { d.classList.add('mine'); attachPen(d, cv, g, mineG); } }
+    else { const g = pg.g, mineG = () => mine.strokes.filter(s => (s.g | 0) === g); requestAnimationFrame(() => paint(cv, mineG())); if (live && !viewOnly) { d.classList.add('mine'); attachPen(d, cv, g, mineG); } }
     return d;
   }
   // fit the book inside the room view (not the window)
@@ -143,8 +143,8 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
   function flip(dir) { if (busy) return; if ((dir > 0 && cur >= lastStart()) || (dir < 0 && cur <= 0)) return; busy = true; const L = makeLeaf(dir); setAngle(L, 0); finish(L, true, 0); }
   function dragFlip(e, dir) { if (busy) return; e.preventDefault(); e.stopPropagation(); busy = true; const L = makeLeaf(dir), r = spreadEl.getBoundingClientRect(); let t = 0, moved = 0; const x0 = e.clientX; setAngle(L, 0);
     const mv = ev => { moved = Math.max(moved, Math.abs(ev.clientX - x0)); t = cl((dir > 0 ? (x0 - ev.clientX) : (ev.clientX - x0)) / r.width); setAngle(L, t); };
-    const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); finish(L, moved < 8 ? true : t > 0.3, t); };
-    addEventListener('pointermove', mv); addEventListener('pointerup', up); addEventListener('pointercancel', up); }
+    const W = D.defaultView || window, up = () => { W.removeEventListener('pointermove', mv); W.removeEventListener('pointerup', up); W.removeEventListener('pointercancel', up); finish(L, moved < 8 ? true : t > 0.3, t); };
+    W.addEventListener('pointermove', mv); W.addEventListener('pointerup', up); W.addEventListener('pointercancel', up); }
 
   function attachPen(d, cv, g, mineG) {
     let st = null; const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
@@ -170,7 +170,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
       const myKeys = idx.filter(r => r.id === me.id).map(r => me.id + ':' + (r.g | 0));
       if (myKeys.length && (force || !mine.strokes.length)) { const got = await store.pages(myKeys); const all = [];
         for (const [k, v] of Object.entries(got)) { const g = +k.split(':')[1] | 0; for (const st of unpack(v)) all.push({ ...st, g }); } mine.strokes = all; }
-      const was = loaded; loaded = true; if (!was) { pages(); cur = mineStart - (single ? 0 : mineStart % 2); }
+      const was = loaded; loaded = true; if (!was) { pages(); cur = viewOnly ? 0 : mineStart - (single ? 0 : mineStart % 2); }
       if (drawing) pendingRender = true; else if (!busy) render();
       fetchNear();
     } catch (e) { loaded = true; render(); }
@@ -183,7 +183,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     book = wrap.firstChild; spreadEl = book.firstChild; cPrev = cNext = null;
     if (!inline && PHONE()) wrap.classList.add('full'); // phones: the open book fills the screen so both pages read well
     host.appendChild(wrap);
-    single = false; pages(); cur = mineStart - (single ? 0 : mineStart % 2); render();
+    single = false; pages(); cur = viewOnly ? 0 : mineStart - (single ? 0 : mineStart % 2); render();
     // grow out of the book on the pedestal
     const hb = host.getBoundingClientRect(), bb = book.getBoundingClientRect();
     if (fromRect && bb.width) { const sx = Math.max(0.04, fromRect.width / bb.width), cx = fromRect.left + fromRect.width / 2 - (bb.left + bb.width / 2), cy = fromRect.top + fromRect.height / 2 - (bb.top + bb.height / 2);
