@@ -334,7 +334,9 @@ composer.addPass(lens);
 // quality: render scale, multisample level, reflection size; shadow maps redraw only when something moved
 const MAXS=renderer.capabilities.maxSamples||4; let qKey='';
 function setQuality(){
-  const pr=Math.min(devicePixelRatio,2)*(+tune.res||1)*perfK, samples=Math.min([0,2,4,8][Math.round(tune.aa)]??4,MAXS), rr=tune.rblur>0.2?512:1024;
+  /* touch screens: keep the number of pixels drawn within a budget. A tablet (iPad) at full 2x sharpness draws 4-6 million pixels a frame, several times a phone, which is why it could not keep up */
+  const sr=stage.getBoundingClientRect(), area=Math.max(1,(sr.width||innerWidth)*(sr.height||innerHeight)), cap=COARSE?Math.sqrt((SMALL?2.6e6:2.4e6)/area):9;
+  const pr=Math.max(0.75,Math.min(Math.min(devicePixelRatio,2),cap)*(+tune.res||1)*perfK), samples=Math.min(COARSE&&!SMALL?2:([0,2,4,8][Math.round(tune.aa)]??4),MAXS), rr=(tune.rblur>0.2||COARSE)?512:1024;
   const k=pr+'|'+samples+'|'+rr; if(k===qKey) return; qKey=k;
   renderer.setPixelRatio(pr); composer.setPixelRatio(pr);
   for(const rt of [composer.renderTarget1,composer.renderTarget2]){ if(rt.samples!==samples){rt.samples=samples; rt.dispose();} }
@@ -1666,8 +1668,8 @@ else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode===
   setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
 setInterval(saveState,1000);
 // phones that struggle: draw at 1.5x instead of 2x pixel density (only if it stays under ~40 fps; capable phones keep full sharpness)
-if(COARSE){ let f0=0, slow=0; setInterval(()=>{ const f=window.__ldFrames||0, fps=(f-f0)/2; f0=f; const box=document.getElementById('load'); if(document.hidden||!box||!box.hidden||perfK<1) return;
-  slow=fps<40?slow+1:0; if(slow>=3&&Math.min(devicePixelRatio,2)>1.5){ perfK=0.75; setQuality(); dirty=true; } },2000); } addEventListener('pagehide',saveState);
+if(COARSE){ let f0=0, slow=0; setInterval(()=>{ const f=window.__ldFrames||0, fps=(f-f0)/2; f0=f; const box=document.getElementById('load'); if(document.hidden||!box||!box.hidden) return; if(performance.now()-lookT>1500){ slow=0; return; } /* only judge while you are actually moving or turning */
+  slow=fps<45?slow+1:0; if(slow>=2&&perfK>0.6){ perfK=Math.max(0.6,perfK-0.13); slow=0; setQuality(); dirty=true; } },2000); } /* still slow: step the sharpness down a little at a time (never below 60%) */ addEventListener('pagehide',saveState);
 const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, lastTris=0, fc=0, ft=performance.now(), last=performance.now();
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 // room tone: starts quietly on the first touch / click / key, follows the room you are in, your steps and other visitors' steps
