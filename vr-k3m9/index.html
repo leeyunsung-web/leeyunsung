@@ -1390,7 +1390,7 @@ function pathCore(ax,ay,bx,by){
   const out=[]; let px=ax,py=ay,k=0; while(k<pts.length){ let far=k; for(let q=pts.length-1;q>k;q--) if(lineWide(px,py,pts[q][0],pts[q][1])){ far=q; break; } out.push(pts[far]); [px,py]=pts[far]; k=far+1; }
   return out; }
 function goTo(x,y,yaw,pitch){ const path=Math.hypot(x-walk.x,y-walk.y)<5&&lineClear(walk.x,walk.y,x,y)?[[x,y]]:findPath(walk.x,walk.y,x,y); if(!path||!path.length) return false; const e=path[path.length-1]; autoGo={x:e[0],y:e[1],path,yaw,pitch};
-  if(yaw==null){ const pv=path.length>1?path[path.length-2]:[walk.x,walk.y]; if(Math.hypot(e[0]-pv[0],e[1]-pv[1])>0.3){ const ev=endView(e[0],e[1],lookYaw(e[0]-pv[0],e[1]-pv[1])); if(ev!=null) autoGo.endYaw=ev; } } return true; }
+  if(yaw==null){ const pv=path.length>1?path[path.length-2]:[walk.x,walk.y]; if(Math.hypot(e[0]-pv[0],e[1]-pv[1])>0.3){ const ev=endView(e[0],e[1],lookYaw(e[0]-pv[0],e[1]-pv[1])); if(ev==='keep') autoGo.keep=true; else if(ev!=null) autoGo.endYaw=ev; } } return true; }
 // can the work be seen from here, or does a sculpture stand in front of it?
 const _sr=new THREE.Raycaster(), _so=new THREE.Vector3(), _sp=new THREE.Vector3();
 function workSeen(w,sx,sy,strict){ const m=w.mesh, rx=Math.cos(m.rotation.y), rz=-Math.sin(m.rotation.y); let hit=0;
@@ -1431,10 +1431,10 @@ function nearestWorkTo(px,py){ let best=null, bd=6;
 function endView(x,y,h){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a); let t=0.2; while(t<14&&okPos(x+dx*t,y+dy*t)) t+=0.15; return t; };
   const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a)); let best=null, bs=0, ahead=false;
   for(const u of new Set(works.map(unitOf))){ const m=u.mesh, px=m.position.x, py=-m.position.z, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), vx=px-x, vy=py-y, d=Math.hypot(vx,vy);
-    if(d<1.0||d>11||(-vx*nx-vy*ny)<0.35*d) continue; if(!lineClear(x,y,px+nx*0.4,py+ny*0.4)) continue;
-    const off=Math.abs(wrap(lookYaw(vx,vy)-h)); if(off<0.38) ahead=true; if(off>1.2) continue; const sc=Math.cos(off)*Math.sqrt(u.p.w*u.p.h)/Math.max(1.5,d); if(sc>bs){ bs=sc; best=lookYaw(vx,vy); } }
-  if(ahead) return null; if(best!=null) return h+wrap(best-h);
-  const here=reach(h); if(here>4) return null; let ob=null, os=here;
+    if(d>11||(-vx*nx-vy*ny)<0.35*d) continue; if(d>0.6&&!lineClear(x,y,px+nx*Math.min(0.4,d*0.5),py+ny*Math.min(0.4,d*0.5))) continue;
+    const off=Math.abs(wrap(lookYaw(vx,vy)-h)); if(off<(d<1.5?0.7:0.38)) ahead=true; if(d<1.0) continue; /* a work right in front of you (even close up): keep looking at it */ if(off>1.2) continue; const sc=Math.cos(off)*Math.sqrt(u.p.w*u.p.h)/Math.max(1.5,d); if(sc>bs){ bs=sc; best=lookYaw(vx,vy); } }
+  if(ahead) return 'keep'; if(best!=null) return h+wrap(best-h);
+  const here=reach(h); if(here>4) return 'keep'; let ob=null, os=here;
   for(let i=-6;i<=6;i++){ const a=h+i*0.2, r=reach(a)*(1-Math.abs(i)*0.03); if(r>os*1.4&&r>os){ os=r; ob=a; } } return ob; }
 function standAt(x,y,d0,nx,ny){ for(let d=d0; d>0.5; d-=0.15){ const sx=x+nx*d, sy=y+ny*d; if(okPos(sx,sy)&&!blocks.some(b=>sx>b.x0&&sx<b.x1&&sy>b.y0&&sy<b.y1)) return [sx,sy]; } return null; }
 function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingClientRect(); _n2.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
@@ -1447,16 +1447,24 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const hd=h?h.distance:null; // exact surface only: clicks in the gaps (the mobile's open space, behind its wires) go through to what is behind
     if(hd!=null&&(!best||hd<best.d)) best={kind:'sculpt',d:hd,name,bb,g}; }
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
+  if(!best){ /* nothing hit: you tapped high on a bare wall (above the floor's horizon). Find that wall along the line you tapped and go to the work nearest it */
+    const dv=_r2.ray.direction, hl=Math.hypot(dv.x,dv.z); if(hl>0.05){ const ux=dv.x/hl, uy=-dv.z/hl; let t=0.2; while(t<20&&okPos(walk.x+ux*t,walk.y+uy*t)) t+=0.1;
+      const nw=nearestWorkTo(walk.x+ux*Math.max(0.2,t-0.2),walk.y+uy*Math.max(0.2,t-0.2)); if(nw) best={kind:'work',d:0,w:nw}; } }
   if(!best) return; showMark(cx,cy); GT.tap=best;
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), hx=hp.x, hy=-hp.z; // anything in the guestbook corner (floor, walls, the lectern): stand right in front of the book, facing it
     if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>L.door2.x0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2&&!(L.shop&&(L.door2.north?hy<L.door2.y0+0.05:hy>L.door2.y1-0.05))){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
+  if(best.kind==='floor'){ const fx=best.p.x, fy=-best.p.z; /* the floor right under a painting: you meant the painting */
+    for(const u of new Set(works.map(unitOf))){ const m=u.mesh, x=m.position.x, y=-m.position.z, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), out=(fx-x)*nx+(fy-y)*ny, lat=Math.abs((fx-x)*-ny+(fy-y)*nx);
+      const mine=(walk.x-x)*nx+(walk.y-y)*ny; if(out>-0.05&&out<0.9&&lat<u.p.w/2+0.25&&mine>Math.min(8,workDist(u))+0.6){ /* only while you are still coming toward it: standing close already, a floor tap just steps you nearer */ best={kind:'work',d:best.d,w:u.members?u.members[0]:u,fromFloor:true}; break; } } }
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ /* you tapped a wall (maybe by mistake): go and look at the work nearest that spot, on your side of the wall */
-      const nw=nearestWorkTo(stop[0],stop[1]); if(nw) best={kind:'work',d:0,w:nw}; else { goTo(stop[0],stop[1],null,null); lastWork=null; return; } } }
+      const inRoom=ROOMS.some(q=>hp.x>=q.x0&&hp.x<=q.x1&&-hp.z>=q.y0&&-hp.z<=q.y1); /* the floor just in front of a wall is still floor: walk there; only a tap that lands past the wall counts as tapping the wall */
+      const nw=inRoom?null:nearestWorkTo(stop[0],stop[1]); if(nw) best={kind:'work',d:0,w:nw,fromWall:true}; else { goTo(stop[0],stop[1],null,null); lastWork=null; return; } } }
   if(best.kind==='peer'){ lastWork=null; lastSculpt=null; autoGo={peer:best.p.id,x:walk.x,y:walk.y,path:null,re:0}; return; } // walk up until "Say hello" shows; any other tap cancels
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
+  if(best.kind==='work'&&(best.fromWall||best.fromFloor)&&lastWork&&unitOf(lastWork.w)===unitOf(best.w)&&Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<1.0) return; /* already looking at that work: a stray tap on the wall or floor around it does nothing */
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
-    const far=workDist(w), close=lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
+    const far=workDist(w), close=!best.fromWall&&!best.fromFloor&&lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
     { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const cw=window.capWork, wallOfU=u=>u.wall||(u.members&&u.members[0].wall), fromNext=!!cw&&cw!==w&&wallOfU(cw)===wallOfU(w); /* a caption is showing and you tap another work on that same wall: just slide sideways */
       if(!close&&fromNext&&dw>0.6&&wallStop(x,y)==null){ d0=dw; slid=true; } } /* next work along the same wall: keep your distance, just slide sideways */
@@ -1528,7 +1536,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     if(g.pitch!=null&&(g.near||rem<2.2)) tilt(g.pitch); else if(g.pitch!=null) tilt(0,1); return true; }
   if(g.then&&!g.orbit){ const o=g.then; autoGo={orbit:{x:o.x,y:o.y,r:Math.max(o.r,Math.hypot(walk.x-o.x,walk.y-o.y)),a:Math.atan2(walk.y-o.y,walk.x-o.x),left:Math.PI*2,top:o.top}}; return true; }
   if(g.face&&g.cy!=null&&!g.aimed){ g.aimed=1; const fx=g.face[0]-walk.x, fy=g.face[1]-walk.y; if(Math.hypot(fx,fy)>0.3){ g.yaw=lookYaw(fx,fy); g.pitch=Math.atan2(g.cy-EYE,Math.hypot(fx,fy)); } }
-  if(g.yaw==null&&!g.looked){ g.looked=1; const a=g.endYaw!=null?g.endYaw:openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=-0.02; } else if(Math.abs(g.wv||0)>0.02) g.yaw=walk.yaw+(g.wv||0)*0.7; /* still turning a little: let it settle instead of stopping dead */ }
+  if(g.yaw==null&&!g.looked){ g.looked=1; const a=g.endYaw!=null?g.endYaw:g.keep?null:openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=-0.02; } else if(Math.abs(g.wv||0)>0.02) g.yaw=walk.yaw+(g.wv||0)*0.7; /* still turning a little: let it settle instead of stopping dead */ }
   if(g.yaw!=null){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
   if(g.fit&&g.fit.back<0.85&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
     if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); return true; } }
