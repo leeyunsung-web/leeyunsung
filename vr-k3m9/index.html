@@ -1376,8 +1376,10 @@ function gbOpenFromView(){ if(!GB||guest.isOpen) return; const r=canvas.getBound
   const xs=pts.map(p=>(p.x+1)/2*r.width+r.left), ys=pts.map(p=>(1-p.y)/2*r.height+r.top);
   guest.open({left:Math.min(...xs),top:Math.min(...ys),width:Math.max(4,Math.max(...xs)-Math.min(...xs)),height:Math.max(4,Math.max(...ys)-Math.min(...ys))}); }
 stage.addEventListener('keydown',e=>{ if(e.target&&e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){keys.add(k); e.preventDefault();}});
-addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-addEventListener('blur',()=>keys.clear());
+addEventListener('keyup',e=>{ keys.delete(e.key.toLowerCase()); if(e.key==='Shift') RUN=false; });
+// master mode only: hold Shift while walking to run (about 3.5x)
+let RUN=false; addEventListener('keydown',e=>{ if(e.key==='Shift'&&M3) RUN=true; });
+addEventListener('blur',()=>{ keys.clear(); RUN=false; });
 // drag to look
 let drag=null;
 canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(autoGo&&autoGo.orbit) autoGo.orbit.stop=true; /* touching the screen while walking round a sculpture: glide to a stop instead of halting dead */ drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
@@ -1792,7 +1794,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(fwd||strafe||turn||jv.x||jv.y) autoGo=null; else if(autoStep(dt)){ dirty=true; if(tune.bob){bobT+=dt*1.8; bobA=Math.min(1,bobA+dt*3);} }
     if(fwd||strafe||turn||jv.x||jv.y){
       walk.yaw+=turn*1.5*dt;
-      const sp=1.3*dt, sy=Math.sin(walk.yaw), cy=Math.cos(walk.yaw);
+      const sp=1.3*dt*(RUN&&M3?3.5:1), sy=Math.sin(walk.yaw), cy=Math.cos(walk.yaw);
       // yaw 0 faces +y; strafe right is +x
       const nx=walk.x+(-sy*fwd+cy*strafe)*sp, ny=walk.y+(cy*fwd+sy*strafe)*sp;
       [walk.x,walk.y]=collide(nx,ny); dirty=true;
