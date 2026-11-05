@@ -474,6 +474,10 @@ const GH=0.03, GD=0.02;
    for(const z of [zN,zS]){ if(Math.abs(z)>=LL/2-1e-3) continue; // the doorway runs into the corner: the back wall continues there, no jamb
      const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,DOOR.h-GH),jm); j.position.set(dx,GH+(DOOR.h-GH)/2,z); scene.add(j);}
    if(Math.abs(zS)>=LL/2-1e-3){const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(DOOR.x1,H/2,LL/2+0.05); scene.add(bk);} // backing where the two back walls meet, so their seam never shows light
+   if(Math.abs(zS)>=LL/2-1e-3){ /* the two rooms' back walls meet inside the doorway: their end faces showed as a dark vertical line. A strip of wall laid over the join makes it read as one wall */
+     const sb=L.baked.find(b=>b.name==='G_SoffitR'); let ys=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) ys=Math.min(ys,sb.pos[i]);
+     const sm=new THREE.MeshBasicMaterial({color:wallC,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-20});
+     const st=new THREE.Mesh(new THREE.PlaneGeometry(dw+0.08,ys-GH),sm); st.rotation.y=Math.PI; st.position.set(dx,GH+(ys-GH)/2,LL/2-0.0015); scene.add(st); }
    if(DOOR.h>=H-1e-3){ // opening runs up to the ceiling: carry the ceiling band across it so the two rooms' bands join
      const sb=L.baked.find(b=>b.name==='G_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
      const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)}));
