@@ -351,8 +351,17 @@ const L=await (await fetch('live/layout.json')).json();
 const M3=document.documentElement.classList.contains('master');
 if(M3){ const E=await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
   if(E){ for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=E.dx; let I=b.idx; if(E.mirrorR3&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:'G3_'+b.name.slice(3),pos:P,idx:I}); } // room 3 = room 2's shell moved along (its far wall flipped when the exit is on the other side)
-    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
+    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
 const W=L.room.W, LL=L.room.L, H=L.room.H;
+// master preview: the whole gallery baked in Blender Cycles (2026-11-05) — rooms 1-3 get their own light maps (room 2 and 3 used to borrow room 1's), the shop and corridor get theirs
+const B2=L.bake2;
+const b2tex=k=>{ const t=new THREE.TextureLoader().load('live/bake/'+k+'.jpg?v='+B2.v); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; return t; };
+const b2mat=(k,base)=>{ if(!B2) return base; const m=new THREE.MeshBasicMaterial({map:b2tex(k)}); if(base&&base.transparent){ m.transparent=true; m.opacity=base.opacity; } return m; };
+const B2UV=(()=>{ if(!B2||!L.shop||!L.door2) return {}; const S=L.shop, sx0=S.x0,sx1=S.x1,sy0=S.y0,sy1=S.y1,sw=sx1-sx0,sd=sy1-sy0,Hh=L.room.H, D=L.door2, cx0=D.cx-0.1,cx1=D.cx+(D.len||4),cy0=D.y0,cy1=D.y1,cw=cx1-cx0,cd=cy1-cy0;
+  return { B_shopS:(x,y,z)=>[(sx1-x)/sw,z/Hh], B_shopN:(x,y,z)=>[(x-sx0)/sw,z/Hh], B_shopW:(x,y,z)=>[(y-sy0)/sd,z/Hh], B_shopE:(x,y,z)=>[(sy1-y)/sd,z/Hh], B_shopF:(x,y,z)=>[(x-sx0)/sw,(y-sy0)/sd], B_shopC:(x,y,z)=>[(x-sx0)/sw,(y-sy0)/sd],
+    B_corrN:(x,y,z)=>[(x-cx0)/cw,z/Hh], B_corrS:(x,y,z)=>[(cx1-x)/cw,z/Hh], B_corrE:(x,y,z)=>[(cy1-y)/cd,z/Hh], B_corrF:(x,y,z)=>[(x-cx0)/cw,(y-cy0)/cd], B_corrC:(x,y,z)=>[(x-cx0)/cw,(y-cy0)/cd] }; })();
+const b2uv=(m,k)=>{ if(!B2||!B2UV[k]) return m; m.updateMatrixWorld(true); const P=m.geometry.attributes.position, U=m.geometry.attributes.uv, v=new THREE.Vector3(); for(let i=0;i<P.count;i++){ v.fromBufferAttribute(P,i).applyMatrix4(m.matrixWorld); const q=B2UV[k](v.x,-v.z,v.y); U.setXY(i,q[0],q[1]); } U.needsUpdate=true; return m; };
+const B2M={}; const b2m=(k,base)=>B2?(B2M[k]||(B2M[k]=b2mat(k,base))):base;
 const GBX0=L.door2?(L.door2.cx!=null?L.door2.cx-0.1:L.door2.x0):0; // where the guestbook corridor starts (after the hall, when there is one)
 const ROOMS=(L.rooms||[{x0:-W/2,x1:W/2,y0:-LL/2,y1:LL/2}]), DOOR=L.door||null; // blender ground coords
 const inRoom3=(x,z,m=0)=>ROOMS.some(r=>x>r.x0+m&&x<r.x1-m&&-z>r.y0+m&&-z<r.y1-m); // three.js x,z
@@ -420,6 +429,7 @@ function trimBandSides(s){const P=s.pos.slice();
     for(let k=0;k<4;k++){const v=f*4+k; if(P[v*3+1]-lo<1e-4) P[v*3+1]=lo+0.002;}}
   return {...s,pos:P};}
 for(let s of L.baked){
+  if(B2&&/^G[23]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
   if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')) s=liftWallFoot(s);
   if(/Wall/.test(s.name)) s=growFaces(s,0.003,4.5/2048); else if(/Soffit/.test(s.name)) s=trimBandSides(s);
   const geo=new THREE.BufferGeometry();
@@ -512,13 +522,13 @@ if(L.door2){const D=L.door2, NO=!!D.north, CL=D.len||4, x0=D.cx??D.x1, x1=x0+CL,
   const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66*DIM,0.655*DIM,0.64*DIM,THREE.SRGBColorSpace)});
   const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93*DIM*0.8,0.928*DIM*0.8,0.92*DIM*0.8,THREE.SRGBColorSpace)});
   const pl=(w,h,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
-  pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,rA);          // back wall continues
+  b2uv(pl(CL+0.1,H-GH,b2m('B_corrN',wallT),(x0-0.1+x1)/2,GH+(H-GH)/2,zA,rA),'B_corrN');          // back wall continues
   if(L.shop){ const S=L.shop.door; // master preview: the inner wall opens into the gift shop just before the guestbook
-    pl(S.x0-x0,H-GH,wallT,(x0+S.x0)/2,GH+(H-GH)/2,zB,rB); pl(x1-S.x1,H-GH,wallT,(S.x1+x1)/2,GH+(H-GH)/2,zB,rB); pl(S.x1-S.x0,H-S.h,wallT,(S.x0+S.x1)/2,S.h+(H-S.h)/2,zB,rB);
+    b2uv(pl(S.x0-x0,H-GH,b2m('B_corrS',wallT),(x0+S.x0)/2,GH+(H-GH)/2,zB,rB),'B_corrS'); b2uv(pl(x1-S.x1,H-GH,b2m('B_corrS',wallT),(S.x1+x1)/2,GH+(H-GH)/2,zB,rB),'B_corrS'); b2uv(pl(S.x1-S.x0,H-S.h,b2m('B_corrS',wallT),(S.x0+S.x1)/2,S.h+(H-S.h)/2,zB,rB),'B_corrS');
   } else pl(CL,H-GH,wallT,(x0+x1)/2,GH+(H-GH)/2,zB,0);                        // inner wall
-  pl(wd,H-GH,wallT,x1,GH+(H-GH)/2,zc,-Math.PI/2);                       // end wall
-  pl(CL+0.1,wd,flo,(x0-0.1+x1)/2,0.001,zc,0,-Math.PI/2);               // floor
-  pl(CL+0.1,wd,ceilM,(x0-0.1+x1)/2,H,zc,0,Math.PI/2);                  // ceiling
+  b2uv(pl(wd,H-GH,b2m('B_corrE',wallT),x1,GH+(H-GH)/2,zc,-Math.PI/2),'B_corrE');                       // end wall
+  b2uv(pl(CL+0.1,wd,b2m('B_corrF',flo),(x0-0.1+x1)/2,0.001,zc,0,-Math.PI/2),'B_corrF');               // floor
+  b2uv(pl(CL+0.1,wd,b2m('B_corrC',ceilM),(x0-0.1+x1)/2,H,zc,0,Math.PI/2),'B_corrC');                  // ceiling
   pl(0.1,H-GH,wallT,(D.x0+D.x1)/2,GH+(H-GH)/2,zB,rB);                   // jamb face
   reveal(CL+0.1,(x0-0.1+x1)/2,zA,rA,NO?GD:0,NO?0:GD); if(L.shop){ const S=L.shop.door; reveal(S.x0-x0,(x0+S.x0)/2,zB,rB,0,0); reveal(x1-S.x1,(S.x1+x1)/2,zB,rB,NO?0:GD,NO?GD:0); } else reveal(CL,(x0+x1)/2,zB,0,GD,0); reveal(wd,x1,zc,-Math.PI/2,GD,GD);
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
@@ -1319,15 +1329,15 @@ function buildShop(S,reveal){
   const sRGB=(r,g,b)=>new THREE.Color().setRGB(r,g,b,THREE.SRGBColorSpace), {x0,x1,y0,y1}=S, D=S.door, cx=(x0+x1)/2, cy=(y0+y1)/2, w=x1-x0, d=y1-y0, wy=GH+(H-GH)/2, wh=H-GH;
   const pl=(pw,ph,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,ph),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
   const DN=D.y0>=y1-0.05; // doorway in the north wall (corridor runs along the north side)
-  if(DN){ pl(w,wh,wallM,cx,wy,-y0,Math.PI); reveal(w,cx,-y0,Math.PI,GD,GD); } else { pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD); } // back wall (2026 posters)
-  pl(d,wh,wallM,x0,wy,-cy,Math.PI/2); reveal(d,x0,-cy,Math.PI/2,GD,GD);                  // left wall (2021 Torso, salon hang)
-  pl(d,wh,wallM,x1,wy,-cy,-Math.PI/2); reveal(d,x1,-cy,-Math.PI/2,GD,GD);                // right wall
-  { const ez=DN?-y1:-y0, er=DN?0:Math.PI; pl(D.x0-x0,wh,wallM,(x0+D.x0)/2,wy,ez,er); pl(x1-D.x1,wh,wallM,(D.x1+x1)/2,wy,ez,er); pl(D.x1-D.x0,H-D.h,wallM,(D.x0+D.x1)/2,D.h+(H-D.h)/2,ez,er); // entrance wall with the doorway
+  if(DN){ b2uv(pl(w,wh,b2m('B_shopS',wallM),cx,wy,-y0,Math.PI),'B_shopS'); reveal(w,cx,-y0,Math.PI,GD,GD); } else { pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD); } // back wall (2026 posters)
+  b2uv(pl(d,wh,b2m('B_shopW',wallM),x0,wy,-cy,Math.PI/2),'B_shopW'); reveal(d,x0,-cy,Math.PI/2,GD,GD);                  // left wall (2021 Torso, salon hang)
+  b2uv(pl(d,wh,b2m('B_shopE',wallM),x1,wy,-cy,-Math.PI/2),'B_shopE'); reveal(d,x1,-cy,-Math.PI/2,GD,GD);                // right wall
+  { const ez=DN?-y1:-y0, er=DN?0:Math.PI; b2uv(pl(D.x0-x0,wh,b2m('B_shopN',wallM),(x0+D.x0)/2,wy,ez,er),'B_shopN'); b2uv(pl(x1-D.x1,wh,b2m('B_shopN',wallM),(D.x1+x1)/2,wy,ez,er),'B_shopN'); b2uv(pl(D.x1-D.x0,H-D.h,b2m('B_shopN',wallM),(D.x0+D.x1)/2,D.h+(H-D.h)/2,ez,er),'B_shopN'); // entrance wall with the doorway
     reveal(D.x0-x0,(x0+D.x0)/2,ez,er,DN?GD:0,DN?0:GD); reveal(x1-D.x1,(D.x1+x1)/2,ez,er,DN?0:GD,DN?GD:0); }
   const jm=new THREE.MeshBasicMaterial({color:sRGB(0.84,0.838,0.832)}), dz=(-D.y1-D.y0)/2, dd=D.y1-D.y0;  // doorway jambs and head
   pl(dd,D.h,jm,D.x0,D.h/2,dz,Math.PI/2); pl(dd,D.h,jm,D.x1,D.h/2,dz,-Math.PI/2); pl(D.x1-D.x0,dd,jm,(D.x0+D.x1)/2,D.h,dz,0,Math.PI/2);
-  const fm=new THREE.MeshBasicMaterial({color:sRGB(0.74,0.735,0.72),transparent:true,opacity:0.8}); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm); // floor (the soft mirror shows through, like the rooms)
-  pl(w,d,new THREE.MeshBasicMaterial({color:sRGB(0.9,0.898,0.892)}),cx,H,-cy,0,Math.PI/2);  // ceiling
+  const fm=new THREE.MeshBasicMaterial({color:sRGB(0.74,0.735,0.72),transparent:true,opacity:0.8}); const fm2=b2m('B_shopF',fm); const fl=b2uv(pl(w,d,fm2,cx,0.001,-cy,0,-Math.PI/2),'B_shopF'); fl.renderOrder=1; floorMats.push(fm2); // floor (the soft mirror shows through, like the rooms)
+  b2uv(pl(w,d,b2m('B_shopC',new THREE.MeshBasicMaterial({color:sRGB(0.9,0.898,0.892)})),cx,H,-cy,0,Math.PI/2),'B_shopC');  // ceiling
   // the book table
   const T=S.table; if(T){ const tm=new THREE.MeshBasicMaterial({color:sRGB(0.93,0.928,0.922)}), ts=new THREE.MeshBasicMaterial({color:sRGB(0.8,0.797,0.79)});
     const top=new THREE.Mesh(new THREE.BoxGeometry(T.w,0.04,T.d),[ts,ts,tm,ts,ts,ts]); top.position.set(T.x,T.h-0.02,-T.y); scene.add(top);
@@ -1346,7 +1356,7 @@ function buildGuestbookCorner(xEnd,zc,wd){
   const sRGB=(r,gg,b)=>new THREE.Color().setRGB(r,gg,b,THREE.SRGBColorSpace);
   // pool of light on the floor
   {const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d'), gr=x.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0,'rgba(255,246,228,.55)'); gr.addColorStop(.55,'rgba(255,246,228,.16)'); gr.addColorStop(1,'rgba(255,246,228,0)'); x.fillStyle=gr; x.fillRect(0,0,256,256);
-   const m=new THREE.Mesh(new THREE.PlaneGeometry(1.9,1.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})); m.rotation.x=-Math.PI/2; m.position.set(0,0.003,0); g.add(m);}
+   const m=new THREE.Mesh(new THREE.PlaneGeometry(1.9,1.9),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})); m.rotation.x=-Math.PI/2; m.position.set(0,0.003,0); g.add(m); if(B2) m.visible=false;} // the baked spot light already draws this pool
   // lectern: a slim white pedestal with a sloped top
   const PH=1.0, ped=new THREE.Mesh(new THREE.BoxGeometry(0.42,PH,0.52),new THREE.MeshBasicMaterial({color:sRGB(0.62,0.615,0.6)})); ped.position.y=PH/2; g.add(ped);
   const side=new THREE.MeshBasicMaterial({color:sRGB(0.5,0.497,0.49)}); const edge=new THREE.Mesh(new THREE.BoxGeometry(0.4201,PH,0.0015),side); edge.position.set(0,PH/2,0.26); g.add(edge);
