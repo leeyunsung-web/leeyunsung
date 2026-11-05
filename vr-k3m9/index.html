@@ -1707,7 +1707,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
   { const box=document.getElementById('load'), loading=box&&!box.hidden, still=now-lookT>350;
-    if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} w.mat.map=t; dirty=true; } }
+    if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} w.mat.map=t; dirty=true; } if(!upQ.length&&typeof scheduleEnv==='function') scheduleEnv(600); } /* new pictures on the walls: refresh what the silver sculpture and the mobile reflect, or they keep showing the grey walls from before and look dark */
     if(hiWant&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant); }
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
