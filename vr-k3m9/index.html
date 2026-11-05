@@ -1229,27 +1229,34 @@ function buildHall(Hl,reveal){
   const shade=cv(256,512,(x,W2,H2)=>{ const gr=x.createLinearGradient(0,H2,0,0); gr.addColorStop(0,'#d6d6d6'); gr.addColorStop(0.35,'#e8e8e8'); gr.addColorStop(0.85,'#fbfbfb'); gr.addColorStop(1,'#ffffff'); x.fillStyle=gr; x.fillRect(0,0,W2,H2);
     for(const s of [0,1]){ const e=x.createLinearGradient(s?W2:0,0,s?W2-22:22,0); e.addColorStop(0,'rgba(0,0,0,.10)'); e.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=e; x.fillRect(s?W2-22:0,0,22,H2); } });
   const wallM=new THREE.MeshBasicMaterial({map:shade});
+  // baked light (Blender Cycles, 2026-11-05): when the hall has a bake, every surface takes its light map; the images are stored at 1/1.4 so the sunlit patch keeps some headroom
+  const BK=Hl.bake, bk={}, BKS=1.4;
+  const bt=k=>{ const t=new THREE.TextureLoader().load('live/bake/hall_'+k+'.jpg?v='+(BK&&BK.v||1)); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; return t; };
+  if(BK) for(const k of ['wallN','wallS','wallW','wallE']) bk[k]=new THREE.MeshBasicMaterial({map:bt(k),color:new THREE.Color(BKS,BKS,BKS)});
+  const WM=k=>BK?bk[k]:wallM;
+  const UVF={floor:(x,y,z)=>[(x-x0)/w,(y-y0)/d],ceil:(x,y,z)=>[(x-x0)/w,(y-y0)/d],wallN:(x,y,z)=>[(x-x0)/w,z/HH],wallS:(x,y,z)=>[(x1-x)/w,z/HH],wallW:(x,y,z)=>[(y-y0)/d,z/HH],wallE:(x,y,z)=>[(y1-y)/d,z/HH]};
+  const bakeUV=(m,k)=>{ if(!BK) return m; m.updateMatrixWorld(true); const P=m.geometry.attributes.position, U=m.geometry.attributes.uv, v=new THREE.Vector3(); for(let i=0;i<P.count;i++){ v.fromBufferAttribute(P,i).applyMatrix4(m.matrixWorld); const q=UVF[k](v.x,-v.z,v.y); U.setXY(i,q[0],q[1]); } U.needsUpdate=true; return m; };
   const wy=GH+(HH-GH)/2, wh=HH-GH;
   // north and south walls
-  pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD);
-  pl(w,wh,wallM,cx,wy,-y0,Math.PI); reveal(w,cx,-y0,Math.PI,GD,GD);
+  bakeUV(pl(w,wh,WM('wallN'),cx,wy,-y1,0),'wallN'); reveal(w,cx,-y1,0,GD,GD);
+  bakeUV(pl(w,wh,WM('wallS'),cx,wy,-y0,Math.PI),'wallS'); reveal(w,cx,-y0,Math.PI,GD,GD);
   // west wall with the way in from room 3 (opening 4.5 m high, running into the north corner)
-  if(DR){ const a=DR.y0; pl(a-y0,wh,wallM,x0,wy,-(y0+a)/2,Math.PI/2); reveal(a-y0,x0,-(y0+a)/2,Math.PI/2,GD,0); pl(y1-a,HH-4.5,wallM,x0,4.5+(HH-4.5)/2,-(a+y1)/2,Math.PI/2); }
-  else { pl(d,wh,wallM,x0,wy,-cy,Math.PI/2); reveal(d,x0,-cy,Math.PI/2,GD,GD); }
+  if(DR){ const a=DR.y0; bakeUV(pl(a-y0,wh,WM('wallW'),x0,wy,-(y0+a)/2,Math.PI/2),'wallW'); reveal(a-y0,x0,-(y0+a)/2,Math.PI/2,GD,0); bakeUV(pl(y1-a,HH-4.5,WM('wallW'),x0,4.5+(HH-4.5)/2,-(a+y1)/2,Math.PI/2),'wallW'); }
+  else { bakeUV(pl(d,wh,WM('wallW'),x0,wy,-cy,Math.PI/2),'wallW'); reveal(d,x0,-cy,Math.PI/2,GD,GD); }
   // east wall with the way out to the guestbook corridor
-  if(EX){ const a=EX.y0; pl(a-y0,wh,wallM,x1,wy,-(y0+a)/2,-Math.PI/2); reveal(a-y0,x1,-(y0+a)/2,-Math.PI/2,0,GD); pl(y1-a,HH-EX.h,wallM,x1,EX.h+(HH-EX.h)/2,-(a+y1)/2,-Math.PI/2); }
-  else { pl(d,wh,wallM,x1,wy,-cy,-Math.PI/2); reveal(d,x1,-cy,-Math.PI/2,GD,GD); }
+  if(EX){ const a=EX.y0; bakeUV(pl(a-y0,wh,WM('wallE'),x1,wy,-(y0+a)/2,-Math.PI/2),'wallE'); reveal(a-y0,x1,-(y0+a)/2,-Math.PI/2,0,GD); bakeUV(pl(y1-a,HH-EX.h,WM('wallE'),x1,EX.h+(HH-EX.h)/2,-(a+y1)/2,-Math.PI/2),'wallE'); }
+  else { bakeUV(pl(d,wh,WM('wallE'),x1,wy,-cy,-Math.PI/2),'wallE'); reveal(d,x1,-cy,-Math.PI/2,GD,GD); }
   // floor: pale polished resin, the soft mirror shows through like the other rooms; daylight brighter in the middle
   const floorT=cv(1024,Math.round(1024*d/w),(x,W2,H2)=>{ x.fillStyle='#cfccc5'; x.fillRect(0,0,W2,H2);
     const lp=x.createRadialGradient(W2/2,H2/2,0,W2/2,H2/2,W2*0.6); lp.addColorStop(0,'rgba(255,255,255,.28)'); lp.addColorStop(0.55,'rgba(255,255,255,.06)'); lp.addColorStop(1,'rgba(40,36,30,.16)'); x.fillStyle=lp; x.fillRect(0,0,W2,H2); });
-  const fm=new THREE.MeshBasicMaterial({map:floorT,transparent:true,opacity:0.8}); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm);
+  const fm=BK?new THREE.MeshBasicMaterial({map:bt('floor'),color:new THREE.Color(BKS,BKS,BKS),transparent:true,opacity:0.8}):new THREE.MeshBasicMaterial({map:floorT,transparent:true,opacity:0.8}); const fl=bakeUV(pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2),'floor'); fl.renderOrder=1; floorMats.push(fm);
   // the two short passages: floor strip, jamb and head (plain white)
   const jm=new THREE.MeshBasicMaterial({color:sRGB(0.84,0.838,0.832)}), hd=new THREE.MeshBasicMaterial({color:sRGB(0.70,0.698,0.692)}), stripM=new THREE.MeshBasicMaterial({color:sRGB(0.72,0.715,0.70)});
   for(const [a,b,P,h] of [DR?[DR.x0,x0,DR,4.5]:null,EX?[x1,x1+0.1,EX,EX.h]:null].filter(Boolean)){ const zc=-(P.y0+P.y1)/2, dd=P.y1-P.y0;
     pl(b-a+0.002,dd,stripM,(a+b)/2,0.0012,zc,0,-Math.PI/2).renderOrder=2; pl(b-a,h,jm,(a+b)/2,h/2,-P.y0,Math.PI); pl(b-a,dd,hd,(a+b)/2,h,zc,0,Math.PI/2); }
   // ceiling: flat white, with one large opening to the sky (sharp, thin edge)
-  const ceilM=new THREE.MeshBasicMaterial({color:sRGB(0.86,0.858,0.852)});
-  const ceil=(ax,ay,bx,by)=>{ if(bx-ax>1e-3&&by-ay>1e-3) pl(bx-ax,by-ay,ceilM,(ax+bx)/2,HH,-(ay+by)/2,0,Math.PI/2); };
+  const ceilM=BK?new THREE.MeshBasicMaterial({map:bt('ceil'),color:new THREE.Color(BKS,BKS,BKS)}):new THREE.MeshBasicMaterial({color:sRGB(0.86,0.858,0.852)});
+  const ceil=(ax,ay,bx,by)=>{ if(bx-ax>1e-3&&by-ay>1e-3) bakeUV(pl(bx-ax,by-ay,ceilM,(ax+bx)/2,HH,-(ay+by)/2,0,Math.PI/2),'ceil'); };
   if(SK){ ceil(x0,y0,x1,SK.y0); ceil(x0,SK.y1,x1,y1); ceil(x0,SK.y0,SK.x0,SK.y1); ceil(SK.x1,SK.y0,x1,SK.y1);
     const T=0.12, edge=new THREE.MeshBasicMaterial({color:sRGB(0.96,0.958,0.952)}), scx=(SK.x0+SK.x1)/2, scy=(SK.y0+SK.y1)/2, sw=SK.x1-SK.x0, sd=SK.y1-SK.y0; // the cut edge of the slab, catching the daylight
     pl(sw,T,edge,scx,HH+T/2,-SK.y1,0); pl(sw,T,edge,scx,HH+T/2,-SK.y0,Math.PI); pl(sd,T,edge,SK.x0,HH+T/2,-scy,Math.PI/2); pl(sd,T,edge,SK.x1,HH+T/2,-scy,-Math.PI/2);
@@ -1277,14 +1284,14 @@ function buildHall(Hl,reveal){
     const sun=cv(256,256,(x,W2,H2)=>{ const gr=x.createLinearGradient(0,0,0,H2); gr.addColorStop(0,'rgba(255,244,222,.0)'); gr.addColorStop(0.08,'rgba(255,244,222,.15)'); gr.addColorStop(0.92,'rgba(255,244,222,.15)'); gr.addColorStop(1,'rgba(255,244,222,0)'); x.fillStyle=gr; x.fillRect(0,0,W2,H2);
       const s=x.createLinearGradient(0,0,W2,0); s.addColorStop(0,'rgba(0,0,0,1)'); s.addColorStop(0.06,'rgba(0,0,0,0)'); s.addColorStop(0.94,'rgba(0,0,0,0)'); s.addColorStop(1,'rgba(0,0,0,1)'); x.globalCompositeOperation='destination-out'; x.fillStyle=s; x.fillRect(0,0,W2,H2); });
     const add=new THREE.MeshBasicMaterial({map:sun,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
-    const sp=pl(sw*0.92,sd*0.95,add,scx-1.2,0.004,-(scy-1.6),0,-Math.PI/2); sp.renderOrder=3; const addBase=add;
+    const sp=pl(sw*0.92,sd*0.95,add,scx-1.2,0.004,-(scy-1.6),0,-Math.PI/2); sp.renderOrder=3; const addBase=add; if(BK) sp.visible=false;
     const pool=cv(256,128,(x,W2,H2)=>{ const gr=x.createRadialGradient(W2/2,H2/2,0,W2/2,H2/2,W2/2); gr.addColorStop(0,'rgba(235,244,255,.10)'); gr.addColorStop(1,'rgba(235,244,255,0)'); x.fillStyle=gr; x.fillRect(0,0,W2,H2); });
-    const pm=pl(sw+5,sd+5,new THREE.MeshBasicMaterial({map:pool,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),scx,0.005,-scy,0,-Math.PI/2); pm.renderOrder=3; HALL_SKY.bindSun(addBase,pm.material);
+    const pm=pl(sw+5,sd+5,new THREE.MeshBasicMaterial({map:pool,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),scx,0.005,-scy,0,-Math.PI/2); pm.renderOrder=3; HALL_SKY.bindSun(addBase,pm.material); if(BK) pm.visible=false;
   } else ceil(x0,y0,x1,y1);
   // benches: plain white-oak blocks
   const oak=new THREE.MeshBasicMaterial({color:sRGB(0.80,0.70,0.56)}), oakT=new THREE.MeshBasicMaterial({color:sRGB(0.88,0.79,0.65)}), oakS=new THREE.MeshBasicMaterial({color:sRGB(0.66,0.56,0.43)});
   for(const b of Hl.benches||[]){ box(1.9,0.06,0.46,[oakS,oakS,oakT,oakS,oak,oak],b.x,0.42,-b.y); for(const e of [-0.82,0.82]) box(0.06,0.39,0.42,[oak,oak,oakT,oakS,oakS,oakS],b.x+e,0.195,-b.y);
-    const sh=pl(2.4,1.0,new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6}),b.x,0.003,-b.y,0,-Math.PI/2); sh.renderOrder=2;
+    if(!BK){ const sh=pl(2.4,1.0,new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6}),b.x,0.003,-b.y,0,-Math.PI/2); sh.renderOrder=2; }
     blocksH.push({x0:b.x-0.95-0.28,x1:b.x+0.95+0.28,y0:b.y-0.25-0.28,y1:b.y+0.25+0.28}); }
   // wall text beside the way in (dark letters on a light wall, light letters on a dark one)
   let txtM=null, txtDark=null, txtLight=null;
@@ -1293,7 +1300,7 @@ function buildHall(Hl,reveal){
     txtDark=mk('rgba(40,38,36,.92)','rgba(40,38,36,.7)'); txtLight=mk('rgba(240,236,228,.94)','rgba(240,236,228,.72)');
     txtM=new THREE.MeshBasicMaterial({map:txtDark,transparent:true,depthWrite:false}); const pq=pl(2.4,0.75,txtM,T.x,1.62,-T.y-0.004,0); pq.renderOrder=2; }
   HALL={g,blocks:blocksH,setWall(k){ const v=HALL_COLORS[k]||HALL_COLORS.white, c=Array.isArray(v)?sRGB(...v):new THREE.Color(v);
-      wallM.color.copy(c); const lum=0.2126*c.r+0.7152*c.g+0.0722*c.b;
+      wallM.color.copy(c); if(BK) for(const m of Object.values(bk)) m.color.copy(c).multiplyScalar(BKS/0.905); const lum=0.2126*c.r+0.7152*c.g+0.0722*c.b;
       if(txtM){ const t=lum<0.25?txtLight:txtDark; if(txtM.map!==t){ txtM.map=t; txtM.needsUpdate=true; } } dirty=true; }};
   HALL.setWall('white');
 }
