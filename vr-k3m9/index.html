@@ -1449,7 +1449,9 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
   if(!best){ /* nothing hit: you tapped high on a bare wall (above the floor's horizon). Find that wall along the line you tapped and go to the work nearest it */
     const dv=_r2.ray.direction, hl=Math.hypot(dv.x,dv.z); if(hl>0.05){ const ux=dv.x/hl, uy=-dv.z/hl; let t=0.2; while(t<20&&okPos(walk.x+ux*t,walk.y+uy*t)) t+=0.1;
-      const nw=nearestWorkTo(walk.x+ux*Math.max(0.2,t-0.2),walk.y+uy*Math.max(0.2,t-0.2)); if(nw) best={kind:'work',d:0,w:nw}; } }
+      const nw=nearestWorkTo(walk.x+ux*Math.max(0.2,t-0.2),walk.y+uy*Math.max(0.2,t-0.2));
+      if(nw&&Math.hypot(nw.mesh.position.x-walk.x,-nw.mesh.position.z-walk.y)>5.5){ const m=nw.mesh, dx=m.position.x-walk.x, dy=-m.position.z-walk.y; lastWork=null; showMark(cx,cy); goTo(walk.x,walk.y,lookYaw(dx,dy),Math.atan2(m.position.y-EYE,Math.hypot(dx,dy))); return; }
+      if(nw) best={kind:'work',d:0,w:nw,fromWall:true}; } }
   if(!best) return; showMark(cx,cy); GT.tap=best;
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), hx=hp.x, hy=-hp.z; // anything in the guestbook corner (floor, walls, the lectern): stand right in front of the book, facing it
     if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>L.door2.x0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2&&!(L.shop&&(L.door2.north?hy<L.door2.y0+0.05:hy>L.door2.y1-0.05))){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
@@ -1458,13 +1460,16 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       const mine=(walk.x-x)*nx+(walk.y-y)*ny; if(out>-0.05&&out<0.9&&lat<u.p.w/2+0.25&&mine>Math.min(8,workDist(u))+0.6){ /* only while you are still coming toward it: standing close already, a floor tap just steps you nearer */ best={kind:'work',d:best.d,w:u.members?u.members[0]:u,fromFloor:true}; break; } } }
   { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ /* you tapped a wall (maybe by mistake): go and look at the work nearest that spot, on your side of the wall */
       const inRoom=ROOMS.some(q=>hp.x>=q.x0&&hp.x<=q.x1&&-hp.z>=q.y0&&-hp.z<=q.y1); /* the floor just in front of a wall is still floor: walk there; only a tap that lands past the wall counts as tapping the wall */
-      const nw=inRoom?null:nearestWorkTo(stop[0],stop[1]); if(nw) best={kind:'work',d:0,w:nw,fromWall:true}; else { goTo(stop[0],stop[1],null,null); lastWork=null; return; } } }
+      const nw=inRoom?null:nearestWorkTo(stop[0],stop[1]);
+      if(nw&&Math.hypot(nw.mesh.position.x-walk.x,-nw.mesh.position.z-walk.y)>5.5){ const m=nw.mesh, dx=m.position.x-walk.x, dy=-m.position.z-walk.y; lastWork=null; goTo(walk.x,walk.y,lookYaw(dx,dy),Math.atan2(m.position.y-EYE,Math.hypot(dx,dy))); return; } /* far across the room: just turn to look at it, no long walk */
+      if(nw) best={kind:'work',d:0,w:nw,fromWall:true}; else { goTo(stop[0],stop[1],null,null); lastWork=null; return; } } }
   if(best.kind==='peer'){ lastWork=null; lastSculpt=null; autoGo={peer:best.p.id,x:walk.x,y:walk.y,path:null,re:0}; return; } // walk up until "Say hello" shows; any other tap cancels
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
   if(best.kind==='work'&&(best.fromWall||best.fromFloor)&&lastWork&&unitOf(lastWork.w)===unitOf(best.w)&&Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<1.0) return; /* already looking at that work: a stray tap on the wall or floor around it does nothing */
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
     const far=workDist(w), close=!best.fromWall&&!best.fromFloor&&lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
+    const big=!close&&!fitsView(w); /* too big to see whole from here: step right back until it fits */
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
     { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const cw=window.capWork, wallOfU=u=>u.wall||(u.members&&u.members[0].wall), fromNext=!!cw&&cw!==w&&wallOfU(cw)===wallOfU(w); /* a caption is showing and you tap another work on that same wall: just slide sideways */
       if(!close&&fromNext&&dw>0.6&&wallStop(x,y)==null){ d0=dw; slid=true; } } /* next work along the same wall: keep your distance, just slide sideways */
@@ -1476,7 +1481,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       for(let d=slid?Math.min(D,Math.hypot(walk.x-x,walk.y-y)):D; d>=0.9; d-=0.2) for(const o of [0,0.25,-0.25,0.5,-0.5,0.75,-0.75,1.0,-1.0,1.3,-1.3]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=Math.abs(o)*1.2+(D-d)*0.5;
         if(sc>=ps||!roomy(sx,sy)||!workSeen(w,sx,sy,close)) continue; ps=sc; pick=[sx,sy]; } /* keep a little room around you (not pressed against a pedestal) */
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; hiWant=w; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0,big}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; hiWant=w; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1538,7 +1543,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   if(g.face&&g.cy!=null&&!g.aimed){ g.aimed=1; const fx=g.face[0]-walk.x, fy=g.face[1]-walk.y; if(Math.hypot(fx,fy)>0.3){ g.yaw=lookYaw(fx,fy); g.pitch=Math.atan2(g.cy-EYE,Math.hypot(fx,fy)); } }
   if(g.yaw==null&&!g.looked){ g.looked=1; const a=g.endYaw!=null?g.endYaw:g.keep?null:openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=-0.02; } else if(Math.abs(g.wv||0)>0.02) g.yaw=walk.yaw+(g.wv||0)*0.7; /* still turning a little: let it settle instead of stopping dead */ }
   if(g.yaw!=null){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
-  if(g.fit&&g.fit.back<0.85&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
+  if(g.fit&&g.fit.back<(g.fit.big?4:0.85)&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
     if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); return true; } }
   autoGo=null; return true; }
 const _fb=new THREE.Box3(), _fv=new THREE.Vector3();
