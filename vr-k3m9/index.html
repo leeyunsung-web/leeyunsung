@@ -1692,7 +1692,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
       document.querySelectorAll('#views button[data-v]').forEach(b=>b.setAttribute('aria-pressed','false'));
     }
     if(!(fwd||strafe)&&bobA>0){bobA=Math.max(0,bobA-dt*3); dirty=true;}
-    if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>120){drawMap.t=now; drawMap();}}
+    if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>(now-lookT<400?900:250)){drawMap.t=now; drawMap();} /* the control window's floor plan: redrawing it often while you walk or turn made the gallery stutter, so only now and then */}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
   botTick(dt); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
