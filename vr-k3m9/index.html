@@ -604,8 +604,8 @@ for(const p of L.paintings){
       { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0); // fades out where threads get smaller than a pixel
         float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
-  const multi=!p.frame&&/panels/i.test(p.caption||''); /* one canvas of a multi-panel work (Zodiac's nine): hung with a small real gap, and the gap reads as a steady dark line instead of a hair of white wall flickering through */
-  const m=new THREE.Mesh(new THREE.BoxGeometry(multi?p.w-0.005:p.w,multi?p.h-0.005:p.h,p.frame?0.004:0.04),multi?[panelGapM,panelGapM,panelGapM,panelGapM,front,panelGapM]:[sLR,sLR,sTop,sBot,front,sLR]); // framed prints: a thin sheet behind glass
+  const multi=!p.frame&&/panels/i.test(p.caption||''); /* one canvas of a multi-panel work (Zodiac's nine): edges and backing in shadow, so the hairline between canvases reads dark instead of white wall flickering through */
+  const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,p.frame?0.004:0.04),multi?[panelGapM,panelGapM,panelGapM,panelGapM,front,panelGapM]:[sLR,sLR,sTop,sBot,front,sLR]); // framed prints: a thin sheet behind glass
   if(multi){ const bk=new THREE.Mesh(new THREE.PlaneGeometry(p.w+0.004,p.h+0.004),panelBackM); bk.position.z=-0.0175; m.add(bk); }
   m.position.copy(b2t(p.x,p.y,p.z)); m.rotation.y=THREE.MathUtils.degToRad(p.rot); scene.add(m);
   const FR=p.frame?FRAMEA.build(m,p.w,p.h):null; // posters: natural-oak frame with a white mat (style A)
