@@ -9,7 +9,7 @@ const ROOM = {
   room2:{rev:3.4,wet:0.52,damp:0.5,airV:0.32,airT:0.4,airB:0.4,airK:0,drV:0.3,drF:70,drT:0.38,drS:0.4,drM:0,shV:0.35,shD:0.35,shH:0.5},
   guestbook:{rev:1.1,wet:0.3,damp:0.25,airV:0.22,airT:0.2,airB:0.25,airK:0,drV:0.18,drF:52,drT:0.18,drS:0.25,drM:0,shV:0.2,shD:0.1,shH:0.5}
 };
-const STRIDE = 0.68; // metres per step
+const STRIDE = 0.75; // metres per step
 
 export function createRoomTone() {
   let ac = null, N = {}, S = Object.assign({}, BASE, ROOM.room1), room = 'room1', on = false, muted = false;
@@ -136,7 +136,7 @@ export function createRoomTone() {
     const now = ac.currentTime;
     if (me) {
       const d = Math.hypot(ctx.x - me.x, ctx.y - me.y);
-      if (d < 1.5) { me.acc += d; if (S.on_steps && me.acc >= STRIDE) { me.acc %= STRIDE; step(now + 0.02, S.stV * 0.5 * rnd(0.85, 1.1), side * 0.12, false); side = -side; } }
+      if (d < 1.5) { me.acc += d; if (S.on_steps && me.acc >= STRIDE && now - (me.last || 0) > 0.62) { me.acc %= STRIDE; me.last = now; step(now + 0.02, S.stV * 0.5 * rnd(0.85, 1.1), side * 0.12, false); side = -side; } } // never quicker than an ordinary unhurried step
       if (d < 0.0005) me.idle += 1; else me.idle = 0; if (me.idle > 20) me.acc = STRIDE * 0.55; // the first step lands soon after you set off
     }
     me = Object.assign(me || { acc: STRIDE * 0.55, idle: 0 }, { x: ctx.x, y: ctx.y });
