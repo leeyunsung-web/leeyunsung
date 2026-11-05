@@ -1166,7 +1166,9 @@ const EYE=1.6, R=0.28;
 
 const walk={x:0,y:-6.2,yaw:0,pitch:-0.04}; // blender ground coords, yaw 0 = facing +y (into the room)
 const SKEY='medusa-room-state-v1'; let saved=null; try{saved=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
-function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){}}
+function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){} try{sessionStorage.setItem('lysGalView',JSON.stringify({x:walk.x,y:walk.y,yaw:walk.yaw,pitch:walk.pitch}));}catch(e){}}
+/* homepage: a refresh keeps the view you had (this tab's session); a fresh visit (browser or tab closed and opened again) starts in front of a work as usual */
+let sessView=null; try{ sessView=JSON.parse(sessionStorage.getItem('lysGalView')||'null'); }catch(e){}
 const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door23?[{x0:L.door23.x0-R-0.02,x1:L.door23.x1+R+0.02,y0:L.door23.y0+R,y1:L.door23.y1-R}]:[]),...(L.shop?[{x0:L.shop.door.x0+R,x1:L.shop.door.x1-R,y0:L.shop.door.y0-R-0.1,y1:L.shop.door.y1+R+0.1}]:[]),...(L.door2?[{x0:L.door2.x0-R-0.02,x1:L.door2.x1+(L.door2.len||4)-R-0.55,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
 const okPos=(x,y)=>WALK.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
 function collide(nx,ny){
@@ -1285,7 +1287,7 @@ addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>keys.clear());
 // drag to look
 let drag=null;
-canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(autoGo&&autoGo.orbit) autoGo=null; drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(autoGo&&autoGo.orbit) autoGo.orbit.stop=true; /* touching the screen while walking round a sculpture: glide to a stop instead of halting dead */ drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag) return;
   if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
@@ -1326,7 +1328,7 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
   hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?4:2)); /* keeps turning only once the finger rests out to the side (not while it is still sliding), easing in to a gentle top speed */ if(Math.abs(hv)<0.002) hv=0;
   if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.45,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.4))}; }
   else if(!drag&&hv){ if(aim) aim.yaw+=hv*dt; else walk.yaw+=hv*dt; dirty=true; }
-  if(aim){ if(autoGo){ aim=null; return; } const k=1-Math.exp(-dt*(drag?5.5:4)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
+  if(aim){ if(autoGo&&!(autoGo.orbit&&autoGo.orbit.stop)){ aim=null; return; } const k=1-Math.exp(-dt*(drag?5.5:4)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
     if(!drag&&!hv&&Math.abs(dy)<0.0008&&Math.abs(dp)<0.0008) aim=null; } })(lt); }
 // ---------- phones: tap the floor to walk there, a painting to stand in front of it, a sculpture to go to it (tap again: walk around it) ----------
 let autoGo=null; const _r2=new THREE.Raycaster(), _n2=new THREE.Vector2(), _fl=new THREE.Plane(new THREE.Vector3(0,1,0),0), _pt=new THREE.Vector3();
@@ -1517,11 +1519,11 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     const now=performance.now(); if(!g.path||now-g.re>600){ g.re=now; const tx=p.pos.x-pdx/pd*1.4, ty=p.pos.y-pdy/pd*1.4, pt=findPath(walk.x,walk.y,tx,ty); if(!pt){ autoGo=null; return true; } g.path=pt; const e=pt[pt.length-1]; g.x=e[0]; g.y=e[1]; g.v=g.v||0; }
     const wp=g.path[0], last=g.path.length<=1; if(!last&&Math.hypot(wp[0]-walk.x,wp[1]-walk.y)<0.35) g.path.shift();
     const tx=g.path[0][0]-walk.x, ty=g.path[0][1]-walk.y, td=Math.hypot(tx,ty); if(td<0.05){ g.re=0; return true; }
-    g.v=Math.min(0.9,(g.v||0)+dt*0.6); const st=Math.min(td,g.v*dt); [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
-  if(g.orbit){ const o=g.orbit; o.v=Math.min(0.45,(o.v||0)+dt*0.3); const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const ca=Math.cos(o.a), sa=Math.sin(o.a), fit=ang=>{ let r=o.r; const c=Math.cos(ang), s2=Math.sin(ang); while(r>0.7&&!canWalk(o.x+c*r,o.y+s2*r)) r-=0.05; return r; };
+    g.v=Math.min(0.9,(g.v||0)+dt*0.6,Math.sqrt(2*0.6*Math.max(0,pd-1.8))+0.03); const st=Math.min(td,g.v*dt); /* slows down as you reach them */ [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
+  if(g.orbit){ const o=g.orbit; o.v=o.stop?Math.max(0,(o.v||0)-dt*0.9):Math.min(0.45,(o.v||0)+dt*0.3,Math.sqrt(2*0.22*Math.max(0,o.left))+0.004); if(o.stop&&o.v<0.004){ autoGo=null; return true; } /* eases out over the last part of the circle, so it settles rather than stopping dead */ const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const ca=Math.cos(o.a), sa=Math.sin(o.a), fit=ang=>{ let r=o.r; const c=Math.cos(ang), s2=Math.sin(ang); while(r>0.7&&!canWalk(o.x+c*r,o.y+s2*r)) r-=0.05; return r; };
     let rr=o.r; for(const k of [0,0.15,0.3,0.45,0.6]) rr=Math.min(rr,fit(o.a+k)); /* look a little ahead round the circle: come in closer before a wall or pedestal, smoothly, never stopping */
     if(o.cr==null) o.cr=Math.hypot(walk.x-o.x,walk.y-o.y)||o.r; o.cr+=(rr-o.cr)*Math.min(1,dt*(rr<o.cr?4:1.5)); const nx=o.x+ca*o.cr, ny=o.y+sa*o.cr;
-    [walk.x,walk.y]=collide(nx,ny); { const ty=lookYaw(o.x-walk.x,o.y-walk.y), tp=Math.atan2(o.top-EYE,Math.hypot(o.x-walk.x,o.y-walk.y)); if(o.oy==null){ o.oy=Math.atan2(Math.sin(walk.yaw-ty),Math.cos(walk.yaw-ty)); o.op=walk.pitch-tp; } o.oy*=Math.max(0,1-dt*2.2); o.op*=Math.max(0,1-dt*2.2); walk.yaw=ty+o.oy; walk.pitch=tp+o.op; } if(o.left<=0) autoGo=null; return true; }
+    [walk.x,walk.y]=collide(nx,ny); if(!o.stop){ const ty=lookYaw(o.x-walk.x,o.y-walk.y), tp=Math.atan2(o.top-EYE,Math.hypot(o.x-walk.x,o.y-walk.y)); if(o.oy==null){ o.oy=Math.atan2(Math.sin(walk.yaw-ty),Math.cos(walk.yaw-ty)); o.op=walk.pitch-tp; } o.oy*=Math.max(0,1-dt*2.2); o.op*=Math.max(0,1-dt*2.2); walk.yaw=ty+o.oy; walk.pitch=tp+o.op; } if(o.left<=0) autoGo=null; return true; }
   if(g.path&&g.path.length>1){ const [tx,ty]=g.path[0]; const n1=g.path[1], past=n1&&((tx-walk.x)*(n1[0]-tx)+(ty-walk.y)*(n1[1]-ty))<0; if(Math.hypot(tx-walk.x,ty-walk.y)<(g.near?(g.path[0][2]?0.15:0.25):(g.path[0][2]?0.3:0.6))||(!g.near&&past&&Math.hypot(tx-walk.x,ty-walk.y)<1.2)){ const q=g.path.shift(); if(q.length>4) g.room={c:[q[3],q[4]],left:3}; } }
   const wp=g.path&&g.path.length?g.path[0]:[g.x,g.y], last=!g.path||g.path.length<=1;
   const dx=(last?g.x:wp[0])-walk.x, dy=(last?g.y:wp[1])-walk.y, d=Math.hypot(dx,dy);
@@ -1653,7 +1655,8 @@ function introStep(now){ const box=document.getElementById('load');
   if(!canWalk(nx,ny)){ intro=null; return; } walk.x=nx; walk.y=ny;
   if(introLook) walk.pitch=Math.atan2(introLook.y-EYE,Math.hypot(nx-introLook.x,ny+introLook.z)); /* keep the work centred as you step back */
   dirty=true; if(t>=1) intro=null; }
-if(document.documentElement.classList.contains('embed')&&randomWallView()){ intro={wait:true};
+if(document.documentElement.classList.contains('embed')&&sessView&&isFinite(sessView.x)&&okPos(sessView.x,sessView.y)){ Object.assign(walk,{x:sessView.x,y:sessView.y,yaw:sessView.yaw,pitch:sessView.pitch}); setMode('walk'); placeWalkCam(); }
+else if(document.documentElement.classList.contains('embed')&&randomWallView()){ intro={wait:true};
   const stopIntro=()=>{ intro=null; }; for(const ev of ['pointerdown','wheel','keydown']) stage.addEventListener(ev,stopIntro,{capture:true}); }
 else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
 { // which paintings come first: the ones in the room you stand in (and anything within 7 m, e.g. through the doorway)
