@@ -98,5 +98,7 @@ export function buildMobile({env,ceiling,eyeBottom=1.5,moon}){
   grp.add(upRod,loRod,clip,l1,l2);
   nodes.forEach(n=>grp.add(n)); grp.add(wire); layout(eyeBottom);
   return { group:grp, setHeight:layout, lowest:()=>wireBot,
-    update(t){ nodes.forEach((n,i)=>{const u=n.userData; n.rotation.y=u.yaw+Math.sin(t*(.08+i*.013)+u.ph)*.3;}); } };
+    // each tier faces its own way round the circle (golden-angle spread, so no two line up and the whole reads round, not flat),
+    // and turns slowly on its own: some one way, some the other, at slightly different speeds, with a small sway on top
+    update(t){ nodes.forEach((n,i)=>{const u=n.userData, base=u.yaw+i*2.39996, dir=i%2?-1:1, sp=.035+((i*37)%5)*.008; n.rotation.y=base+dir*sp*t+Math.sin(t*(.08+i*.013)+u.ph)*.18;}); } };
 }

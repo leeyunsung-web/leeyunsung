@@ -136,7 +136,7 @@ export function createRoomTone() {
     const now = ac.currentTime;
     if (me) {
       const d = Math.hypot(ctx.x - me.x, ctx.y - me.y);
-      if (d < 1.5) { me.acc += d; if (S.on_steps && me.acc >= STRIDE && now - (me.last || 0) > 0.62) { me.acc %= STRIDE; me.last = now; step(now + 0.02, S.stV * 0.5 * rnd(0.85, 1.1), side * 0.12, false); side = -side; } } // never quicker than an ordinary unhurried step
+      if (d < 1.5) { me.acc += d; if (S.on_steps && me.acc >= STRIDE && now - (me.last || 0) > 0.66) { me.acc %= STRIDE; me.last = now; step(now + 0.02, S.stV * 0.5 * rnd(0.85, 1.1), side * 0.12, false); side = -side; } } // never quicker than an ordinary unhurried step
       if (d < 0.0005) me.idle += 1; else me.idle = 0; if (me.idle > 20) me.acc = STRIDE * 0.55; // the first step lands soon after you set off
     }
     me = Object.assign(me || { acc: STRIDE * 0.55, idle: 0 }, { x: ctx.x, y: ctx.y });
