@@ -1506,7 +1506,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     const now=performance.now(); if(!g.path||now-g.re>600){ g.re=now; const tx=p.pos.x-pdx/pd*1.4, ty=p.pos.y-pdy/pd*1.4, pt=findPath(walk.x,walk.y,tx,ty); if(!pt){ autoGo=null; return true; } g.path=pt; const e=pt[pt.length-1]; g.x=e[0]; g.y=e[1]; g.v=g.v||0; }
     const wp=g.path[0], last=g.path.length<=1; if(!last&&Math.hypot(wp[0]-walk.x,wp[1]-walk.y)<0.35) g.path.shift();
     const tx=g.path[0][0]-walk.x, ty=g.path[0][1]-walk.y, td=Math.hypot(tx,ty); if(td<0.05){ g.re=0; return true; }
-    g.v=Math.min(1.1,(g.v||0)+dt*0.9); const st=Math.min(td,g.v*dt); [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
+    g.v=Math.min(0.9,(g.v||0)+dt*0.6); const st=Math.min(td,g.v*dt); [walk.x,walk.y]=collide(walk.x+tx/td*st,walk.y+ty/td*st); turn(lookYaw(pd<3.5?pdx:tx,pd<3.5?pdy:ty)); tilt(-0.02,1.5); return true; }
   if(g.orbit){ const o=g.orbit; o.v=Math.min(0.45,(o.v||0)+dt*0.3); const st=Math.min(o.left,dt*o.v); o.a+=st; o.left-=st; const ca=Math.cos(o.a), sa=Math.sin(o.a), fit=ang=>{ let r=o.r; const c=Math.cos(ang), s2=Math.sin(ang); while(r>0.7&&!canWalk(o.x+c*r,o.y+s2*r)) r-=0.05; return r; };
     let rr=o.r; for(const k of [0,0.15,0.3,0.45,0.6]) rr=Math.min(rr,fit(o.a+k)); /* look a little ahead round the circle: come in closer before a wall or pedestal, smoothly, never stopping */
     if(o.cr==null) o.cr=Math.hypot(walk.x-o.x,walk.y-o.y)||o.r; o.cr+=(rr-o.cr)*Math.min(1,dt*(rr<o.cr?4:1.5)); const nx=o.x+ca*o.cr, ny=o.y+sa*o.cr;
@@ -1517,7 +1517,7 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   let rem=d; if(g.path) for(let i=1;i<g.path.length;i++) rem+=Math.hypot(g.path[i][0]-g.path[i-1][0],g.path[i][1]-g.path[i-1][1]);
   if(g.near==null){ const dy0=g.yaw==null?9:Math.abs(Math.atan2(Math.sin(g.yaw-walk.yaw),Math.cos(g.yaw-walk.yaw))); g.near=g.yaw!=null&&(g.face?rem<5.5||dy0<1.1&&rem<9:(last&&rem<4.5)||(dy0<1.1&&rem<9)); } // close by, or already facing it: keep looking at the work and step (back, sideways or diagonally) into place // a short straight move (the next work along the wall): just slide, no head turn
   if(d>0.03||!last){ // speed eases up from 0 and slows down into the stop
-    const vmax=g.near?(rem>3?1.0:0.75):1.3, want=Math.min(vmax,Math.sqrt(2*0.8*rem)+0.02); g.v=(g.v||0)+Math.max(-1.6*dt,Math.min(0.9*dt,want-(g.v||0)));
+    const vmax=g.near?(rem>3?0.8:0.6):1.0, want=Math.min(vmax,Math.sqrt(2*0.6*rem)+0.02); g.v=(g.v||0)+Math.max(-1.2*dt,Math.min(0.6*dt,want-(g.v||0))); /* an unhurried walk: never above 1 m/s, gentle start and stop */
     let mvx=dx/d, mvy=dy/d, st=Math.min(d,g.v*dt);
     if(!g.near&&!g.back&&!(last&&d<0.7)){ const la=lookAhead(g,0.8), lx=la[0]-walk.x, ly=la[1]-walk.y, wa=Math.atan2(ly,lx);
       if(g.hd==null) g.hd=wa; // start straight toward the path (no wide swing from where you happened to face)
