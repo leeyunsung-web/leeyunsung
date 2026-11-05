@@ -357,6 +357,18 @@ const GBX0=L.door2?(L.door2.cx!=null?L.door2.cx-0.1:L.door2.x0):0; // where the 
 const ROOMS=(L.rooms||[{x0:-W/2,x1:W/2,y0:-LL/2,y1:LL/2}]), DOOR=L.door||null; // blender ground coords
 const inRoom3=(x,z,m=0)=>ROOMS.some(r=>x>r.x0+m&&x<r.x1-m&&-z>r.y0+m&&-z<r.y1-m); // three.js x,z
 const MY0=Math.min(...ROOMS.map(r=>r.y0)), MY1=Math.max(...ROOMS.map(r=>r.y1)), MCY=(MY0+MY1)/2, MX0=Math.min(...ROOMS.map(r=>r.x0)), MX1=Math.max(...ROOMS.map(r=>r.x1)), MCX=(MX0+MX1)/2;
+
+// master preview (2026-11-05): real-world surfaces — fine painted-wall texture, polished concrete floor with saw-cut joints, oak — laid over the baked light (world-space, so they never stretch)
+const REAL=M3; const MATT={};
+if(REAL){ const ld=f=>{ const t=new THREE.TextureLoader().load(f); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.colorSpace=THREE.NoColorSpace; t.anisotropy=MAXANI; return t; };
+  MATT.plaster=ld('live/mat/plaster.jpg'); MATT.concrete=ld('live/mat/concrete.jpg'); MATT.oak=new THREE.TextureLoader().load('live/mat/oak.jpg'); MATT.oak.colorSpace=THREE.SRGBColorSpace; MATT.oak.wrapS=MATT.oak.wrapT=THREE.RepeatWrapping; MATT.oak.anisotropy=MAXANI; }
+function realPatch(mat,kind,str){ if(!REAL||!mat) return mat; const floor=kind==='floor', T=floor?MATT.concrete:MATT.plaster, S=(floor?1/3.0:1/1.6).toFixed(4), K=(floor?1.275:1.275).toFixed(3), A=(str??(floor?1.0:0.8)).toFixed(3);
+  const prev=mat.onBeforeCompile;
+  mat.onBeforeCompile=(sh,r)=>{ if(prev) prev(sh,r); sh.uniforms.uDet={value:T};
+    sh.vertexShader='varying vec3 vWP;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n vWP=(modelMatrix*vec4(transformed,1.0)).xyz;');
+    const smp=floor?'vec3 d=texture2D(uDet,vWP.xz*'+S+').rgb*'+K+';':'vec3 fn=abs(normalize(cross(dFdx(vWP),dFdy(vWP)))); vec2 tuv=fn.y>0.7?vWP.xz:(fn.x>fn.z?vWP.zy:vWP.xy); vec3 d=texture2D(uDet,tuv*'+S+').rgb*'+K+';';
+    sh.fragmentShader='uniform sampler2D uDet; varying vec3 vWP;\n'+sh.fragmentShader.replace('#include <map_fragment>','#include <map_fragment>\n { '+smp+' diffuseColor.rgb*=mix(vec3(1.0),d,'+A+'); }'); };
+  mat.customProgramCacheKey=()=>'real-'+kind+A; mat.needsUpdate=true; return mat; }
 const DOORX=DOOR&&(DOOR.x1-DOOR.x0)<(DOOR.y1-DOOR.y0); // doorway cut through a wall that runs along y
 
 // pedestal: unit box (base on the floor), vertex-shaded from the baked values so it can be resized freely
@@ -441,9 +453,9 @@ for(let s of L.baked){
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
     if(/Soffit[FB]$/.test(s.name)) geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
-    geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,realPatch(new THREE.MeshBasicMaterial({vertexColors:true}),'wall',0.6))); continue; }
   const isFloor=/FloorBox$/.test(s.name);
-  const m=new THREE.MeshBasicMaterial({map:tex((SMALL&&/^lm_/.test(s.img)?'live/m/':'live/')+s.img),transparent:isFloor,opacity:isFloor?0.80:1}); // phones: half-size light maps (smooth light, no visible change)
+  const m=new THREE.MeshBasicMaterial({map:tex((SMALL&&/^lm_/.test(s.img)?'live/m/':'live/')+s.img),transparent:isFloor,opacity:isFloor?0.80:1}); realPatch(m,isFloor?'floor':'wall'); // phones: half-size light maps (smooth light, no visible change)
   if(s.name.startsWith('G_Wall')||s.name==='G3_WallW'){ m.polygonOffset=true; m.polygonOffsetFactor=-2; m.polygonOffsetUnits=-12; } // where the two rooms' walls overlap, room 1's wins cleanly (no flicker)
   const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh);
   if(s.name.startsWith('G_Pedestal')){ // rebuilt below as a resizable box shaded like its bake
@@ -511,6 +523,7 @@ if(L.door2){const D=L.door2, NO=!!D.north, CL=D.len||4, x0=D.cx??D.x1, x1=x0+CL,
   const DIM=0.42, wallT=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.867*DIM,0.863*DIM,0.855*DIM,THREE.SRGBColorSpace)});
   const flo=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.66*DIM,0.655*DIM,0.64*DIM,THREE.SRGBColorSpace)});
   const ceilM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.93*DIM*0.8,0.928*DIM*0.8,0.92*DIM*0.8,THREE.SRGBColorSpace)});
+  realPatch(wallT,'wall'); realPatch(flo,'floor'); realPatch(ceilM,'wall',0.5);
   const pl=(w,h,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
   pl(CL+0.1,H-GH,wallT,(x0-0.1+x1)/2,GH+(H-GH)/2,zA,rA);          // back wall continues
   if(L.shop){ const S=L.shop.door; // master preview: the inner wall opens into the gift shop just before the guestbook
@@ -1228,7 +1241,7 @@ function buildHall(Hl,reveal){
   // walls: lit from the open sky, so brighter toward the top, a soft shade at the foot and in the corners
   const shade=cv(256,512,(x,W2,H2)=>{ const gr=x.createLinearGradient(0,H2,0,0); gr.addColorStop(0,'#d6d6d6'); gr.addColorStop(0.35,'#e8e8e8'); gr.addColorStop(0.85,'#fbfbfb'); gr.addColorStop(1,'#ffffff'); x.fillStyle=gr; x.fillRect(0,0,W2,H2);
     for(const s of [0,1]){ const e=x.createLinearGradient(s?W2:0,0,s?W2-22:22,0); e.addColorStop(0,'rgba(0,0,0,.10)'); e.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=e; x.fillRect(s?W2-22:0,0,22,H2); } });
-  const wallM=new THREE.MeshBasicMaterial({map:shade});
+  const wallM=realPatch(new THREE.MeshBasicMaterial({map:shade}),'wall');
   const wy=GH+(HH-GH)/2, wh=HH-GH;
   // north and south walls
   pl(w,wh,wallM,cx,wy,-y1,0); reveal(w,cx,-y1,0,GD,GD);
@@ -1242,13 +1255,13 @@ function buildHall(Hl,reveal){
   // floor: pale polished resin, the soft mirror shows through like the other rooms; daylight brighter in the middle
   const floorT=cv(1024,Math.round(1024*d/w),(x,W2,H2)=>{ x.fillStyle='#cfccc5'; x.fillRect(0,0,W2,H2);
     const lp=x.createRadialGradient(W2/2,H2/2,0,W2/2,H2/2,W2*0.6); lp.addColorStop(0,'rgba(255,255,255,.28)'); lp.addColorStop(0.55,'rgba(255,255,255,.06)'); lp.addColorStop(1,'rgba(40,36,30,.16)'); x.fillStyle=lp; x.fillRect(0,0,W2,H2); });
-  const fm=new THREE.MeshBasicMaterial({map:floorT,transparent:true,opacity:0.8}); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm);
+  const fm=realPatch(new THREE.MeshBasicMaterial({map:floorT,transparent:true,opacity:0.8}),'floor'); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm);
   // the two short passages: floor strip, jamb and head (plain white)
   const jm=new THREE.MeshBasicMaterial({color:sRGB(0.84,0.838,0.832)}), hd=new THREE.MeshBasicMaterial({color:sRGB(0.70,0.698,0.692)}), stripM=new THREE.MeshBasicMaterial({color:sRGB(0.72,0.715,0.70)});
   for(const [a,b,P,h] of [DR?[DR.x0,x0,DR,4.5]:null,EX?[x1,x1+0.1,EX,EX.h]:null].filter(Boolean)){ const zc=-(P.y0+P.y1)/2, dd=P.y1-P.y0;
     pl(b-a+0.002,dd,stripM,(a+b)/2,0.0012,zc,0,-Math.PI/2).renderOrder=2; pl(b-a,h,jm,(a+b)/2,h/2,-P.y0,Math.PI); pl(b-a,dd,hd,(a+b)/2,h,zc,0,Math.PI/2); }
   // ceiling: flat white, with one large opening to the sky (sharp, thin edge)
-  const ceilM=new THREE.MeshBasicMaterial({color:sRGB(0.86,0.858,0.852)});
+  const ceilM=realPatch(new THREE.MeshBasicMaterial({color:sRGB(0.86,0.858,0.852)}),'wall',0.5);
   const ceil=(ax,ay,bx,by)=>{ if(bx-ax>1e-3&&by-ay>1e-3) pl(bx-ax,by-ay,ceilM,(ax+bx)/2,HH,-(ay+by)/2,0,Math.PI/2); };
   if(SK){ ceil(x0,y0,x1,SK.y0); ceil(x0,SK.y1,x1,y1); ceil(x0,SK.y0,SK.x0,SK.y1); ceil(SK.x1,SK.y0,x1,SK.y1);
     const T=0.12, edge=new THREE.MeshBasicMaterial({color:sRGB(0.96,0.958,0.952)}), scx=(SK.x0+SK.x1)/2, scy=(SK.y0+SK.y1)/2, sw=SK.x1-SK.x0, sd=SK.y1-SK.y0; // the cut edge of the slab, catching the daylight
@@ -1282,7 +1295,8 @@ function buildHall(Hl,reveal){
     const pm=pl(sw+5,sd+5,new THREE.MeshBasicMaterial({map:pool,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),scx,0.005,-scy,0,-Math.PI/2); pm.renderOrder=3; HALL_SKY.bindSun(addBase,pm.material);
   } else ceil(x0,y0,x1,y1);
   // benches: plain white-oak blocks
-  const oak=new THREE.MeshBasicMaterial({color:sRGB(0.80,0.70,0.56)}), oakT=new THREE.MeshBasicMaterial({color:sRGB(0.88,0.79,0.65)}), oakS=new THREE.MeshBasicMaterial({color:sRGB(0.66,0.56,0.43)});
+  const oM=(r,g2,b2)=>REAL?new THREE.MeshBasicMaterial({map:MATT.oak,color:sRGB(r/0.80*1.0,g2/0.70*0.95,b2/0.56*0.92).multiplyScalar(1.0)}):new THREE.MeshBasicMaterial({color:sRGB(r,g2,b2)});
+  const oak=oM(0.80,0.70,0.56), oakT=oM(0.88,0.79,0.65), oakS=oM(0.66,0.56,0.43);
   for(const b of Hl.benches||[]){ box(1.9,0.06,0.46,[oakS,oakS,oakT,oakS,oak,oak],b.x,0.42,-b.y); for(const e of [-0.82,0.82]) box(0.06,0.39,0.42,[oak,oak,oakT,oakS,oakS,oakS],b.x+e,0.195,-b.y);
     const sh=pl(2.4,1.0,new THREE.MeshBasicMaterial({map:BLOB,transparent:true,depthWrite:false,opacity:0.6}),b.x,0.003,-b.y,0,-Math.PI/2); sh.renderOrder=2;
     blocksH.push({x0:b.x-0.95-0.28,x1:b.x+0.95+0.28,y0:b.y-0.25-0.28,y1:b.y+0.25+0.28}); }
@@ -1308,7 +1322,7 @@ if(L.hall) window.__hallSky=k=>{ tune.hallSky=k; applyTune(); };
 function buildShop(S,reveal){
   const gc=document.createElement('canvas'); gc.width=4; gc.height=256; const gx=gc.getContext('2d'), gr=gx.createLinearGradient(0,0,0,256);
   gr.addColorStop(0,'#ebe9e4'); gr.addColorStop(0.4,'#dfdcd6'); gr.addColorStop(1,'#d0cdc7'); gx.fillStyle=gr; gx.fillRect(0,0,4,256);
-  const gt=new THREE.CanvasTexture(gc); gt.colorSpace=THREE.SRGBColorSpace; const wallM=new THREE.MeshBasicMaterial({map:gt});
+  const gt=new THREE.CanvasTexture(gc); gt.colorSpace=THREE.SRGBColorSpace; const wallM=realPatch(new THREE.MeshBasicMaterial({map:gt}),'wall');
   const sRGB=(r,g,b)=>new THREE.Color().setRGB(r,g,b,THREE.SRGBColorSpace), {x0,x1,y0,y1}=S, D=S.door, cx=(x0+x1)/2, cy=(y0+y1)/2, w=x1-x0, d=y1-y0, wy=GH+(H-GH)/2, wh=H-GH;
   const pl=(pw,ph,mat,x,y,z,ry,rx)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(pw,ph),mat); m.position.set(x,y,z); m.rotation.order='YXZ'; m.rotation.y=ry||0; m.rotation.x=rx||0; scene.add(m); return m;};
   const DN=D.y0>=y1-0.05; // doorway in the north wall (corridor runs along the north side)
@@ -1319,7 +1333,7 @@ function buildShop(S,reveal){
     reveal(D.x0-x0,(x0+D.x0)/2,ez,er,DN?GD:0,DN?0:GD); reveal(x1-D.x1,(D.x1+x1)/2,ez,er,DN?0:GD,DN?GD:0); }
   const jm=new THREE.MeshBasicMaterial({color:sRGB(0.84,0.838,0.832)}), dz=(-D.y1-D.y0)/2, dd=D.y1-D.y0;  // doorway jambs and head
   pl(dd,D.h,jm,D.x0,D.h/2,dz,Math.PI/2); pl(dd,D.h,jm,D.x1,D.h/2,dz,-Math.PI/2); pl(D.x1-D.x0,dd,jm,(D.x0+D.x1)/2,D.h,dz,0,Math.PI/2);
-  const fm=new THREE.MeshBasicMaterial({color:sRGB(0.74,0.735,0.72),transparent:true,opacity:0.8}); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm); // floor (the soft mirror shows through, like the rooms)
+  const fm=realPatch(new THREE.MeshBasicMaterial({color:sRGB(0.74,0.735,0.72),transparent:true,opacity:0.8}),'floor'); const fl=pl(w,d,fm,cx,0.001,-cy,0,-Math.PI/2); fl.renderOrder=1; floorMats.push(fm); // floor (the soft mirror shows through, like the rooms)
   pl(w,d,new THREE.MeshBasicMaterial({color:sRGB(0.9,0.898,0.892)}),cx,H,-cy,0,Math.PI/2);  // ceiling
   // the book table
   const T=S.table; if(T){ const tm=new THREE.MeshBasicMaterial({color:sRGB(0.93,0.928,0.922)}), ts=new THREE.MeshBasicMaterial({color:sRGB(0.8,0.797,0.79)});
