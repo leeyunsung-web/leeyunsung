@@ -1285,7 +1285,7 @@ function buildHall(Hl,reveal){
       }catch(e){ const h=now/60; k=h<6||h>=18.5?'night':(h<7||h>=17.5)?'sunset':'partly'; } // no weather: go by Seoul's clock
       if(skyMode==='auto') showSky(k); };
     HALL_SKY={ setMode(m){ m=m||'auto'; if(m===skyMode) return; skyMode=m; clearInterval(skyTimer); if(m==='auto'){ autoSky(); skyTimer=setInterval(autoSky,15*60*1000); } else showSky(m); },
-      tick(dt){ sky.rotation.y+=dt*0.006; }, bindSun(a,b){ sunM=a; poolM=b; } };
+      tick(dt){ sky.rotation.y+=dt*0.006; }, follow(c){ sky.position.copy(c.position); }, bindSun(a,b){ sunM=a; poolM=b; } }; // follow: the sky is centred on the viewer, so it sits at infinity (no parallax) like a real sky
     // sunlight through the opening: a warm patch thrown onto the floor and up the south wall, plus a soft pool of skylight
     const sun=cv(256,256,(x,W2,H2)=>{ const gr=x.createLinearGradient(0,0,0,H2); gr.addColorStop(0,'rgba(255,244,222,.0)'); gr.addColorStop(0.08,'rgba(255,244,222,.15)'); gr.addColorStop(0.92,'rgba(255,244,222,.15)'); gr.addColorStop(1,'rgba(255,244,222,0)'); x.fillStyle=gr; x.fillRect(0,0,W2,H2);
       const s=x.createLinearGradient(0,0,W2,0); s.addColorStop(0,'rgba(0,0,0,1)'); s.addColorStop(0.06,'rgba(0,0,0,0)'); s.addColorStop(0.94,'rgba(0,0,0,0)'); s.addColorStop(1,'rgba(0,0,0,1)'); x.globalCompositeOperation='destination-out'; x.fillStyle=s; x.fillRect(0,0,W2,H2); });
@@ -1845,7 +1845,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(hiWant&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant);
     if(COARSE){ const full=Math.min(devicePixelRatio,2)*(+tune.res||1), spin=MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99), want=(still&&!spin&&!autoGo&&!drag&&!pinch&&!loading)?Math.max(qPr,full):qPr; /* moving: the light setting so it stays smooth; stopped: one sharp frame at full quality */
       if(Math.abs(renderer.getPixelRatio()-want)>0.01){ renderer.setPixelRatio(want); composer.setPixelRatio(want); resize(); dirty=true; } } }
-  if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
+  if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); if(HALL_SKY) HALL_SKY.follow(camera); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
   if(now-ft>1000){ const idle=now-moved>600;
     fpsEl.textContent=idle?'멈춤 (움직이면 측정)':Math.round(fc*1000/(now-ft))+' fps · '+(fc?(fms/fc).toFixed(1):'–')+' ms';
     try{const pi=PD.getElementById('perfInfo'); if(pi) pi.textContent='한 장면 그리기 '+lastCalls+'회 · 삼각형 '+Math.round(lastTris/1000)+'천 개 · 해상도 '+renderer.getPixelRatio().toFixed(2)+'배';}catch(e){}
