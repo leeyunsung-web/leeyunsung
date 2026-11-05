@@ -276,7 +276,7 @@ const tex=f=>{const t=tl.load(f); t.colorSpace=THREE.SRGBColorSpace; t.anisotrop
 const b64=s=>{const bin=atob(s);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer;};
 const b2t=(x,y,z)=>new THREE.Vector3(x,z,-y);
 let GB=null; // guestbook lectern (built with the exit corridor)
-let HALL=null; // master preview: the Sculpture Hall between room 3 and the guestbook corridor
+let HALL=null, HALL_SKY=null; // master preview: the Sculpture Hall between room 3 and the guestbook corridor
 const SHOPCAP=[]; // master preview: captions of the books on the gift-shop table
 let MOB=null, mobT=0; // HC-UAS hanging mobile in room 2
 
@@ -944,7 +944,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
   people:3,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,tapFill:0.5,helloY:0.12,bubY:0.18,bubS:1,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
-  mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0, hallWall:'white',pyHN:1.55,pyHS:1.55,pyHE:1.55};
+  mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0, hallWall:'white',hallSky:'auto',pyHN:1.55,pyHS:1.55,pyHE:1.55};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
 Object.assign(DEF,{"contrast": 2.05, "bright": 0.82, "refl": 1, "gloss": 0.04, "medH": 1.2, "medW": 0.36, "medD": 0.36, "torW": 0.5, "torD": 0.5, "tContrast": 1.65, "tBright": 1, "tDark": 0.1, "tRough": 0.15, "torH": 1.2, "paintY": 1.55, "shadow": 1.5, "sculptOff": 0, "floor": 0.24, "fov": 45, "bob": true, "wsel": "F", "res": 0.9, "aa": 2, "pblur": 1, "rblur": 0.66, "sshadow": 0.24, "ao": 0.6, "bloom": 0.1, "vig": 0.14, "grain": 0.3, "weave": 1, "medX": 0, "medY": 4.85, "medR": 0, "torX": 0, "torY": -3.5, "torR": 0, "msel": "M", "gapF": 0.55, "shF": 0, "gapB": 1.1, "shB": 0, "gapL": 0.6, "shL": 0, "gapR": 0.6, "shR": 0}); // starting point = the settings saved to the homepage on 2026-11-03
 const KEY='medusa-room-tune-v2';
@@ -996,7 +996,7 @@ function applyTune(){
     blocks.push({x0:x-ex,x1:x+ex,y0:y-ey,y1:y+ey});});
   if(MOB){ MOB.setHeight(tune.mobH); MOBCAP.pos.y=tune.mobH+0.33; const r2=ROOMS[1]||ROOMS[0], cx=(r2.x0+r2.x1)/2, cy=(r2.y0+r2.y1)/2, e=0.8; // arms reach about 0.75 m from the wire
     if(MOB.lowest()<1.85) blocks.push({x0:cx-e,x1:cx+e,y0:cy-e,y1:cy+e}); }
-  blocks.push(...HALLBLOCKS); if(HALL){ HALL.setWall(tune.hallWall); PD.querySelectorAll('#hallWallPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c===tune.hallWall))); }
+  blocks.push(...HALLBLOCKS); if(HALL){ HALL.setWall(tune.hallWall); PD.querySelectorAll('#hallWallPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.c===tune.hallWall))); if(HALL_SKY){ HALL_SKY.setMode(tune.hallSky); PD.querySelectorAll('#hallSkyPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===(tune.hallSky||'auto')))); } }
   if(L.shop&&L.shop.table){ const T=L.shop.table; blocks.push({x0:T.x-T.w/2-0.28,x1:T.x+T.w/2+0.28,y0:T.y-T.d/2-0.28,y1:T.y+T.d/2+0.28}); }
   mg.position.set(tune.medX,mTop,-tune.medY); mg.rotation.y=-tune.medR*Math.PI/180;
   tg.position.set(tune.torX,tTop-TOR_BASE+0.0015,-tune.torY); tg.rotation.y=-tune.torR*Math.PI/180; // 1.5 mm lift avoids flicker where the base meets the pedestal
@@ -1259,13 +1259,27 @@ function buildHall(Hl,reveal){
     skyT.wrapS=THREE.RepeatWrapping;
     const sky=new THREE.Mesh(new THREE.SphereGeometry(30,48,16,0,Math.PI*2,0,Math.PI/2),new THREE.MeshBasicMaterial({map:skyT,side:THREE.BackSide,depthWrite:false,fog:false}));
     sky.position.set(scx,HH,-scy); sky.renderOrder=-1; g.add(sky);
+    // real sky photographs (Poly Haven, CC0; sky part only): chosen from Seoul's time of day and live weather, or picked by hand in the master panel; the dome turns slowly so the clouds drift
+    const skyL=new THREE.TextureLoader(); let skyCur=null, skyMode=null, skyTimer=0, sunM=null, poolM=null;
+    const SUN={clear:1,partly:0.75,overcast:0,sunset:0.35,night:0};
+    const showSky=k=>{ if(k===skyCur) return; skyCur=k; skyL.load('live/sky/'+k+'.jpg',t=>{ if(skyCur!==k) return; t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; const o=sky.material.map; sky.material.map=t; sky.material.needsUpdate=true; if(o&&o!==skyT) o.dispose(); dirty=true; });
+      if(sunM) sunM.opacity=SUN[k]; if(poolM) poolM.opacity=k==='night'?0.15:k==='overcast'?0.6:1; dirty=true; };
+    const seoulNow=()=>{ const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()); const h=+p.find(x=>x.type==='hour').value%24, m=+p.find(x=>x.type==='minute').value; return h*60+m; };
+    const autoSky=async()=>{ let k=null; const now=seoulNow();
+      try{ const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&current=cloud_cover,precipitation,is_day&daily=sunrise,sunset&timezone=Asia%2FSeoul&forecast_days=1',{cache:'no-store'}); const j=await r.json();
+        const mins=t=>{ const q=String(t).split('T')[1]||'0:0'; const [a,b]=q.split(':'); return +a*60+ +b; }, sr=mins(j.daily.sunrise[0]), ss=mins(j.daily.sunset[0]), cc=+j.current.cloud_cover, pr=+j.current.precipitation;
+        if(now<sr-30||now>ss+30) k='night'; else if(Math.abs(now-sr)<=40||Math.abs(now-ss)<=40) k=cc>85||pr>0?'overcast':'sunset'; else k=pr>0||cc>=70?'overcast':cc>=25?'partly':'clear';
+      }catch(e){ const h=now/60; k=h<6||h>=18.5?'night':(h<7||h>=17.5)?'sunset':'partly'; } // no weather: go by Seoul's clock
+      if(skyMode==='auto') showSky(k); };
+    HALL_SKY={ setMode(m){ m=m||'auto'; if(m===skyMode) return; skyMode=m; clearInterval(skyTimer); if(m==='auto'){ autoSky(); skyTimer=setInterval(autoSky,15*60*1000); } else showSky(m); },
+      tick(dt){ sky.rotation.y+=dt*0.006; }, bindSun(a,b){ sunM=a; poolM=b; } };
     // sunlight through the opening: a warm patch thrown onto the floor and up the south wall, plus a soft pool of skylight
     const sun=cv(256,256,(x,W2,H2)=>{ const gr=x.createLinearGradient(0,0,0,H2); gr.addColorStop(0,'rgba(255,244,222,.0)'); gr.addColorStop(0.08,'rgba(255,244,222,.15)'); gr.addColorStop(0.92,'rgba(255,244,222,.15)'); gr.addColorStop(1,'rgba(255,244,222,0)'); x.fillStyle=gr; x.fillRect(0,0,W2,H2);
       const s=x.createLinearGradient(0,0,W2,0); s.addColorStop(0,'rgba(0,0,0,1)'); s.addColorStop(0.06,'rgba(0,0,0,0)'); s.addColorStop(0.94,'rgba(0,0,0,0)'); s.addColorStop(1,'rgba(0,0,0,1)'); x.globalCompositeOperation='destination-out'; x.fillStyle=s; x.fillRect(0,0,W2,H2); });
     const add=new THREE.MeshBasicMaterial({map:sun,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
-    const sp=pl(sw*0.92,sd*0.95,add,scx-1.2,0.004,-(scy-1.6),0,-Math.PI/2); sp.renderOrder=3;
+    const sp=pl(sw*0.92,sd*0.95,add,scx-1.2,0.004,-(scy-1.6),0,-Math.PI/2); sp.renderOrder=3; const addBase=add;
     const pool=cv(256,128,(x,W2,H2)=>{ const gr=x.createRadialGradient(W2/2,H2/2,0,W2/2,H2/2,W2/2); gr.addColorStop(0,'rgba(235,244,255,.10)'); gr.addColorStop(1,'rgba(235,244,255,0)'); x.fillStyle=gr; x.fillRect(0,0,W2,H2); });
-    const pm=pl(sw+5,sd+5,new THREE.MeshBasicMaterial({map:pool,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),scx,0.005,-scy,0,-Math.PI/2); pm.renderOrder=3;
+    const pm=pl(sw+5,sd+5,new THREE.MeshBasicMaterial({map:pool,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),scx,0.005,-scy,0,-Math.PI/2); pm.renderOrder=3; HALL_SKY.bindSun(addBase,pm.material);
   } else ceil(x0,y0,x1,y1);
   // benches: plain white-oak blocks
   const oak=new THREE.MeshBasicMaterial({color:sRGB(0.80,0.70,0.56)}), oakT=new THREE.MeshBasicMaterial({color:sRGB(0.88,0.79,0.65)}), oakS=new THREE.MeshBasicMaterial({color:sRGB(0.66,0.56,0.43)});
@@ -1284,10 +1298,12 @@ function buildHall(Hl,reveal){
   HALL.setWall('white');
 }
 // the wall-colour option, master panel
-if(L.hall){ const tp=document.getElementById('tunePanel'); if(tp){ const gp=document.createElement('div'); gp.className='grp'; gp.innerHTML='<div class="gt">조각 홀 (마스터 미리보기) · 벽 색</div><div class="pick" id="hallWallPick" role="group" aria-label="홀 벽 색"><button data-c="white">흰색</button><button data-c="red">진한 빨강</button><button data-c="green">짙은 회녹색</button><button data-c="navy">짙은 남색</button><button data-c="stone">돌 회색</button></div>';
+if(L.hall){ const tp=document.getElementById('tunePanel'); if(tp){ const gp=document.createElement('div'); gp.className='grp'; gp.innerHTML='<div class="gt">조각 홀 (마스터 미리보기) · 벽 색</div><div class="pick" id="hallWallPick" role="group" aria-label="홀 벽 색"><button data-c="white">흰색</button><button data-c="red">진한 빨강</button><button data-c="green">짙은 회녹색</button><button data-c="navy">짙은 남색</button><button data-c="stone">돌 회색</button></div><div class="gt" style="margin-top:10px">하늘 (자동 = 서울의 지금 시간·날씨)</div><div class="pick" id="hallSkyPick" role="group" aria-label="홀 하늘"><button data-k="auto">자동</button><button data-k="clear">맑음</button><button data-k="partly">구름 조금</button><button data-k="overcast">흐림</button><button data-k="sunset">노을</button><button data-k="night">밤</button></div>';
   const ref=tp.querySelector('.mapgrp'); if(ref) ref.after(gp); else tp.appendChild(gp);
-  gp.querySelectorAll('button').forEach(b=>b.onclick=()=>{ tune.hallWall=b.dataset.c; applyTune(); }); } }
+  gp.querySelectorAll('#hallWallPick button').forEach(b=>b.onclick=()=>{ tune.hallWall=b.dataset.c; applyTune(); });
+  gp.querySelectorAll('#hallSkyPick button').forEach(b=>b.onclick=()=>{ tune.hallSky=b.dataset.k; applyTune(); }); } }
 if(L.hall) window.__hallWall=c=>{ tune.hallWall=c; applyTune(); }; // preview screenshots
+if(L.hall) window.__hallSky=k=>{ tune.hallSky=k; applyTune(); };
 // ---------- master preview: the gift shop, entered from the guestbook corridor (posters come in as paintings; a table of books in the middle) ----------
 function buildShop(S,reveal){
   const gc=document.createElement('canvas'); gc.width=4; gc.height=256; const gx=gc.getContext('2d'), gr=gx.createLinearGradient(0,0,0,256);
@@ -1785,6 +1801,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
 (function loop(now){
   requestAnimationFrame(loop); window.__ldFrames=(window.__ldFrames||0)+1; if(startFit) startFitStep(); else if(intro) introStep(now); if(gbPending&&!autoGo){ gbPending=false; const V=VIEWS.guest; if(Math.hypot(walk.x-V.x,walk.y-V.y)<1.0) setTimeout(gbOpenFromView,250); }
   const dt=Math.min(0.05,(now-last)/1000||0); last=now;
+  if(HALL_SKY&&L.hall&&walk.x>L.hall.x0-0.5&&walk.x<L.hall.x1+0.5&&walk.y>L.hall.y0&&walk.y<L.hall.y1){ HALL_SKY.tick(dt); dirty=true; } // clouds drift while you are in the hall
   if(mode==='walk'){
     let fwd=0, strafe=0, turn=0;
     if(keys.has('arrowup')||keys.has('w')) fwd+=1; if(keys.has('arrowdown')||keys.has('s')) fwd-=1;
