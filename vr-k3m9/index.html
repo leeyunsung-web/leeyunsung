@@ -863,7 +863,7 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
 const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
 const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 작품 앞에 서시면 그 작품 이야기를 들려 드릴게요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Stand in front of a work and I will tell you about it.'};
-const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
+const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
 function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/Art Poster|^Book|· ₩/.test(c)) return '';
   if(/^Torso Sculpture/.test(t)) return 'torso-sculpture';
@@ -878,7 +878,7 @@ function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/^Torso/.test(t)) return 'torso';
   return ''; }
 const docLang=()=>GB_LANG==='ko'?'ko':'en';
-function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
+function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; if(s&&s.slice(0,2)==='w-'){ const c=DOCT&&DOCT.wl[+s.slice(2)]; return c?DOCT.works[c][lang]:''; } /* a work's own introduction: caption read aloud + what it shows */ const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
 const _dsc={t:null,r:null}; function docSplit(t){ if(_dsc.t===t) return _dsc.r; _dsc.t=t; const m=t.match(/[^.!?]+[.!?]+["”’)\]〉》]*\s*|[^.!?]+$/g); return _dsc.r=(m||[t]).map(x=>x.trim()).filter(Boolean); }
 function docDur(t,lang){ return docSplit(t).reduce((a,x)=>a+x.length/(lang==='ko'?7:15)+1.4,0); } // reading time, seconds
 function docStart(s,i,now){ D.s=s; D.i=i; D.t0=now; D.d=docDur(docText(s,i,docLang()),docLang()); D.key=''; D.sent=0; }
@@ -907,9 +907,11 @@ function docLead(dt,now){
   const e=(now-D.t0)/1000, talking=D.i>-2&&e<D.d;
   if(!D.greeted){ if(me<2.6){ D.greeted=true; docStart('',-1,now); } }
   else if(!talking){
-    if(D.i>-2){ if(D.s) D.prog[D.s]=D.i+1; D.i=-2; D.pause=now+1400; D.sent=0; }
-    const s=docSeries(lastCap); if(s!==D.want){ D.want=s; D.wantT=now; }
-    if(s&&now>D.pause&&now-D.wantT>1200&&me<3.2&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
+    if(D.i>-2){ if(D.s&&D.s.slice(0,2)!=='w-') D.prog[D.s]=D.i+1; D.i=-2; D.pause=now+1400; D.sent=0; }
+    const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; } if(s!==D.want) D.want=s;
+    const wi=DOCT&&DOCT.wl?DOCT.wl.indexOf(lastCap):-1;
+    if(wi>=0&&!D.intro[lastCap]&&now>D.pause&&now-D.wantT>1200&&me<3.2){ D.intro[lastCap]=1; docStart('w-'+wi,0,now); } /* first the work in front of you, then the series text */
+    else if(s&&now>D.pause&&now-D.wantT>1200&&me<3.2&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
   else { const s=docSeries(lastCap); if(s&&s!==D.s){ if(s!==D.want){ D.want=s; D.wantT=now; } } }
   // tell the room (on change at once; position at most ~7 times a second while moving)
   if(room&&room.readyState===1&&roomMe){ const moved=Math.hypot(D.x-D.sx,D.y-D.sy)>0.03;
@@ -936,7 +938,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p) return; const e=(now-D.t
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
-  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1107',{cache:'no-cache'}).then(r=>r.json()).then(j=>{ DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
+  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1107b',{cache:'no-cache'}).then(r=>r.json()).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
   if(!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
   if(D.lead) docLead(dt,now); else { const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
   docShow(now); }
@@ -1019,7 +1021,8 @@ function headScreen(p,off){ const r=canvas.getBoundingClientRect(), sr=stage.get
 const chatlog=document.getElementById('chatlog'); const GB_LANG=(()=>{ try{ const t=localStorage.getItem('lysLang'); if(t==='ko'||t==='en') return t; }catch(e){} return /^ko/i.test(navigator.language||'')?'ko':'en'; })();
 const peerName=id=>{ if(id===DOCID) return GB_LANG==='ko'?'도슨트':'Docent'; if(id===roomMe) return GB_LANG==='ko'?'나':'You'; const ids=[...PEERS.keys()].filter(k=>k!==DOCID); const i=ids.indexOf(id); return (GB_LANG==='ko'?'관람객 ':'Visitor ')+(i<0?'':i+1); };
 function logLine(id,m){ const d=document.createElement('div'), b=document.createElement('b'); b.textContent=peerName(id); d.append(b,document.createTextNode(m)); chatlog.appendChild(d);
-  while(chatlog.children.length>6) chatlog.firstChild.remove(); setTimeout(()=>{ d.classList.add('out'); setTimeout(()=>d.remove(),800); },14000); }
+  while(chatlog.children.length>6) chatlog.firstChild.remove(); setTimeout(()=>{ if([...chatlog.children].indexOf(d)>=chatlog.children.length-3) return; d.classList.add('out'); setTimeout(()=>d.remove(),800); },14000);
+  [...chatlog.children].slice(0,-3).forEach(x=>{ if(!x._t) x._t=setTimeout(()=>{ x.classList.add('out'); setTimeout(()=>x.remove(),800); },14000); }); } /* the newest three lines stay on screen */
 function showSay(id,m){ const nearEnough=id===roomMe||((p=>p&&Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)<=8)(PEERS.get(id))); if(nearEnough) logLine(id,m);
   if(id===roomMe){ sayMine.textContent=m; sayMine.style.opacity='1'; clearTimeout(sayMine._t); sayMine._t=setTimeout(()=>sayMine.style.opacity='0',6000); return; }
   const p=PEERS.get(id); if(!p) return; if(Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>8) return; // only people nearby hear it
