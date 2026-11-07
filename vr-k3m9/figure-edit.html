@@ -58,6 +58,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { MeshoptEncoder } from 'three/addons/libs/meshopt_encoder.module.js';
 import * as FP from './figpack.js?v=1104d';
+import * as FX from './figfx.js?v=1107';
 
 // ---------- settings (menu order)
 const GROUPS=[
@@ -75,6 +76,7 @@ const GROUPS=[
 const TOGGLES=[['head','머리·얼굴'],['neck','목'],['chest','가슴'],['belly','허리·배'],['pelvis','골반'],['shoulder','어깨'],['uarm','위팔'],['farm','아래팔'],['hand','손'],['thigh','허벅지'],['shin','종아리'],['foot','발']];
 const DEF={}; for(const [,rows] of GROUPS) for(const r of rows) DEF[r[0]]=r[5]; for(const [k] of TOGGLES) DEF['on_'+k]=1;
 Object.assign(DEF,{walk:'walk-relaxed',idle:'view-back',nose:0.7,ear:0,tone:0.05,op:0.8,neckL:0.85,calf:0.67,soft:0.04,pad:0,speed:0.59,on_chest:0}); // 윤성's settings (2026-11-03)
+Object.assign(DEF,FX.FX_DEF);
 let P={...DEF};
 const HOME=new URLSearchParams(location.search).has('home')?await fetch('models/figure.bin?_='+Date.now(),{cache:'no-store'}).then(r=>r.arrayBuffer()).then(FP.binRead).then(r=>r.meta.P).catch(()=>fetch('models/figure.json').then(r=>r.json()).then(j=>j.P).catch(()=>null)):null;
 try{const s3=JSON.parse(localStorage.getItem('base-figure-v3')||'null'), s=JSON.parse(localStorage.getItem('base-figure-v2')||'null');
@@ -90,6 +92,11 @@ for(const [g,rows] of GROUPS){const h=document.createElement('h2'); h.textConten
     d.innerHTML=`<span>${r[1]}</span><input type="range" min="${r[2]}" max="${r[3]}" step="${r[4]}"><output></output>`;
     const i=d.querySelector('input'), o=d.querySelector('output'); i.value=P[r[0]]; o.textContent=fmt(r,P[r[0]]);
     i.oninput=()=>{P[r[0]]=+i.value; o.textContent=fmt(r,P[r[0]]); save(); apply();}; ins[r[0]]=i; outs[r[0]]=[o,r]; panel.appendChild(d);}}
+for(const [g,rows] of FX.FX_ROWS){const h=document.createElement('h2'); h.textContent=g; panel.appendChild(h); // effects and walk details (shared with the gallery: figfx.js)
+  for(const r of rows){const rr=[r[0],r[1],r[2],r[3],r[4],FX.FX_DEF[r[0]],v=>(+v).toFixed(2)]; const d=document.createElement('label'); d.className='row';
+    d.innerHTML=`<span>${r[1]}</span><input type="range" min="${r[2]}" max="${r[3]}" step="${r[4]}"><output></output>`;
+    const i=d.querySelector('input'), o=d.querySelector('output'); i.value=P[r[0]]; o.textContent=fmt(rr,P[r[0]]);
+    i.oninput=()=>{P[r[0]]=+i.value; o.textContent=fmt(rr,P[r[0]]); save(); showCode();}; ins[r[0]]=i; outs[r[0]]=[o,rr]; panel.appendChild(d);}}
 const WALKS=[['walk-relaxed','편안하게'],['walk','보통'],['walk-formal','단정하게'],['walk-female','부드럽게'],['walk-happy','경쾌하게'],['walk-cautious','조심스럽게'],['xbot-walk','예전 마네킹 걸음']];
 const IDLES=[['view-back','감상 · 뒷짐'],['view-calm','감상 · 팔 내림'],['idle-subtle','가만히 (살짝 움직임)'],['idle-a','편하게 서기'],['idle-foldarms','팔짱'],['idle-listening','귀 기울이기'],['idle-talkingphone','통화'],['xbot-idle','예전 마네킹']];
 for(const [k,l,opts] of [['walk','걷는 모양',WALKS],['idle','서 있는 모양',IDLES]]){const d=document.createElement('label'); d.className='row';
@@ -108,7 +115,7 @@ function packFigure(){const d=window.__exp(); const u8=a=>{let s=''; for(let i=0
   const f32=a=>u8(new Uint8Array(Float32Array.from(a).buffer));
   const bones=[], bi=new Map(); for(const c of d.chunks) for(const n of c.bones) if(!bi.has(n)){bi.set(n,bones.length); bones.push(n);} // one bone list for every piece
   const chunks=d.chunks.map(c=>{const big=c.idx.some(v=>v>65535); return {pos:f32(c.pos),idx:u8(new Uint8Array((big?Uint32Array:Uint16Array).from(c.idx).buffer)),i32:big,si:u8(Uint8Array.from(c.si,v=>bi.get(c.bones[v])??0)),sw:u8(Uint8Array.from(c.sw,v=>Math.round(Math.min(1,Math.max(0,v))*255)))};});
-  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5,armSwing:P.armSwing??1,elbowBend:P.elbowBend??1,shrug:P.shrug??0,tall:P.tall??0};
+  const look={tone:P.tone,op:P.op,speed:P.speed,upright:P.upright??0.45,kneeUp:P.kneeUp??0,blur:P.blur??4,chin:P.chin??0.5,armSwing:P.armSwing??1,elbowBend:P.elbowBend??1,shrug:P.shrug??0,tall:P.tall??0,fx:Object.fromEntries(Object.keys(FX.FX_DEF).map(k=>[k,P[k]??FX.FX_DEF[k]]))};
   return {credit:'Face: "Genshin Style Anime Female Base Mesh For Blender" by David Onizaki, CC BY 4.0 (edited in NU-LAYER figure creator). Motion: Mesh2Motion / Quaternius CC0.',
     bones,bonePos:d.bonePos,scale:d.scale,y:d.y,chunks,
     head:d.head?{pos:f32(d.head.pos),idx:u8(new Uint8Array(Uint16Array.from(d.head.idx).buffer)),bone:d.head.bone,p:d.head.p,q:d.head.q,s:d.head.s}:null,
@@ -415,7 +422,7 @@ function posture(){ if(!B.Spine) return; const k=(P.upright??1)*(aw?aw.weight:1)
   if(tl>0&&B.Hips) B.Hips.position.y+=tl*3.5*curRatio; // straighter legs reach further: lift the body so the feet stay on the floor
   let tot=0; for(const [n,deg] of POST){const a=sgn*k*deg*Math.PI/180; tot+=a; B[n].quaternion.multiply(_pq.setFromAxisAngle(_px,a));}
   B.Head.quaternion.multiply(_pq.setFromAxisAngle(_px,-tot*0.85+sgn*(P.chin??0.5)*6*Math.PI/180));
-  armCalm();}
+  armCalm(); FX.walkDetail(n=>B[n],aw?aw.weight:0,P,curRatio);}
 // calmer arms while walking: the swing is pulled toward a relaxed hang (the 'view-calm' arms) — smaller swing, straighter elbows, looser shoulders
 let CALM=null;
 async function loadCalm(){ try{ const c=await getClip('view-calm'); CALM={}; for(const t of c.tracks){ const m=/^(.*)\.quaternion$/.exec(t.name); if(m) CALM[m[1]]=new THREE.Quaternion().fromArray(t.values,0); } }catch(e){ console.warn('calm',e); } }
@@ -435,14 +442,15 @@ const blurMat=new THREE.ShaderMaterial({uniforms:{t:{value:null},dir:{value:new 
   vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
   fragmentShader:`uniform sampler2D t; uniform vec2 dir; varying vec2 vUv;
     void main(){ vec4 s=vec4(0.); float ws=0.; for(int i=-8;i<=8;i++){float x=float(i)/8.; float w=exp(-x*x*4.5); s+=texture2D(t,vUv+dir*x)*w; ws+=w;} gl_FragColor=s/ws; }`});
-const compMat=new THREE.ShaderMaterial({uniforms:{t:{value:null}},depthTest:false,depthWrite:false,transparent:true,blending:THREE.CustomBlending,blendSrc:THREE.OneFactor,blendDst:THREE.OneMinusSrcAlphaFactor,
+const compMat=new THREE.ShaderMaterial({uniforms:{t:{value:null},...FX.fxUniforms(THREE.Vector2)},depthTest:false,depthWrite:false,transparent:true,blending:THREE.CustomBlending,blendSrc:THREE.OneFactor,blendDst:THREE.OneMinusSrcAlphaFactor,
   vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
-  fragmentShader:`uniform sampler2D t; varying vec2 vUv;
+  fragmentShader:`uniform sampler2D t; varying vec2 vUv;${FX.FX_GLSL}
     vec3 toSRGB(vec3 c){return mix(c*12.92,1.055*pow(c,vec3(1./2.4))-0.055,step(0.0031308,c));}
-    void main(){ vec4 s=texture2D(t,vUv); vec3 c=s.a>1e-4?s.rgb/s.a:vec3(0.); gl_FragColor=vec4(toSRGB(c)*s.a,s.a); }`});
+    void main(){ vec4 s=fxApply(t,vUv,texture2D(t,vUv)); vec3 c=s.a>1e-4?s.rgb/s.a:vec3(0.); gl_FragColor=vec4(toSRGB(c)*s.a,s.a); }`});
 function drawFrame(){
   const r=P.blur??0;
-  if(r<0.05){cam.layers.enableAll(); renderer.render(scene,cam); return;}
+  const fxOn=P.aura>0||P.rain>0||P.inner>0;
+  if(r<0.05&&!fxOn){cam.layers.enableAll(); renderer.render(scene,cam); return;}
   const w=renderer.domElement.width, h=renderer.domElement.height; for(const t of blurRT) if(t.width!==w||t.height!==h) t.setSize(w,h);
   cam.layers.set(0); renderer.render(scene,cam);                                 // the room
   const bg=scene.background; scene.background=null; cam.layers.set(FIGL);        // the figure alone, on clear
@@ -450,6 +458,6 @@ function drawFrame(){
   const px=r*renderer.getPixelRatio(); quad.material=blurMat;
   blurMat.uniforms.t.value=blurRT[0].texture; blurMat.uniforms.dir.value.set(px/w,0); renderer.setRenderTarget(blurRT[1]); renderer.clear(); renderer.render(qScene,qCam);
   blurMat.uniforms.t.value=blurRT[1].texture; blurMat.uniforms.dir.value.set(0,px/h); renderer.setRenderTarget(blurRT[2]); renderer.clear(); renderer.render(qScene,qCam);
-  renderer.setRenderTarget(null); quad.material=compMat; compMat.uniforms.t.value=blurRT[2].texture;
+  renderer.setRenderTarget(null); quad.material=compMat; compMat.uniforms.t.value=blurRT[2].texture; FX.fxSet(compMat.uniforms,P,w,h,performance.now()/1000);
   const ac=renderer.autoClear; renderer.autoClear=false; renderer.render(qScene,qCam); renderer.autoClear=ac; cam.layers.enableAll();}
 </script>
