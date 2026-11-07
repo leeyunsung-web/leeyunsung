@@ -56,11 +56,26 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
   function usd(n){ return "USD " + Number(n || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
   function fail(t){ app.innerHTML = '<h1>Payment</h1><p class="msg err">' + esc(t) + '</p>'; }
   function note(t, err){ var m = document.getElementById("msg"); if(m){ m.textContent = t || ""; m.className = "msg" + (err ? " err" : ""); } }
+  /* 익명 방문 기록 (홈페이지와 같은 방식, /api/t) — 마스터 모드 기기는 빼고, 키는 보내지 않음 */
+  var TQ = [], TT = null, TPATH = "pay", TSTART = 0;
+  function toff(){ try{ if(localStorage.getItem("lysNoTrack") === "1") return true; }catch(e){} return !!navigator.webdriver; }
+  function tflush(){
+    clearTimeout(TT); TT = null; if(!TQ.length) return;
+    var sid = ""; try{ sid = sessionStorage.getItem("lysSid") || ""; if(!sid){ sid = Math.random().toString(36).slice(2, 10); sessionStorage.setItem("lysSid", sid); } }catch(e){}
+    var ref = ""; try{ if(!sessionStorage.getItem("lysTS")){ sessionStorage.setItem("lysTS", "1"); TQ.unshift(["session", TPATH, "", 0]); var u = new URL(document.referrer); if(!/leeyunsung/i.test(u.host)) ref = u.host.replace(/^www\./, ""); } }catch(e){}
+    var body = JSON.stringify({ ev: TQ.splice(0, 40), l: "en", r: ref, s: sid });
+    try{ if(!(navigator.sendBeacon && navigator.sendBeacon(API + "/api/t", new Blob([body], { type: "text/plain" })))) fetch(API + "/api/t", { method: "POST", body: body, keepalive: true }).catch(function(){}); }catch(e){}
+  }
+  function track(t, k, n, now){ if(toff()) return; TQ.push([t, TPATH, String(k || "").slice(0, 120), n || 0]); if(now) tflush(); else if(!TT) TT = setTimeout(tflush, 3000); }
+  function tview(id){ TPATH = "pay/" + id; TSTART = Date.now(); track("view", "Invoice " + id, 0, true); }
+  addEventListener("pagehide", function(){ if(TSTART){ var sec = Math.round((Date.now() - TSTART) / 1000); if(sec >= 2) track("time", "", Math.min(sec, 1800)); TSTART = 0; } tflush(); });
+
   if(!key || key.length < 16){ fail("This payment link is not complete. Please use the full link you received."); return; }
 
   fetch(API + "/api/pay/" + key).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); }).then(function(res){
     var d = res.j;
     if(!res.ok){ fail(d && d.message || "This payment link is not valid."); return; }
+    tview(d.id);
     var stageName = d.stage === "balance" ? "Balance" : "Deposit";
     var html = '<h1>Invoice ' + esc(d.id) + '</h1><p class="muted">' + (d.buyer ? "For " + esc(d.buyer) + " · " : "") + esc(d.date || "") + '</p>' +
       '<div class="card">' +
@@ -91,6 +106,7 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
     s.onload = function(){
       paypal.Buttons({
         style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
+        onClick: function(data){ track("pay_open", (full ? "full " : (d.stage || "deposit") + " ") + (data && data.fundingSource || ""), Math.round(full ? d.fullAmount : d.amount), true); },
         createOrder: function(){
           note("");
           return fetch(API + "/api/pay/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({full:full})}).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Could not start the payment."); return j.id; }); });
@@ -99,14 +115,17 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
           note("Completing your payment…");
           return fetch(API + "/api/pay/" + key + "/capture/" + data.orderID, {method:"POST"}).then(function(r){ return r.json().then(function(j){
             if(r.ok && j.ok){
+              track("purchase", "inv-" + d.id + "-" + (full ? "full" : d.stage), Math.round(Number(j.amount) || 0), true);
               app.innerHTML = html + '<div class="done"><div class="tick">✓</div><p>Thank you. Your payment of <b>' + usd(j.amount) + '</b> has been received.</p><p class="muted">A receipt will arrive from PayPal by email. I will be in touch shortly.<br>— Lee Yunsung</p></div>';
               return;
             }
             if(j && j.restart) return actions.restart();
+            track("pay_fail", (j && j.error) || "capture", 0, true);
             note(j && j.message || "Payment could not be completed. You have not been charged.", true);
           }); }).catch(function(){ note("The connection was interrupted. Please check your PayPal account before trying again, or email reyunsung@gmail.com.", true); });
         },
-        onError: function(e){ note((e && e.message) || "Something went wrong with PayPal. You have not been charged.", true); }
+        onCancel: function(){ track("pay_fail", "cancel", 0, true); },
+        onError: function(e){ track("pay_fail", "error", 0, true); note((e && e.message) || "Something went wrong with PayPal. You have not been charged.", true); }
       }).render("#pp");
     };
     document.head.appendChild(s);
