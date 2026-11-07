@@ -61,6 +61,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .dind i{width:5px;height:5px;border-radius:50%;background:#4a4742;animation:ddot 1.2s infinite}.dind i:nth-of-type(2){animation-delay:.2s}.dind i:nth-of-type(3){animation-delay:.4s}
 .dind b{display:none;font:600 13px/1 var(--ui);color:#4a4742}.dind.el{transform:translate(0,-50%)}.dind.er{transform:translate(-100%,-50%)}.dind.el b:first-child,.dind.er b:last-child{display:inline}
 @keyframes ddot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.dask{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;z-index:6;display:flex;gap:8px}.dask[hidden]{display:none}.dask button{font:500 13px var(--ui);padding:6px 16px;border-radius:999px;border:0;background:rgba(250,248,243,.94);color:#2a2824;box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer}
 .dsub{position:absolute;left:50%;transform:translateX(-50%);z-index:4;max-width:min(680px,88%);text-align:center;pointer-events:none;font:400 clamp(13px,1.5vw,16px)/1.45 var(--ui);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.75),0 0 10px rgba(0,0,0,.4);transition:opacity .5s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .bub.doc{max-width:calc(min(340px,72%) * var(--bs,1));text-align:left}
 .bub::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:rgba(250,248,243,.94)}
@@ -866,7 +867,7 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
 const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
 const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 작품 앞에 서시면 그 작품 이야기를 들려 드릴게요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Stand in front of a work and I will tell you about it.'};
-const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
+const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
 function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/Art Poster|^Book|· ₩/.test(c)) return '';
   if(/^Torso Sculpture/.test(t)) return 'torso-sculpture';
@@ -881,7 +882,9 @@ function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/^Torso/.test(t)) return 'torso';
   return ''; }
 const docLang=()=>GB_LANG==='ko'?'ko':'en';
-function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; if(s&&s.slice(0,2)==='w-'){ const c=DOCT&&DOCT.wl[+s.slice(2)]; return c?DOCT.works[c][lang]:''; } /* a work's own introduction: caption read aloud + what it shows */ const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
+const DOC_ASK={ko:'이 작품에 대해 설명을 드릴까요?',en:'Shall I tell you about this work?'};
+function docBase(s){ return s&&s.slice(0,2)==='w-'?docSeries(DOCT&&DOCT.wl[+s.slice(2)]):s; } /* the series a line belongs to */
+function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; if(i===-3) return DOC_ASK[lang]; if(s&&s.slice(0,2)==='w-'){ const c=DOCT&&DOCT.wl[+s.slice(2)]; return c?DOCT.works[c][lang]:''; } /* a work's own introduction: caption read aloud + what it shows */ const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
 const _dsc={t:null,r:null}; function docSplit(t){ if(_dsc.t===t) return _dsc.r; _dsc.t=t; const m=t.match(/[^.!?]+[.!?]+["”’)\]〉》]*\s*|[^.!?]+$/g); return _dsc.r=(m||[t]).map(x=>x.trim()).filter(Boolean); }
 function docDur(t,lang){ return docSplit(t).reduce((a,x)=>a+x.length/(lang==='ko'?7:15)+1.4,0); } // reading time, seconds
 function docStart(s,i,now){ D.s=s; D.i=i; D.t0=now; D.d=docDur(docText(s,i,docLang()),docLang()); D.key=''; D.sent=0; }
@@ -907,6 +910,7 @@ function docLead(dt,now){
       D.yaw=Math.atan2(gx-D.x,gy-D.y); }
     else { const w=window.capWork, fx=w?w.pos.x:walk.x, fy=w?-w.pos.z:walk.y; D.yaw=Math.atan2(fx-D.x,fy-D.y); } } // standing: face the work being talked about, else you
   // talk: greet once, then the work you face; a paragraph is finished before moving on; each series remembers where it stopped
+  if(D.i===-3&&(now-D.t0)/1000>=D.d) docAnswer(false); /* no answer: carry on */
   const e=(now-D.t0)/1000, talking=D.i>-2&&e<D.d;
   if(!D.greeted){ if(me<2.6){ D.greeted=true; docStart('',-1,now); } }
   else if(!talking){
@@ -915,7 +919,9 @@ function docLead(dt,now){
     const wi=DOCT&&DOCT.wl?DOCT.wl.indexOf(lastCap):-1;
     if(wi>=0&&!D.intro[lastCap]&&now>D.pause&&now-D.wantT>1200&&me<3.2){ D.intro[lastCap]=1; docStart('w-'+wi,0,now); } /* first the work in front of you, then the series text */
     else if(s&&now>D.pause&&now-D.wantT>1200&&me<3.2&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
-  else { const s=docSeries(lastCap); if(s&&s!==D.s){ if(s!==D.want){ D.want=s; D.wantT=now; } } }
+  else if(D.i!==-3){ const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; }
+    if(s&&D.s&&s!==docBase(D.s)&&now-D.wantT>1500&&!D.asked[lastCap]){ D.asked[lastCap]=1; D.back={s:D.s,i:D.i}; D.askCap=lastCap; docStart('q',-3,now); D.d=30; docAskShow(true); } }
+  else if(lastCap!==D.askCap&&docSeries(lastCap)===docBase(D.back&&D.back.s)){ docAnswer(false); } /* walked back to the earlier work: carry on */
   // tell the room (on change at once; position at most ~7 times a second while moving)
   if(room&&room.readyState===1&&roomMe){ const moved=Math.hypot(D.x-D.sx,D.y-D.sy)>0.03;
     if(!D.sent||(moved&&now-D.sent>150)||now-D.sent>3000){ D.sent=now; D.sx=D.x; D.sy=D.y;
@@ -923,6 +929,12 @@ function docLead(dt,now){
   const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
 // the line on screen: the paragraph split into sentences, each shown for its share of the paragraph's time
 const dsub=document.createElement('div'); dsub.className='dsub'; dsub.style.opacity='0'; stage.appendChild(dsub);
+const docAsk=document.createElement('div'); docAsk.className='dask'; docAsk.hidden=true; docAsk.innerHTML='<button data-y="1"></button><button data-y="0"></button>'; stage.appendChild(docAsk);
+function docAskShow(on){ docAsk.hidden=!on; if(!on) return; const ko=GB_LANG==='ko'; docAsk.children[0].textContent=ko?'네':'Yes'; docAsk.children[1].textContent=ko?'아니요':'No, thanks'; }
+function docAnswer(yes){ docAskShow(false); const now=performance.now(); const c=D.askCap, b=D.back; D.back=null;
+  if(yes){ const wi=DOCT.wl.indexOf(c); D.intro[c]=1; if(wi>=0) docStart('w-'+wi,0,now); else D.i=-2; }
+  else if(b){ docStart(b.s,b.i,now); } else D.i=-2; D.sent=0; }
+docAsk.addEventListener('pointerdown',e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(b) docAnswer(b.dataset.y==='1'); });
 const docInd=document.createElement('div'); docInd.className='dind'; docInd.innerHTML='<b>‹</b><i></i><i></i><i></i><b>›</b>'; stage.appendChild(docInd);
 const _dv=new THREE.Vector3();
 function docMark(p,on){ if(!on){ docInd.style.display='none'; return; } docInd.className='dind'; docInd.style.display='flex'; docInd.style.left='50%';
