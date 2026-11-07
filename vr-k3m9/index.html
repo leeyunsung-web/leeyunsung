@@ -49,7 +49,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .ctl button{font:500 12px var(--ui);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
 .ctl button[aria-pressed="true"]{background:var(--fg);color:var(--panel);border-color:var(--fg)}
 .hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:12px;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:6px 10px;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
-.chatlog{position:absolute;left:12px;top:42px;z-index:3;display:flex;flex-direction:column;gap:4px;width:min(300px,60%);pointer-events:none}
+.chatlog{position:absolute;left:12px;top:42px;z-index:3;display:flex;flex-direction:column;gap:4px;width:min(320px,72%);pointer-events:none}
 .chatlog div{font:400 12.5px/1.35 var(--ui);color:#f6f3ec;background:rgba(20,19,17,.40);border-radius:9px;padding:4px 9px;width:max-content;max-width:100%;overflow-wrap:anywhere;transition:opacity .8s,transform .8s;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .chatlog div b{font-weight:600;margin-right:6px;opacity:.85}
 .chatlog div.out{opacity:0;transform:translateY(-10px)}
@@ -292,7 +292,7 @@ const uBlur={value:0}, uWeave={value:0}, uPBlur={value:0.8}, COARSE=matchMedia('
 const composer=new EffectComposer(renderer,new THREE.WebGLRenderTarget(16,16,{type:THREE.HalfFloatType,samples:4}));
 composer.addPass(new RenderPass(scene,camera));
 // ---- visitor figures: drawn alone at half size (walls and pedestals still hide them), blurred, then laid into the picture
-const FIGL=2, _fp=new THREE.Vector3();
+const FIGL=2, _fp=new THREE.Vector3(); let FIGVIS=0; // FIGVIS = figures in view this frame
 const figPass=(()=>{const mk=()=>new THREE.WebGLRenderTarget(4,4,{type:THREE.HalfFloatType,depthBuffer:true}); const rt=[mk(),mk(),mk()];
   const qs=new THREE.Scene(), qc=new THREE.OrthographicCamera(-1,1,1,-1,0,1), quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2)); qs.add(quad);
   const vs='varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}';
@@ -303,7 +303,7 @@ const figPass=(()=>{const mk=()=>new THREE.WebGLRenderTarget(4,4,{type:THREE.Hal
   const occl=new THREE.MeshBasicMaterial({colorWrite:false});
   const P={enabled:true,needsSwap:false,clear:false,renderToScreen:false,setSize(w,h){const a=Math.max(2,w>>1), b=Math.max(2,h>>1); for(const r of rt) r.setSize(a,b);},
     render(renderer,writeBuffer,readBuffer){
-      if(!(typeof pplMode!=='undefined'&&pplMode===3&&PPL)) return;
+      if(!(typeof pplMode!=='undefined'&&pplMode===3&&PPL)||!FIGVIS) return;
       const bg=scene.background, ov=scene.overrideMaterial, lm=camera.layers.mask, ac=renderer.autoClear, cc=renderer.getClearColor(new THREE.Color()), ca=renderer.getClearAlpha();
       renderer.autoClear=false; renderer.setRenderTarget(rt[0]); renderer.setClearColor(0x000000,0); renderer.clear(true,true,true);
       const mv=typeof mir!=='undefined'?mir.visible:null; if(mv!==null) mir.visible=false; // no second mirror render
@@ -919,7 +919,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p) return; const e=(now-D.t
   let acc=0, k=0; for(;k<sents.length-1;k++){ acc+=W[k]/tot*D.d; if(e<acc) break; } if(k===sents.length-1) acc=D.d;
   const key=D.s+'/'+D.i+'/'+k; if(key===D.key) return; D.key=key;
   if(!p.bub){ const el=document.createElement('div'); el.className='bub doc'; stage.appendChild(el); p.bub={el,t:0}; }
-  p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
+  p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; logLine(DOCID,sents[k]); }
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
   if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1107',{cache:'no-cache'}).then(r=>r.json()).then(j=>{ DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
@@ -929,8 +929,11 @@ function docTick(dt,now){
 window.__doc=()=>({...D,path:undefined,have:!!DOCT,peer:!!PEERS.get(DOCID)}); // for checks
 window.__docRun=(sec,t)=>{ let n=t||performance.now(); for(let i=0;i<sec*30;i++){ n+=1000/30; docLead(1/30,n); } return n; }; // for checks: run the docent ahead in time
 // smooth each visitor toward their last reported spot; legs follow the real speed (no sliding)
+const _pfr=new THREE.Frustum(), _fm=new THREE.Matrix4(), _fsp=new THREE.Sphere(new THREE.Vector3(),1.15);
 function updatePeople(dt){
-  if(!PPL||!pplMode||!PEERS.size) return false;
+  if(!PPL||!pplMode||!PEERS.size){ FIGVIS=0; return false; }
+  camera.updateMatrixWorld(); _fm.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse); _pfr.setFromProjectionMatrix(_fm);
+  let vis=0, need=false;
   for(const p of PEERS.values()){ const A=p.F; if(!A) continue;
     const k=Math.min(1,dt*9), ox=p.pos.x, oy=p.pos.y; p.pos.x+=(p.tgt.x-p.pos.x)*k; p.pos.y+=(p.tgt.y-p.pos.y)*k;
     const mx=p.pos.x-ox, my=p.pos.y-oy, v=Math.hypot(mx,my)/Math.max(dt,1e-3); p.spd+=(v-p.spd)*Math.min(1,dt*6);
@@ -938,10 +941,13 @@ function updatePeople(dt){
     const face=p.spd>0.25&&v>0.05?Math.atan2(mx,my):p.tyaw; p.yaw+=Math.atan2(Math.sin(face-p.yaw),Math.cos(face-p.yaw))*Math.min(1,dt*5);
     const walking=p.spd>0.18, wt=walking?1:0; A.walkA.weight+=(wt-A.walkA.weight)*Math.min(1,dt*5); A.idleA.weight=1-A.walkA.weight;
     A.walkA.timeScale=Math.max(0.5,Math.min(1.9,p.spd/(1.05*A.cm/KIT.base)));
-    A.mix.update(dt); figPosture(A);
+    _fsp.center.set(p.pos.x,0.9,-p.pos.y); const seen=A.o.visible&&_pfr.intersectsSphere(_fsp)&&camera.position.distanceTo(_fsp.center)<30, moving=p.spd>0.05||Math.hypot(p.tgt.x-p.pos.x,p.tgt.y-p.pos.y)>0.01;
+    if(seen) vis++;
+    p.acc=(p.acc||0)+dt; if(p.acc>=(seen?(moving?0:1/15):1/4)){ A.mix.update(p.acc); figPosture(A); p.acc=0; if(seen) need=true; } // motion: full rate in view and walking, ~15 fps standing, slow off screen
     A.o.position.set(p.pos.x,0,-p.pos.y); A.o.rotation.y=Math.PI-p.yaw; p.sh.position.set(p.pos.x,0.004,-p.pos.y);
+    if(seen&&moving) need=true;
   }
-  return true;}
+  if(vis!==FIGVIS) need=true; FIGVIS=vis; return need;}
 // the room: a websocket to the exhibition server (positions and short messages only, nothing stored)
 let room=null, roomMe=null, roomBack=1000, roomSent={x:1e9,y:1e9,a:1e9,t:0}, online=1;
 function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSocket(ROOM_URL); }catch(e){ return; }
@@ -997,7 +1003,7 @@ function headScreen(p,off){ const r=canvas.getBoundingClientRect(), sr=stage.get
   if(_hp.z>1) return null; return [( _hp.x+1)/2*r.width+r.left-sr.left,(1-_hp.y)/2*r.height+r.top-sr.top]; }
 // running chat log under "N online": newest at the bottom, old lines float up and fade
 const chatlog=document.getElementById('chatlog'); const GB_LANG=(()=>{ try{ const t=localStorage.getItem('lysLang'); if(t==='ko'||t==='en') return t; }catch(e){} return /^ko/i.test(navigator.language||'')?'ko':'en'; })();
-const peerName=id=>{ if(id===roomMe) return GB_LANG==='ko'?'나':'You'; const ids=[...PEERS.keys()].filter(k=>k!==DOCID); const i=ids.indexOf(id); return (GB_LANG==='ko'?'관람객 ':'Visitor ')+(i<0?'':i+1); };
+const peerName=id=>{ if(id===DOCID) return GB_LANG==='ko'?'도슨트':'Docent'; if(id===roomMe) return GB_LANG==='ko'?'나':'You'; const ids=[...PEERS.keys()].filter(k=>k!==DOCID); const i=ids.indexOf(id); return (GB_LANG==='ko'?'관람객 ':'Visitor ')+(i<0?'':i+1); };
 function logLine(id,m){ const d=document.createElement('div'), b=document.createElement('b'); b.textContent=peerName(id); d.append(b,document.createTextNode(m)); chatlog.appendChild(d);
   while(chatlog.children.length>6) chatlog.firstChild.remove(); setTimeout(()=>{ d.classList.add('out'); setTimeout(()=>d.remove(),800); },14000); }
 function showSay(id,m){ const nearEnough=id===roomMe||((p=>p&&Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)<=8)(PEERS.get(id))); if(nearEnough) logLine(id,m);
