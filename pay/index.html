@@ -25,6 +25,12 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
 .due{display:flex;justify-content:space-between;align-items:baseline;background:#f3f2ef;padding:16px 16px;margin:22px 0 26px}
 .due b{font-size:22px}
 #pp{min-height:120px}
+.opt{display:flex;flex-direction:column;gap:8px;margin:-10px 0 22px}
+.opt label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:12px 14px;cursor:pointer;font-size:14px}
+.opt label.on{border-color:var(--ink)}
+.opt input{accent-color:#111;margin:0}
+.opt .amt{margin-left:auto;font-variant-numeric:tabular-nums}
+.terms{font-size:11.5px;line-height:1.55;color:var(--soft);margin:14px 0 0}
 .msg{font-size:14px;line-height:1.55;margin:18px 0 0}
 .msg.err{color:var(--bad)}
 .done{text-align:center;padding:30px 0}
@@ -67,7 +73,18 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
       app.innerHTML = html + '<div class="done"><div class="tick">✓</div><p>The ' + stageName.toLowerCase() + ' for this invoice has been received.<br>Thank you.</p></div>';
       return;
     }
-    app.innerHTML = html + '<div class="due"><span>' + stageName + ' due now</span><b>' + usd(d.amount) + '</b></div><div id="pp"></div><p id="msg" class="msg"></p>';
+    var full = false, canFull = Number(d.fullAmount) > Number(d.amount);
+    app.innerHTML = html + '<div class="due"><span id="dueLab">' + stageName + ' due now</span><b id="dueAmt">' + usd(d.amount) + '</b></div>' +
+      (canFull ? '<div class="opt"><label class="on"><input type="radio" name="pf" value="part" checked> Pay the ' + stageName.toLowerCase() + ' now<span class="amt">' + usd(d.amount) + '</span></label>' +
+        '<label><input type="radio" name="pf" value="full"> Pay in full<span class="amt">' + usd(d.fullAmount) + '</span></label></div>' : '') +
+      '<div id="pp"></div><p id="msg" class="msg"></p>' +
+      '<p class="terms">Each work is made to order, and production begins once payment is received. For this reason, payments are non-refundable, including if the order is canceled later.</p>';
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="pf"]'), function(r){ r.onchange = function(){
+      full = r.value === "full" && r.checked;
+      Array.prototype.forEach.call(document.querySelectorAll('.opt label'), function(l){ l.classList.toggle("on", l.querySelector("input").checked); });
+      document.getElementById("dueLab").textContent = full ? "Total due now" : stageName + " due now";
+      document.getElementById("dueAmt").textContent = usd(full ? d.fullAmount : d.amount);
+    }; });
     var s = document.createElement("script");
     s.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(d.clientId) + "&currency=USD&intent=capture&components=buttons&enable-funding=card&disable-funding=paylater,venmo";
     s.onerror = function(){ note("PayPal could not be loaded. Please check your connection or try another browser.", true); };
@@ -76,7 +93,7 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
         style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
         createOrder: function(){
           note("");
-          return fetch(API + "/api/pay/" + key + "/order", {method:"POST"}).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Could not start the payment."); return j.id; }); });
+          return fetch(API + "/api/pay/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({full:full})}).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Could not start the payment."); return j.id; }); });
         },
         onApprove: function(data, actions){
           note("Completing your payment…");
