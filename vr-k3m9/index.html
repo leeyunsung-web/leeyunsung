@@ -240,6 +240,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       </div>
       <div class="pick" role="group" aria-label="다른 관람객 미리보기" id="pplPick"><button data-p="0">관람객 끄기</button><button data-p="3">기본 피규어</button><button id="figDetail" type="button">세부사항…</button><button hidden id="botToggle" type="button">테스트 봇</button><button id="joyToggle" type="button">휴대폰 조이스틱</button></div>
       <label for="k-portH"><span>휴대폰 세로 화면 시야 (좌우 화각°, PC·가로 화면은 그대로) <output id="o-portH"></output></span><input type="range" id="k-portH" min="15" max="70" step="1"></label>
+      <label for="k-tiltSpd"><span>휴대폰 기울기 회전 속도 (초당 °) <output id="o-tiltSpd"></output></span><input type="range" id="k-tiltSpd" min="20" max="160" step="5"></label>
       <label for="k-figBlur"><span>피규어 윤곽 블러 (px) <output id="o-figBlur"></output></span><input type="range" id="k-figBlur" min="0" max="14" step="0.1"></label>
       <label for="k-figNear"><span>가까이서도 블러 유지 <output id="o-figNear"></output></span><input type="range" id="k-figNear" min="0" max="1" step="0.02"></label>
       <label for="k-helloY"><span>말 걸기 높이 (머리 위 m) <output id="o-helloY"></output></span><input type="range" id="k-helloY" min="-0.1" max="0.6" step="0.01"></label>
@@ -868,7 +869,7 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The first visitor to arrive leads it (the server says who; the next one takes over when they leave). It walks over, greets,
 // and reads the finished work texts (data.json -> docent.json, nothing new is said) paragraph by paragraph for the work you face.
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
-const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null}; /* phone look-around state (declared before anything reads it) */
+const GY={on:false,y:0,p:0,ty:0,tp:0,b0:null,rate:0}; /* phone look-around state (declared before anything reads it) */
 { const gb=document.createElement('button'); gb.className='gyro'; gb.type='button'; gb.setAttribute('aria-pressed','false'); gb.setAttribute('aria-label','휴대폰을 움직여 둘러보기');
   gb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M3.5 9a9 9 0 0 0 0 6M20.5 9a9 9 0 0 1 0 6"/></svg>';
   const gh=document.createElement('button'); gh.className='gyroHint'; gh.type='button'; gh.setAttribute('aria-label','휴대폰을 움직여 둘러보기 켜기'); gh.hidden=true;
@@ -1080,7 +1081,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,portH:38,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,tapFill:0.5,helloY:0.12,bubY:0.18,bubS:1,
+  people:3,portH:38,tiltSpd:70,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,tapFill:0.5,helloY:0.12,bubY:0.18,bubS:1,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0, hallWall:'white',hallSky:'clear',pyHN:1.55,pyHS:1.55,pyHE:1.55};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -1094,7 +1095,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','portH','figBlur','figUp','figNear','helloY','bubY','bubS'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','portH','tiltSpd','figBlur','figUp','figNear','helloY','bubY','bubS'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
@@ -1341,14 +1342,17 @@ function collide(nx,ny){
 let bobT=0, bobA=0;
 // look around by turning the phone (2026-11-09, master preview, phones held upright): turning the phone adds to the view on top of the usual
 // tap-to-walk and auto gaze; shakes are smoothed, up/down is limited, and a frame is drawn only when the phone actually moves
-function gyroEv(e){ if(!GY.on||e.alpha==null) return; if(GY.a0==null){ GY.a0=e.alpha; GY.b0=e.beta; }
-  let da=e.alpha-GY.a0; if(da>180) da-=360; if(da<-180) da+=360;
-  GY.ty=da*Math.PI/180; GY.tp=Math.max(-0.5,Math.min(0.5,(e.beta-GY.b0)*Math.PI/180)); }
-function gyroTick(dt){ if(!GY.on&&Math.abs(GY.y)+Math.abs(GY.p)<1e-4) return; const k=Math.min(1,dt*8), ty=GY.on?GY.ty:0, tp=GY.on?GY.tp:0;
+// left/right: tilt the phone sideways and hold it there, and the view keeps turning that way (more tilt = faster; a small wobble does nothing)
+// up/down: tip it forward/back and the view follows by that much
+function gyroEv(e){ if(!GY.on||e.beta==null) return; if(GY.b0==null) GY.b0=e.beta;
+  const g=e.gamma||0, dz=8, a=Math.abs(g)<dz?0:Math.sign(g)*Math.min(1,(Math.abs(g)-dz)/27); GY.rate=a;
+  GY.tp=Math.max(-0.5,Math.min(0.5,(e.beta-GY.b0)*Math.PI/180)); }
+function gyroTick(dt){ if(GY.on&&GY.rate){ const r=(GY.rr=(GY.rr||0)+(GY.rate-(GY.rr||0))*Math.min(1,dt*6)); walk.yaw-=r*(tune.tiltSpd??70)*Math.PI/180*dt; dirty=true; } else GY.rr=0;
+  if(!GY.on&&Math.abs(GY.y)+Math.abs(GY.p)<1e-4) return; const k=Math.min(1,dt*8), ty=GY.on?GY.ty:0, tp=GY.on?GY.tp:0;
   const ny=GY.y+(ty-GY.y)*k, np=GY.p+(tp-GY.p)*k; if(Math.abs(ny-GY.y)+Math.abs(np-GY.p)>0.0004) dirty=true; GY.y=ny; GY.p=np; }
 async function gyroToggle(btn){ if(GY.on){ GY.on=false; btn.setAttribute('aria-pressed','false'); return; }
   try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){ if(await DeviceOrientationEvent.requestPermission()!=='granted') return; } }catch(e){ return; }
-  GY.a0=null; GY.on=true; btn.setAttribute('aria-pressed','true'); window.addEventListener('deviceorientation',gyroEv); }
+  GY.b0=null; GY.rate=0; GY.on=true; btn.setAttribute('aria-pressed','true'); window.addEventListener('deviceorientation',gyroEv); }
 function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
   camera.rotation.set(Math.max(-1.2,Math.min(1.2,walk.pitch+GY.p)),walk.yaw+GY.y,0,'YXZ'); // yaw 0 looks toward blender +y (three -z); GY = look around by turning the phone
