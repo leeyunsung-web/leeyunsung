@@ -1086,7 +1086,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   paintY:1.55,shadow:1.0,sculptOff:0,floor:0.2,fov:58,bob:false,wsel:'F',
   res:1,aa:2,pblur:1,
   rblur:0.5,sshadow:0.45,ao:0.6,bloom:0.25,vig:0.3,grain:0.2,weave:0.3,
-  people:3,portH:48,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,tapFill:0.5,helloY:0.12,bubY:0.18,bubS:1,
+  people:3,portH:60,figBlur:4,figUp:0.45,figNear:1,bots:true,joy:false,tapWalk:true,tapFill:0.5,helloY:0.12,bubY:0.18,bubS:1,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0, hallWall:'white',hallSky:'clear',pyHN:1.55,pyHS:1.55,pyHE:1.55};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
@@ -1702,7 +1702,7 @@ function unitOf(w){ const cap=w.caption||''; if(!/panels/i.test(cap)) return w;
   if(!u){ u={mesh:{position:new THREE.Vector3(),rotation:{y:0}},p:{w:0,h:0},pos:new THREE.Vector3(),caption:cap,members:mem}; UNITS.set(mem[0],u); }
   const bb=new THREE.Box3(); for(const o of mem) bb.expandByObject(o.mesh); bb.getCenter(u.mesh.position); u.pos.copy(u.mesh.position); u.mesh.rotation.y=mem[0].mesh.rotation.y;
   const sz=bb.getSize(new THREE.Vector3()); u.p.w=Math.max(sz.x,sz.z); u.p.h=sz.y; return u; }
-function workDist(w){ const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5;
+function workDist(w){ const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=(tune.tapFill??0.5)*(camera.aspect<1?0.72:1);
   return Math.max(1.4,w.p.h/(2*Math.tan(vf/2)*fill),w.p.w/(2*Math.tan(hf/2)*fill*1.15)); }
 // where a straight line from here to (tx,ty) first runs into a wall: null if it does not
 function wallStop(tx,ty){ const dx=tx-walk.x, dy=ty-walk.y, d=Math.hypot(dx,dy); if(d<0.3) return null; const n=Math.ceil(d/0.05);
@@ -1787,7 +1787,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   if(best.kind!=='work') lastWork=null; if(best.kind!=='sculpt') lastSculpt=null;
   if(best.kind==='work'&&(best.fromWall||best.fromFloor)&&lastWork&&unitOf(lastWork.w)===unitOf(best.w)&&Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<1.0) return; /* already looking at that work: a stray tap on the wall or floor around it does nothing */
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
-    const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
+    const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=(tune.tapFill??0.5)*(camera.aspect<1?0.72:1); // the work takes about half the screen
     const far=workDist(w), close=!TAPMODE&&!best.fromWall&&!best.fromFloor&&lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     const big=!close&&!fitsView(w); /* too big to see whole from here: step right back until it fits */
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
@@ -1947,7 +1947,7 @@ orbit.addEventListener('change',()=>{const p=camera.position; p.x=Math.max(MX0+0
 // loop
 // phones held upright (2026-11-07): the computer's view angle is set for a wide screen; on a tall screen the same setting saw only a narrow slit
 // and felt too close. Upright screens keep at least this much side-to-side view (degrees), so more of the room shows; wide screens are untouched
-function walkFov(){ const a=camera.aspect; if(!(a<1)) return tune.fov; const hf=(tune.portH??48)*Math.PI/180, v=2*Math.atan(Math.tan(hf/2)/a)*180/Math.PI; return Math.min(80,Math.max(tune.fov,v)); }
+function walkFov(){ const a=camera.aspect; if(!(a<1)) return tune.fov; const hf=(tune.portH??48)*Math.PI/180, v=2*Math.atan(Math.tan(hf/2)/a)*180/Math.PI; return Math.min(92,Math.max(tune.fov,v)); }
 function resize(){const r=stage.getBoundingClientRect(); if(!r.width) return; renderer.setSize(r.width,r.height,false); composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(r.width,r.height); camera.aspect=r.width/r.height; if(applyTune.live&&mode==='walk') camera.fov=walkFov(); camera.updateProjectionMatrix(); dirty=true;}
 new ResizeObserver(resize).observe(stage); resize();
 // on the homepage: open facing one wall head-on, a different wall each visit
