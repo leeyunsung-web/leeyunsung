@@ -868,7 +868,7 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
 { const gb=document.createElement('button'); gb.className='gyro'; gb.type='button'; gb.setAttribute('aria-pressed','false'); gb.setAttribute('aria-label','휴대폰을 움직여 둘러보기');
   gb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M3.5 9a9 9 0 0 0 0 6M20.5 9a9 9 0 0 1 0 6"/></svg>';
-  const fit=()=>{ gb.hidden=!(M3&&COARSE&&innerHeight>innerWidth); if(gb.hidden&&GY.on) gyroToggle(gb); }; fit(); addEventListener('resize',fit);
+  const fit=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; gb.hidden=!(M3&&COARSE&&(sw?sw.startsWith('portrait'):screen.height>screen.width)); /* the phone held upright (the page itself sits in a frame of any shape) */ if(gb.hidden&&GY.on) gyroToggle(gb); }; fit(); addEventListener('resize',fit); if(screen.orientation) screen.orientation.addEventListener('change',fit);
   gb.addEventListener('pointerdown',e=>e.stopPropagation()); gb.addEventListener('click',e=>{ e.stopPropagation(); gyroToggle(gb); }); stage.appendChild(gb); }
 const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
 const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 작품 앞에 서시면 그 작품 이야기를 들려 드릴게요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Stand in front of a work and I will tell you about it.'};
