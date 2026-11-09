@@ -869,19 +869,20 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The first visitor to arrive leads it (the server says who; the next one takes over when they leave). It walks over, greets,
 // and reads the finished work texts (data.json -> docent.json, nothing new is said) paragraph by paragraph for the work you face.
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
+const GYRO_UI=true; /* 2026-11-09: only the small button next to sound (윤성); no center hint. While it is on, the view is yours: no turning toward the work */
 const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null}; /* phone look-around state (declared before anything reads it) */
 { const gb=document.createElement('button'); gb.className='gyro'; gb.type='button'; gb.setAttribute('aria-pressed','false'); gb.setAttribute('aria-label','휴대폰을 움직여 둘러보기');
   gb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M3.5 9a9 9 0 0 0 0 6M20.5 9a9 9 0 0 1 0 6"/></svg>';
   const gh=document.createElement('button'); gh.className='gyroHint'; gh.type='button'; gh.setAttribute('aria-label','휴대폰을 움직여 둘러보기 켜기'); gh.hidden=true;
   gh.innerHTML='<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="4" width="7" height="16" rx="1.6"/><path d="M4 9l-2 3 2 3M20 9l2 3-2 3"/></svg>';
-  let hintDone=false; const hideHint=()=>{ hintDone=true; gh.hidden=true; };
+  let hintDone=true; const hideHint=()=>{ hintDone=true; gh.hidden=true; };
   gh.addEventListener('pointerdown',e=>e.stopPropagation()); gh.addEventListener('click',e=>{ e.stopPropagation(); hideHint(); if(!GY.on) gyroToggle(gb); }); stage.appendChild(gh);
   stage.addEventListener('pointerdown',()=>{ if(!gh.hidden) hideHint(); }); /* any other touch: the hint steps aside (the corner button stays) */
-  const fit=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; gb.hidden=!(M3&&COARSE&&(sw?sw.startsWith('portrait'):screen.height>screen.width)); /* the phone held upright (the page itself sits in a frame of any shape) */ if(gb.hidden&&GY.on) gyroToggle(gb); gh.hidden=gb.hidden||hintDone||GY.on; }; /* center hint: blinks until tapped */ fit(); addEventListener('resize',fit); if(screen.orientation) screen.orientation.addEventListener('change',fit);
+  const fit=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; gb.hidden=!(GYRO_UI&&M3&&COARSE&&(sw?sw.startsWith('portrait'):screen.height>screen.width)); /* the phone held upright (the page itself sits in a frame of any shape) */ if(gb.hidden&&GY.on) gyroToggle(gb); gh.hidden=gb.hidden||hintDone||GY.on; }; /* center hint: blinks until tapped */ fit(); addEventListener('resize',fit); if(screen.orientation) screen.orientation.addEventListener('change',fit);
   gb.addEventListener('pointerdown',e=>e.stopPropagation()); gb.addEventListener('click',e=>{ e.stopPropagation(); gyroToggle(gb); }); stage.appendChild(gb); }
 const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
-const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 작품 앞에 서시면 그 작품 이야기를 들려 드릴게요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Stand in front of a work and I will tell you about it.'};
-const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
+const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 둘러보시는 방법을 잠깐 알려 드릴게요. 보고 싶은 작품을 누르시면 그 앞으로 걸어갑니다. 바닥을 누르면 그곳으로 이동하고, 화면을 끌면 주위를 둘러보실 수 있어요. 작품 설명을 도와드릴까요?',en:'Hello, and welcome to the Lee Yunsung exhibition. Let me show you how to look around. Tap a work and you will walk up to it. Tap the floor to move there, and drag the screen to look around. Would you like me to tell you about the works?'};
+const D={tour:null,lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
 function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/Art Poster|^Book|· ₩/.test(c)) return '';
   if(/^Torso Sculpture/.test(t)) return 'torso-sculpture';
@@ -926,14 +927,17 @@ function docLead(dt,now){
   // talk: greet once, then the work you face; a paragraph is finished before moving on; each series remembers where it stopped
   if(D.i===-3&&(now-D.t0)/1000>=D.d) docAnswer(false); /* no answer: carry on */
   const e=(now-D.t0)/1000, talking=D.i>-2&&e<D.d;
-  if(!D.greeted){ if(me<2.6){ D.greeted=true; docStart('',-1,now); } }
+  if(D.i===-4&&(now-D.t0)/1000>=D.d) docAnswer(false); /* no answer to the welcome: stay quiet */
+  if(!D.greeted){ const dd=D.tx!=null?Math.hypot(D.tx-D.x,D.ty-D.y):0; if(me<1.9&&dd<0.3){ D.greeted=true; docStart('',-1,now); } } /* only once it has come up beside you and stopped */
+  else if(D.i===-1&&!talking){ D.askCap='__tour'; D.back=null; docStart('q',-4,now); D.d=40; docAskShow(true); }
+  else if(D.tour!==true){}
   else if(!talking){
-    if(D.i>-2){ if(D.s&&D.s.slice(0,2)!=='w-') D.prog[D.s]=D.i+1; D.i=-2; D.pause=now+1400; D.sent=0; }
+    if(D.i>-2){ if(D.s&&D.s.slice(0,2)!=='w-') D.prog[D.s]=D.i+1; D.i=-2; D.pause=now+3500; D.sent=0; } /* a breath between paragraphs */
     const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; } if(s!==D.want) D.want=s;
     const wi=DOCT&&DOCT.wl?DOCT.wl.indexOf(lastCap):-1;
-    if(wi>=0&&!D.intro[lastCap]&&now>D.pause&&now-D.wantT>1200&&me<3.2){ D.intro[lastCap]=1; docStart('w-'+wi,0,now); } /* first the work in front of you, then the series text */
-    else if(s&&now>D.pause&&now-D.wantT>1200&&me<3.2&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
-  else if(D.i!==-3){ const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; }
+    if(wi>=0&&!D.intro[lastCap]&&now>D.pause&&now-D.wantT>2500&&me<2.4){ D.intro[lastCap]=1; docStart('w-'+wi,0,now); } /* first the work in front of you, then the series text */
+    else if(s&&now>D.pause&&now-D.wantT>2500&&me<2.4&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
+  else if(D.i>=0){ const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; }
     if(s&&D.s&&s!==docBase(D.s)&&now-D.wantT>1500&&!D.asked[lastCap]){ D.asked[lastCap]=1; D.back={s:D.s,i:D.i}; D.askCap=lastCap; docStart('q',-3,now); D.d=30; docAskShow(true); } }
   else if(lastCap!==D.askCap&&docSeries(lastCap)===docBase(D.back&&D.back.s)){ docAnswer(false); } /* walked back to the earlier work: carry on */
   // tell the room (on change at once; position at most ~7 times a second while moving)
@@ -946,6 +950,7 @@ const dsub=document.createElement('div'); dsub.className='dsub'; dsub.style.opac
 const docAsk=document.createElement('div'); docAsk.className='dask'; docAsk.hidden=true; docAsk.innerHTML='<button data-y="1"></button><button data-y="0"></button>'; stage.appendChild(docAsk);
 function docAskShow(on){ docAsk.hidden=!on; if(!on) return; const ko=GB_LANG==='ko'; docAsk.children[0].textContent=ko?'네':'Yes'; docAsk.children[1].textContent=ko?'아니요':'No, thanks'; }
 function docAnswer(yes){ docAskShow(false); const now=performance.now(); const c=D.askCap, b=D.back; D.back=null;
+  if(c==='__tour'){ D.askCap=''; D.tour=!!yes; D.i=-2; D.pause=now+1500; D.wantT=now; D.sent=0; return; }
   if(yes){ const wi=DOCT.wl.indexOf(c); D.intro[c]=1; if(wi>=0) docStart('w-'+wi,0,now); else D.i=-2; }
   else if(b){ docStart(b.s,b.i,now); } else D.i=-2; D.sent=0; }
 docAsk.addEventListener('pointerdown',e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(b) docAnswer(b.dataset.y==='1'); });
@@ -959,7 +964,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p) return; const e=(now-D.t
   const sents=docSplit(docText(D.s,D.i,docLang())); if(!sents.length) return; const W=sents.map(x=>x.length+12), tot=W.reduce((a,b)=>a+b,0);
   let acc=0, k=0; for(;k<sents.length-1;k++){ acc+=W[k]/tot*D.d; if(e<acc) break; } if(k===sents.length-1) acc=D.d;
   const key=D.s+'/'+D.i+'/'+k; if(key===D.key) return; D.key=key;
-  logLine(DOCID,sents[k]); dsub.textContent=sents[k]; { const sr=stage.getBoundingClientRect(), cr=capEl.getBoundingClientRect(); dsub.style.bottom=(capEl.textContent&&cr.height?sr.bottom-cr.top+12:72)+'px'; } dsub.style.opacity='1'; clearTimeout(dsub._t); dsub._t=setTimeout(()=>dsub.style.opacity='0',(acc-e)*1000+300); return; /* subtitle above the caption + log; no bubble */
+  if(!COARSE) logLine(DOCID,sents[k]); /* phones: the subtitle only, the top-left log stays for people */ dsub.textContent=sents[k]; { const sr=stage.getBoundingClientRect(), cr=capEl.getBoundingClientRect(); dsub.style.bottom=(capEl.textContent&&cr.height?sr.bottom-cr.top+12:72)+'px'; } dsub.style.opacity='1'; clearTimeout(dsub._t); dsub._t=setTimeout(()=>dsub.style.opacity='0',(acc-e)*1000+300); return; /* subtitle above the caption + log; no bubble */
   if(!p.bub){ const el=document.createElement('div'); el.className='bub doc'; stage.appendChild(el); p.bub={el,t:0}; }
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
@@ -1013,7 +1018,7 @@ addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
 let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
   if(document.hidden) roomHideT=setTimeout(()=>{ if(!document.hidden||!room) return; room.onclose=null; try{ room.close(); }catch(e){} room=null; roomMe=null; for(const id of [...PEERS.keys()]) if(!PEERS.get(id).bot) removePeer(id); online=1; showOnline(); },60000); });
 const onlineEl=document.getElementById('online'), helloEl=document.getElementById('hello'), sayEl=document.getElementById('say'), sayIn=document.getElementById('sayIn'), sayMine=document.getElementById('sayMine');
-window.__tapWork=i=>{const w=works[i], v=w.mesh.position.clone().project(camera), r=canvas.getBoundingClientRect(); const x=(v.x+1)/2*r.width+r.left, y=(1-v.y)/2*r.height+r.top; tapMove(x,y); return {x,y,cap:w.caption.slice(0,40)};}; // for checks
+window.__tapWork=i=>{const w=works[i], v=w.mesh.position.clone().project(camera), r=canvas.getBoundingClientRect(); const x=(v.x+1)/2*r.width+r.left, y=(1-v.y)/2*r.height+r.top; tapMove(x,y); return {x,y,cap:w.caption.slice(0,40),path:autoGo&&autoGo.path&&autoGo.path.map(p=>p.map(v=>+v.toFixed(2))),g:autoGo&&[+(autoGo.x||0).toFixed(2),+(autoGo.y||0).toFixed(2),!!autoGo.fit,!!autoGo.slide,autoGo.near]};}; // for checks
 window.__sculpts=()=>sculptures().map(([n,g])=>{ const c=new THREE.Box3().setFromObject(g).getCenter(new THREE.Vector3()); return [n,c.x,-c.z]; });
 window.__tapSculptMesh=n=>{const g=sculptures().find(q=>q[0]===n); if(!g) return null; let m=null; g[1].traverse(o=>{ if(!m&&o.isMesh&&o.visible&&o.geometry&&o.geometry.attributes.position&&o.geometry.attributes.position.count>50) m=o; }); if(!m) return null; m.geometry.computeBoundingBox(); const v=m.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(m.matrixWorld).project(camera), r=canvas.getBoundingClientRect(); tapMove((v.x+1)/2*r.width+r.left,(1-v.y)/2*r.height+r.top); return true;};
 window.__tapSculpt=n=>{const g=sculptures().find(q=>q[0]===n); if(!g) return null; const bb=new THREE.Box3().setFromObject(g[1]), v=bb.getCenter(new THREE.Vector3()).project(camera), r=canvas.getBoundingClientRect(); tapMove((v.x+1)/2*r.width+r.left,(1-v.y)/2*r.height+r.top); return true;}; // for checks
@@ -1031,7 +1036,7 @@ window.__workRects=()=>{ const r=canvas.getBoundingClientRect(), out=[]; for(con
 window.__gaze=(x,y,dx,dy)=>roomGaze(x,y,dx,dy);
 window.__ptNdc=(x,y)=>{ const g=sculptures().map(q=>q[1]).find(gg=>{ const c=new THREE.Box3().setFromObject(gg).getCenter(new THREE.Vector3()); return Math.hypot(c.x-x,-c.z-y)<0.05; }); const c=g?new THREE.Box3().setFromObject(g).getCenter(new THREE.Vector3()):new THREE.Vector3(x,1.2,-y); const v=c.project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2)]; };
 window.__viewReach=()=>{ const dx=-Math.sin(walk.yaw), dy=Math.cos(walk.yaw); let t=0.1; while(t<15&&okPos(walk.x+dx*t,walk.y+dy*t)) t+=0.1; return +t.toFixed(1); };
-window.__sim=(n)=>{ const pts=[[walk.x,walk.y]], yaws=[walk.yaw]; window.__simY=yaws; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); pts.push([walk.x,walk.y]); yaws.push(walk.yaw); } return {steps:k,pts,go:!!autoGo}; };
+window.__sim=(n)=>{ const pts=[[walk.x,walk.y]], yaws=[walk.yaw]; window.__simY=yaws; let k=0; for(;k<n&&autoGo;k++){ autoStep(1/30); placeWalkCam(); camera.updateMatrixWorld(); pts.push([walk.x,walk.y]); yaws.push(walk.yaw); } return {steps:k,pts,go:!!autoGo}; };
 window.__floorTap=(x,y)=>{ autoGo=null; lastWork=null; goTo(x,y,null,null); return autoGo&&{x:autoGo.x,y:autoGo.y,path:autoGo.path}; };
 window.__tapAt=(x,y)=>{ const xy=window.__floorScreen(x,y); tapMove(xy.x,xy.y); const g=autoGo; return g&&{x:g.x,y:g.y,yaw:g.yaw,path:g.path}; };
 window.__workPos=i=>{ const m=works[i].mesh; return {x:m.position.x,y:-m.position.z,nx:Math.sin(m.rotation.y),ny:-Math.cos(m.rotation.y),t:(works[i].caption||'').split('|')[0]}; };
@@ -1665,6 +1670,13 @@ function pathCore(ax,ay,bx,by){
   // straighten: skip every corner you can see past
   const out=[]; let px=ax,py=ay,k=0; while(k<pts.length){ let far=k; for(let q=pts.length-1;q>k;q--) if(lineWide(px,py,pts[q][0],pts[q][1])){ far=q; break; } out.push(pts[far]); [px,py]=pts[far]; k=far+1; }
   return out; }
+// a cleaner way in (2026-11-09): the last stretch comes in square to the work, so you arrive already facing it (no turning on the spot at the end).
+// A point straight out in front of the work is slipped in before the stop when the room allows; the path-following rounds the corner into a curve.
+function approach(g,s,x,y){ if(!g||!g.path||!g.path.length) return; const ux=s[0]-x, uy=s[1]-y, ul=Math.hypot(ux,uy)||1, nx=ux/ul, ny=uy/ul;
+  const prev=g.path.length>1?g.path[g.path.length-2]:[walk.x,walk.y], left=Math.hypot(s[0]-prev[0],s[1]-prev[1]); if(left<1.2) return;
+  const cos=((s[0]-prev[0])*-nx+(s[1]-prev[1])*-ny)/left; if(cos>0.94) return; /* already coming in square */
+  const pn=(prev[0]-s[0])*nx+(prev[1]-s[1])*ny; /* never put the turn-in point further back than where you come from: no walking past and back */ for(const k of [Math.min(1.6,left*0.45),1.0,0.6]){ if(k>pn-0.2) continue; const px=s[0]+nx*k, py=s[1]+ny*k;
+    if(canWalk(px,py)&&lineClear(prev[0],prev[1],px,py)&&lineClear(px,py,s[0],s[1])){ g.path.splice(g.path.length-1,0,[px,py]); return; } } }
 function goTo(x,y,yaw,pitch){ const path=Math.hypot(x-walk.x,y-walk.y)<5&&lineClear(walk.x,walk.y,x,y)?[[x,y]]:findPath(walk.x,walk.y,x,y); if(!path||!path.length) return false; const e=path[path.length-1]; autoGo={x:e[0],y:e[1],path,yaw,pitch};
   if(yaw==null){ const pv=path.length>1?path[path.length-2]:[walk.x,walk.y]; if(Math.hypot(e[0]-pv[0],e[1]-pv[1])>0.3){ const ev=endView(e[0],e[1],lookYaw(e[0]-pv[0],e[1]-pv[1])); if(ev==='keep') autoGo.keep=true; else if(ev!=null) autoGo.endYaw=ev; } } return true; }
 // can the work be seen from here, or does a sculpture stand in front of it?
@@ -1781,6 +1793,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
     { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const cw=window.capWork, wallOfU=u=>u.wall||(u.members&&u.members[0].wall), fromNext=!!cw&&cw!==w&&wallOfU(cw)===wallOfU(w); /* a caption is showing and you tap another work on that same wall: just slide sideways */
       if(!close&&fromNext&&dw>0.6&&wallStop(x,y)==null){ d0=dw; slid=true; } } /* next work along the same wall: keep your distance, just slide sideways */
+    if(!close) d0=Math.max(d0,fitDist(w)); /* too big: pick, up front, a spot far enough back that it fits, so you never walk in and back out again */
     let s=standAt(x,y,Math.min(d0,8),nx,ny); if(!s) return;
     let yaw=lookYaw(-nx,-ny);
     const roomy=(sx,sy)=>[[0,0],[0.3,0],[-0.3,0],[0,0.3],[0,-0.3]].every(([ex,ey])=>canWalk(sx+ex,sy+ey));
@@ -1789,7 +1802,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
       for(let d=slid?Math.min(D,Math.hypot(walk.x-x,walk.y-y)):D; d>=0.9; d-=0.2) for(const o of [0,0.25,-0.25,0.5,-0.5,0.75,-0.75,1.0,-1.0,1.3,-1.3]){ const sx=x+nx*d+tx*o, sy=y+ny*d+ty*o, sc=Math.abs(o)*1.2+(D-d)*0.5;
         if(sc>=ps||!roomy(sx,sy)||!workSeen(w,sx,sy,close)) continue; ps=sc; pick=[sx,sy]; } /* keep a little room around you (not pressed against a pedestal) */
       if(pick){ s=pick; yaw=lookYaw(x-s[0],y-s[1]); } }
-    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ if(!close&&!slid) autoGo.fit={w,nx,ny,back:0,big}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; hiWant=w; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
+    if(goTo(s[0],s[1],yaw,Math.atan2(m.position.y-EYE,Math.hypot(s[0]-x,s[1]-y)))){ approach(autoGo,s,x,y); if(!close&&!slid) autoGo.fit={w,nx,ny,back:0,big}; autoGo.slide=slid; autoGo.face=[x,y]; autoGo.cy=m.position.y; hiWant=w; lastWork={w,s,close}; GT(close?'g_close':'g_click',GT.title(w.caption)); } }
   else if(best.kind==='sculpt'){ const c=best.bb.getCenter(new THREE.Vector3()), x=c.x, y=-c.z, top=c.y; // aim at the middle of the work itself
     let dx=walk.x-x, dy=walk.y-y, l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; const vf=camera.fov*Math.PI/180, sz=Math.max(best.bb.max.y-best.bb.min.y,best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z);
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
@@ -1840,9 +1853,9 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
     else g.hd=Math.atan2(mvy,mvx);
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mvx*st,walk.y+mvy*st);
     const la2=lookAhead(g,1.0), lax=la2[0]-walk.x, lay=la2[1]-walk.y, trav=Math.hypot(lax,lay)>0.25?lookYaw(lax,lay):(g.hd!=null?lookYaw(Math.cos(g.hd),Math.sin(g.hd)):walk.yaw), tgtY=g.yaw!=null?g.yaw:g.endYaw; let look;
-    if(g.v2) look=rem>0.25?walk.yaw:(g.yaw??walk.yaw); /* version 2: the view stays where you had it while walking; it turns to the work only on arrival */
+    if(GY.on) look=walk.yaw; else if(g.v2) look=rem>0.25?walk.yaw:(g.yaw??walk.yaw); /* version 2: the view stays where you had it while walking; it turns to the work only on arrival */
     else if(tgtY==null) look=trav; else if(g.slide) look=g.yaw; else if(g.near) look=g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):g.yaw;
-    else { const tg=g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):tgtY, u=Math.max(0,Math.min(1,1-(rem-0.3)/3.2)), w=u*u*(3-2*u); look=trav+w*Math.atan2(Math.sin(tg-trav),Math.cos(tg-trav)); } /* over the last ~3 m the head eases from where you walk toward where you will look, so you turn while still walking rather than walk then turn */ /* sliding along a wall: keep facing the wall square on the whole way */ const hp=g.path&&g.path[0], fin=tgtY!=null&&(g.near||rem<3.5); if(g.v2){} else if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else turn(look,fin?0.75:0.6); /* always keep turning smoothly (it used to pause near each bend of the path, which felt like a jolt) */ if(g.back&&g.path&&!g.path[0][2]) g.back=false;
+    else { const tg=g.face&&rem>0.4?lookYaw(g.face[0]-walk.x,g.face[1]-walk.y):tgtY, u=Math.max(0,Math.min(1,1-(rem-0.3)/3.2)), w=u*u*(3-2*u); look=trav+w*Math.atan2(Math.sin(tg-trav),Math.cos(tg-trav)); } /* over the last ~3 m the head eases from where you walk toward where you will look, so you turn while still walking rather than walk then turn */ /* sliding along a wall: keep facing the wall square on the whole way */ const hp=g.path&&g.path[0], fin=tgtY!=null&&(g.near||rem<3.5); if(g.v2||GY.on){} else if(hp&&hp.length>4&&!fin) look=lookYaw(hp[3]-walk.x,hp[4]-walk.y); else if(g.room&&!fin){ look=lookYaw(g.room.c[0]-walk.x,g.room.c[1]-walk.y); g.room.left-=st; if(g.room.left<=0) g.room=null; } if(g.back&&g.path&&g.path[0][2]){} else turn(look,fin?0.75:0.6); /* always keep turning smoothly (it used to pause near each bend of the path, which felt like a jolt) */ if(g.back&&g.path&&!g.path[0][2]) g.back=false;
     if(g.v>0.2&&Math.hypot(walk.x-ox,walk.y-oy)<st*0.2){ // blocked: back off along the way you came, then find a new way
       g.stuck=(g.stuck||0)+1; if(g.stuck>2){ autoGo=null; return true; }
       const bx=walk.x-dx/d*0.45, by=walk.y-dy/d*0.45, back=canWalk(bx,by)?[bx,by,1]:null, from=back||[walk.x,walk.y], np=findPath(from[0],from[1],g.x,g.y);
@@ -1851,12 +1864,16 @@ function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   if(g.then&&!g.orbit){ const o=g.then; autoGo={orbit:{x:o.x,y:o.y,r:Math.max(o.r,Math.hypot(walk.x-o.x,walk.y-o.y)),a:Math.atan2(walk.y-o.y,walk.x-o.x),left:Math.PI*2,top:o.top}}; return true; }
   if(g.face&&g.cy!=null&&!g.aimed){ g.aimed=1; const fx=g.face[0]-walk.x, fy=g.face[1]-walk.y; if(Math.hypot(fx,fy)>0.3){ g.yaw=lookYaw(fx,fy); g.pitch=Math.atan2(g.cy-EYE,Math.hypot(fx,fy)); } }
   if(g.yaw==null&&!g.looked){ g.looked=1; const a=g.endYaw!=null?g.endYaw:g.keep?null:openYaw(walk.x,walk.y,walk.yaw); if(a!=null){ g.yaw=a; g.pitch=-0.02; } else if(Math.abs(g.wv||0)>0.02) g.yaw=walk.yaw+(g.wv||0)*0.7; /* still turning a little: let it settle instead of stopping dead */ }
-  if(g.yaw!=null){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
-  if(g.fit&&g.fit.back<(g.fit.big?4:0.85)&&!fitsView(g.fit.w)){ const f=g.fit, bx=walk.x+f.nx*0.3, by=walk.y+f.ny*0.3; // too big for the screen: ease back a little
-    if(canWalk(bx,by)&&workSeen(f.w,bx,by)){ f.back+=0.3; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); return true; } }
+  if(g.yaw!=null&&!GY.on){ const left=turn(g.yaw); if(g.pitch!=null) tilt(g.pitch,2); if(left>0.01||Math.abs(g.wv||0)>0.02) return true; }
+  if(g.fit&&g.fit.back<(g.fit.big?4:0.85)&&!fitsView(g.fit.w)){ const f=g.fit, m0=f.w.mesh, D=Math.hypot(walk.x-m0.position.x,walk.y+m0.position.z), lim=(f.big?4:0.85)-f.back; let k=Math.min(lim,Math.max(0.3,D*(fitOver(f.w)-1)+0.15)), bx, by; /* too big for the screen: step back once, the whole needed distance */
+    for(;k>=0.3;k-=0.3){ bx=walk.x+f.nx*k; by=walk.y+f.ny*k; if(canWalk(bx,by)&&workSeen(f.w,bx,by)) break; }
+    if(k>=0.3){ f.back=9; g.x=bx; g.y=by; g.path=[[bx,by]]; g.near=true; g.v=0; const m=f.w.mesh; g.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); return true; } }
   autoGo=null; return true; }
 const _fb=new THREE.Box3(), _fv=new THREE.Vector3();
-function fitsView(w){ _fb.makeEmpty(); for(const o of (w.members||[w])) _fb.expandByObject(o.mesh); for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); if(Math.abs(_fv.x)>0.93||Math.abs(_fv.y)>0.9) return false; } return true; }
+function fitDist(w){ _fb.makeEmpty(); for(const o of (w.members||[w])) _fb.expandByObject(o.mesh); const sx=_fb.max.x-_fb.min.x, sz=_fb.max.z-_fb.min.z, hw=Math.max(sx,sz)/2, hh=(_fb.max.y-_fb.min.y)/2, dep=Math.min(sx,sz)/2, tv=Math.tan(camera.fov*Math.PI/360), th=tv*camera.aspect;
+  return Math.max(hh/(tv*0.88),hw/(th*0.9))+dep+0.1; }
+function fitsView(w){ return fitOver(w)<=1; }
+function fitOver(w){ _fb.makeEmpty(); for(const o of (w.members||[w])) _fb.expandByObject(o.mesh); let r=0; for(let i=0;i<8;i++){ _fv.set(i&1?_fb.max.x:_fb.min.x,i&2?_fb.max.y:_fb.min.y,i&4?_fb.max.z:_fb.min.z).project(camera); r=Math.max(r,Math.abs(_fv.x)/0.93,Math.abs(_fv.y)/0.9); } return r; }
 // touch joystick
 const joy=document.getElementById('joy'), joyK=document.getElementById('joyK'); let jv={x:0,y:0}, jid=null;
 if(matchMedia('(pointer:coarse)').matches) joy.hidden=!(typeof tune!=='undefined'&&tune.joy);
