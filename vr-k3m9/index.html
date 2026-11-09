@@ -54,6 +54,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chatlog div b{font-weight:600;margin-right:6px;color:#b9b2a5}.chatlog div.doc b{color:#f0c264}
 .chatlog div.out{opacity:0;transform:translateY(-10px)}
 .online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.gyro{position:absolute;right:48px;top:10px;z-index:3;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(20,19,17,.42);color:#f3f0ea;display:grid;place-items:center;cursor:pointer;opacity:.75}.gyro[aria-pressed="true"]{opacity:1;background:rgba(20,19,17,.62)}.gyro[hidden]{display:none}
 .snd{position:absolute;right:12px;top:10px;z-index:3;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(20,19,17,.42);color:#f3f0ea;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.snd svg{width:16px;height:16px}.snd .x{display:none}.snd[aria-pressed="false"] .w{display:none}.snd[aria-pressed="false"] .x{display:inline}
 .online::before{content:"";position:absolute;left:10px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7fd18b}
 .hello{position:absolute;z-index:4;transform:translate(-50%,-100%);font:500 calc(12px * var(--bs,1)) var(--ui);color:#2a2824;background:rgba(250,248,243,.92);border:0;border-radius:999px;padding:calc(5px * var(--bs,1)) calc(12px * var(--bs,1));cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
@@ -865,6 +866,10 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The first visitor to arrive leads it (the server says who; the next one takes over when they leave). It walks over, greets,
 // and reads the finished work texts (data.json -> docent.json, nothing new is said) paragraph by paragraph for the work you face.
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
+{ const gb=document.createElement('button'); gb.className='gyro'; gb.type='button'; gb.setAttribute('aria-pressed','false'); gb.setAttribute('aria-label','휴대폰을 움직여 둘러보기');
+  gb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M3.5 9a9 9 0 0 0 0 6M20.5 9a9 9 0 0 1 0 6"/></svg>';
+  const fit=()=>{ gb.hidden=!(M3&&COARSE&&innerHeight>innerWidth); if(gb.hidden&&GY.on) gyroToggle(gb); }; fit(); addEventListener('resize',fit);
+  gb.addEventListener('pointerdown',e=>e.stopPropagation()); gb.addEventListener('click',e=>{ e.stopPropagation(); gyroToggle(gb); }); stage.appendChild(gb); }
 const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
 const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 작품 앞에 서시면 그 작품 이야기를 들려 드릴게요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Stand in front of a work and I will tell you about it.'};
 const D={lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
@@ -1326,9 +1331,20 @@ function collide(nx,ny){
   return [nx,ny];
 }
 let bobT=0, bobA=0;
+// look around by turning the phone (2026-11-09, master preview, phones held upright): turning the phone adds to the view on top of the usual
+// tap-to-walk and auto gaze; shakes are smoothed, up/down is limited, and a frame is drawn only when the phone actually moves
+const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null};
+function gyroEv(e){ if(!GY.on||e.alpha==null) return; if(GY.a0==null){ GY.a0=e.alpha; GY.b0=e.beta; }
+  let da=e.alpha-GY.a0; if(da>180) da-=360; if(da<-180) da+=360;
+  GY.ty=da*Math.PI/180; GY.tp=Math.max(-0.5,Math.min(0.5,(e.beta-GY.b0)*Math.PI/180)); }
+function gyroTick(dt){ if(!GY.on&&Math.abs(GY.y)+Math.abs(GY.p)<1e-4) return; const k=Math.min(1,dt*8), ty=GY.on?GY.ty:0, tp=GY.on?GY.tp:0;
+  const ny=GY.y+(ty-GY.y)*k, np=GY.p+(tp-GY.p)*k; if(Math.abs(ny-GY.y)+Math.abs(np-GY.p)>0.0004) dirty=true; GY.y=ny; GY.p=np; }
+async function gyroToggle(btn){ if(GY.on){ GY.on=false; btn.setAttribute('aria-pressed','false'); return; }
+  try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){ if(await DeviceOrientationEvent.requestPermission()!=='granted') return; } }catch(e){ return; }
+  GY.a0=null; GY.on=true; btn.setAttribute('aria-pressed','true'); window.addEventListener('deviceorientation',gyroEv); }
 function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
-  camera.rotation.set(walk.pitch,walk.yaw,0,'YXZ'); // yaw 0 looks toward blender +y (three -z)
+  camera.rotation.set(Math.max(-1.2,Math.min(1.2,walk.pitch+GY.p)),walk.yaw+GY.y,0,'YXZ'); // yaw 0 looks toward blender +y (three -z); GY = look around by turning the phone
 }
 const VIEWS={guest:{x:15.75,y:-6.1,yaw:-Math.PI/2,pitch:-0.3},mobile:{x:9.1,y:-2.7,yaw:0,pitch:0.16},room2:{x:5.4,y:-5.9,yaw:-Math.PI/2+0.35,pitch:-0.04},entry:{x:0,y:-6.2,yaw:0,pitch:-0.04},medusa:{x:0,y:3.0,yaw:0,pitch:-0.12},torso:{x:0.7,y:-2.0,yaw:Math.PI-0.44,pitch:-0.2}};
 if(L.m3){ VIEWS.guest.x=(L.door2.cx??L.door2.x1)+(L.door2.len||4)-1.95; VIEWS.guest.y=(L.door2.y0+L.door2.y1)/2; }
@@ -1957,7 +1973,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>(now-lookT<400?900:250)){drawMap.t=now; drawMap();} /* the control window's floor plan: redrawing it often while you walk or turn made the gallery stutter, so only now and then */}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
-  botTick(dt); docTick(dt,now); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
+  { const d0=dirty; dirty=false; gyroTick(dt); if(dirty&&mode==='walk') placeWalkCam(); dirty=dirty||d0; } botTick(dt); docTick(dt,now); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
   if(tone.running&&mode==='walk'){ const pl=[]; for(const p of PEERS.values()) pl.push({id:p.id,x:p.pos.x,y:p.pos.y,room:roomAt(p.pos.x,p.pos.y)}); tone.tick({room:roomAt(walk.x,walk.y),x:walk.x,y:walk.y,yaw:walk.yaw,peers:pl,mobile:mobXY}); }
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
