@@ -1607,9 +1607,9 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
   (function tick(now){ requestAnimationFrame(tick); if(st===99||now-last<100) return; last=now; if(mode!=='walk') return;
     const lo=document.getElementById('load'); if(st===0){ if(lo&&!lo.hidden) return; if(!t0){ t0=now; return; } if(now-t0<3500) return; TUT.on=true; next(1,now); }
     const e=(now-t0)/1000; if(st>=1&&st<=3&&!shown&&e<1.2) return; /* a short breath before each demo */
-    if(st===1){ if(!shown){ shown=true; show('sp',T.sp); go(1); } else if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; } if(TUT.f>0.5) next(2,now); else if(e>30) next(2,now); }
-    else if(st===2){ if(!shown){ shown=true; show('pn',T.pn); go(-1); } else if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; } if(TUT.b>0.4) next(3,now); else if(e>30) next(3,now); }
-    else if(st===3){ if(!shown){ shown=true; show('dr',T.dr); y0=walk.yaw; look(); t0=now; return; } if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; y0=walk.yaw; } if(!autoGo&&tried&&Math.abs(Math.atan2(Math.sin(walk.yaw-y0),Math.cos(walk.yaw-y0)))>0.3) next(4,now); else if(e>30) next(4,now); }
+    if(st===1){ if(!shown){ shown=true; show('sp',T.sp); go(1); } else if(e>4.2) next(2,now); } /* explain only: each movement is shown once, no "now you try" */
+    else if(st===2){ if(!shown){ shown=true; show('pn',T.pn); go(-1); } else if(e>4.2) next(3,now); }
+    else if(st===3){ if(!shown){ shown=true; show('dr',T.dr); look(); } else if(e>3.8) next(4,now); }
     else if(st===4){ if(!shown){ shown=true; show('',T.tap); lastWork=null; } const p=pick(); if(p){ const r=canvas.getBoundingClientRect(); ring.style.left=(p[0]+1)/2*r.width+r.left-stage.getBoundingClientRect().left+'px'; ring.style.top=(1-p[1])/2*r.height+r.top-stage.getBoundingClientRect().top+'px'; ring.hidden=false; } else{ ring.hidden=true; if(!turned&&e>2.5){ turned=true; tt.textContent=T.find; } } /* nothing in view: say so, never turn the view for you */
       if(lastWork&&lastWork.w){ ring.hidden=true; el.hidden=true; next(5,now); } else if(e>90) fin(true); }
     else if(st===5){ if(autoGo&&e<20) return; if(!(D.lead&&DOCT&&lastCap)){ if(e>6) fin(false); return; } D.askCap=lastCap; D.back=null; D.tutAsk=1; docAnswer(true); fin(false); } /* no question: the guide just starts on that work */ })(0);
