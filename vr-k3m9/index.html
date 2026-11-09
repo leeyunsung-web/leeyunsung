@@ -1719,7 +1719,8 @@ let TAPMODE=null;
 // back / sideways (like arrow keys); tap a work or sculpture to walk to it; double-tap a work to zoom in (tap again to zoom out);
 // double-tap a sculpture to walk round it; turning the phone looks around (the blinking button in the middle switches that on)
 const V2={hold:null,last:null,zoom:false,zt:1,z:1,timer:0};
-const v2On=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; return M3&&COARSE&&mode==='walk'&&(sw?sw.startsWith('portrait'):screen.height>screen.width); };
+const V2_ON=false; /* 2026-11-09: back to version 1 (윤성: "전이 낫다"); version 2 code kept but switched off */
+const v2On=()=>{ if(!V2_ON) return false; const sw=(screen.orientation&&screen.orientation.type)||''; return M3&&COARSE&&mode==='walk'&&(sw?sw.startsWith('portrait'):screen.height>screen.width); };
 function v2Edge(x,y){ const r=canvas.getBoundingClientRect(), u=(x-r.left)/r.width, v=(y-r.top)/r.height, b=0.2;
   if(v<b) return [1,0]; if(v>1-b) return [-1,0]; if(u<b) return [0,-1]; if(u>1-b) return [0,1]; return null; } // [forward, right]
 function v2Pick(x,y){ const r=canvas.getBoundingClientRect(); _n2.set((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
