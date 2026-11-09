@@ -931,7 +931,7 @@ function docLead(dt,now){
   const e=(now-D.t0)/1000, talking=D.i>-2&&e<D.d;
   if(D.i===-4&&(now-D.t0)/1000>=D.d) docAnswer(false); /* no answer to the welcome: stay quiet */
   if(!D.greeted){ const dd=D.tx!=null?Math.hypot(D.tx-D.x,D.ty-D.y):0; if(me<1.9&&dd<0.3){ D.greeted=true; docStart('',-1,now); } } /* only once it has come up beside you and stopped */
-  else if(D.i===-1&&!talking){ D.askCap='__tour'; D.back=null; docStart('q',-4,now); D.d=40; docAskShow(true); }
+  else if(D.i===-1&&!talking){ D.tour=true; D.i=-2; D.pause=now+1500; D.wantT=now; D.sent=0; } /* welcome done: go on with the works, no question */
   else if(D.tour!==true){}
   else if(!talking){
     if(D.i>-2){ if(D.s&&D.s.slice(0,2)!=='w-') D.prog[D.s]=D.i+1; D.i=-2; D.pause=now+3500; D.sent=0; } /* a breath between paragraphs */
@@ -1588,12 +1588,12 @@ canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) 
   [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); lastWork=null; dirty=true; });
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
 // phones, first visit: a short hands-on tour — spread / pinch / drag are shown moving the camera, then tried by you; then touch a work and the docent offers to talk about it
-(function(){ let done=false; try{ done=localStorage.getItem('lysTutDone')==='1'; }catch(e){} if(done||!COARSE||!DOC) return;
+(function(){ const MASTERV=/(^|; )lysM=1/.test(document.cookie); let done=false; try{ done=localStorage.getItem('lysTutDone')==='1'; }catch(e){} if((done&&!MASTERV)||!COARSE||!DOC) return; /* the master sees it every visit */
   const ko=GB_LANG==='ko', T={ko:{sp:'두 손가락을 벌리면 앞으로 걸어가요',pn:'두 손가락을 모으면 뒤로 물러나요',dr:'한 손가락으로 화면을 밀면 시선이 돌아가요',try:'이제 직접 해 보세요',tap:'마음에 드는 작품을 터치해 보세요',skip:'건너뛰기'},en:{sp:'Spread two fingers to walk forward',pn:'Pinch two fingers to step back',dr:'Slide one finger to look around',try:'Now you try',tap:'Touch a work you like',skip:'Skip'}}[ko?'ko':'en'];
   D.greeted=true; /* the docent waits: the tour comes first */
   const el=document.createElement('div'); el.className='tut'; el.hidden=true; el.innerHTML='<div class="tt"></div><div class="tg"><i class="tf"></i><i class="tf"></i></div><button class="tk" type="button"></button>'; stage.appendChild(el);
   const tt=el.querySelector('.tt'), tg=el.querySelector('.tg'), tk=el.querySelector('.tk'), ring=document.createElement('div'); ring.className='tring'; ring.hidden=true; stage.appendChild(ring); tk.textContent=T.skip;
-  const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; try{ localStorage.setItem('lysTutDone','1'); }catch(e){} if(skipped) D.greeted=false; };
+  const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; if(!MASTERV){ try{ localStorage.setItem('lysTutDone','1'); }catch(e){} } if(skipped){ D.greeted=false; } };
   tk.addEventListener('pointerdown',e=>{ e.stopPropagation(); }); tk.addEventListener('click',e=>{ e.stopPropagation(); fin(true); });
   let st=0, t0=0, y0=0, shown=false, tried=false, turned=false; const show=(cls,txt)=>{ el.className='tut '+cls; tt.textContent=txt; tg.style.display=cls?'block':'none'; el.hidden=false; };
   const go=(sgn)=>{ const fx=-Math.sin(walk.yaw)*sgn, fy=Math.cos(walk.yaw)*sgn; for(const d of [1.2,0.8,0.5]){ const x=walk.x+fx*d, y=walk.y+fy*d; if(canWalk(x,y)&&lineClear(walk.x,walk.y,x,y)){ goTo(x,y,null,null); return; } } };
@@ -1608,7 +1608,7 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
     else if(st===3){ if(!shown){ shown=true; show('dr',T.dr); y0=walk.yaw; goTo(walk.x,walk.y,walk.yaw+0.8,null); t0=now; return; } if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; y0=walk.yaw; } if(!autoGo&&tried&&Math.abs(Math.atan2(Math.sin(walk.yaw-y0),Math.cos(walk.yaw-y0)))>0.3) next(4,now); else if(e>30) next(4,now); }
     else if(st===4){ if(!shown){ shown=true; show('',T.tap); lastWork=null; } const p=pick(); if(p){ const r=canvas.getBoundingClientRect(); ring.style.left=(p[0]+1)/2*r.width+r.left-stage.getBoundingClientRect().left+'px'; ring.style.top=(1-p[1])/2*r.height+r.top-stage.getBoundingClientRect().top+'px'; ring.hidden=false; } else{ ring.hidden=true; if(!turned&&e>1.5&&!autoGo){ turned=true; let nb=null, nd=1e9; for(const w of works){ if(!w.mesh||!w.mesh.visible) continue; const dx=w.mesh.position.x-walk.x, dy=-w.mesh.position.z-walk.y, d=Math.hypot(dx,dy); if(d<nd&&d>0.8){ nd=d; nb=[dx,dy]; } } if(nb) goTo(walk.x,walk.y,lookYaw(nb[0],nb[1]),0); } } /* nothing in view: turn toward the nearest work */
       if(lastWork&&lastWork.w){ ring.hidden=true; el.hidden=true; next(5,now); } else if(e>90) fin(true); }
-    else if(st===5){ if(autoGo&&e<20) return; if(!(D.lead&&DOCT&&lastCap)){ if(e>6) fin(false); return; } D.askCap=lastCap; D.back=null; D.tutAsk=1; docStart('q',-3,now); D.d=30; docAskShow(true); fin(false); } })(0);
+    else if(st===5){ if(autoGo&&e<20) return; if(!(D.lead&&DOCT&&lastCap)){ if(e>6) fin(false); return; } D.askCap=lastCap; D.back=null; D.tutAsk=1; docAnswer(true); fin(false); } /* no question: the guide just starts on that work */ })(0);
 })();
 
 // computers: mouse wheel walks forward / back — however fast you spin it, you still walk at an easy pace (the spins queue up, up to ~2.5 m)
