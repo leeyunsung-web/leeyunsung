@@ -966,13 +966,20 @@ const docInd=document.createElement('div'); docInd.className='dind'; docInd.inne
 const _dv=new THREE.Vector3();
 function docMark(p,on){ if(!on){ docInd.style.display='none'; return; } docInd.className='dind'; docInd.style.display='flex'; docInd.style.left='50%';
   const b=parseFloat(dsub.style.bottom)||72; docInd.style.top=''; docInd.style.bottom=(b+(dsub.offsetHeight||22)+8)+'px'; docInd.style.transform='translateX(-50%)'; } /* fixed above the subtitle */
-function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; const e=(now-D.t0)/1000;
+/* spoken guide (trial, master mode only): the phone's own voice reads each subtitle line; the subtitles wait for the voice */
+const SPK={on:/(?:^|;\s*)lysM=1/.test(document.cookie)&&'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined',k:0,busy:false,done:false,id:0,un:false};
+function spkVoice(){ try{ const l=GB_LANG==='ja'?'ja':GB_LANG==='en'?'en':'ko', vs=speechSynthesis.getVoices(); return vs.find(v=>v.lang.toLowerCase().replace('_','-').startsWith(l)&&v.localService)||vs.find(v=>v.lang.toLowerCase().replace('_','-').startsWith(l))||null; }catch(e){ return null; } }
+function spkSay(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t.replace(/[〈〉《》]/g,'')); u.lang=GB_LANG==='ja'?'ja-JP':GB_LANG==='en'?'en-US':'ko-KR'; const v=spkVoice(); if(v) u.voice=v; u.rate=0.98; const id=++SPK.id; SPK.busy=true; SPK.done=false; u.onend=()=>{ if(id===SPK.id){ SPK.busy=false; SPK.done=true; } }; u.onerror=()=>{ if(id===SPK.id){ SPK.busy=false; SPK.done=false; } }; /* no voice available: the subtitles simply keep their own timing */ speechSynthesis.speak(u); setTimeout(()=>{ if(id===SPK.id&&SPK.busy){ SPK.busy=false; SPK.done=true; } },3000+t.length*350); /* safety: never stall the guide if the voice stops reporting */ }catch(e){ SPK.busy=false; } }
+function spkStop(){ if(!SPK.on) return; SPK.id++; SPK.busy=false; SPK.done=false; try{ speechSynthesis.cancel(); }catch(e){} }
+if(SPK.on){ const un=()=>{ if(SPK.un) return; SPK.un=true; try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u); }catch(e){} }; addEventListener('touchend',un,{capture:true,passive:true}); addEventListener('click',un,{capture:true}); }
+function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; let e=(now-D.t0)/1000;
+  if(SPK.on&&D.key&&(SPK.busy||SPK.done)){ const ss=docSplit(docText(D.s,D.i,docLang())); if(ss.length){ const W=ss.map(x=>x.length+12), tot=W.reduce((a,b)=>a+b,0); let b=0; for(let j=0;j<=SPK.k&&j<ss.length;j++) b+=W[j]/tot*D.d; if(SPK.busy){ if(e>=b-0.03){ D.t0=now-(b-0.04)*1000; e=b-0.04; } } else { SPK.done=false; if(e<b){ D.t0=now-(b+0.02)*1000; e=b+0.02; } } } } /* the voice sets the pace: hold at the end of the line being read, move on as soon as it is finished */
   const on=!((D.i<-1&&D.i!==-3&&D.i!==-4)||e>=D.d||(p&&Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>9)); docMark(p,on&&!DOC_AG);
-  if(!on){ if(D.key){ dsub.style.opacity='0'; D.key=''; } return; }
+  if(!on){ if(D.key){ dsub.style.opacity='0'; D.key=''; spkStop(); } return; }
   const sents=docSplit(docText(D.s,D.i,docLang())); if(!sents.length) return; const W=sents.map(x=>x.length+12), tot=W.reduce((a,b)=>a+b,0);
   let acc=0, k=0; for(;k<sents.length-1;k++){ acc+=W[k]/tot*D.d; if(e<acc) break; } if(k===sents.length-1) acc=D.d;
-  const key=D.s+'/'+D.i+'/'+k; if(key===D.key) return; D.key=key;
-  if(!COARSE) logLine(DOCID,sents[k]); /* phones: the subtitle only, the top-left log stays for people */ dsub.textContent=niceBreak(sents[k],GB_LANG==='en'?56:30); { const sr=stage.getBoundingClientRect(), cr=capEl.getBoundingClientRect(); dsub.style.bottom=(capEl.textContent&&cr.height?sr.bottom-cr.top+12:72)+'px'; } dsub.style.opacity='1'; clearTimeout(dsub._t); dsub._t=setTimeout(()=>dsub.style.opacity='0',(acc-e)*1000+300); return; /* subtitle above the caption + log; no bubble */
+  const key=D.s+'/'+D.i+'/'+k; if(key===D.key) return; D.key=key; if(SPK.on){ SPK.k=k; spkSay(sents[k]); }
+  if(!COARSE) logLine(DOCID,sents[k]); /* phones: the subtitle only, the top-left log stays for people */ dsub.textContent=niceBreak(sents[k],GB_LANG==='en'?56:30); { const sr=stage.getBoundingClientRect(), cr=capEl.getBoundingClientRect(); dsub.style.bottom=(capEl.textContent&&cr.height?sr.bottom-cr.top+12:72)+'px'; } dsub.style.opacity='1'; clearTimeout(dsub._t); if(!SPK.on) dsub._t=setTimeout(()=>dsub.style.opacity='0',(acc-e)*1000+300); return; /* subtitle above the caption + log; no bubble */
   if(!p.bub){ const el=document.createElement('div'); el.className='bub doc'; stage.appendChild(el); p.bub={el,t:0}; }
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
