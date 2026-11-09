@@ -941,7 +941,9 @@ function docLead(dt,now){
     if(wi>=0&&!D.intro[lastCap]&&now>D.pause&&now-D.wantT>2500&&me<2.4){ D.intro[lastCap]=1; docStart('w-'+wi,0,now); } /* first the work in front of you, then the series text */
     else if(s&&now>D.pause&&now-D.wantT>2500&&me<2.4&&DOCT&&DOCT.series[s]){ const k=D.prog[s]||0; if(k<DOCT.series[s].ko.length) docStart(s,k,now); } }
   else if(D.i>=0){ const s=docSeries(lastCap); if(lastCap!==D.wantC){ D.wantC=lastCap; D.wantT=now; }
-    if(s&&D.s&&s!==docBase(D.s)&&now-D.wantT>1500&&!D.asked[lastCap]){ D.asked[lastCap]=1; D.back=null; D.askCap=lastCap; D.tutAsk=0; docAnswer(true); } } /* no question: the guide goes straight on with the work you came to */
+    const cur=D.s&&D.s.slice(0,2)==='w-'?+D.s.slice(2):-1, wi=DOCT&&DOCT.wl?DOCT.wl.indexOf(lastCap):-1;
+    if(s&&D.s&&now-D.wantT>1000){ const other=cur>=0?(wi>=0&&wi!==cur):s!==docBase(D.s); /* an individual talk: any other work gets its own talk at once (again, even if heard); a series talk: another series switches over, the same series simply goes on */
+      if(other){ D.back=null; D.askCap=lastCap; D.tutAsk=0; docAnswer(true); } } }
   else if(lastCap!==D.askCap&&docSeries(lastCap)===docBase(D.back&&D.back.s)){ docAnswer(false); } /* walked back to the earlier work: carry on */
   // tell the room (on change at once; position at most ~7 times a second while moving)
   if(!DOC_AG&&room&&room.readyState===1&&roomMe){ const moved=Math.hypot(D.x-D.sx,D.y-D.sy)>0.03;
