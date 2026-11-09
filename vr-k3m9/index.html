@@ -1576,7 +1576,7 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
   } else { // mouse: look around like a game (drag right = turn right)
     if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6) autoGo=null;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
-    walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); }
+    if(!GY.on){ walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); } }
   dirty=true;});
 const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
   if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY, touch=e.pointerType!=='mouse'; setTimeout(()=>{ if(!tryOpenGuestbook(x,y)&&tune.tapWalk!==false) tapMove(x,y); },0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
@@ -1637,7 +1637,8 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
   let want=0; const td=drag&&drag.touch&&!pinch&&drag.lx!=null?drag:null;
   if(td){ const w=canvas.clientWidth||1, off=(td.lx-td.x)/w; if(Math.abs(off)>0.06&&now-(td.mt||0)>120) want=Math.sign(off)*Math.min(0.24,0.07+(Math.abs(off)-0.06)*0.5); }
   hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?4:2)); /* keeps turning only once the finger rests out to the side (not while it is still sliding), easing in to a gentle top speed */ if(Math.abs(hv)<0.002) hv=0;
-  if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.45,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.4))}; }
+  if(GY.on){ aim=null; } /* phone look mode: only the phone's own motion turns the view */
+  else if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.45,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.4))}; }
   else if(!drag&&hv){ if(aim) aim.yaw+=hv*dt; else walk.yaw+=hv*dt; dirty=true; }
   if(aim){ if(autoGo&&!(autoGo.orbit&&autoGo.orbit.stop)){ aim=null; return; } const k=1-Math.exp(-dt*(drag?5.5:4)), dy=aim.yaw-walk.yaw, dp=aim.pitch-walk.pitch; walk.yaw+=dy*k; walk.pitch+=dp*k; dirty=true; /* the view glides after the finger instead of jumping with it */
     if(!drag&&!hv&&Math.abs(dy)<0.0008&&Math.abs(dp)<0.0008) aim=null; } })(lt); }
@@ -1864,8 +1865,8 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
 // one step of the walk you asked for (called from the main loop)
 function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   // smooth head turn: the turning speed eases in and out and never goes past ~60°/s
-  const turn=(to,max=0.8)=>{ const df=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw)), want=Math.max(-max,Math.min(max,df*1.5)); g.wv=(g.wv||0)+(want-(g.wv||0))*Math.min(1,dt*2.2); /* gentler: slower top speed, softer start and stop */ walk.yaw+=g.wv*dt; return Math.abs(df); };
-  const tilt=(to,k=1.6)=>{ walk.pitch+=(to-walk.pitch)*Math.min(1,dt*k); };
+  const turn=(to,max=0.8)=>{ if(GY.on){ g.wv=0; return 0; } const df=Math.atan2(Math.sin(to-walk.yaw),Math.cos(to-walk.yaw)), want=Math.max(-max,Math.min(max,df*1.5)); g.wv=(g.wv||0)+(want-(g.wv||0))*Math.min(1,dt*2.2); /* gentler: slower top speed, softer start and stop */ walk.yaw+=g.wv*dt; return Math.abs(df); };
+  const tilt=(to,k=1.6)=>{ if(GY.on) return; walk.pitch+=(to-walk.pitch)*Math.min(1,dt*k); };
   if(g.peer){ const p=PEERS.get(g.peer); if(!p){ autoGo=null; return true; } const pdx=p.pos.x-walk.x, pdy=p.pos.y-walk.y, pd=Math.hypot(pdx,pdy);
     if(pd<1.8){ g.path=null; const left=turn(lookYaw(pdx,pdy)); tilt(-0.02,2); if(left<0.03&&Math.abs(g.wv||0)<0.02) autoGo=null; return true; } // close enough to say hello: face them and stop
     const now=performance.now(); if(!g.path||now-g.re>600){ g.re=now; const tx=p.pos.x-pdx/pd*1.4, ty=p.pos.y-pdy/pd*1.4, pt=findPath(walk.x,walk.y,tx,ty); if(!pt){ autoGo=null; return true; } g.path=pt; const e=pt[pt.length-1]; g.x=e[0]; g.y=e[1]; g.v=g.v||0; }
@@ -2055,10 +2056,10 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(keys.has('arrowup')||keys.has('w')) fwd+=1; if(keys.has('arrowdown')||keys.has('s')) fwd-=1;
     if(keys.has('a')) strafe-=1; if(keys.has('d')) strafe+=1;
     if(keys.has('arrowleft')) turn+=1; if(keys.has('arrowright')) turn-=1;
-    fwd+=-jv.y; walk.yaw+=-jv.x*1.6*dt;
+    fwd+=-jv.y; if(!GY.on) walk.yaw+=-jv.x*1.6*dt;
     if(fwd||strafe||turn||jv.x||jv.y) autoGo=null; else if(autoStep(dt)){ dirty=true; if(tune.bob){bobT+=dt*1.8; bobA=Math.min(1,bobA+dt*3);} }
     if(fwd||strafe||turn||jv.x||jv.y){
-      walk.yaw+=turn*1.5*dt;
+      if(!GY.on) walk.yaw+=turn*1.5*dt;
       const sp=1.3*dt*(RUN&&M3?3.5:1), sy=Math.sin(walk.yaw+GY.y), cy=Math.cos(walk.yaw+GY.y);
       // yaw 0 faces +y; strafe right is +x
       const nx=walk.x+(-sy*fwd+cy*strafe)*sp, ny=walk.y+(cy*fwd+sy*strafe)*sp;
