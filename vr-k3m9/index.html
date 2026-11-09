@@ -1581,7 +1581,7 @@ canvas.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; T
   if(TCH.size===2&&mode==='walk'){ pinch={d:tdist()}; drag=null; autoGo=null; } });
 canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) return; t.x=e.clientX; t.y=e.clientY; if(!pinch||TCH.size<2) return;
   const d=tdist(), step=(d-pinch.d)/Math.max(200,Math.min(canvas.clientWidth,canvas.clientHeight))*3.2; pinch.d=d; if(TUT.on){ if(step>0) TUT.f+=step; else TUT.b-=step; } // about 3 m for a full spread
-  const fx=-Math.sin(walk.yaw)*Math.sign(step), fy=Math.cos(walk.yaw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); let mx=fx*a, my=fy*a;
+  const wyw=walk.yaw+GY.y, fx=-Math.sin(wyw)*Math.sign(step), fy=Math.cos(wyw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); /* walk where the view points (phone tilt included) */ let mx=fx*a, my=fy*a;
   if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ // a pedestal ahead (or behind): ease sideways round it while still going on (a wall just stops you)
     const side=[pinch.side||1,-(pinch.side||1)].find(k=>canWalk(walk.x+fx*0.6+sx*k*0.55,walk.y+fy*0.6+sy*k*0.55)&&canWalk(walk.x+sx*k*0.3,walk.y+sy*k*0.3));
     if(side){ pinch.side=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else pinch.side=0;
@@ -1622,7 +1622,7 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
     wq=Math.max(-2.5,Math.min(2.5,wq-e.deltaY*k*0.004)); },{passive:false});
   (function wheelWalk(now){ requestAnimationFrame(wheelWalk); const dt=Math.min(0.05,(now-wt)/1000); wt=now; if(Math.abs(wq)<0.003&&Math.abs(wv)<0.01){ wq=0; wv=0; return; }
     const want=Math.sign(wq)*Math.min(1.0,Math.sqrt(2*1.2*Math.abs(wq))); wv+=Math.max(-1.6*dt,Math.min(1.6*dt,want-wv)); const step=wv*dt; wq-=step; if(Math.sign(wq)!==Math.sign(wv)&&Math.abs(wq)<0.02) wq=0;
-    const fx=-Math.sin(walk.yaw)*Math.sign(step), fy=Math.cos(walk.yaw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); let mx=fx*a, my=fy*a;
+    const wyw=walk.yaw+GY.y, fx=-Math.sin(wyw)*Math.sign(step), fy=Math.cos(wyw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); /* walk where the view points (phone tilt included) */ let mx=fx*a, my=fy*a;
     if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ const side=[wside||1,-(wside||1)].find(q=>canWalk(walk.x+fx*0.6+sx*q*0.55,walk.y+fy*0.6+sy*q*0.55)&&canWalk(walk.x+sx*q*0.3,walk.y+sy*q*0.3)); if(side){ wside=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else wside=0;
     const ox=walk.x, oy=walk.y; [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); if(Math.hypot(walk.x-ox,walk.y-oy)<a*0.2){ wq=0; wv=0; } lastWork=null; dirty=true; })(wt); }
 // phones: slide left/right and keep the finger there -> the view keeps turning, smoothly, the further out the faster
@@ -2052,7 +2052,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(fwd||strafe||turn||jv.x||jv.y) autoGo=null; else if(autoStep(dt)){ dirty=true; if(tune.bob){bobT+=dt*1.8; bobA=Math.min(1,bobA+dt*3);} }
     if(fwd||strafe||turn||jv.x||jv.y){
       walk.yaw+=turn*1.5*dt;
-      const sp=1.3*dt*(RUN&&M3?3.5:1), sy=Math.sin(walk.yaw), cy=Math.cos(walk.yaw);
+      const sp=1.3*dt*(RUN&&M3?3.5:1), sy=Math.sin(walk.yaw+GY.y), cy=Math.cos(walk.yaw+GY.y);
       // yaw 0 faces +y; strafe right is +x
       const nx=walk.x+(-sy*fwd+cy*strafe)*sp, ny=walk.y+(cy*fwd+sy*strafe)*sp;
       [walk.x,walk.y]=collide(nx,ny); dirty=true;
