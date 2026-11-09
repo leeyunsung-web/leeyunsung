@@ -868,6 +868,7 @@ function botHear(m){ let best=null,bd=4; for(const b of BOTS){ const p=PEERS.get
 // The first visitor to arrive leads it (the server says who; the next one takes over when they leave). It walks over, greets,
 // and reads the finished work texts (data.json -> docent.json, nothing new is said) paragraph by paragraph for the work you face.
 // The others see the same docent and hear the same paragraph from where it stands, in their own language.
+const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null}; /* phone look-around state (declared before anything reads it) */
 { const gb=document.createElement('button'); gb.className='gyro'; gb.type='button'; gb.setAttribute('aria-pressed','false'); gb.setAttribute('aria-label','휴대폰을 움직여 둘러보기');
   gb.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M3.5 9a9 9 0 0 0 0 6M20.5 9a9 9 0 0 1 0 6"/></svg>';
   const gh=document.createElement('button'); gh.className='gyroHint'; gh.type='button'; gh.setAttribute('aria-label','휴대폰을 움직여 둘러보기 켜기'); gh.hidden=true;
@@ -1340,7 +1341,6 @@ function collide(nx,ny){
 let bobT=0, bobA=0;
 // look around by turning the phone (2026-11-09, master preview, phones held upright): turning the phone adds to the view on top of the usual
 // tap-to-walk and auto gaze; shakes are smoothed, up/down is limited, and a frame is drawn only when the phone actually moves
-const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null};
 function gyroEv(e){ if(!GY.on||e.alpha==null) return; if(GY.a0==null){ GY.a0=e.alpha; GY.b0=e.beta; }
   let da=e.alpha-GY.a0; if(da>180) da-=360; if(da<-180) da+=360;
   GY.ty=da*Math.PI/180; GY.tp=Math.max(-0.5,Math.min(0.5,(e.beta-GY.b0)*Math.PI/180)); }
@@ -1712,6 +1712,35 @@ function endView(x,y,h){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a);
   const here=reach(h); if(here>4) return 'keep'; let ob=null, os=here;
   for(let i=-6;i<=6;i++){ const a=h+i*0.2, r=reach(a)*(1-Math.abs(i)*0.03); if(r>os*1.4&&r>os){ os=r; ob=a; } } return ob; }
 function standAt(x,y,d0,nx,ny){ for(let d=d0; d>0.5; d-=0.15){ const sx=x+nx*d, sy=y+ny*d; if(okPos(sx,sy)&&!blocks.some(b=>sx>b.x0&&sx<b.x1&&sy>b.y0&&sy<b.y1)) return [sx,sy]; } return null; }
+let TAPMODE=null;
+// ---------- moving, version 2 (2026-11-09, master preview, phones held upright). Version 1 (drag to look, two-finger walk, tap floor to walk,
+// tap again for close-up / orbit) stays for everyone else. Here: hold the top / bottom / left / right edge of the screen to walk forward /
+// back / sideways (like arrow keys); tap a work or sculpture to walk to it; double-tap a work to zoom in (tap again to zoom out);
+// double-tap a sculpture to walk round it; turning the phone looks around (the blinking button in the middle switches that on)
+const V2={hold:null,last:null,zoom:false,zt:1,z:1,timer:0};
+const v2On=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; return M3&&COARSE&&mode==='walk'&&(sw?sw.startsWith('portrait'):screen.height>screen.width); };
+function v2Edge(x,y){ const r=canvas.getBoundingClientRect(), u=(x-r.left)/r.width, v=(y-r.top)/r.height, b=0.2;
+  if(v<b) return [1,0]; if(v>1-b) return [-1,0]; if(u<b) return [0,-1]; if(u>1-b) return [0,1]; return null; } // [forward, right]
+function v2Pick(x,y){ const r=canvas.getBoundingClientRect(); _n2.set((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
+  const hw=_r2.intersectObjects(works.map(w=>w.mesh),false)[0]; let best=hw?{kind:'work',d:hw.distance,w:works.find(w=>w.mesh===hw.object)}:null;
+  for(const [,g] of sculptures()){ const bb=new THREE.Box3().setFromObject(g); if(bb.isEmpty()||!_r2.ray.intersectsBox(bb)) continue; const h=_r2.intersectObject(g,true).find(o=>o.object.isMesh&&o.object.visible); if(h&&(!best||h.distance<best.d)) best={kind:'sculpt',d:h.distance}; }
+  return best; }
+function v2Zoom(on,w){ V2.zoom=on; if(!on){ V2.zt=1; return; } const u=unitOf(w), d=Math.max(0.5,u.pos?Math.hypot(u.pos.x-camera.position.x,u.pos.z-camera.position.z):2), vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
+  const fit=Math.min(2*d*Math.tan(vf/2)/(u.p.h*1.08), 2*d*Math.tan(hf/2)/(u.p.w*1.08)); V2.zt=Math.max(1.2,Math.min(6,fit*1.6)); } /* close enough to see the brushwork, about 1.6x the whole-work view */
+function v2Tick(dt){ if(!v2On()&&(V2.zt!==1||V2.hold)){ V2.zt=1; V2.zoom=false; V2.hold=null; } if(V2.z!==V2.zt||camera.zoom!==V2.z){ V2.z+=(V2.zt-V2.z)*Math.min(1,dt*6); if(Math.abs(V2.zt-V2.z)<0.002) V2.z=V2.zt; camera.zoom=V2.z; camera.updateProjectionMatrix(); dirty=true; }
+  const H=V2.hold; if(!H||!v2On()) return; const yaw=walk.yaw+GY.y, sp=1.15*dt*Math.min(1,(performance.now()-H.t)/250+0.3);
+  const fx=-Math.sin(yaw), fy=Math.cos(yaw), rx=Math.cos(yaw), ry=Math.sin(yaw);
+  [walk.x,walk.y]=collide(walk.x+(fx*H.d[0]+rx*H.d[1])*sp, walk.y+(fy*H.d[0]+ry*H.d[1])*sp); lastWork=null; dirty=true; }
+for(const ev of ['pointerdown','pointermove','pointerup','pointercancel']) canvas.addEventListener(ev,e=>{ if(!v2On()||e.pointerType==='mouse') return; e.stopImmediatePropagation(); e.preventDefault();
+  if(ev==='pointerdown'){ stage.focus({preventScroll:true}); try{ canvas.setPointerCapture(e.pointerId); }catch(err){} autoGo=null;
+    const d=V2.zoom?null:v2Edge(e.clientX,e.clientY); V2.down={x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId}; if(d){ V2.hold={d,t:performance.now(),id:e.pointerId}; } return; }
+  if(ev==='pointermove') return;
+  const dn=V2.down; V2.down=null; if(V2.hold&&V2.hold.id===e.pointerId){ V2.hold=null; return; } if(ev==='pointercancel'||!dn) return;
+  if(Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>12) return; const x=e.clientX, y=e.clientY, now=performance.now();
+  if(V2.zoom){ v2Zoom(false); V2.last=null; return; } // zoomed in: any tap zooms back out
+  const L=V2.last; if(L&&now-L.t<320&&Math.hypot(x-L.x,y-L.y)<40){ clearTimeout(V2.timer); V2.last=null; const b=v2Pick(x,y);
+    if(b&&b.kind==='work'){ autoGo=null; v2Zoom(true,b.w); } else if(b&&b.kind==='sculpt'){ TAPMODE='orbit'; try{ tapMove(x,y); }finally{ TAPMODE=null; } } return; }
+  V2.last={x,y,t:now}; clearTimeout(V2.timer); V2.timer=setTimeout(()=>{ V2.last=null; if(tryOpenGuestbook(x,y)) return; TAPMODE='go'; try{ tapMove(x,y); }finally{ TAPMODE=null; } },300); },{capture:true});
 function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingClientRect(); _n2.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _r2.setFromCamera(_n2,camera);
   let best=null;
   const hw=_r2.intersectObjects(works.map(w=>w.mesh),false)[0]; if(hw) best={kind:'work',d:hw.distance,w:works.find(w=>w.mesh===hw.object)};
@@ -1722,6 +1751,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     const hd=h?h.distance:null; // exact surface only: clicks in the gaps (the mobile's open space, behind its wires) go through to what is behind
     if(hd!=null&&(!best||hd<best.d)) best={kind:'sculpt',d:hd,name,bb,g}; }
   const pf=_r2.ray.intersectPlane(_fl,new THREE.Vector3()); if(pf){ const d=pf.distanceTo(_r2.ray.origin); if(!best||d<best.d) best={kind:'floor',d,p:pf}; }
+  if(TAPMODE&&(!best||best.kind==='floor')) return; /* version 2: only works, sculptures and people answer a tap */
   if(!best){ /* nothing hit: you tapped high on a bare wall (above the floor's horizon). Find that wall along the line you tapped and go to the work nearest it */
     const dv=_r2.ray.direction, hl=Math.hypot(dv.x,dv.z); if(hl>0.05){ const ux=dv.x/hl, uy=-dv.z/hl; let t=0.2; while(t<20&&okPos(walk.x+ux*t,walk.y+uy*t)) t+=0.1;
       const nw=nearestWorkTo(walk.x+ux*Math.max(0.2,t-0.2),walk.y+uy*Math.max(0.2,t-0.2));
@@ -1743,7 +1773,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   if(best.kind==='work'&&(best.fromWall||best.fromFloor)&&lastWork&&unitOf(lastWork.w)===unitOf(best.w)&&Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<1.0) return; /* already looking at that work: a stray tap on the wall or floor around it does nothing */
   if(best.kind==='work'){ const w=unitOf(best.w), m=w.mesh, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), x=m.position.x, y=-m.position.z;
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect), fill=tune.tapFill??0.5; // the work takes about half the screen
-    const far=workDist(w), close=!best.fromWall&&!best.fromFloor&&lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
+    const far=workDist(w), close=!TAPMODE&&!best.fromWall&&!best.fromFloor&&lastWork&&lastWork.w===w&&!lastWork.close&&(autoGo&&autoGo.fit&&autoGo.fit.w===w||Math.hypot(walk.x-lastWork.s[0],walk.y-lastWork.s[1])<0.6);
     const big=!close&&!fitsView(w); /* too big to see whole from here: step right back until it fits */
     let d0=close?Math.max(1.0,far*0.55):far, slid=false;
     { const dw=(walk.x-x)*nx+(walk.y-y)*ny, lat=Math.abs((walk.x-x)*-ny+(walk.y-y)*nx); const cw=window.capWork, wallOfU=u=>u.wall||(u.members&&u.members[0].wall), fromNext=!!cw&&cw!==w&&wallOfU(cw)===wallOfU(w); /* a caption is showing and you tap another work on that same wall: just slide sideways */
@@ -1762,7 +1792,7 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     let tc=top, sz2=sz; if(best.name==='mob'&&MOB.lowest){ const lo=MOB.lowest(); tc=lo+1.0; sz2=2.0; } // the mobile's wire runs to the ceiling: aim at the hanging piece itself
     const hfov=2*Math.atan(Math.tan(vf/2)*camera.aspect), wid=best.name==='mob'?1.7:Math.max(best.bb.max.x-best.bb.min.x,best.bb.max.z-best.bb.min.z), rad=Math.max(1.3,Math.min(4.5,Math.max(sz2/(2*Math.tan(vf/2)*0.5),wid/(2*Math.tan(hfov/2)*0.6))));
     const ry=best.g.rotation.y+(best.name==='torso'?Math.PI:0), fx=Math.sin(ry), fy=-Math.cos(ry); // its front on the floor plan (the torso model faces local -Z)
-    const atFront=lastSculpt&&lastSculpt.name===best.name&&(autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit||Math.hypot(walk.x-lastSculpt.s[0],walk.y-lastSculpt.s[1])<0.7);
+    const atFront=TAPMODE==='orbit'||TAPMODE!=='go'&&lastSculpt&&lastSculpt.name===best.name&&(autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit||Math.hypot(walk.x-lastSculpt.s[0],walk.y-lastSculpt.s[1])<0.7);
     if(atFront&&autoGo&&autoGo.sculpt===best.name&&!autoGo.orbit){ autoGo.then={x,y,r:rad*0.95,top:tc}; lastSculpt=null; GT('g_orbit',GT.sTitle(x,y)); return; } // still on the way: go round once there
     if(atFront){ GT('g_orbit',GT.sTitle(x,y)); autoGo={orbit:{x,y,r:Math.max(l,rad*0.9),a:Math.atan2(walk.y-y,walk.x-x),left:Math.PI*2,top:tc}}; lastSculpt=null; return; } // second click: once around it
     const s=standAt(x,y,rad,fx,fy)||standAt(x,y,rad,dx,dy); if(!s) return; if(goTo(s[0],s[1],lookYaw(x-s[0],y-s[1]),Math.atan2(tc-EYE,rad))){ autoGo.sculpt=best.name; autoGo.face=[x,y]; autoGo.cy=tc; lastSculpt={name:best.name,s}; GT('g_click',GT.sTitle(x,y)); } return;
@@ -1980,7 +2010,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
     if(dirty){placeWalkCam(); updateCaption(); if(now-(drawMap.t||0)>(now-lookT<400?900:250)){drawMap.t=now; drawMap();} /* the control window's floor plan: redrawing it often while you walk or turn made the gallery stutter, so only now and then */}
   } else if(orbit.update()) dirty=true;
   if(updatePeople(dt)) dirty=true;
-  { const d0=dirty; dirty=false; gyroTick(dt); if(dirty&&mode==='walk') placeWalkCam(); dirty=dirty||d0; } botTick(dt); docTick(dt,now); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
+  { const d0=dirty; dirty=false; gyroTick(dt); v2Tick(dt); if(dirty&&mode==='walk') placeWalkCam(); dirty=dirty||d0; } botTick(dt); docTick(dt,now); roomTick(now); if(PEERS.size||!helloEl.hidden) chatTick(now);
   if(tone.running&&mode==='walk'){ const pl=[]; for(const p of PEERS.values()) pl.push({id:p.id,x:p.pos.x,y:p.pos.y,room:roomAt(p.pos.x,p.pos.y)}); tone.tick({room:roomAt(walk.x,walk.y),x:walk.x,y:walk.y,yaw:walk.yaw,peers:pl,mobile:mobXY}); }
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
