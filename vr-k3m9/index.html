@@ -1596,7 +1596,7 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
   const tt=el.querySelector('.tt'), tg=el.querySelector('.tg'), tk=el.querySelector('.tk'), ring=document.createElement('div'); ring.className='tring'; ring.hidden=true; stage.appendChild(ring); tk.textContent=T.skip;
   const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; if(!MASTERV){ try{ localStorage.setItem('lysTutDone','1'); }catch(e){} } if(skipped){ D.greeted=true; D.tour=true; D.i=-2; D.pause=performance.now()+1500; D.wantT=performance.now(); D.sent=0; } }; /* skipped: no second greeting, the guide goes straight on with the works */
   tk.addEventListener('pointerdown',e=>{ e.stopPropagation(); }); tk.addEventListener('click',e=>{ e.stopPropagation(); fin(true); });
-  let st=0, t0=0, y0=0, shown=false, tried=false, turned=false; const show=(cls,txt)=>{ el.className='tut '+cls; tt.textContent=niceBreak(txt,20); tg.style.display=cls?'block':'none'; el.hidden=false; };
+  let st=0, t0=0, y0=0, shown=false, tried=false, turned=false; const show=(cls,txt)=>{ el.className='tut '+cls; tt.textContent=niceBreak(txt,GB_LANG==='ko'?20:34); tg.style.display=cls?'block':'none'; el.hidden=false; };
   /* demos move the camera directly (the same way your fingers do): no path-following, so the view never swings round */
   const ease=u=>u*u*(3-2*u); let demo=0;
   const go=(sgn)=>{ const my=++demo, fx=-Math.sin(walk.yaw)*sgn, fy=Math.cos(walk.yaw)*sgn; let D=0; for(const d of [1.1,0.8,0.5]){ const x=walk.x+fx*d, y=walk.y+fy*d; if(canWalk(x,y)&&lineClear(walk.x,walk.y,x,y)){ D=d; break; } } if(!D) return; const t1=performance.now(); let prev=0;
