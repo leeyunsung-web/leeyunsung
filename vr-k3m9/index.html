@@ -1359,10 +1359,11 @@ let bobT=0, bobA=0;
 function gyroEv(e){ if(!GY.on||e.alpha==null) return; if(GY.a0==null){ GY.a0=e.alpha; GY.b0=e.beta; }
   let da=e.alpha-GY.a0; if(da>180) da-=360; if(da<-180) da+=360;
   GY.ty=da*Math.PI/180; GY.tp=Math.max(-0.5,Math.min(0.5,(e.beta-GY.b0)*Math.PI/180)); }
-function gyroTick(dt){ if(!GY.on&&Math.abs(GY.y)+Math.abs(GY.p)<1e-4) return; const k=Math.min(1,dt*8), ty=GY.on?GY.ty:0, tp=GY.on?GY.tp:0;
+function gyroTick(dt){ if(GY.on&&GY.pend) dirty=true; if(!GY.on&&Math.abs(GY.y)+Math.abs(GY.p)<1e-4) return; const k=Math.min(1,dt*8), ty=GY.on?GY.ty:0, tp=GY.on?GY.tp:0;
   const ny=GY.y+(ty-GY.y)*k, np=GY.p+(tp-GY.p)*k; if(Math.abs(ny-GY.y)+Math.abs(np-GY.p)>0.0004) dirty=true; GY.y=ny; GY.p=np; }
-async function gyroToggle(btn){ if(GY.on){ GY.on=false; btn.setAttribute('aria-pressed','false'); return; }
+async function gyroToggle(btn){ if(GY.on){ GY.on=false; GY.lg=null; GY.pend=false; btn.setAttribute('aria-pressed','false'); return; }
   try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){ if(await DeviceOrientationEvent.requestPermission()!=='granted') return; } }catch(e){ return; }
+  /* a fresh look-around mode: drop every automatic camera move, level the view, start from where you stand */ autoGo=null; lastWork=null; try{ V2.zoom=false; V2.zt=1; }catch(e){} drag=null; GY.y=0; GY.p=0; GY.ty=0; GY.tp=0; GY.lg=null; GY.pend=false; walk.pitch=0; dirty=true;
   GY.a0=null; GY.on=true; btn.setAttribute('aria-pressed','true'); window.addEventListener('deviceorientation',gyroEv); }
 function placeWalkCam(){
   camera.position.copy(b2t(walk.x,walk.y,EYE+Math.sin(bobT*Math.PI*2)*0.011*bobA));
@@ -1947,6 +1948,12 @@ function sameRoom(pos){ return !wallStop(pos.x,-pos.z); }
 const _cv=new THREE.Vector3();
 function updateCaption(){
   if(mode!=='walk'){ if(lastCap){lastCap=''; showCap('');} return;}
+  if(GY.on){ /* phone look-around: captions and the guide only react when you rest your gaze, never while the view is sweeping */
+    const gy=walk.yaw+GY.y, gp=walk.pitch+GY.p, nw=performance.now();
+    if(GY.lg==null){ GY.lg=gy; GY.lq=gp; GY.lt=nw; GY.cs=nw; }
+    const dts=Math.max(0.001,(nw-GY.lt)/1000), sp=Math.hypot(Math.atan2(Math.sin(gy-GY.lg),Math.cos(gy-GY.lg)),gp-GY.lq)/dts;
+    GY.lg=gy; GY.lq=gp; GY.lt=nw; GY.sp=sp; if(sp>0.35) GY.cs=nw;
+    if(nw-GY.cs<700){ GY.pend=true; return; } GY.pend=false; }
   const p=b2t(walk.x,walk.y,EYE); const f=new THREE.Vector3(); camera.getWorldDirection(f);
   let best=null,bd=1e9;
   for(const w of [...new Set(works.map(unitOf)),...sculptCap.filter(c=>c.s.caption).map(c=>({pos:c.pos,caption:c.s.caption}))]){
