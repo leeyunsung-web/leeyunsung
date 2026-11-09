@@ -66,6 +66,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .dind b{display:none;font:600 13px/1 var(--ui);color:#4a4742}.dind.el{transform:translate(0,-50%)}.dind.er{transform:translate(-100%,-50%)}.dind.el b:first-child,.dind.er b:last-child{display:inline}
 @keyframes ddot{0%,60%,100%{opacity:.25}30%{opacity:1}}
 .dask{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;z-index:6;display:flex;gap:8px}.dask[hidden]{display:none}.dask button{font:500 13px var(--ui);padding:6px 16px;border-radius:999px;border:0;background:rgba(250,248,243,.94);color:#2a2824;box-shadow:0 2px 10px rgba(0,0,0,.18);cursor:pointer}
+.tut{position:absolute;left:50%;top:20%;transform:translateX(-50%);z-index:7;width:min(320px,86%);text-align:center;color:#fff;font:500 15px/1.5 var(--ui);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.7)}.tut[hidden]{display:none}.tut .tt{background:rgba(20,19,17,.62);border-radius:14px;padding:10px 14px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.tut .tg{position:relative;height:74px;margin-top:10px}.tut .tf{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(255,255,255,.78);box-shadow:0 0 0 6px rgba(255,255,255,.22);opacity:0}.tut.sp .tf{animation:tsp 1.4s ease-in-out infinite}.tut.sp .tf+.tf{animation-name:tsp2}.tut.pn .tf{animation:tpn 1.4s ease-in-out infinite}.tut.pn .tf+.tf{animation-name:tpn2}.tut.dr .tf:first-child{animation:tdr 1.6s ease-in-out infinite}@keyframes tsp{0%{opacity:0;transform:translate(-8px,8px)}20%{opacity:1}100%{opacity:0;transform:translate(-34px,-26px)}}@keyframes tsp2{0%{opacity:0;transform:translate(8px,-8px)}20%{opacity:1}100%{opacity:0;transform:translate(34px,26px)}}@keyframes tpn{0%{opacity:0;transform:translate(-34px,-26px)}20%{opacity:1}100%{opacity:0;transform:translate(-8px,8px)}}@keyframes tpn2{0%{opacity:0;transform:translate(34px,26px)}20%{opacity:1}100%{opacity:0;transform:translate(8px,-8px)}}@keyframes tdr{0%{opacity:0;transform:translateX(-44px)}20%{opacity:1}100%{opacity:0;transform:translateX(44px)}}.tut .tk{pointer-events:auto;margin-top:10px;font:500 12px var(--ui);color:#fff;background:rgba(20,19,17,.5);border:0;border-radius:999px;padding:5px 14px;cursor:pointer}.tring{position:absolute;z-index:6;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 14px rgba(255,255,255,.8);pointer-events:none;animation:trg 1.2s ease-in-out infinite}.tring[hidden]{display:none}@keyframes trg{0%,100%{transform:scale(.8);opacity:.5}50%{transform:scale(1.15);opacity:1}}
 .dsub{position:absolute;left:50%;transform:translateX(-50%);z-index:4;max-width:min(680px,88%);text-align:center;pointer-events:none;font:400 clamp(13px,1.5vw,16px)/1.45 var(--ui);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.75),0 0 10px rgba(0,0,0,.4);transition:opacity .5s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .bub.doc{max-width:calc(min(340px,72%) * var(--bs,1));text-align:left}
 .bub::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:rgba(250,248,243,.94)}
@@ -950,6 +951,7 @@ const dsub=document.createElement('div'); dsub.className='dsub'; dsub.style.opac
 const docAsk=document.createElement('div'); docAsk.className='dask'; docAsk.hidden=true; docAsk.innerHTML='<button data-y="1"></button><button data-y="0"></button>'; stage.appendChild(docAsk);
 function docAskShow(on){ docAsk.hidden=!on; if(!on) return; const ko=GB_LANG==='ko'; docAsk.children[0].textContent=ko?'네':'Yes'; docAsk.children[1].textContent=ko?'아니요':'No, thanks'; }
 function docAnswer(yes){ docAskShow(false); const now=performance.now(); const c=D.askCap, b=D.back; D.back=null;
+  if(D.tutAsk){ D.tutAsk=0; D.tour=!!yes; }
   if(c==='__tour'){ D.askCap=''; D.tour=!!yes; D.i=-2; D.pause=now+1500; D.wantT=now; D.sent=0; return; }
   if(yes){ const wi=DOCT.wl.indexOf(c); D.intro[c]=1; if(wi>=0) docStart('w-'+wi,0,now); else D.i=-2; }
   else if(b){ docStart(b.s,b.i,now); } else D.i=-2; D.sent=0; }
@@ -1572,18 +1574,42 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
 const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
   if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY, touch=e.pointerType!=='mouse'; setTimeout(()=>{ if(!tryOpenGuestbook(x,y)&&tune.tapWalk!==false) tapMove(x,y); },0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
 // phones: two fingers — spread them to walk forward, pinch them to step back
-const TCH=new Map(); let pinch=null; canvas.style.touchAction='none';
+const TUT={on:false,f:0,b:0}; const TCH=new Map(); let pinch=null; canvas.style.touchAction='none';
 const tdist=()=>{ const [a,b]=[...TCH.values()]; return Math.hypot(a.x-b.x,a.y-b.y); };
 canvas.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; TCH.set(e.pointerId,{x:e.clientX,y:e.clientY}); try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
   if(TCH.size===2&&mode==='walk'){ pinch={d:tdist()}; drag=null; autoGo=null; } });
 canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) return; t.x=e.clientX; t.y=e.clientY; if(!pinch||TCH.size<2) return;
-  const d=tdist(), step=(d-pinch.d)/Math.max(200,Math.min(canvas.clientWidth,canvas.clientHeight))*3.2; pinch.d=d; // about 3 m for a full spread
+  const d=tdist(), step=(d-pinch.d)/Math.max(200,Math.min(canvas.clientWidth,canvas.clientHeight))*3.2; pinch.d=d; if(TUT.on){ if(step>0) TUT.f+=step; else TUT.b-=step; } // about 3 m for a full spread
   const fx=-Math.sin(walk.yaw)*Math.sign(step), fy=Math.cos(walk.yaw)*Math.sign(step), sx=-fy, sy=fx, a=Math.abs(step); let mx=fx*a, my=fy*a;
   if(a>0&&okPos(walk.x+fx*0.6,walk.y+fy*0.6)&&!canWalk(walk.x+fx*0.6,walk.y+fy*0.6)){ // a pedestal ahead (or behind): ease sideways round it while still going on (a wall just stops you)
     const side=[pinch.side||1,-(pinch.side||1)].find(k=>canWalk(walk.x+fx*0.6+sx*k*0.55,walk.y+fy*0.6+sy*k*0.55)&&canWalk(walk.x+sx*k*0.3,walk.y+sy*k*0.3));
     if(side){ pinch.side=side; mx=fx*a*0.45+sx*side*a*0.9; my=fy*a*0.45+sy*side*a*0.9; } } else pinch.side=0;
   [walk.x,walk.y]=collide(walk.x+mx,walk.y+my); lastWork=null; dirty=true; });
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
+// phones, first visit: a short hands-on tour — spread / pinch / drag are shown moving the camera, then tried by you; then touch a work and the docent offers to talk about it
+(function(){ let done=false; try{ done=localStorage.getItem('lysTutDone')==='1'; }catch(e){} if(done||!COARSE||!DOC) return;
+  const ko=GB_LANG==='ko', T={ko:{sp:'두 손가락을 벌리면 앞으로 걸어가요',pn:'두 손가락을 모으면 뒤로 물러나요',dr:'한 손가락으로 화면을 밀면 시선이 돌아가요',try:'이제 직접 해 보세요',tap:'마음에 드는 작품을 터치해 보세요',skip:'건너뛰기'},en:{sp:'Spread two fingers to walk forward',pn:'Pinch two fingers to step back',dr:'Slide one finger to look around',try:'Now you try',tap:'Touch a work you like',skip:'Skip'}}[ko?'ko':'en'];
+  D.greeted=true; /* the docent waits: the tour comes first */
+  const el=document.createElement('div'); el.className='tut'; el.hidden=true; el.innerHTML='<div class="tt"></div><div class="tg"><i class="tf"></i><i class="tf"></i></div><button class="tk" type="button"></button>'; stage.appendChild(el);
+  const tt=el.querySelector('.tt'), tg=el.querySelector('.tg'), tk=el.querySelector('.tk'), ring=document.createElement('div'); ring.className='tring'; ring.hidden=true; stage.appendChild(ring); tk.textContent=T.skip;
+  const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; try{ localStorage.setItem('lysTutDone','1'); }catch(e){} if(skipped) D.greeted=false; };
+  tk.addEventListener('pointerdown',e=>{ e.stopPropagation(); }); tk.addEventListener('click',e=>{ e.stopPropagation(); fin(true); });
+  let st=0, t0=0, y0=0, shown=false, tried=false, turned=false; const show=(cls,txt)=>{ el.className='tut '+cls; tt.textContent=txt; tg.style.display=cls?'block':'none'; el.hidden=false; };
+  const go=(sgn)=>{ const fx=-Math.sin(walk.yaw)*sgn, fy=Math.cos(walk.yaw)*sgn; for(const d of [1.2,0.8,0.5]){ const x=walk.x+fx*d, y=walk.y+fy*d; if(canWalk(x,y)&&lineClear(walk.x,walk.y,x,y)){ goTo(x,y,null,null); return; } } };
+  const next=(n,now)=>{ st=n; t0=now; shown=false; tried=false; turned=false; TUT.f=0; TUT.b=0; };
+  function pick(){ let best=null, bd=9; for(const w of works){ if(!w.mesh||!w.mesh.visible) continue; _tv.copy(w.mesh.position).project(camera); if(_tv.z>1||Math.abs(_tv.x)>0.75||Math.abs(_tv.y)>0.7) continue; const d=Math.hypot(_tv.x,_tv.y*0.8); if(d<bd){ bd=d; best=[_tv.x,_tv.y]; } } return best; }
+  const _tv=new THREE.Vector3(); let last=0;
+  (function tick(now){ requestAnimationFrame(tick); if(st===99||now-last<100) return; last=now; if(mode!=='walk') return;
+    const lo=document.getElementById('load'); if(st===0){ if(lo&&!lo.hidden) return; if(!t0){ t0=now; return; } if(now-t0<3500) return; TUT.on=true; next(1,now); }
+    const e=(now-t0)/1000;
+    if(st===1){ if(!shown){ shown=true; show('sp',T.sp); go(1); } else if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; } if(TUT.f>0.5) next(2,now); else if(e>30) next(2,now); }
+    else if(st===2){ if(!shown){ shown=true; show('pn',T.pn); go(-1); } else if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; } if(TUT.b>0.4) next(3,now); else if(e>30) next(3,now); }
+    else if(st===3){ if(!shown){ shown=true; show('dr',T.dr); y0=walk.yaw; goTo(walk.x,walk.y,walk.yaw+0.8,null); t0=now; return; } if(e>3.2&&!tried){ tried=true; tt.textContent=T.try; y0=walk.yaw; } if(!autoGo&&tried&&Math.abs(Math.atan2(Math.sin(walk.yaw-y0),Math.cos(walk.yaw-y0)))>0.3) next(4,now); else if(e>30) next(4,now); }
+    else if(st===4){ if(!shown){ shown=true; show('',T.tap); lastWork=null; } const p=pick(); if(p){ const r=canvas.getBoundingClientRect(); ring.style.left=(p[0]+1)/2*r.width+r.left-stage.getBoundingClientRect().left+'px'; ring.style.top=(1-p[1])/2*r.height+r.top-stage.getBoundingClientRect().top+'px'; ring.hidden=false; } else{ ring.hidden=true; if(!turned&&e>1.5&&!autoGo){ turned=true; let nb=null, nd=1e9; for(const w of works){ if(!w.mesh||!w.mesh.visible) continue; const dx=w.mesh.position.x-walk.x, dy=-w.mesh.position.z-walk.y, d=Math.hypot(dx,dy); if(d<nd&&d>0.8){ nd=d; nb=[dx,dy]; } } if(nb) goTo(walk.x,walk.y,lookYaw(nb[0],nb[1]),0); } } /* nothing in view: turn toward the nearest work */
+      if(lastWork&&lastWork.w){ ring.hidden=true; el.hidden=true; next(5,now); } else if(e>90) fin(true); }
+    else if(st===5){ if(autoGo&&e<20) return; if(!(D.lead&&DOCT&&lastCap)){ if(e>6) fin(false); return; } D.askCap=lastCap; D.back=null; D.tutAsk=1; docStart('q',-3,now); D.d=30; docAskShow(true); fin(false); } })(0);
+})();
+
 // computers: mouse wheel walks forward / back — however fast you spin it, you still walk at an easy pace (the spins queue up, up to ~2.5 m)
 { let wq=0, wv=0, wside=0, wt=performance.now();
   canvas.addEventListener('wheel',e=>{ if(mode!=='walk'||(typeof guest!=='undefined'&&guest.isOpen)) return; e.preventDefault(); autoGo=null; const k=e.deltaMode===1?40:e.deltaMode===2?800:1;
