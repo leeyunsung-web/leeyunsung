@@ -54,6 +54,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chatlog div b{font-weight:600;margin-right:6px;color:#b9b2a5}.chatlog div.doc b{color:#f0c264}
 .chatlog div.out{opacity:0;transform:translateY(-10px)}
 .online{position:absolute;left:12px;top:12px;z-index:3;font:500 12px var(--ui);letter-spacing:.02em;color:#f3f0ea;background:rgba(20,19,17,.42);border-radius:999px;padding:4px 10px 4px 22px;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.stage,.stage *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .gyroHint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;width:76px;height:76px;border:0;border-radius:50%;background:rgba(20,19,17,.45);color:#fff;display:grid;place-items:center;cursor:pointer;animation:gyh 1.6s ease-in-out infinite;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.gyroHint[hidden]{display:none}.gyroHint svg{animation:gyr 1.6s ease-in-out infinite}
 @keyframes gyh{0%,100%{opacity:.55;box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{opacity:1;box-shadow:0 0 0 14px rgba(255,255,255,0)}}@keyframes gyr{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
 .gyro{position:absolute;right:48px;top:10px;z-index:3;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(20,19,17,.42);color:#f3f0ea;display:grid;place-items:center;cursor:pointer;opacity:.75}.gyro[aria-pressed="true"]{opacity:1;background:rgba(20,19,17,.62)}.gyro[hidden]{display:none}
@@ -1735,6 +1736,7 @@ function v2Tick(dt){ if(!v2On()&&(V2.zt!==1||V2.hold)){ V2.zt=1; V2.zoom=false; 
   const H=V2.hold; if(!H||!v2On()) return; const yaw=walk.yaw+GY.y, sp=1.15*dt*Math.min(1,(performance.now()-H.t)/250+0.3);
   const fx=-Math.sin(yaw), fy=Math.cos(yaw), rx=Math.cos(yaw), ry=Math.sin(yaw);
   [walk.x,walk.y]=collide(walk.x+(fx*H.d[0]+rx*H.d[1])*sp, walk.y+(fy*H.d[0]+ry*H.d[1])*sp); lastWork=null; dirty=true; }
+for(const ev of ['touchstart','touchmove']) canvas.addEventListener(ev,e=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); /* iPhone: no magnifier / text selection when holding a finger on the gallery */
 for(const ev of ['pointerdown','pointermove','pointerup','pointercancel']) canvas.addEventListener(ev,e=>{ if(!v2On()||e.pointerType==='mouse') return; e.stopImmediatePropagation(); e.preventDefault();
   if(ev==='pointerdown'){ stage.focus({preventScroll:true}); try{ canvas.setPointerCapture(e.pointerId); }catch(err){} autoGo=null;
     const d=V2.zoom?null:v2Edge(e.clientX,e.clientY); V2.down={x:e.clientX,y:e.clientY,t:performance.now(),id:e.pointerId}; if(d){ V2.hold={d,t:performance.now(),id:e.pointerId}; } return; }
