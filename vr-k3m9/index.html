@@ -881,8 +881,8 @@ const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null}; /* phone look-around stat
   stage.addEventListener('pointerdown',()=>{ if(!gh.hidden) hideHint(); }); /* any other touch: the hint steps aside (the corner button stays) */
   const fit=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; gb.hidden=!(GYRO_UI&&M3&&COARSE&&(sw?sw.startsWith('portrait'):screen.height>screen.width)); /* the phone held upright (the page itself sits in a frame of any shape) */ if(gb.hidden&&GY.on) gyroToggle(gb); gh.hidden=gb.hidden||hintDone||GY.on; }; /* center hint: blinks until tapped */ fit(); addEventListener('resize',fit); if(screen.orientation) screen.orientation.addEventListener('change',fit);
   gb.addEventListener('pointerdown',e=>e.stopPropagation()); gb.addEventListener('click',e=>{ e.stopPropagation(); gyroToggle(gb); }); stage.appendChild(gb); }
-const DOC=M3, DOCID='docent'; let DOCT=null, docLoading=false;
-const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 둘러보시는 방법을 잠깐 알려 드릴게요. 보고 싶은 작품을 누르시면 그 앞으로 걸어갑니다. 바닥을 누르면 그곳으로 이동하고, 화면을 끌면 주위를 둘러보실 수 있어요. 작품 설명을 도와드릴까요?',en:'Hello, and welcome to the Lee Yunsung exhibition. Let me show you how to look around. Tap a work and you will walk up to it. Tap the floor to move there, and drag the screen to look around. Would you like me to tell you about the works?'};
+const DOC=M3, DOCID='docent', DOC_AG=true; /* 2026-11-10: the docent is an audio guide — no figure, each visitor hears their own (no leader, nothing shared) */ let DOCT=null, docLoading=false;
+const DOC_HI={ko:'안녕하세요. 이윤성 작가의 전시에 오신 것을 환영합니다. 둘러보시는 방법을 잠깐 알려 드릴게요. 보고 싶은 작품을 누르시면 그 앞으로 걸어갑니다. 바닥을 누르면 그곳으로 이동하고, 화면을 끌면 주위를 둘러보실 수 있어요.',en:'Hello, and welcome to the Lee Yunsung exhibition. Let me show you how to look around. Tap a work and you will walk up to it. Tap the floor to move there, and drag the screen to look around.'};
 const D={tour:null,lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
 function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/Art Poster|^Book|· ₩/.test(c)) return '';
@@ -900,7 +900,8 @@ function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
 const docLang=()=>GB_LANG==='ko'?'ko':'en';
 const DOC_ASK={ko:'이 작품에 대해 설명을 드릴까요?',en:'Shall I tell you about this work?'};
 function docBase(s){ return s&&s.slice(0,2)==='w-'?docSeries(DOCT&&DOCT.wl[+s.slice(2)]):s; } /* the series a line belongs to */
-function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; if(i===-3) return DOC_ASK[lang]; if(s&&s.slice(0,2)==='w-'){ const c=DOCT&&DOCT.wl[+s.slice(2)]; return c?DOCT.works[c][lang]:''; } /* a work's own introduction: caption read aloud + what it shows */ const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
+const DOC_Q4={ko:'작품 설명을 도와드릴까요?',en:'Would you like me to tell you about the works?'};
+function docText(s,i,lang){ if(i===-1) return DOC_HI[lang]; if(i===-3) return DOC_ASK[lang]; if(i===-4) return DOC_Q4[lang]; if(s&&s.slice(0,2)==='w-'){ const c=DOCT&&DOCT.wl[+s.slice(2)]; return c?DOCT.works[c][lang]:''; } /* a work's own introduction: caption read aloud + what it shows */ const S=DOCT&&DOCT.series[s]; return S&&S[lang][i]||''; }
 const _dsc={t:null,r:null}; function docSplit(t){ if(_dsc.t===t) return _dsc.r; _dsc.t=t; const m=t.match(/[^.!?]+[.!?]+["”’)\]〉》]*\s*|[^.!?]+$/g); return _dsc.r=(m||[t]).map(x=>x.trim()).filter(Boolean); }
 function docDur(t,lang){ return docSplit(t).reduce((a,x)=>a+x.length/(lang==='ko'?7:15)+1.4,0); } // reading time, seconds
 function docStart(s,i,now){ D.s=s; D.i=i; D.t0=now; D.d=docDur(docText(s,i,docLang()),docLang()); D.key=''; D.sent=0; }
@@ -914,10 +915,10 @@ function docTarget(){ const fx=-Math.sin(walk.yaw), fy=Math.cos(walk.yaw), rx=Ma
   for(const [a,b] of [[1.05,0.35],[-1.05,0.35],[0,-1.1],[1.2,-0.6],[-1.2,-0.6]]){ const x=walk.x+rx*a+fx*b, y=walk.y+ry*a+fy*b; if(canWalk(x,y)&&lineClear(walk.x,walk.y,x,y)) return [x,y]; }
   return null; }
 function docLead(dt,now){
-  const me=Math.hypot(D.x-walk.x,D.y-walk.y);
+  const me=DOC_AG?0:Math.hypot(D.x-walk.x,D.y-walk.y);
   // walk: straight when the way is clear, round the walls (through the doorways) when not; faster when far behind
-  const T=docTarget(); if(T){ D.tx=T[0]; D.ty=T[1]; }
-  if(D.tx!=null){ const dd=Math.hypot(D.tx-D.x,D.ty-D.y);
+  const T=DOC_AG?null:docTarget(); if(T){ D.tx=T[0]; D.ty=T[1]; }
+  if(!DOC_AG&&D.tx!=null){ const dd=Math.hypot(D.tx-D.x,D.ty-D.y);
     if(dd>0.25){ let gx=D.tx, gy=D.ty;
       if(!lineClear(D.x,D.y,gx,gy)){ if(now-D.pathT>1200){ D.path=findPath(D.x,D.y,gx,gy)||null; D.pathT=now; } /* at most once a second: a failed search used to repeat every frame and stall the page */ while(D.path&&D.path.length&&Math.hypot(D.path[0][0]-D.x,D.path[0][1]-D.y)<0.2) D.path.shift(); if(D.path&&D.path.length){ gx=D.path[0][0]; gy=D.path[0][1]; } }
       else D.path=null;
@@ -942,7 +943,7 @@ function docLead(dt,now){
     if(s&&D.s&&s!==docBase(D.s)&&now-D.wantT>1500&&!D.asked[lastCap]){ D.asked[lastCap]=1; D.back={s:D.s,i:D.i}; D.askCap=lastCap; docStart('q',-3,now); D.d=30; docAskShow(true); } }
   else if(lastCap!==D.askCap&&docSeries(lastCap)===docBase(D.back&&D.back.s)){ docAnswer(false); } /* walked back to the earlier work: carry on */
   // tell the room (on change at once; position at most ~7 times a second while moving)
-  if(room&&room.readyState===1&&roomMe){ const moved=Math.hypot(D.x-D.sx,D.y-D.sy)>0.03;
+  if(!DOC_AG&&room&&room.readyState===1&&roomMe){ const moved=Math.hypot(D.x-D.sx,D.y-D.sy)>0.03;
     if(!D.sent||(moved&&now-D.sent>150)||now-D.sent>3000){ D.sent=now; D.sx=D.x; D.sy=D.y;
       room.send(JSON.stringify({t:'dc',x:+D.x.toFixed(3),y:+D.y.toFixed(3),a:+D.yaw.toFixed(3),s:D.s,i:D.i,e:+Math.max(0,(now-D.t0)/1000).toFixed(2),d:+D.d.toFixed(2)})); } }
   const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
@@ -960,8 +961,8 @@ const docInd=document.createElement('div'); docInd.className='dind'; docInd.inne
 const _dv=new THREE.Vector3();
 function docMark(p,on){ if(!on){ docInd.style.display='none'; return; } docInd.className='dind'; docInd.style.display='flex'; docInd.style.left='50%';
   const b=parseFloat(dsub.style.bottom)||72; docInd.style.top=''; docInd.style.bottom=(b+(dsub.offsetHeight||22)+8)+'px'; docInd.style.transform='translateX(-50%)'; } /* fixed above the subtitle */
-function docShow(now){ const p=PEERS.get(DOCID); if(!p) return; const e=(now-D.t0)/1000;
-  const on=!(D.i<-1||e>=D.d||Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>9); docMark(p,on);
+function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; const e=(now-D.t0)/1000;
+  const on=!((D.i<-1&&D.i!==-3&&D.i!==-4)||e>=D.d||(p&&Math.hypot(p.pos.x-walk.x,p.pos.y-walk.y)>9)); docMark(p,on&&!DOC_AG);
   if(!on){ if(D.key){ dsub.style.opacity='0'; D.key=''; } return; }
   const sents=docSplit(docText(D.s,D.i,docLang())); if(!sents.length) return; const W=sents.map(x=>x.length+12), tot=W.reduce((a,b)=>a+b,0);
   let acc=0, k=0; for(;k<sents.length-1;k++){ acc+=W[k]/tot*D.d; if(e<acc) break; } if(k===sents.length-1) acc=D.d;
@@ -972,7 +973,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p) return; const e=(now-D.t
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
   if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1107b',{cache:'no-cache'}).then(r=>r.json()).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
-  if(!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
+  if(!DOC_AG&&!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
   if(D.lead) docLead(dt,now); else { const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
   docShow(now); }
 window.__doc=()=>({...D,path:undefined,have:!!DOCT,peer:!!PEERS.get(DOCID)}); // for checks
@@ -1003,9 +1004,9 @@ let room=null, roomMe=null, roomBack=1000, roomSent={x:1e9,y:1e9,a:1e9,t:0}, onl
 function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSocket(ROOM_URL); }catch(e){ return; }
   room.onopen=()=>{ roomBack=1000; let v=0, sid=''; try{ const o=JSON.parse(localStorage.getItem('lysV')||'null'); v=o&&o.n|0; sid=sessionStorage.getItem('lysSid')||''; }catch(e){} room.send(JSON.stringify({t:'hi',h:MY_H,x:walk.x,y:walk.y,a:walk.yaw,v,sid,dc:DOC?1:0})); };
   room.onmessage=e=>{ let m; try{ m=JSON.parse(e.data); }catch(err){ return; }
-    if(m.t==='welcome'){ roomMe=m.id; for(const q of m.peers||[]) addPeer(q); if(DOC){ D.lead=!('lead' in m)||m.lead===roomMe; if(m.dcs) docHear(m.dcs); } }
-    else if(m.t==='lead'){ if(DOC){ const was=D.lead; D.lead=m.id===roomMe; if(D.lead&&!was) D.sent=0; } }
-    else if(m.t==='dc'){ if(DOC&&!D.lead) docHear(m); }
+    if(m.t==='welcome'){ roomMe=m.id; for(const q of m.peers||[]) addPeer(q); if(DOC){ D.lead=!('lead' in m)||m.lead===roomMe; if(m.dcs&&!DOC_AG) docHear(m.dcs); } if(DOC_AG) D.lead=true; }
+    else if(m.t==='lead'){ if(DOC&&!DOC_AG){ const was=D.lead; D.lead=m.id===roomMe; if(D.lead&&!was) D.sent=0; } }
+    else if(m.t==='dc'){ if(DOC&&!D.lead&&!DOC_AG) docHear(m); }
     else if(m.t==='join') addPeer(m);
     else if(m.t==='p'){ const p=PEERS.get(m.id); if(p){ p.tgt.set(m.x,m.y); p.tyaw=-m.a; } }
     else if(m.t==='leave') removePeer(m.id);
