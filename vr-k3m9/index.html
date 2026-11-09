@@ -1589,11 +1589,11 @@ canvas.addEventListener('pointermove',e=>{ const t=TCH.get(e.pointerId); if(!t) 
 const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.addEventListener('pointerup',tEnd); canvas.addEventListener('pointercancel',tEnd);
 // phones, first visit: a short hands-on tour — spread / pinch / drag are shown moving the camera, then tried by you; then touch a work and the docent offers to talk about it
 (function(){ const MASTERV=/(^|; )lysM=1/.test(document.cookie); let done=false; try{ done=localStorage.getItem('lysTutDone')==='1'; }catch(e){} if((done&&!MASTERV)||!COARSE||!DOC) return; /* the master sees it every visit */
-  const ko=GB_LANG==='ko', T={ko:{hi:'안녕하세요, 이윤성 작가의 전시에 오신 것을 환영합니다. 둘러보는 방법을 먼저 알려 드리겠습니다.',sp:'두 손가락을 벌리면 앞으로 걸어갑니다',pn:'두 손가락을 모으면 뒤로 물러납니다',dr:'한 손가락으로 화면을 밀면 시선이 돌아갑니다',try:'이제 직접 해 보세요',tap:'마음에 드는 작품을 터치해 보십시오',find:'화면을 밀어 작품을 찾아보십시오',skip:'건너뛰기'},en:{hi:'Hello, and welcome to the Lee Yunsung exhibition. Let me first show you how to look around.',sp:'Spread two fingers to walk forward',pn:'Pinch two fingers to step back',dr:'Slide one finger to look around',try:'Now you try',tap:'Touch a work you like',find:'Slide the screen to find a work',skip:'Skip'}}[ko?'ko':'en'];
+  const ko=GB_LANG==='ko', T={ko:{h0:'안녕하세요.',hi:'이윤성 작가의 전시에 오신 것을 환영합니다. 둘러보는 방법을 먼저 알려 드리겠습니다.',sp:'두 손가락을 벌리면 앞으로 걸어갑니다',pn:'두 손가락을 모으면 뒤로 물러납니다',dr:'한 손가락으로 화면을 밀면 시선이 돌아갑니다',try:'이제 직접 해 보세요',tap:'마음에 드는 작품을 터치해 보십시오',find:'화면을 밀어 작품을 찾아보십시오',skip:'건너뛰기'},en:{h0:'Hello.',hi:'Welcome to the Lee Yunsung exhibition. Let me first show you how to look around.',sp:'Spread two fingers to walk forward',pn:'Pinch two fingers to step back',dr:'Slide one finger to look around',try:'Now you try',tap:'Touch a work you like',find:'Slide the screen to find a work',skip:'Skip'}}[ko?'ko':'en'];
   D.greeted=true; /* the docent waits: the tour comes first */
   const el=document.createElement('div'); el.className='tut'; el.hidden=true; el.innerHTML='<div class="tt"></div><div class="tg"><i class="tf"></i><i class="tf"></i></div><button class="tk" type="button"></button>'; stage.appendChild(el);
   const tt=el.querySelector('.tt'), tg=el.querySelector('.tg'), tk=el.querySelector('.tk'), ring=document.createElement('div'); ring.className='tring'; ring.hidden=true; stage.appendChild(ring); tk.textContent=T.skip;
-  const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; if(!MASTERV){ try{ localStorage.setItem('lysTutDone','1'); }catch(e){} } if(skipped){ D.greeted=false; } };
+  const fin=(skipped)=>{ st=99; el.hidden=true; ring.hidden=true; TUT.on=false; if(!MASTERV){ try{ localStorage.setItem('lysTutDone','1'); }catch(e){} } if(skipped){ D.greeted=true; D.tour=true; D.i=-2; D.pause=performance.now()+1500; D.wantT=performance.now(); D.sent=0; } }; /* skipped: no second greeting, the guide goes straight on with the works */
   tk.addEventListener('pointerdown',e=>{ e.stopPropagation(); }); tk.addEventListener('click',e=>{ e.stopPropagation(); fin(true); });
   let st=0, t0=0, y0=0, shown=false, tried=false, turned=false; const show=(cls,txt)=>{ el.className='tut '+cls; tt.textContent=txt; tg.style.display=cls?'block':'none'; el.hidden=false; };
   /* demos move the camera directly (the same way your fingers do): no path-following, so the view never swings round */
@@ -1605,8 +1605,9 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
   function pick(){ let best=null, bd=9; for(const w of works){ if(!w.mesh||!w.mesh.visible) continue; _tv.copy(w.mesh.position).project(camera); if(_tv.z>1||Math.abs(_tv.x)>0.75||Math.abs(_tv.y)>0.7) continue; const d=Math.hypot(_tv.x,_tv.y*0.8); if(d<bd){ bd=d; best=[_tv.x,_tv.y]; } } return best; }
   const _tv=new THREE.Vector3(); let last=0;
   (function tick(now){ requestAnimationFrame(tick); if(st===99||now-last<100) return; last=now; if(mode!=='walk') return;
-    const lo=document.getElementById('load'); if(st===0){ if(lo&&!lo.hidden) return; if(!t0){ t0=now; return; } if(now-t0<3500) return; TUT.on=true; next(1,now); st=0.5; show('',T.hi); }
-    if(st===0.5){ if((now-t0)/1000>4.8) next(1,now); return; } /* greeting first, then the how-to */
+    const lo=document.getElementById('load'); if(st===0){ if(lo&&!lo.hidden) return; if(!t0){ t0=now; return; } if(now-t0<3500) return; TUT.on=true; next(1,now); st=0.5; show('',T.h0); }
+    if(st===0.5){ if((now-t0)/1000>1.8){ st=0.6; t0=now; show('',T.hi); } return; } /* "안녕하세요." appears alone first, then the welcome line */
+    if(st===0.6){ if((now-t0)/1000>4.2) next(1,now); return; } /* greeting first, then the how-to */
     const e=(now-t0)/1000; if(st>=1&&st<=3&&!shown&&e<1.2) return; /* a short breath before each demo */
     if(st===1){ if(!shown){ shown=true; show('sp',T.sp); go(1); } else if(e>4.2) next(2,now); } /* explain only: each movement is shown once, no "now you try" */
     else if(st===2){ if(!shown){ shown=true; show('pn',T.pn); go(-1); } else if(e>4.2) next(3,now); }
