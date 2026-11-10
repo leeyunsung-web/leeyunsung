@@ -588,6 +588,13 @@ for(const r of ROOMS.slice(1)){ if(r.H) continue; const g2=new THREE.Mesh(new TH
 // paintings with captions
 // canvas edges lit from the ceiling: top bright, sides mid, bottom in shade
 const sTop=new THREE.MeshBasicMaterial({color:0xf4f3f0}), sLR=new THREE.MeshBasicMaterial({color:0xcfcdc8}), sBot=new THREE.MeshBasicMaterial({color:0x9c9a96});
+// 2026-11-11 (master): the canvas sides get the same woven texture as the front (threads in world space, so one material serves every painting)
+if(M3) for(const m of [sTop,sLR,sBot]) m.onBeforeCompile=sh=>{ sh.uniforms.uWeave=uWeave;
+  sh.vertexShader='varying vec3 vWP;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vWP=(modelMatrix*vec4(transformed,1.0)).xyz;');
+  sh.fragmentShader='uniform float uWeave; varying vec3 vWP;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+    { vec3 n=abs(normalize(cross(dFdx(vWP),dFdy(vWP)))); vec2 q=n.y>0.7?vWP.xz:(n.x>n.z?vWP.zy:vWP.xy); vec2 c=q*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0);
+      float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
+      float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`); };
 // soft wall shadow behind each canvas (wide penumbra + tight contact line, pushed slightly down)
 function shadowTex(w,h){
   const M=0.16, ppm=Math.min(360,1100/Math.max(w+2*M,h+2*M)), cw=Math.round((w+2*M)*ppm), ch=Math.round((h+2*M)*ppm);
@@ -904,7 +911,8 @@ function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
   if(/^Laocoon/.test(t)) return 'laocoon';
   if(/^Danae/.test(t)) return 'danae';
   if(/Annunciation/.test(t)) return 'the-annunciation';
-  if(/Three Graces|^Prometheus$/.test(t)) return 'prometheus-and-the-three-graces';
+  if(/Three Graces/.test(t)) return 'three-graces'; // 2026-11-11: the Three Graces' own paragraphs only (no Prometheus)
+  if(/^Prometheus$/.test(t)) return 'prometheus';
   if(/^Zodiac$|^(Aquarius|Aries|Cancer|Capricorn|Gemini|Leo|Libra|Pisces|Sagittarius|Scorpio|Taurus|Virgo)$|^Inside of Light/.test(t)) return 'zodiac';
   if(/^Head of Torso/.test(t)) return 'frames-of-torso';
   if(/^Torso/.test(t)) return 'torso';
@@ -994,7 +1002,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; let e=(
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
-  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1110a',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
+  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1111a',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
   if(!DOC_AG&&!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
   if(D.lead) docLead(dt,now); else { const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
   docShow(now); }
