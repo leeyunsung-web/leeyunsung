@@ -366,7 +366,11 @@ const L=await (await fetch('live/layout.json')).json();
 const M3=document.documentElement.classList.contains('master');
 if(M3){ const E=await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
   if(E){ for(const C of (E.copies||[{p:'G3_',dx:E.dx,m:!!E.mirrorR3}])) for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=C.dx; let I=b.idx; if(C.m&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:C.p+b.name.slice(3),pos:P,idx:I}); } // room 3 (and 4) = room 2's shell moved along (the far wall flipped when the exit is on the other side)
-    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door34=E.door34||null; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
+    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door34=E.door34||null; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true;
+    if(E.move) L.paintings=L.paintings.map(p=>E.move[p.id]?{...p,...E.move[p.id]}:p); // master: works of rooms 1-2 rehung
+    if(E.midWalls){ const [a0,a1]=E.midWalls.z; for(const nm of E.midWalls.names){ const i=L.baked.findIndex(b=>b.name===nm); if(i<0) continue; const b=L.baked[i], Z=b.pos.filter((v,k)=>k%3===2), z0=Math.min(...Z), z1=5.2; // the wall box ran from one end to the old corner doorway; stretch two copies of it either side of a doorway in the middle
+        const mk=(lo,hi)=>{ const P=b.pos.slice(); for(let k=2;k<P.length;k+=3){ const z=Math.min(P[k],z1); P[k]=lo+(z-z0)/(z1-z0)*(hi-lo); } return {...b,pos:P}; };
+        L.baked.splice(i,1,mk(-L.room.L/2,a0),mk(a1,L.room.L/2)); } } } }
 const W=L.room.W, LL=L.room.L, H=L.room.H;
 // master preview: the whole gallery baked in Blender Cycles (2026-11-05) — rooms 1-3 get their own light maps (room 2 and 3 used to borrow room 1's), the shop and corridor get theirs
 const B2=L.bake2;
@@ -516,11 +520,11 @@ const GH=0.03, GD=0.02;
 // master preview: room 3's floating-wall gaps, its outer corner, and the doorway from room 2 (same dressing as room 1 -> 2)
 if(L.m3&&ROOMS[2]) for(const [r3,D,O,T0] of (L.door34?[[ROOMS[2],L.door23,L.door34,null],[ROOMS[3],L.door34,L.door2,L.text3]]:[[ROOMS[2],L.door23,L.door2,L.text3]])){ const xc=(r3.x0+r3.x1)/2, w3=r3.x1-r3.x0; // 2026-11-10: a fourth room (master) — the same dressing for each room after room 2, each with its own way in (D) and out (O)
   reveal(w3,xc,-r3.y1,0,GD,GD); reveal(w3,xc,-r3.y0,Math.PI,GD+0.1,GD);
-  if(O.north) reveal(O.y0-r3.y0,r3.x1,-(r3.y0+O.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-O.y1,r3.x1,-(r3.y1+O.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0);
+  if(O.north) reveal(O.y0-r3.y0,r3.x1,-(r3.y0+O.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-O.y1,r3.x1,-(r3.y1+O.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0); const MID=D.y0>r3.y0+0.01; if(MID) reveal(D.y0-r3.y0,D.x1,-(r3.y0+D.y0)/2,Math.PI/2,0,GD); // doorway in the middle of the wall: a gap line on both sides
   {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,O.north?-r3.y0+0.05:-r3.y1-0.05); scene.add(m);}
   const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=D.x1-D.x0, dxm=(D.x0+D.x1)/2, zN=-D.y1, zS=-D.y0;
-  {const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,D.h-GH),jm); j.position.set(dxm,GH+(D.h-GH)/2,zN); scene.add(j);}
-  {const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(D.x1,H/2,LL/2+0.05); scene.add(bk);}
+  for(const z of (MID?[zN,zS]:[zN])){const jw=MID?dw+0.11:dw, jx=MID?dxm+0.05:dxm, j=new THREE.Mesh(new THREE.PlaneGeometry(jw,D.h-GH),jm); j.position.set(jx,GH+(D.h-GH)/2,z+(MID?(z===zN?0.002:-0.002):0)); scene.add(j);} // middle doorway: the jamb covers both rooms' wall ends
+  if(!MID){const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(D.x1,H/2,LL/2+0.05); scene.add(bk);}
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
    const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)})); br.position.set(dxm,(H+y0)/2,(zN+zS)/2); scene.add(br);}
   if(T0){ const T=T0, c=document.createElement('canvas'); c.width=2048; c.height=640; const x=c.getContext('2d'); // room text beside the entrance, dark letters on the white wall
