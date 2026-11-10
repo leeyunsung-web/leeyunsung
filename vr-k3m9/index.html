@@ -449,7 +449,7 @@ function trimBandSides(s){const P=s.pos.slice();
   return {...s,pos:P};}
 for(let s of L.baked){
   if(B2&&/^G[234]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
-  if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall')) s=liftWallFoot(s);
+  if((s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall'))&&!M3) s=liftWallFoot(s);
   if(/Wall/.test(s.name)) s=growFaces(s,0.003,4.5/2048); else if(/Soffit/.test(s.name)) s=trimBandSides(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
@@ -480,10 +480,10 @@ for(let s of L.baked){
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
 }
 // shadow gap: the wall stops 3 cm above the floor and the reveal behind it is set back 2 cm; inside it reads as plain black
-const GH=0.03, GD=0.02;
+const GH=M3?0:0.03, GD=M3?0:0.02; // 2026-11-10 master: no shadow gap — the walls go straight down to the floor
 {const black=new THREE.MeshBasicMaterial({color:0x050505});
  // ePos/eNeg: how far the reveal runs past each end of the wall (only where it meets another wall's reveal)
- const reveal=(len,cx,cz,ry,ePos,eNeg)=>{
+ const reveal=(len,cx,cz,ry,ePos,eNeg)=>{ if(M3) return;
    const g=new THREE.Group(); g.position.set(cx,0,cz); g.rotation.y=ry; scene.add(g);
    const L2=len+ePos+eNeg, off=(ePos-eNeg)/2;
    const b=new THREE.Mesh(new THREE.PlaneGeometry(L2+0.006,GH+0.006),black); b.position.set(off,GH/2,-GD); g.add(b);                                   // back of the recess
@@ -523,7 +523,7 @@ if(L.m3&&ROOMS[2]) for(const [r3,D,O,T0] of (L.door34?[[ROOMS[2],L.door23,L.door
   if(O.north) reveal(O.y0-r3.y0,r3.x1,-(r3.y0+O.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-O.y1,r3.x1,-(r3.y1+O.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0); const MID=D.y0>r3.y0+0.01; if(MID) reveal(D.y0-r3.y0,D.x1,-(r3.y0+D.y0)/2,Math.PI/2,0,GD); // doorway in the middle of the wall: a gap line on both sides
   {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,O.north?-r3.y0+0.05:-r3.y1-0.05); scene.add(m);}
   const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=D.x1-D.x0, dxm=(D.x0+D.x1)/2, zN=-D.y1, zS=-D.y0;
-  for(const z of (MID?[zN,zS]:[zN])){const jw=MID?dw+0.11:dw, jx=MID?dxm+0.05:dxm, j=new THREE.Mesh(new THREE.PlaneGeometry(jw,D.h-GH),jm); j.position.set(jx,GH+(D.h-GH)/2,z+(MID?(z===zN?0.002:-0.002):0)); scene.add(j);} // middle doorway: the jamb covers both rooms' wall ends
+  for(const z of (MID?[zN,zS]:[zN])){const jw=dw+0.11, jx=dxm+0.05, j=new THREE.Mesh(new THREE.PlaneGeometry(jw,D.h-GH),jm); j.position.set(jx,GH+(D.h-GH)/2,z+(z===zN?0.002:-0.002)); scene.add(j);} // the jamb covers both rooms' wall ends (no dark line at the doorway edge)
   if(!MID){const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(D.x1,H/2,LL/2+0.05); scene.add(bk);}
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
    const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)})); br.position.set(dxm,(H+y0)/2,(zN+zS)/2); scene.add(br);}
