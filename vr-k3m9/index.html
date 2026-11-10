@@ -884,7 +884,7 @@ const GY={on:false,y:0,p:0,ty:0,tp:0,a0:null,b0:null}; /* phone look-around stat
   stage.addEventListener('pointerdown',()=>{ if(!gh.hidden) hideHint(); }); /* any other touch: the hint steps aside (the corner button stays) */
   const fit=()=>{ const sw=(screen.orientation&&screen.orientation.type)||''; gb.hidden=!(GYRO_UI&&M3&&COARSE&&(sw?sw.startsWith('portrait'):screen.height>screen.width)); /* the phone held upright (the page itself sits in a frame of any shape) */ if(gb.hidden&&GY.on) gyroToggle(gb); gh.hidden=gb.hidden||hintDone||GY.on; }; /* center hint: blinks until tapped */ fit(); addEventListener('resize',fit); if(screen.orientation) screen.orientation.addEventListener('change',fit);
   gb.addEventListener('pointerdown',e=>e.stopPropagation()); gb.addEventListener('click',e=>{ e.stopPropagation(); gyroToggle(gb); }); stage.appendChild(gb); }
-const DOC=M3, DOCID='docent', DOC_AG=true; /* 2026-11-10: the docent is an audio guide — no figure, each visitor hears their own (no leader, nothing shared) */ let DOCT=null, docLoading=false;
+const DOC=true, DOCID='docent', DOC_AG=true; /* 2026-11-10: the docent is an audio guide — no figure, each visitor hears their own (no leader, nothing shared) */ let DOCT=null, docLoading=false;
 const DOC_HI={ja:'こんにちは。Lee Yunsungのウェブギャラリーへようこそ。見て回る方法を、少しご案内します。見たい作品をタッチすると、その前まで歩いて行きます。床をタッチするとそこへ移動し、画面をドラッグすると周りを見渡せます。',ko:'안녕하세요. 이윤성 작가의 웹 전시장에 오신 것을 환영합니다. 둘러보시는 방법을 잠깐 알려 드릴게요. 보고 싶은 작품을 누르시면 그 앞으로 걸어갑니다. 바닥을 누르면 그곳으로 이동하고, 화면을 끌면 주위를 둘러보실 수 있어요.',en:'Hello, and welcome to the Lee Yunsung web gallery. Let me show you how to look around. Tap a work and you will walk up to it. Tap the floor to move there, and drag the screen to look around.'};
 const D={tour:null,lead:true,x:1.4,y:-3.6,yaw:Math.PI,s:'',i:-2,t0:0,d:0,prog:{},intro:{},asked:{},back:null,askCap:'',greeted:false,want:'',wantT:0,pause:0,sent:0,sx:1e9,sy:1e9,path:null,pathT:0,tx:null,ty:null,key:''};
 function docSeries(c){ if(!c) return ''; const [t,r='']=c.split('|');
@@ -984,7 +984,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; let e=(
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
-  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1107b',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
+  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1110a',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
   if(!DOC_AG&&!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
   if(D.lead) docLead(dt,now); else { const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
   docShow(now); }
