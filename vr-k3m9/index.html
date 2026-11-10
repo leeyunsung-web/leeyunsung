@@ -216,6 +216,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="pick" role="group" aria-label="조절할 벽" id="wallPick">
         <button data-w="F">정면 벽</button><button data-w="L">왼쪽 벽</button><button data-w="R">오른쪽 벽</button><button data-w="B">입구 벽</button>
         <button data-w="R2">2번 방 긴 벽 토르소</button><button data-w="B2">2번 방 입구 쪽 토르소 벽</button><button data-w="L2">2번 방 조디악 얼굴 벽</button>
+        <button data-w="NN">3번 방 수태고지 벽</button><button data-w="NE">3번 방 다나에 벽</button><button data-w="NS">3번 방 삼미신 벽</button>
       </div>
       <label for="k-gap"><span>그림 간격 <output id="o-gap"></output></span><input type="range" id="k-gap" min="0.1" max="2.5" step="0.01"></label>
       <label for="k-shift"><span>벽에서 좌우 위치 <output id="o-shift"></output></span><input type="range" id="k-shift" min="-3" max="3" step="0.01"></label>
@@ -656,14 +657,18 @@ for(const p of L.paintings){
 }
 // per-wall layout: order along the wall, original centre and gap
 const WALLS={F:{u:'x',sgn:1,len:W},B:{u:'x',sgn:-1,len:W},L:{u:'y',sgn:1,len:LL},R:{u:'y',sgn:-1,len:LL},
-  F2:{u:'x',sgn:1,len:W},B2:{u:'x',sgn:-1,len:W},R2:{u:'y',sgn:-1,len:LL},L2:{u:'y',sgn:1,len:LL-1.8}};
+  F2:{u:'x',sgn:1,len:W},B2:{u:'x',sgn:-1,len:W},R2:{u:'y',sgn:-1,len:LL},L2:{u:'y',sgn:1,len:LL-1.8},
+  NN:{u:'x',sgn:1,len:W},NE:{u:'y',sgn:-1,len:LL-1.8},NS:{u:'x',sgn:-1,len:W}}; // NN/NE/NS: the master's room between Zodiac and Digital (2026-11-11)
 for(const k of Object.keys(WALLS)) if(!works.some(w=>w.wall===k)) delete WALLS[k];
 for(const [k,wd] of Object.entries(WALLS)){
   wd.items=works.filter(w=>w.wall===k).sort((a,b)=>a.p[wd.u]-b.p[wd.u]);
   const lo=wd.items[0], hi=wd.items[wd.items.length-1];
   wd.c0=((lo.p[wd.u]-lo.p.w/2)+(hi.p[wd.u]+hi.p.w/2))/2;
-  const sumW=wd.items.reduce((s,w)=>s+w.p.w,0);
-  wd.gap0=wd.items.length>1?Math.round(((hi.p[wd.u]+hi.p.w/2)-(lo.p[wd.u]-lo.p.w/2)-sumW)/(wd.items.length-1)*100)/100:0.6;
+  // units: the canvases of one work (same caption, side by side — a diptych, the Three Graces' ten panels) move together; the gap is between works
+  wd.units=[]; for(const w of wd.items){ const U=wd.units[wd.units.length-1]; if(U&&U.cap===w.caption&&w.caption) U.items.push(w); else wd.units.push({cap:w.caption,items:[w]}); }
+  for(const U of wd.units){ const a=Math.min(...U.items.map(w=>w.p[wd.u]-w.p.w/2)), b=Math.max(...U.items.map(w=>w.p[wd.u]+w.p.w/2)); U.w=b-a; U.off=U.items.map(w=>w.p[wd.u]-a); }
+  const sumW=wd.units.reduce((s,U)=>s+U.w,0);
+  wd.gap0=wd.units.length>1?Math.round(((hi.p[wd.u]+hi.p.w/2)-(lo.p[wd.u]-lo.p.w/2)-sumW)/(wd.units.length-1)*100)/100:0.6;
   wd.sumW=sumW;
 }
 
@@ -1122,10 +1127,10 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
 const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','portH','figBlur','figUp','figNear','helloY','bubY','bubS'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
-  const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.items.length-1);
+  const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.units.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
   let u=wd.c0+wd.sgn*tune['sh'+k]-total/2;
-  for(const w of wd.items){const c=u+w.p.w/2; if(wd.u==='x') w.mesh.position.x=c; else w.mesh.position.z=-c; u+=w.p.w+gap; w.pos.x=w.mesh.position.x; w.pos.z=w.mesh.position.z;}
+  for(const U of wd.units){ U.items.forEach((w,i)=>{const c=u+U.off[i]; if(wd.u==='x') w.mesh.position.x=c; else w.mesh.position.z=-c; w.pos.x=w.mesh.position.x; w.pos.z=w.mesh.position.z;}); u+=U.w+gap; }
   return lim;
 }
 function applyTune(){
@@ -1175,7 +1180,7 @@ function applyTune(){
   const gi=PD.getElementById('k-gap'), si=PD.getElementById('k-shift');
   gi.value=tune['gap'+tune.wsel]; PD.getElementById('o-gap').textContent=(+tune['gap'+tune.wsel]).toFixed(2);
   si.min=(-lim).toFixed(2); si.max=lim.toFixed(2); si.value=tune['sh'+tune.wsel]; PD.getElementById('o-shift').textContent=((tune['sh'+tune.wsel]>0?'+':'')+(+tune['sh'+tune.wsel]).toFixed(2));
-  PD.querySelectorAll('#wallPick button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.w===tune.wsel)));
+  PD.querySelectorAll('#wallPick button').forEach(b=>{ b.setAttribute('aria-pressed',String(b.dataset.w===tune.wsel)); b.hidden=!WALLS[b.dataset.w]; });
   PD.querySelectorAll('#fovPick button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.f===+tune.fov)));
   PD.getElementById('k-bob').checked=!!tune.bob; PD.getElementById('k-mobSpin').checked=!!tune.mobSpin;
   if(+tune.people===1||+tune.people===2) tune.people=3; // mannequin and silhouette are retired: only the base figure
@@ -1242,7 +1247,7 @@ function drawMap(){
   c.fillStyle='#3c6ee6'; c.beginPath(); c.arc(vx,vy,5,0,Math.PI*2); c.fill();
 }
 let mdrag=null, mapSel={kind:'none'};
-const WNAME={F:'1번 방 정면 벽',B:'1번 방 입구 벽',L:'1번 방 왼쪽 벽',R:'1번 방 오른쪽 벽',F2:'2번 방 정면 벽',B2:'2번 방 입구 쪽 벽',R2:'2번 방 긴 벽',L2:'2번 방 조디악 얼굴 벽',Z:'2번 방 Zodiac 벽'};
+const WNAME={NN:'3번 방 수태고지 벽',NE:'3번 방 다나에 벽',NS:'3번 방 삼미신 벽',F:'1번 방 정면 벽',B:'1번 방 입구 벽',L:'1번 방 왼쪽 벽',R:'1번 방 오른쪽 벽',F2:'2번 방 정면 벽',B2:'2번 방 입구 쪽 벽',R2:'2번 방 긴 벽',L2:'2번 방 조디악 얼굴 벽',Z:'2번 방 Zodiac 벽'};
 function wallAt(x,y){let best=null,bd=0.55; // the wall (with works) nearest the click, within about half a metre
   for(const w of works){const cx=w.mesh.position.x, cy=-w.mesh.position.z, half=w.p.w/2+0.3, horiz=WALLS[w.wall]?WALLS[w.wall].u==='x':Math.abs(w.p.rot%180)<1;
     const d=horiz?Math.hypot(Math.max(0,Math.abs(x-cx)-half),y-cy):Math.hypot(x-cx,Math.max(0,Math.abs(y-cy)-half)); if(d<bd){bd=d; best=w.wall;}}

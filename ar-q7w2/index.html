@@ -76,6 +76,12 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
 <script>
 (function(){
   var master=/(?:^|;\s*)lysM=1/.test(document.cookie);   // public since 2026-11-04; hidden works stay master-only
+  // anonymous use count (2026-11-11): AR page opened for a work / AR started — same visit counter as the homepage (no name, email or IP kept); the master's devices are left out
+  var T_API='https://leeyunsung-shop.nu-layer.workers.dev/api/t', tOff=master||!!navigator.webdriver; try{ if(localStorage.getItem('lysNoTrack')==='1') tOff=true; }catch(e){}
+  function tr(t,k){ if(tOff) return; try{ var s=''; try{ s=sessionStorage.getItem('lysSid')||''; if(!s){ s=Math.random().toString(36).slice(2,10); sessionStorage.setItem('lysSid',s); } }catch(e){}
+    var b=JSON.stringify({ev:[[t,'ar',String(k||'').slice(0,100),0]],l:/^ko/i.test(navigator.language||'')?'ko':'en',r:'',s:s});
+    if(!(navigator.sendBeacon&&navigator.sendBeacon(T_API,new Blob([b],{type:'text/plain'})))) fetch(T_API,{method:'POST',body:b,keepalive:true}).catch(function(){}); }catch(e){} }
+  var trLast='';
   document.getElementById('hd').hidden=false; document.getElementById('grid').hidden=false;
   var grid=document.getElementById('grid'), view=document.getElementById('view'), mv=document.getElementById('mv'), items=[], kind='original';
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -91,7 +97,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
     document.getElementById('arBtn').firstChild.textContent=x.floor?'View in your space':'View on your wall'; document.querySelector('#arBtn small').textContent=x.floor?'내 공간에 놓아 보기 (AR)':'내 벽에 걸어 보기 (AR)';
     mv.setAttribute('environment-image',x.floor?(x.id==='s-1793370000000-mdsv1'?'env_medusa.jpg':'env_torso.jpg'):'neutral');   // sculptures: the gallery room's light, with the gallery's contrast for each material
     mv.setAttribute('shadow-intensity',x.floor?'0.7':'0'); mv.setAttribute('shadow-softness',x.floor?'0.8':'1'); mv.setAttribute('tone-mapping','neutral'); mv.setAttribute('exposure',x.id==='s-1793370000000-mdsv1'?'0.85':'1');
-    cur=x; mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; siteReady.then(function(){ buildTune(x); }); mv.alt=x.title+' by Lee Yunsung';
+    if(trLast!==x.id){ trLast=x.id; tr('ar_open',x.title); } cur=x; mv.setAttribute('ios-src',x.usdz||''); mv.src=x.glb; siteReady.then(function(){ buildTune(x); }); mv.alt=x.title+' by Lee Yunsung';
     var ql=document.getElementById('qlLink'); ql.href=(x.usdz||'')+'#allowsContentScaling=0';
     if(push) history.pushState({id:x.id},'','?id='+encodeURIComponent(x.id));
     setTimeout(arFallback,1200);
@@ -160,6 +166,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
   document.getElementById('back').onclick=function(){ if(history.state&&history.state.id) history.back(); else { close(); history.replaceState(null,'',location.pathname); } };
   addEventListener('popstate',function(){ var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x) open(x,false); else close(); });
   document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick=function(){ kind=b.dataset.k; document.querySelectorAll('#tabs button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));}); render(); }; });
+  var trLaunch=function(){ if(cur) tr('ar_launch',cur.title); }; document.getElementById('arBtn').addEventListener('click',trLaunch,true); document.getElementById('qlLink').addEventListener('click',trLaunch,true); // AR started (button pressed: Quick Look, Scene Viewer or WebXR)
   mv.addEventListener('ar-status',function(e){ if(e.detail.status==='failed') alert('AR could not start on this device. / 이 기기에서는 AR을 열 수 없어요.'); });
   fetch('works.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){ items=j.items.filter(function(x){ return master||!x.hidden; }); render();
     var id=new URLSearchParams(location.search).get('id'), x=items.find(function(i){return i.id===id;}); if(x){ kind=x.kind; render(); open(x,false); } });
