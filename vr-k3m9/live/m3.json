@@ -8,14 +8,20 @@
    "y1": 7
   },
   {
-   "x0": 43.0,
-   "x1": 48.95,
+   "x0": 22.8,
+   "x1": 31.8,
+   "y0": -7,
+   "y1": 7
+  },
+  {
+   "x0": 52.1,
+   "x1": 58.05,
    "y0": -1.9,
    "y1": 5.1
   },
   {
-   "x0": 22.85,
-   "x1": 42.85,
+   "x0": 31.95,
+   "x1": 51.95,
    "y0": -5,
    "y1": 7,
    "H": 7
@@ -29,29 +35,29 @@
   "h": 4.5
  },
  "door2": {
-  "x0": 22.7,
-  "x1": 22.8,
+  "x0": 31.8,
+  "x1": 31.9,
   "y0": 5.2,
   "y1": 7.0,
   "h": 4.5,
   "len": 4.0,
   "north": true,
-  "cx": 42.95
+  "cx": 52.05
  },
  "shop": {
-  "x0": 43.0,
-  "x1": 48.95,
+  "x0": 52.1,
+  "x1": 58.05,
   "y0": -1.9,
   "y1": 5.1,
   "door": {
-   "x0": 44.75,
-   "x1": 46.15,
+   "x0": 53.85,
+   "x1": 55.25,
    "y0": 5.1,
    "y1": 5.2,
    "h": 3.0
   },
   "table": {
-   "x": 45.974999999999994,
+   "x": 55.075,
    "y": 1.6,
    "w": 1.6,
    "d": 0.8,
@@ -89,7 +95,7 @@
   ]
  },
  "text3": {
-  "x": 16.2,
+  "x": 25.3,
   "y": -6.97,
   "title": "Digital",
   "sub": "2010–2011",
@@ -101,9 +107,213 @@
  },
  "paintings": [
   {
+   "id": "N_AnnL",
+   "file": "h-w2-p-1787384720915-eoxdq.jpg",
+   "x": 15.84,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 0.91,
+   "h": 1.17,
+   "caption": "The Annunciation (left panel)|2014, Oil on canvas, 117 × 91 cm",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnC1",
+   "file": "h-ann-c1.jpg",
+   "x": 17.5475,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 1.303,
+   "h": 1.94,
+   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnC2",
+   "file": "h-ann-c2.jpg",
+   "x": 18.8525,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 1.303,
+   "h": 1.94,
+   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnR",
+   "file": "h-w2-p-1787383683408-o4qw7.jpg",
+   "x": 20.56,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 0.91,
+   "h": 1.17,
+   "caption": "The Annunciation (right panel)|2014, Oil on canvas, 117 × 91 cm",
+   "wall": "NN"
+  },
+  {
+   "id": "N_D0",
+   "file": "h-w4-p-1787386073364-ivnzw-235d1960.jpg",
+   "x": 22.68,
+   "y": 3.74,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Blue|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_D1",
+   "file": "h-w4-p-1787386116559-njryh-d88de96f.jpg",
+   "x": 22.68,
+   "y": 0.9,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Pink|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_D2",
+   "file": "h-w4-p-1787386143046-9mpzm-7bf53e97.jpg",
+   "x": 22.68,
+   "y": -1.94,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Yellow|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_G00",
+   "file": "h-gr-00.jpg",
+   "x": 20.3255,
+   "y": -6.98,
+   "z": 2.852,
+   "rot": 180,
+   "w": 0.544,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G01",
+   "file": "h-gr-01.jpg",
+   "x": 19.4337,
+   "y": -6.98,
+   "z": 2.852,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G02",
+   "file": "h-gr-02.jpg",
+   "x": 18.1992,
+   "y": -6.98,
+   "z": 2.852,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G03",
+   "file": "h-gr-03.jpg",
+   "x": 16.9647,
+   "y": -6.98,
+   "z": 2.852,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G04",
+   "file": "h-gr-04.jpg",
+   "x": 16.073,
+   "y": -6.98,
+   "z": 2.852,
+   "rot": 180,
+   "w": 0.544,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G10",
+   "file": "h-gr-10.jpg",
+   "x": 20.3255,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 0.544,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G11",
+   "file": "h-gr-11.jpg",
+   "x": 19.4337,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G12",
+   "file": "h-gr-12.jpg",
+   "x": 18.1992,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G13",
+   "file": "h-gr-13.jpg",
+   "x": 16.9647,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2295,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G14",
+   "file": "h-gr-14.jpg",
+   "x": 16.073,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 0.544,
+   "h": 1.5,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
    "id": "D_LastJudgment",
    "file": "s-1790622121911-1dl7b-cover.jpg",
-   "x": 22.68,
+   "x": 31.78,
    "y": 0.9,
    "z": 2.15,
    "rot": -90,
@@ -115,7 +325,7 @@
   {
    "id": "D_Laocoon",
    "file": "s-1790623313493-6o5cs-cover.jpg",
-   "x": 13.72,
+   "x": 22.82,
    "y": 1.4,
    "z": 1.75,
    "rot": 90,
@@ -127,7 +337,7 @@
   {
    "id": "D_Torso",
    "file": "s-1790625066588-fg7t1-cover.jpg",
-   "x": 17.44,
+   "x": 26.54,
    "y": 6.98,
    "z": 1.6,
    "rot": 0,
@@ -139,7 +349,7 @@
   {
    "id": "D_Cronos",
    "file": "s-1790623028311-pavmn-cover.jpg",
-   "x": 19.01,
+   "x": 28.11,
    "y": 6.98,
    "z": 1.6,
    "rot": 0,
@@ -151,7 +361,7 @@
   {
    "id": "S_torso-digital-art-poster",
    "file": "s-1790625066588-fg7t1-cover.jpg",
-   "x": 47.9,
+   "x": 57.0,
    "y": -1.88,
    "z": 1.6,
    "rot": 180,
@@ -165,7 +375,7 @@
   {
    "id": "S_torso-14-art-poster",
    "file": "w3-p-1787592985513-1e47g.jpg",
-   "x": 46.98,
+   "x": 56.08,
    "y": -1.88,
    "z": 1.6,
    "rot": 180,
@@ -179,7 +389,7 @@
   {
    "id": "S_annunciation-central-panels-art-poster",
    "file": "w2-p-1787384904997-pmnc5-347378a8.jpg",
-   "x": 45.975,
+   "x": 55.075,
    "y": -1.88,
    "z": 1.6,
    "rot": 180,
@@ -193,7 +403,7 @@
   {
    "id": "S_torso-16-art-poster",
    "file": "w3-p-1787593009615-p5ijq.jpg",
-   "x": 44.97,
+   "x": 54.07,
    "y": -1.88,
    "z": 1.6,
    "rot": 180,
@@ -207,7 +417,7 @@
   {
    "id": "S_torso-18-art-poster",
    "file": "w3-p-1787593029600-54rtv.jpg",
-   "x": 44.05,
+   "x": 53.15,
    "y": -1.88,
    "z": 1.6,
    "rot": 180,
@@ -221,7 +431,7 @@
   {
    "id": "S_danae-blue-art-poster",
    "file": "w4-p-1787386073364-ivnzw-235d1960.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": -0.77,
    "z": 1.6,
    "rot": -90,
@@ -235,7 +445,7 @@
   {
    "id": "S_danae-yellow-art-poster",
    "file": "w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": 0.15,
    "z": 1.6,
    "rot": -90,
@@ -249,7 +459,7 @@
   {
    "id": "S_danae-pink-art-poster",
    "file": "w4-p-1787386116559-njryh-d88de96f.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": 1.07,
    "z": 1.6,
    "rot": -90,
@@ -263,7 +473,7 @@
   {
    "id": "S_at-the-last-judgment-art-poster",
    "file": "s-1790622121911-1dl7b-cover.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": 1.99,
    "z": 1.6,
    "rot": -90,
@@ -277,7 +487,7 @@
   {
    "id": "S_laocoon-art-poster",
    "file": "s-1790623313493-6o5cs-cover.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": 2.98,
    "z": 1.6,
    "rot": -90,
@@ -291,7 +501,7 @@
   {
    "id": "S_cronos-art-poster",
    "file": "s-1790623028311-pavmn-cover.jpg",
-   "x": 48.93,
+   "x": 58.03,
    "y": 3.97,
    "z": 1.6,
    "rot": -90,
@@ -305,7 +515,7 @@
   {
    "id": "S_torso-01-art-poster",
    "file": "w3-p-1787464242838-rtg3t.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 0.0,
    "z": 2.05,
    "rot": 90,
@@ -319,7 +529,7 @@
   {
    "id": "S_torso-02-art-poster",
    "file": "w3-p-1787464255794-6t81e.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 0.8,
    "z": 2.05,
    "rot": 90,
@@ -333,7 +543,7 @@
   {
    "id": "S_torso-03-art-poster",
    "file": "w3-p-1787464576033-gohda.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 1.6,
    "z": 2.05,
    "rot": 90,
@@ -347,7 +557,7 @@
   {
    "id": "S_torso-04-art-poster",
    "file": "w3-p-1787464596295-v0chu.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 2.4,
    "z": 2.05,
    "rot": 90,
@@ -361,7 +571,7 @@
   {
    "id": "S_torso-05-art-poster",
    "file": "w3-p-1787465231077-kzbxf.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 3.2,
    "z": 2.05,
    "rot": 90,
@@ -375,7 +585,7 @@
   {
    "id": "S_torso-06-art-poster",
    "file": "w3-p-1787465287347-94coq.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 0.0,
    "z": 1.13,
    "rot": 90,
@@ -389,7 +599,7 @@
   {
    "id": "S_torso-07-art-poster",
    "file": "w3-p-1787465325523-bc1ig.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 0.8,
    "z": 1.13,
    "rot": 90,
@@ -403,7 +613,7 @@
   {
    "id": "S_torso-08-art-poster",
    "file": "w3-p-1787465388849-mlqhg.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 1.6,
    "z": 1.13,
    "rot": 90,
@@ -417,7 +627,7 @@
   {
    "id": "S_torso-09-art-poster",
    "file": "w3-p-1787465558711-9hdxm.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 2.4,
    "z": 1.13,
    "rot": 90,
@@ -431,7 +641,7 @@
   {
    "id": "S_torso-10-art-poster",
    "file": "w3-p-1787465590493-13mdp.jpg",
-   "x": 43.02,
+   "x": 52.12,
    "y": 3.2,
    "z": 1.13,
    "rot": 90,
@@ -445,7 +655,7 @@
   {
    "id": "H_Prom1",
    "file": "h-prom-1.jpg",
-   "x": 26.8,
+   "x": 35.9,
    "y": 6.98,
    "z": 3.0,
    "rot": 0,
@@ -457,7 +667,7 @@
   {
    "id": "H_Prom2",
    "file": "h-prom-2.jpg",
-   "x": 26.8,
+   "x": 35.9,
    "y": 6.98,
    "z": 1.4,
    "rot": 0,
@@ -467,57 +677,9 @@
    "wall": "HN"
   },
   {
-   "id": "H_AnnL",
-   "file": "h-w2-p-1787384720915-eoxdq.jpg",
-   "x": 30.54,
-   "y": 6.98,
-   "z": 1.6,
-   "rot": 0,
-   "w": 0.91,
-   "h": 1.17,
-   "caption": "The Annunciation (left panel)|2014, Oil on canvas, 117 × 91 cm",
-   "wall": "HN"
-  },
-  {
-   "id": "H_AnnC1",
-   "file": "h-ann-c1.jpg",
-   "x": 32.146,
-   "y": 6.98,
-   "z": 1.6,
-   "rot": 0,
-   "w": 1.303,
-   "h": 1.94,
-   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
-   "wall": "HN"
-  },
-  {
-   "id": "H_AnnC2",
-   "file": "h-ann-c2.jpg",
-   "x": 33.453,
-   "y": 6.98,
-   "z": 1.6,
-   "rot": 0,
-   "w": 1.303,
-   "h": 1.94,
-   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
-   "wall": "HN"
-  },
-  {
-   "id": "H_AnnR",
-   "file": "h-w2-p-1787383683408-o4qw7.jpg",
-   "x": 35.06,
-   "y": 6.98,
-   "z": 1.6,
-   "rot": 0,
-   "w": 0.91,
-   "h": 1.17,
-   "caption": "The Annunciation (right panel)|2014, Oil on canvas, 117 × 91 cm",
-   "wall": "HN"
-  },
-  {
    "id": "H_L04",
    "file": "h-w7-p-1789630993222-0troq.jpg",
-   "x": 37.95,
+   "x": 47.05,
    "y": 6.98,
    "z": 1.55,
    "rot": 0,
@@ -529,7 +691,7 @@
   {
    "id": "H_L05",
    "file": "h-w7-p-1789631006291-ss8qz.jpg",
-   "x": 39.7,
+   "x": 48.8,
    "y": 6.98,
    "z": 1.55,
    "rot": 0,
@@ -541,7 +703,7 @@
   {
    "id": "H_L06",
    "file": "h-w7-p-1789631012687-1wy36.jpg",
-   "x": 41.45,
+   "x": 50.55,
    "y": 6.98,
    "z": 1.55,
    "rot": 0,
@@ -553,7 +715,7 @@
   {
    "id": "H_L100",
    "file": "h-w7-p-1789631105383-1pqqx.jpg",
-   "x": 27.26,
+   "x": 36.36,
    "y": -4.98,
    "z": 1.57,
    "rot": 180,
@@ -565,7 +727,7 @@
   {
    "id": "H_L101",
    "file": "h-w7-p-1789631112213-r0d6r.jpg",
-   "x": 25.9,
+   "x": 35.0,
    "y": -4.98,
    "z": 1.57,
    "rot": 180,
@@ -577,7 +739,7 @@
   {
    "id": "H_L102",
    "file": "h-w7-p-1789631122266-k80mt.jpg",
-   "x": 24.54,
+   "x": 33.64,
    "y": -4.98,
    "z": 1.57,
    "rot": 180,
@@ -587,45 +749,9 @@
    "wall": "HS"
   },
   {
-   "id": "H_D0",
-   "file": "h-w4-p-1787386073364-ivnzw-235d1960.jpg",
-   "x": 35.19,
-   "y": -4.98,
-   "z": 1.805,
-   "rot": 180,
-   "w": 1.94,
-   "h": 2.61,
-   "caption": "Danae Blue|2015, Oil on canvas, 261 × 194 cm",
-   "wall": "HS"
-  },
-  {
-   "id": "H_D1",
-   "file": "h-w4-p-1787386116559-njryh-d88de96f.jpg",
-   "x": 32.8,
-   "y": -4.98,
-   "z": 1.805,
-   "rot": 180,
-   "w": 1.94,
-   "h": 2.61,
-   "caption": "Danae Pink|2015, Oil on canvas, 261 × 194 cm",
-   "wall": "HS"
-  },
-  {
-   "id": "H_D2",
-   "file": "h-w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-   "x": 30.41,
-   "y": -4.98,
-   "z": 1.805,
-   "rot": 180,
-   "w": 1.94,
-   "h": 2.61,
-   "caption": "Danae Yellow|2015, Oil on canvas, 261 × 194 cm",
-   "wall": "HS"
-  },
-  {
    "id": "H_07",
    "file": "h-w7-p-1789631022759-qn64o.jpg",
-   "x": 41.425,
+   "x": 50.525,
    "y": -4.98,
    "z": 1.55,
    "rot": 180,
@@ -637,7 +763,7 @@
   {
    "id": "H_08",
    "file": "h-w7-p-1789631029410-hi30a.jpg",
-   "x": 39.85,
+   "x": 48.95,
    "y": -4.98,
    "z": 1.55,
    "rot": 180,
@@ -649,7 +775,7 @@
   {
    "id": "H_09",
    "file": "h-w7-p-1789631038309-9re0b.jpg",
-   "x": 38.125,
+   "x": 47.225,
    "y": -4.98,
    "z": 1.55,
    "rot": 180,
@@ -657,132 +783,12 @@
    "h": 1.2,
    "caption": "Laocoon 09|2024, Acrylic on canvas, 120 × 100 cm",
    "wall": "HS"
-  },
-  {
-   "id": "H_G00",
-   "file": "h-gr-00.jpg",
-   "x": 42.83,
-   "y": 2.028,
-   "z": 2.852,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G01",
-   "file": "h-gr-01.jpg",
-   "x": 42.83,
-   "y": 1.064,
-   "z": 2.852,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G02",
-   "file": "h-gr-02.jpg",
-   "x": 42.83,
-   "y": 0.1,
-   "z": 2.852,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G03",
-   "file": "h-gr-03.jpg",
-   "x": 42.83,
-   "y": -0.864,
-   "z": 2.852,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G04",
-   "file": "h-gr-04.jpg",
-   "x": 42.83,
-   "y": -1.828,
-   "z": 2.852,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G10",
-   "file": "h-gr-10.jpg",
-   "x": 42.83,
-   "y": 2.028,
-   "z": 1.348,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G11",
-   "file": "h-gr-11.jpg",
-   "x": 42.83,
-   "y": 1.064,
-   "z": 1.348,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G12",
-   "file": "h-gr-12.jpg",
-   "x": 42.83,
-   "y": 0.1,
-   "z": 1.348,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G13",
-   "file": "h-gr-13.jpg",
-   "x": 42.83,
-   "y": -0.864,
-   "z": 1.348,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
-  },
-  {
-   "id": "H_G14",
-   "file": "h-gr-14.jpg",
-   "x": 42.83,
-   "y": -1.828,
-   "z": 1.348,
-   "rot": -90,
-   "w": 0.96,
-   "h": 1.5,
-   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
-   "wall": "HE"
   }
  ],
  "mirrorR3": true,
  "hall": {
-  "x0": 22.85,
-  "x1": 42.85,
+  "x0": 31.95,
+  "x1": 51.95,
   "y0": -5,
   "y1": 7,
   "H": 7,
@@ -792,25 +798,25 @@
    "h": 4.5
   },
   "sky": {
-   "x0": 25.6,
-   "x1": 40.1,
+   "x0": 34.7,
+   "x1": 49.2,
    "y0": -2.2,
    "y1": 4.2
   },
   "benches": [
    {
-    "x": 26.4,
+    "x": 35.5,
     "y": 1.0
    },
    {
-    "x": 39.6,
+    "x": 48.7,
     "y": 1.0
    }
   ],
   "sculpt": [
    {
     "k": "med",
-    "x": 30.4,
+    "x": 39.5,
     "y": 1.9,
     "top": 1.25,
     "w": 0.42,
@@ -819,7 +825,7 @@
    },
    {
     "k": "tor",
-    "x": 35.6,
+    "x": 44.7,
     "y": 0.1,
     "top": 1.15,
     "w": 0.6,
@@ -828,7 +834,7 @@
    }
   ],
   "text": {
-   "x": 24.15,
+   "x": 33.25,
    "y": 6.97,
    "title": "Sculpture Hall",
    "sub": "2014–2026",
@@ -841,5 +847,24 @@
   "bake": {
    "v": 1
   }
+ },
+ "copies": [
+  {
+   "p": "G3_",
+   "dx": 9.1,
+   "m": false
+  },
+  {
+   "p": "G4_",
+   "dx": 18.2,
+   "m": true
+  }
+ ],
+ "door34": {
+  "x0": 22.7,
+  "x1": 22.8,
+  "y0": -7.0,
+  "y1": -5.2,
+  "h": 4.5
  }
 }

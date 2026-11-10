@@ -365,8 +365,8 @@ const L=await (await fetch('live/layout.json')).json();
 // master preview (2026-11-04): room 3 (Digital), then the guestbook corridor, then the gift shop. Master mode only; visitors keep the public layout untouched
 const M3=document.documentElement.classList.contains('master');
 if(M3){ const E=await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
-  if(E){ for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=E.dx; let I=b.idx; if(E.mirrorR3&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:'G3_'+b.name.slice(3),pos:P,idx:I}); } // room 3 = room 2's shell moved along (its far wall flipped when the exit is on the other side)
-    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
+  if(E){ for(const C of (E.copies||[{p:'G3_',dx:E.dx,m:!!E.mirrorR3}])) for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=C.dx; let I=b.idx; if(C.m&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:C.p+b.name.slice(3),pos:P,idx:I}); } // room 3 (and 4) = room 2's shell moved along (the far wall flipped when the exit is on the other side)
+    L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door34=E.door34||null; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true; } }
 const W=L.room.W, LL=L.room.L, H=L.room.H;
 // master preview: the whole gallery baked in Blender Cycles (2026-11-05) — rooms 1-3 get their own light maps (room 2 and 3 used to borrow room 1's), the shop and corridor get theirs
 const B2=L.bake2;
@@ -444,8 +444,8 @@ function trimBandSides(s){const P=s.pos.slice();
     for(let k=0;k<4;k++){const v=f*4+k; if(P[v*3+1]-lo<1e-4) P[v*3+1]=lo+0.002;}}
   return {...s,pos:P};}
 for(let s of L.baked){
-  if(B2&&/^G[23]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
-  if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')) s=liftWallFoot(s);
+  if(B2&&/^G[234]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
+  if(s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall')) s=liftWallFoot(s);
   if(/Wall/.test(s.name)) s=growFaces(s,0.003,4.5/2048); else if(/Soffit/.test(s.name)) s=trimBandSides(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
@@ -458,10 +458,10 @@ for(let s of L.baked){
         if(!endFace) keep.push(idx[i],idx[i+1],idx[i+2]); }
       idx=keep; }
     geo.setIndex(idx); }
-  if(s.name.startsWith('G_Soffit')||s.name.startsWith('G2_Soffit')||s.name.startsWith('G3_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
+  if(s.name.startsWith('G_Soffit')||s.name.startsWith('G2_Soffit')||s.name.startsWith('G3_Soffit')||s.name.startsWith('G4_Soffit')){ // ceiling bands: one even tone per side (the bake darkened them where the bands overlap at the corners)
     const P=s.pos, col=new Float32Array(P.length), C=new THREE.Color();
     for(let f=0;f<P.length/12;f++){let cx=0,cy=0,cz=0,ys=[];for(let k=0;k<4;k++){const v=f*4+k;cx+=P[v*3]/4;cy+=P[v*3+1]/4;cz+=P[v*3+2]/4;ys.push(P[v*3+1]);}
-      const inDoor=(DOOR&&DOORX&&DOOR.h>=H-1e-3&&cx>=DOOR.x0-0.02&&cx<=DOOR.x1+0.02)||(L.door2&&cx>=L.door2.x0-0.02&&cx<=L.door2.x1+0.02)||(L.door23&&cx>=L.door23.x0-0.02&&cx<=L.door23.x1+0.02); // with the opening up to the ceiling, the bands' backs on the shared wall line show through it
+      const inDoor=(DOOR&&DOORX&&DOOR.h>=H-1e-3&&cx>=DOOR.x0-0.02&&cx<=DOOR.x1+0.02)||(L.door2&&cx>=L.door2.x0-0.02&&cx<=L.door2.x1+0.02)||(L.door23&&cx>=L.door23.x0-0.02&&cx<=L.door23.x1+0.02)||(L.door34&&cx>=L.door34.x0-0.02&&cx<=L.door34.x1+0.02); // with the opening up to the ceiling, the bands' backs on the shared wall line show through it
       const horiz=Math.max(...ys)-Math.min(...ys)<1e-4, inside=inRoom3(cx,cz,1e-3)||inDoor;
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
@@ -469,7 +469,7 @@ for(let s of L.baked){
     geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
   const isFloor=/FloorBox$/.test(s.name);
   const m=new THREE.MeshBasicMaterial({map:tex((SMALL&&/^lm_/.test(s.img)?'live/m/':'live/')+s.img),transparent:isFloor,opacity:isFloor?0.80:1}); // phones: half-size light maps (smooth light, no visible change)
-  if(s.name.startsWith('G_Wall')||s.name==='G3_WallW'){ m.polygonOffset=true; m.polygonOffsetFactor=-2; m.polygonOffsetUnits=-12; } // where the two rooms' walls overlap, room 1's wins cleanly (no flicker)
+  if(s.name.startsWith('G_Wall')||s.name==='G3_WallW'||s.name==='G4_WallW'){ m.polygonOffset=true; m.polygonOffsetFactor=-2; m.polygonOffsetUnits=-12; } // where the two rooms' walls overlap, room 1's wins cleanly (no flicker)
   const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh);
   if(s.name.startsWith('G_Pedestal')){ // rebuilt below as a resizable box shaded like its bake
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
@@ -514,16 +514,16 @@ const GH=0.03, GD=0.02;
      br.position.set(dx,(H+y0)/2,(zN+zS)/2); scene.add(br); }
    const hd=new THREE.Mesh(new THREE.PlaneGeometry(dw,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.74,0.738,0.732,THREE.SRGBColorSpace),side:THREE.DoubleSide})); hd.rotation.x=Math.PI/2; hd.position.set(dx,DOOR.h,(zN+zS)/2); scene.add(hd);}
 // master preview: room 3's floating-wall gaps, its outer corner, and the doorway from room 2 (same dressing as room 1 -> 2)
-if(L.m3&&ROOMS[2]){ const r3=ROOMS[2], xc=(r3.x0+r3.x1)/2, w3=r3.x1-r3.x0, D=L.door23;
+if(L.m3&&ROOMS[2]) for(const [r3,D,O,T0] of (L.door34?[[ROOMS[2],L.door23,L.door34,null],[ROOMS[3],L.door34,L.door2,L.text3]]:[[ROOMS[2],L.door23,L.door2,L.text3]])){ const xc=(r3.x0+r3.x1)/2, w3=r3.x1-r3.x0; // 2026-11-10: a fourth room (master) — the same dressing for each room after room 2, each with its own way in (D) and out (O)
   reveal(w3,xc,-r3.y1,0,GD,GD); reveal(w3,xc,-r3.y0,Math.PI,GD+0.1,GD);
-  if(L.door2.north) reveal(L.door2.y0-r3.y0,r3.x1,-(r3.y0+L.door2.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-L.door2.y1,r3.x1,-(r3.y1+L.door2.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0);
-  {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,L.door2.north?-r3.y0+0.05:-r3.y1-0.05); scene.add(m);}
+  if(O.north) reveal(O.y0-r3.y0,r3.x1,-(r3.y0+O.y0)/2,-Math.PI/2,0,GD); else reveal(r3.y1-O.y1,r3.x1,-(r3.y1+O.y1)/2,-Math.PI/2,GD,0); reveal(r3.y1-D.y1,D.x1,-(r3.y1+D.y1)/2,Math.PI/2,GD,0);
+  {const m=new THREE.Mesh(new THREE.BoxGeometry(0.1,H-GH,0.1),new THREE.MeshBasicMaterial({color:wallC})); m.position.set(r3.x1+0.05,GH+(H-GH)/2,O.north?-r3.y0+0.05:-r3.y1-0.05); scene.add(m);}
   const jm=new THREE.MeshBasicMaterial({color:wallC,side:THREE.DoubleSide}), dw=D.x1-D.x0, dxm=(D.x0+D.x1)/2, zN=-D.y1, zS=-D.y0;
   {const j=new THREE.Mesh(new THREE.PlaneGeometry(dw,D.h-GH),jm); j.position.set(dxm,GH+(D.h-GH)/2,zN); scene.add(j);}
   {const bk=new THREE.Mesh(new THREE.PlaneGeometry(0.4,H),new THREE.MeshBasicMaterial({color:wallC})); bk.rotation.y=Math.PI; bk.position.set(D.x1,H/2,LL/2+0.05); scene.add(bk);}
   {const sb=L.baked.find(b=>b.name==='G2_SoffitR'); let y0=H; if(sb) for(let i=1;i<sb.pos.length;i+=3) y0=Math.min(y0,sb.pos[i]);
    const br=new THREE.Mesh(new THREE.BoxGeometry(dw+0.004,H-y0,zS-zN),new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.78,0.778,0.772,THREE.SRGBColorSpace)})); br.position.set(dxm,(H+y0)/2,(zN+zS)/2); scene.add(br);}
-  if(L.text3){ const T=L.text3, c=document.createElement('canvas'); c.width=2048; c.height=640; const x=c.getContext('2d'); // room text beside the entrance, dark letters on the white wall
+  if(T0){ const T=T0, c=document.createElement('canvas'); c.width=2048; c.height=640; const x=c.getContext('2d'); // room text beside the entrance, dark letters on the white wall
     x.fillStyle='rgba(40,38,36,.92)'; x.font='italic 400 150px Georgia,"Times New Roman",serif'; x.fillText(T.title,60,190);
     x.font='400 64px Georgia,"Times New Roman",serif'; x.fillStyle='rgba(40,38,36,.7)'; x.fillText(T.sub,64,290);
     x.font='400 50px Georgia,"Times New Roman",serif'; x.fillStyle='rgba(40,38,36,.85)'; T.body.forEach((l,i)=>x.fillText(l,64,410+i*70));
@@ -1349,7 +1349,7 @@ const SKEY='medusa-room-state-v1'; let saved=null; try{saved=JSON.parse(localSto
 function saveState(){try{localStorage.setItem(SKEY,JSON.stringify({walk,mode}));}catch(e){} try{sessionStorage.setItem('lysGalView',JSON.stringify({x:walk.x,y:walk.y,yaw:walk.yaw,pitch:walk.pitch}));}catch(e){}}
 /* homepage: a refresh keeps the view you had (this tab's session); a fresh visit (browser or tab closed and opened again) starts in front of a work as usual */
 let sessView=null; try{ sessView=JSON.parse(sessionStorage.getItem('lysGalView')||'null'); }catch(e){}
-const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door23?[{x0:L.door23.x0-R-0.02,x1:L.door23.x1+R+0.02,y0:L.door23.y0+R,y1:L.door23.y1-R}]:[]),...(L.shop?[{x0:L.shop.door.x0+R,x1:L.shop.door.x1-R,y0:L.shop.door.y0-R-0.1,y1:L.shop.door.y1+R+0.1}]:[]),...(L.hall?[{x0:L.door2.x0-R-0.02,x1:L.hall.x0+R+0.02,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(L.door2?[{x0:GBX0-R-0.02,x1:(L.door2.cx??L.door2.x1)+(L.door2.len||4)-R-0.55,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
+const WALK=[...ROOMS.map(r=>({x0:r.x0+R,x1:r.x1-R,y0:r.y0+R,y1:r.y1-R})),...(L.door23?[{x0:L.door23.x0-R-0.02,x1:L.door23.x1+R+0.02,y0:L.door23.y0+R,y1:L.door23.y1-R}]:[]),...(L.door34?[{x0:L.door34.x0-R-0.02,x1:L.door34.x1+R+0.02,y0:L.door34.y0+R,y1:L.door34.y1-R}]:[]),...(L.shop?[{x0:L.shop.door.x0+R,x1:L.shop.door.x1-R,y0:L.shop.door.y0-R-0.1,y1:L.shop.door.y1+R+0.1}]:[]),...(L.hall?[{x0:L.door2.x0-R-0.02,x1:L.hall.x0+R+0.02,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(L.door2?[{x0:GBX0-R-0.02,x1:(L.door2.cx??L.door2.x1)+(L.door2.len||4)-R-0.55,y0:L.door2.y0+R,y1:L.door2.y1-R}]:[]),...(DOOR?[DOORX?{x0:DOOR.x0-R-0.02,x1:DOOR.x1+R+0.02,y0:DOOR.y0+R,y1:DOOR.y1-R}:{x0:DOOR.x0+R,x1:DOOR.x1-R,y0:DOOR.y0-R-0.02,y1:DOOR.y1+R+0.02}]:[])];
 const okPos=(x,y)=>WALK.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
 function collide(nx,ny){
   if(!okPos(nx,ny)){ const ox=walk.x, oy=walk.y;
@@ -1666,7 +1666,7 @@ const GATES=[]; { const W=WALK[WALK.length-1];
   if(DOOR) GATES.push(DOORX?{c:[(DOOR.x0+DOOR.x1)/2,(DOOR.y0+DOOR.y1)/2],ax:[1,0],h:(W.y1-W.y0)/2}:{c:[(DOOR.x0+DOOR.x1)/2,(DOOR.y0+DOOR.y1)/2],ax:[0,1],h:(W.x1-W.x0)/2});
   if(L.door2) GATES.push({c:[L.door2.x0,(L.door2.y0+L.door2.y1)/2],ax:[1,0],h:(L.door2.y1-L.door2.y0)/2-R});
   if(L.hall) GATES.push({c:[L.hall.x1+0.05,(L.door2.y0+L.door2.y1)/2],ax:[1,0],h:(L.door2.y1-L.door2.y0)/2-R});
-  if(L.door23){ const D=L.door23; GATES.push({c:[(D.x0+D.x1)/2,(D.y0+D.y1)/2],ax:[1,0],h:(D.y1-D.y0)/2-R}); }
+  for(const D of [L.door23,L.door34]) if(D) GATES.push({c:[(D.x0+D.x1)/2,(D.y0+D.y1)/2],ax:[1,0],h:(D.y1-D.y0)/2-R});
   if(L.shop){ const D=L.shop.door; GATES.push({c:[(D.x0+D.x1)/2,(D.y0+D.y1)/2],ax:[0,1],h:(D.x1-D.x0)/2-R}); } }
 function gateCross(ax,ay,bx,by){ for(const G of GATES){ const [cx,cy]=G.c, [ux,uy]=G.ax, sa=(ax-cx)*ux+(ay-cy)*uy, sb=(bx-cx)*ux+(by-cy)*uy; if(sa*sb>=0) continue;
     const t=sa/(sa-sb), px=ax+(bx-ax)*t-cx, py=ay+(by-ay)*t-cy; if(Math.abs(px*-uy+py*ux)<G.h+0.6) return {G,s:Math.sign(sb-sa)}; } return null; }
@@ -2045,7 +2045,7 @@ else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode===
   later.sort((a,b)=>dist(a)-dist(b)); let li=0;
   const next=()=>{ const w=later[li++]; if(!w) return; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); setTimeout(next,30); },undefined,()=>tl2.load(w.full,t=>{ put(w,t); setTimeout(next,30); },undefined,()=>setTimeout(next,30))); };
   // full-resolution image only for the work you are actually looking at (or clicked)
-  window.hiRes=u=>{ hiWant=null; for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t)); } };
+  window.hiRes=u=>{ hiWant=null; for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t),undefined,()=>{ w.hi=0; tl2.load(w.file,t=>put(w,t)); }); } }; // no full image (404): keep the light copy instead of an empty panel
   const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); for(let k=0;k<3;k++) next(); }; // three at a time once the room is on screen
   setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
 setInterval(saveState,1000);
@@ -2056,7 +2056,7 @@ const fpsEl=document.getElementById('fps'); let fms=0, moved=0, lastCalls=0, las
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 // room tone: starts quietly on the first touch / click / key, follows the room you are in, your steps and other visitors' steps
 const tone=createRoomTone(), sndEl=document.getElementById('snd');
-const roomAt=(x,y)=>L.shop&&x>=L.shop.x0&&y>=L.shop.y0-0.05&&y<=L.shop.y1+0.05?'room1':WALK&&L.door2&&x>GBX0?'guestbook':([1,2].includes(ROOMS.findIndex(q=>x>=q.x0&&x<=q.x1&&y>=q.y0&&y<=q.y1))?'room2':'room1');
+const roomAt=(x,y)=>L.shop&&x>=L.shop.x0&&y>=L.shop.y0-0.05&&y<=L.shop.y1+0.05?'room1':WALK&&L.door2&&x>GBX0?'guestbook':([1,2,...(L.door34?[3]:[])].includes(ROOMS.findIndex(q=>x>=q.x0&&x<=q.x1&&y>=q.y0&&y<=q.y1))?'room2':'room1');
 const mobXY=(()=>{ const r2=ROOMS[1]; return r2?{x:(r2.x0+r2.x1)/2,y:(r2.y0+r2.y1)/2}:null; })();
 sndEl.setAttribute('aria-pressed',String(!tone.muted)); sndEl.addEventListener('pointerdown',e=>e.stopPropagation());
 sndEl.addEventListener('click',e=>{ e.stopPropagation(); tone.setMuted(!tone.muted); sndEl.setAttribute('aria-pressed',String(!tone.muted)); stage.focus({preventScroll:true}); });
