@@ -5275,6 +5275,22 @@
               "caption": "Digitally composited photograph"
             }
           ]
+        },
+        {
+          "id": "row-1794312300000-pack1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1794312300000-pack1",
+              "image": "./images/torso-sculpture-packing-poster.jpg",
+              "caption": "Custom crate, 3D mockup",
+              "video": {
+                "src": "./media/torso-sculpture-packing.mp4",
+                "ratio": "9:16",
+                "poster": "./images/torso-sculpture-packing-poster.jpg"
+              }
+            }
+          ]
         }
       ],
       "spec1": "50 × 43 × 38 cm",
