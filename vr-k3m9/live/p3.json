@@ -1,0 +1,276 @@
+{
+ "note": "Public extension (2026-11-11): room 3 (The Annunciation, Danae, The Three Graces) after room 2, then the guestbook corridor. The master layout lives in m3.json.",
+ "copies": [
+  {
+   "p": "G3_",
+   "dx": 9.1,
+   "m": false
+  }
+ ],
+ "rooms": [
+  {
+   "x0": 13.7,
+   "x1": 22.7,
+   "y0": -7,
+   "y1": 7
+  }
+ ],
+ "door23": {
+  "x0": 13.6,
+  "x1": 13.7,
+  "y0": -1.3,
+  "y1": 1.3,
+  "h": 4.5
+ },
+ "door2": {
+  "x0": 22.7,
+  "x1": 22.8,
+  "y0": -7.0,
+  "y1": -5.2,
+  "h": 4.5,
+  "len": 4.0
+ },
+ "midWalls": {
+  "names": [
+   "G2_WallR",
+   "G3_WallW"
+  ],
+  "z": [
+   -1.3,
+   1.3
+  ]
+ },
+ "move": {
+  "Torso07": {
+   "x": 13.58,
+   "y": 4.15,
+   "wall": "R2m"
+  },
+  "Torso09": {
+   "x": 13.58,
+   "y": -4.15,
+   "wall": "R2m"
+  },
+  "Torso08": {
+   "x": 11.95,
+   "y": -6.98,
+   "rot": 180,
+   "wall": "B2"
+  },
+  "Torso03": {
+   "x": 6.25
+  },
+  "Torso04": {
+   "x": 8.15
+  },
+  "Torso05": {
+   "x": 10.05
+  }
+ },
+ "paintings": [
+  {
+   "id": "N_AnnL",
+   "file": "h-w2-p-1787384720915-eoxdq.jpg",
+   "x": 15.84,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 0.91,
+   "h": 1.17,
+   "caption": "The Annunciation (left panel)|2014, Oil on canvas, 117 × 91 cm",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnC1",
+   "file": "h-ann-c1.jpg",
+   "x": 17.5475,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 1.303,
+   "h": 1.94,
+   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnC2",
+   "file": "h-ann-c2.jpg",
+   "x": 18.8525,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 1.303,
+   "h": 1.94,
+   "caption": "The Annunciation (central panels)|2014, Oil on canvas, 2 panels, 194 × 261 cm overall",
+   "wall": "NN"
+  },
+  {
+   "id": "N_AnnR",
+   "file": "h-w2-p-1787383683408-o4qw7.jpg",
+   "x": 20.56,
+   "y": 6.98,
+   "z": 1.26,
+   "rot": 0,
+   "w": 0.91,
+   "h": 1.17,
+   "caption": "The Annunciation (right panel)|2014, Oil on canvas, 117 × 91 cm",
+   "wall": "NN"
+  },
+  {
+   "id": "N_D0",
+   "file": "h-w4-p-1787386073364-ivnzw-235d1960.jpg",
+   "x": 22.68,
+   "y": 2.84,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Blue|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_D1",
+   "file": "h-w4-p-1787386116559-njryh-d88de96f.jpg",
+   "x": 22.68,
+   "y": 0.0,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Pink|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_D2",
+   "file": "h-w4-p-1787386143046-9mpzm-7bf53e97.jpg",
+   "x": 22.68,
+   "y": -2.84,
+   "z": 1.805,
+   "rot": -90,
+   "w": 1.94,
+   "h": 2.61,
+   "caption": "Danae Yellow|2015, Oil on canvas, 261 × 194 cm",
+   "wall": "NE"
+  },
+  {
+   "id": "N_G00",
+   "file": "h-gr-00.jpg",
+   "x": 20.3255,
+   "y": -6.98,
+   "z": 2.848,
+   "rot": 180,
+   "w": 0.548,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G01",
+   "file": "h-gr-01.jpg",
+   "x": 19.4337,
+   "y": -6.98,
+   "z": 2.848,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G02",
+   "file": "h-gr-02.jpg",
+   "x": 18.1992,
+   "y": -6.98,
+   "z": 2.848,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G03",
+   "file": "h-gr-03.jpg",
+   "x": 16.9647,
+   "y": -6.98,
+   "z": 2.848,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G04",
+   "file": "h-gr-04.jpg",
+   "x": 16.073,
+   "y": -6.98,
+   "z": 2.848,
+   "rot": 180,
+   "w": 0.548,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G10",
+   "file": "h-gr-10.jpg",
+   "x": 20.3255,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 0.548,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G11",
+   "file": "h-gr-11.jpg",
+   "x": 19.4337,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G12",
+   "file": "h-gr-12.jpg",
+   "x": 18.1992,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G13",
+   "file": "h-gr-13.jpg",
+   "x": 16.9647,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 1.2335,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  },
+  {
+   "id": "N_G14",
+   "file": "h-gr-14.jpg",
+   "x": 16.073,
+   "y": -6.98,
+   "z": 1.348,
+   "rot": 180,
+   "w": 0.548,
+   "h": 1.499,
+   "caption": "The Three Graces|2022, Oil on canvas, 10 panels, 300 × 480 cm overall",
+   "wall": "NS"
+  }
+ ]
+}

@@ -365,7 +365,8 @@ const orbit=new OrbitControls(camera,canvas); orbit.enableDamping=true; orbit.da
 const L=await (await fetch('live/layout.json')).json();
 // master preview (2026-11-04): room 3 (Digital), then the guestbook corridor, then the gift shop. Master mode only; visitors keep the public layout untouched
 const M3=document.documentElement.classList.contains('master');
-if(M3){ const E=await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+{ const E=M3?await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
+    :await fetch('live/p3.json?v=1111a').then(r=>r.ok?r.json():null).catch(()=>null); // 2026-11-11: visitors get room 3 too (p3.json); if it fails to load they keep rooms 1-2
   if(E){ for(const C of (E.copies||[{p:'G3_',dx:E.dx,m:!!E.mirrorR3}])) for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=C.dx; let I=b.idx; if(C.m&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:C.p+b.name.slice(3),pos:P,idx:I}); } // room 3 (and 4) = room 2's shell moved along (the far wall flipped when the exit is on the other side)
     L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door34=E.door34||null; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true;
     if(E.move) L.paintings=L.paintings.map(p=>E.move[p.id]?{...p,...E.move[p.id]}:p); // master: works of rooms 1-2 rehung
@@ -450,7 +451,7 @@ function trimBandSides(s){const P=s.pos.slice();
   return {...s,pos:P};}
 for(let s of L.baked){
   if(B2&&/^G[234]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
-  if((s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall'))&&!M3) s=liftWallFoot(s);
+  if((s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall'))&&false) s=liftWallFoot(s);
   if(/Wall/.test(s.name)) s=growFaces(s,0.003,4.5/2048); else if(/Soffit/.test(s.name)) s=trimBandSides(s);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(s.pos),3));
@@ -481,10 +482,10 @@ for(let s of L.baked){
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
 }
 // shadow gap: the wall stops 3 cm above the floor and the reveal behind it is set back 2 cm; inside it reads as plain black
-const GH=M3?0:0.03, GD=M3?0:0.02; // 2026-11-10 master: no shadow gap — the walls go straight down to the floor
+const GH=0, GD=0; // 2026-11-10/11: no shadow gap — the walls go straight down to the floor (master first, everyone from 11/11)
 {const black=new THREE.MeshBasicMaterial({color:0x050505});
  // ePos/eNeg: how far the reveal runs past each end of the wall (only where it meets another wall's reveal)
- const reveal=(len,cx,cz,ry,ePos,eNeg)=>{ if(M3) return;
+ const reveal=(len,cx,cz,ry,ePos,eNeg)=>{ return;
    const g=new THREE.Group(); g.position.set(cx,0,cz); g.rotation.y=ry; scene.add(g);
    const L2=len+ePos+eNeg, off=(ePos-eNeg)/2;
    const b=new THREE.Mesh(new THREE.PlaneGeometry(L2+0.006,GH+0.006),black); b.position.set(off,GH/2,-GD); g.add(b);                                   // back of the recess
@@ -589,7 +590,7 @@ for(const r of ROOMS.slice(1)){ if(r.H) continue; const g2=new THREE.Mesh(new TH
 // canvas edges lit from the ceiling: top bright, sides mid, bottom in shade
 const sTop=new THREE.MeshBasicMaterial({color:0xf4f3f0}), sLR=new THREE.MeshBasicMaterial({color:0xcfcdc8}), sBot=new THREE.MeshBasicMaterial({color:0x9c9a96});
 // 2026-11-11 (master): the canvas sides get the same woven texture as the front (threads in world space, so one material serves every painting)
-if(M3) for(const m of [sTop,sLR,sBot]) m.onBeforeCompile=sh=>{ sh.uniforms.uWeave=uWeave;
+for(const m of [sTop,sLR,sBot]) m.onBeforeCompile=sh=>{ sh.uniforms.uWeave=uWeave;
   sh.vertexShader='varying vec3 vWP;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vWP=(modelMatrix*vec4(transformed,1.0)).xyz;');
   sh.fragmentShader='uniform float uWeave; varying vec3 vWP;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
     { vec3 n=abs(normalize(cross(dFdx(vWP),dFdy(vWP)))); vec2 q=n.y>0.7?vWP.xz:(n.x>n.z?vWP.zy:vWP.xy); vec2 c=q*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0);
