@@ -5282,12 +5282,12 @@
           "photos": [
             {
               "id": "p-1794312300000-pack1",
-              "image": "./images/torso-sculpture-packing-poster.jpg",
+              "image": "./images/torso-sculpture-packing-poster.jpg?v=2",
               "caption": "Custom crate, 3D mockup",
               "video": {
-                "src": "./media/torso-sculpture-packing.mp4",
+                "src": "./media/torso-sculpture-packing.mp4?v=2",
                 "ratio": "9:16",
-                "poster": "./images/torso-sculpture-packing-poster.jpg"
+                "poster": "./images/torso-sculpture-packing-poster.jpg?v=2"
               }
             }
           ]
