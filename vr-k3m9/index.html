@@ -1769,6 +1769,12 @@ function openYaw(x,y,cur){ const reach=a=>{ const dx=-Math.sin(a), dy=Math.cos(a
   const here=reach(cur); if(here>2.6) return null; let best=null, bs=-1;
   for(let i=0;i<32;i++){ const a=i/32*Math.PI*2, r=reach(a), sc=r*(0.65+0.35*Math.cos(a-cur)); if(sc>bs){ bs=sc; best=a; } }
   return reach(best)>here*1.8?cur+Math.atan2(Math.sin(best-cur),Math.cos(best-cur)):null; }
+// 2026-11-11: a floor tap goes exactly where you tapped. seeFloor: that spot is floor you can actually see from here (inside the rooms, or seen through an open doorway), not floor 'behind' a wall
+const DOORR=[L.door,L.door2,L.door23,L.door34,L.shop&&L.shop.door].filter(Boolean);
+function seeFloor(tx,ty){ const dx=tx-walk.x, dy=ty-walk.y, d=Math.hypot(dx,dy), n=Math.max(1,Math.ceil(d/0.05));
+  for(let i=1;i<=n;i++){ const x=walk.x+dx*i/n, y=walk.y+dy*i/n; if(ROOMS.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1)) continue; if(DOORR.some(D=>x>=D.x0-0.05&&x<=D.x1+0.05&&y>=D.y0&&y<=D.y1)) continue; return false; } return true; }
+// the nearest spot you can stand on (a tap right by a wall or a pedestal stops there instead of pushing into it)
+function nearWalk(x,y){ if(canWalk(x,y)) return [x,y]; for(let r=0.05;r<=1.2;r+=0.05) for(let k=0;k<24;k++){ const a=k/24*Math.PI*2, qx=x+Math.cos(a)*r, qy=y+Math.sin(a)*r; if(canWalk(qx,qy)) return [qx,qy]; } return [x,y]; }
 const doorTap=(x,y)=>GATES.some(G=>{ const ax=x-G.c[0], ay=y-G.c[1]; return Math.abs(ax*G.ax[0]+ay*G.ax[1])<1.6&&Math.abs(-ax*G.ax[1]+ay*G.ax[0])<G.h+0.9; });
 let lastWork=null, lastSculpt=null; const _sph2=new THREE.Sphere(), _pt2=new THREE.Vector3();
 // the usual viewing distance for a work (the one-click stop); captions show from here
@@ -1854,8 +1860,8 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
     if(L.door2&&best.kind!=='work'&&best.kind!=='sculpt'&&best.kind!=='peer'&&hx>GBX0-0.4&&Math.abs(hy-(L.door2.y0+L.door2.y1)/2)<2.2&&!(L.shop&&(L.door2.north?hy<L.door2.y0+0.05:hy>L.door2.y1-0.05))){ const V=VIEWS.guest; lastWork=null; lastSculpt=null; if(goTo(V.x,V.y,V.yaw,V.pitch)){ autoGo.face=[V.x-Math.sin(V.yaw)*2,V.y+Math.cos(V.yaw)*2]; } return; } }
   if(best.kind==='floor'){ const fx=best.p.x, fy=-best.p.z; /* the floor right under a painting: you meant the painting */
     for(const u of new Set(works.map(unitOf))){ const m=u.mesh, x=m.position.x, y=-m.position.z, nx=Math.sin(m.rotation.y), ny=-Math.cos(m.rotation.y), out=(fx-x)*nx+(fy-y)*ny, lat=Math.abs((fx-x)*-ny+(fy-y)*nx);
-      const mine=(walk.x-x)*nx+(walk.y-y)*ny; if(out>-0.05&&out<0.9&&lat<u.p.w/2+0.25&&mine>Math.min(8,workDist(u))+0.6){ /* only while you are still coming toward it: standing close already, a floor tap just steps you nearer */ best={kind:'work',d:best.d,w:u.members?u.members[0]:u,fromFloor:true}; break; } } }
-  { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&doorTap(hp.x,-hp.z))){ /* you tapped a wall (maybe by mistake): go and look at the work nearest that spot, on your side of the wall */
+      const mine=(walk.x-x)*nx+(walk.y-y)*ny; if(out>-0.05&&out<0.4&&lat<u.p.w/2+0.25&&mine>Math.min(8,workDist(u))+0.6){ /* only while you are still coming toward it: standing close already, a floor tap just steps you nearer */ best={kind:'work',d:best.d,w:u.members?u.members[0]:u,fromFloor:true}; break; } } }
+  { const hp=_r2.ray.at(best.d,new THREE.Vector3()), stop=wallStop(hp.x,-hp.z); if(stop&&!(best.kind==='floor'&&(doorTap(hp.x,-hp.z)||seeFloor(hp.x,-hp.z)))){ /* you tapped a wall (maybe by mistake): go and look at the work nearest that spot, on your side of the wall */
       const inRoom=ROOMS.some(q=>hp.x>=q.x0&&hp.x<=q.x1&&-hp.z>=q.y0&&-hp.z<=q.y1); /* the floor just in front of a wall is still floor: walk there; only a tap that lands past the wall counts as tapping the wall */
       const nw=inRoom?null:nearestWorkTo(stop[0],stop[1]);
       if(nw&&Math.hypot(nw.mesh.position.x-walk.x,-nw.mesh.position.z-walk.y)>5.5){ const m=nw.mesh, dx=m.position.x-walk.x, dy=-m.position.z-walk.y; lastWork=null; goTo(walk.x,walk.y,lookYaw(dx,dy),Math.atan2(m.position.y-EYE,Math.hypot(dx,dy))); return; } /* far across the room: just turn to look at it, no long walk */
@@ -1892,13 +1898,13 @@ function tapMove(cx,cy){ if(mode!=='walk') return; const r=canvas.getBoundingCli
   }
   else { const x=best.p.x, y=-best.p.z;
     for(const G of GATES){ const ax=x-G.c[0], ay=y-G.c[1], along=ax*G.ax[0]+ay*G.ax[1], across=-ax*G.ax[1]+ay*G.ax[0], side=(walk.x-G.c[0])*G.ax[0]+(walk.y-G.c[1])*G.ax[1];
-      if(Math.abs(along)<1.6&&Math.abs(across)<G.h+0.9&&Math.abs(side)>0.3){ // the floor by the door: go on through
+      if(Math.abs(along)<0.35&&Math.abs(across)<G.h+0.3&&Math.abs(side)>0.3){ // the doorway itself: go on through (any other floor: exactly where you tapped)
         const sg=-Math.sign(side), R2=ROOMS.find(r=>{ const px=G.c[0]+G.ax[0]*sg*1.5, py=G.c[1]+G.ax[1]*sg*1.5; return px>=r.x0&&px<=r.x1&&py>=r.y0&&py<=r.y1; });
         let ix=-G.ax[1], iy=G.ax[0]; if(R2&&((R2.x0+R2.x1)/2-G.c[0])*ix+((R2.y0+R2.y1)/2-G.c[1])*iy<0){ ix=-ix; iy=-iy; } // sideways toward the middle of the room you enter
         let tx=G.c[0], ty=G.c[1]; for(const [k,j] of [[2,0.9],[1.8,0.7],[1.6,0.5],[1.6,0.3],[1.4,0]]){ const qx=G.c[0]+G.ax[0]*sg*k+ix*j, qy=G.c[1]+G.ax[1]*sg*k+iy*j; if(canWalk(qx,qy)&&lineClear(G.c[0]+G.ax[0]*sg*0.9,G.c[1]+G.ax[1]*sg*0.9,qx,qy)){ tx=qx; ty=qy; break; } } /* through the door, then curve a little into the room (like stepping in and turning to look) */
         const r=ROOMS.find(r=>tx>=r.x0&&tx<=r.x1&&ty>=r.y0&&ty<=r.y1), yaw=r?lookYaw((r.x0+r.x1)/2-tx,(r.y0+r.y1)/2-ty):null; /* end up facing into the room */
         if(goTo(tx,ty,yaw,yaw==null?null:-0.02)) return; } }
-    goTo(x,y,null,null); } }
+    { const q=nearWalk(x,y); goTo(q[0],q[1],null,null); } } }
 // one step of the walk you asked for (called from the main loop)
 function autoStep(dt){ if(!autoGo) return false; const g=autoGo;
   // smooth head turn: the turning speed eases in and out and never goes past ~60°/s
