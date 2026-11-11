@@ -1,5 +1,5 @@
 {
- "savedAt": 1794335748610,
+ "savedAt": 1794382535483,
  "tune": {
   "contrast": 2.05,
   "bright": 0.82,
@@ -88,7 +88,7 @@
   "gapNN": 0.75,
   "shNN": 0,
   "gapNE": 1.45,
-  "shNE": 0.32,
+  "shNE": 0,
   "gapNS": 0.6,
   "shNS": 0,
   "gapR2": 0.6,
@@ -98,7 +98,8 @@
   "shF2": 0,
   "gapS2": 0.56,
   "shS2": 0,
-  "pyNN": 1.8,
-  "pyNS": 1.27
+  "pyNN": 1.9,
+  "pyNS": 1.4,
+  "pyNE": 1.5
  }
 }
