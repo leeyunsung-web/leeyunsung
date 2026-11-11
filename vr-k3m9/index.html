@@ -2029,7 +2029,8 @@ let startFit=null; // phone start: step back until the whole work fits the tall 
 function startFitStep(){ const f=startFit, m=f.u.mesh; placeWalkCam(); camera.updateMatrixWorld();
   if(fitsView(f.u)||f.k++>40){ startFit=null; return; } const bx=walk.x+f.nx*0.2, by=walk.y+f.ny*0.2; if(!canWalk(bx,by)){ startFit=null; return; }
   walk.x=bx; walk.y=by; walk.pitch=Math.atan2(m.position.y-EYE,Math.hypot(bx-m.position.x,by+m.position.z)); dirty=true; }
-function randomWallView(){const ks=Object.keys(WALLS); if(!ks.length) return false; const k=ks[Math.floor(Math.random()*ks.length)], it=WALLS[k].items;
+const inR1=(x,y)=>{ const r=ROOMS[0]; return x>r.x0-0.3&&x<r.x1+0.3&&y>r.y0-0.3&&y<r.y1+0.3; }; // 2026-11-11: the visit always starts in room 1 (only its paintings are waited for)
+function randomWallView(){const ks=Object.keys(WALLS).filter(k=>WALLS[k].items.every(w=>inR1(w.mesh.position.x,-w.mesh.position.z))); if(!ks.length) return false; const k=ks[Math.floor(Math.random()*ks.length)], it=WALLS[k].items;
   const cx=it.reduce((a,w)=>a+w.mesh.position.x,0)/it.length, cy=-it.reduce((a,w)=>a+w.mesh.position.z,0)/it.length;
   { const asp=canvas.clientWidth/Math.max(1,canvas.clientHeight); if(asp&&asp<1){ // phone (tall screen): start in front of one work, framed for the phone
       if(Math.abs(camera.aspect-asp)>0.01){ camera.aspect=asp; camera.fov=walkFov(); camera.updateProjectionMatrix(); }
@@ -2050,28 +2051,29 @@ function introStep(now){ const box=document.getElementById('load');
   if(!canWalk(nx,ny)){ intro=null; return; } walk.x=nx; walk.y=ny;
   if(introLook) walk.pitch=Math.atan2(introLook.y-EYE,Math.hypot(nx-introLook.x,ny+introLook.z)); /* keep the work centred as you step back */
   dirty=true; if(t>=1) intro=null; }
-if(document.documentElement.classList.contains('embed')&&sessView&&isFinite(sessView.x)&&okPos(sessView.x,sessView.y)){ Object.assign(walk,{x:sessView.x,y:sessView.y,yaw:sessView.yaw,pitch:sessView.pitch}); setMode('walk'); placeWalkCam(); }
+if(document.documentElement.classList.contains('embed')&&sessView&&isFinite(sessView.x)&&okPos(sessView.x,sessView.y)&&inR1(sessView.x,sessView.y)){ Object.assign(walk,{x:sessView.x,y:sessView.y,yaw:sessView.yaw,pitch:sessView.pitch}); setMode('walk'); placeWalkCam(); }
 else if(document.documentElement.classList.contains('embed')&&randomWallView()){ intro={wait:true};
   const stopIntro=()=>{ intro=null; }; for(const ev of ['pointerdown','wheel','keydown']) stage.addEventListener(ev,stopIntro,{capture:true}); }
-else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
-{ // which paintings come first: the ones in the room you stand in (and anything within 7 m, e.g. through the doorway)
-  const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4), here=roomOf(walk.x,walk.y);
-  const dist=w=>Math.hypot(w.mesh.position.x-walk.x,-w.mesh.position.z-walk.y), first=[], later=[];
-  for(const w of works){ ((here>=0&&roomOf(w.mesh.position.x,-w.mesh.position.z)===here)||dist(w)<7?first:later).push(w); }
+else if(saved&&saved.walk&&inR1(saved.walk.x,saved.walk.y)){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
+{ // which paintings load when (2026-11-11): room 1 before the gallery opens, room 2 right after, room 3 (and anything further) once you step into room 2
+  const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4);
+  const first=[], r2=[], r3=[]; for(const w of works){ const i=roomOf(w.mesh.position.x,-w.mesh.position.z); (i===0?first:i===1?r2:r3).push(w); }
   /* a loaded picture is not put on the wall straight away: it waits until the view is still, then goes to the graphics card one per frame. Sending (and decoding) a big picture takes a moment, and doing it mid-turn was the stutter you felt */
   const put=(w,t)=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; upQ.push([w,t]); };
   const tl2=new THREE.TextureLoader();
   for(const w of first){ tl.load(w.file,t=>{ if(!w.hi) put(w,t); },undefined,()=>{ if(!w.hi&&w.full) tl2.load(w.full,t2=>put(w,t2)); }); } // light copy (1024 px), put up once it has arrived (not before: an empty picture shows black); falls back to the full image
-  later.sort((a,b)=>dist(a)-dist(b)); let li=0;
-  const next=()=>{ const w=later[li++]; if(!w) return; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); setTimeout(next,30); },undefined,()=>tl2.load(w.full,t=>{ put(w,t); setTimeout(next,30); },undefined,()=>setTimeout(next,30))); };
-  // full-resolution image only for the work you are actually looking at (or clicked)
+  const dist=w=>Math.hypot(w.mesh.position.x-walk.x,-w.mesh.position.z-walk.y), later=[]; let li=0, busy=0;
+  const one=()=>{ const w=later[li++]; if(!w){ busy--; return; } const done=()=>setTimeout(one,30);
+    tl2.load(w.file,t=>{ if(!w.hi) put(w,t); done(); },undefined,()=>{ if(w.hi||!w.full) return done(); tl2.load(w.full,t=>{ put(w,t); done(); },undefined,done); }); };
+  const queue=ws=>{ later.push(...ws.slice().sort((a,b)=>dist(a)-dist(b))); while(busy<3&&li<later.length){ busy++; one(); } }; // three at a time
   const HIMAX=SMALL?4:COARSE?8:16, hiList=[]; // full images kept on the graphics card at once; older ones go back to the light copy, so a long visit does not run the phone out of memory (that showed as black or white paintings)
   window.hiRes=u=>{ hiWant=null; const ms=u.members||[u];
     for(const w of ms){ if(!w.full||w.hi) continue; w.hi=1; hiList.push(w);
       tl2.load(w.full,t=>{ if(w.hi) put(w,t); },undefined,()=>{ w.full=null; w.hi=0; if(w.mat.map===PH&&!upQ.some(q=>q[0]===w)) tl2.load(w.file,t=>put(w,t)); }); } // no full image (404): never ask again, keep the light copy
     for(let i=0;hiList.length>HIMAX&&i<hiList.length;){ const w=hiList[i]; if(ms.includes(w)){ i++; continue; } hiList.splice(i,1); if(!w.hi) continue; w.hi=0; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); }); } };
-  const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); for(let k=0;k<3;k++) next(); }; // three at a time once the room is on screen
-  setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
+  const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); queue(r2); // room 2 once you are in
+    const r3go=()=>{ if(walk.x>ROOMS[1].x0-0.2||!r3.length){ queue(r3); return; } setTimeout(r3go,400); }; r3go(); }; // room 3: when you step through the door into room 2
+  setTimeout(go,300); window.__texPlan={first:first.length,r2:r2.length,r3:r3.length}; }
 setInterval(saveState,1000);
 // phones that struggle: draw at 1.5x instead of 2x pixel density (only if it stays under ~40 fps; capable phones keep full sharpness)
 if(COARSE){ let f0=0, slow=0; setInterval(()=>{ const f=window.__ldFrames||0, fps=(f-f0)/2; f0=f; const box=document.getElementById('load'); if(document.hidden||!box||!box.hidden) return; if(performance.now()-lookT>1500){ slow=0; return; } /* only judge while you are actually moving or turning */
