@@ -1978,7 +1978,7 @@ GT.sTitle=(x,y)=>{ let best=null,bd=1e9; for(const c of sculptCap){ if(!c.s||!c.
 GT.cap=c=>{ const t=GT.title(c), now=Date.now(); if(GT.cv&&GT.cv.t!==t){ const sec=(now-GT.cv.at)/1000; if(sec>=2) GT('g_view',GT.cv.t,Math.min(600,sec)); } if(!GT.cv||GT.cv.t!==t) GT.cv=t?{t,at:now}:null; };
 GT.tick=()=>{ const now=Date.now(); if(!document.hidden) GT.act+=Math.min(5,(now-GT.last)/1000); GT.last=now; // active seconds only
   const n=(typeof online!=='undefined'?online:0); if(n>GT.peak) GT.peak=n;
-  const r=WALK&&L.door2&&walk.x>GBX0?'guestbook':(ROOMS.findIndex(q=>walk.x>=q.x0&&walk.x<=q.x1&&walk.y>=q.y0&&walk.y<=q.y1)===1?'room2':'room1'); if(!GT.rooms.has(r)){ GT.rooms.add(r); GT('g_room',r); } };
+  const ri=ROOMS.findIndex(q=>walk.x>=q.x0&&walk.x<=q.x1&&walk.y>=q.y0&&walk.y<=q.y1), r=WALK&&L.door2&&walk.x>GBX0?'guestbook':ri>0?'room'+(ri+1):'room1'; /* 2026-11-11: room 3 was being recorded as room 1 */ if(!GT.rooms.has(r)){ GT.rooms.add(r); GT('g_room',r); } };
 GT.leave=()=>{ if(GT.cv){ GT.cap(''); } if(GT.act>=1){ GT('g_time','',Math.min(3600,GT.act)); GT.act=0; } if(GT.peak>0) GT('g_peak','',GT.peak); GT.flush(); };
 { let from=''; try{ const u=new URL(document.referrer); if(u.host===location.host) from=u.pathname; }catch(e){} if(!GT.off){ GT('g_enter',from); setInterval(GT.tick,1000); addEventListener('pagehide',GT.leave); document.addEventListener('visibilitychange',()=>{ if(document.hidden) GT.leave(); }); } }
 // captions near works
