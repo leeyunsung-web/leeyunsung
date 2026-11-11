@@ -366,7 +366,7 @@ const L=await (await fetch('live/layout.json')).json();
 // master preview (2026-11-04): room 3 (Digital), then the guestbook corridor, then the gift shop. Master mode only; visitors keep the public layout untouched
 const M3=document.documentElement.classList.contains('master');
 { const E=M3?await fetch('live/m3.json?_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
-    :await fetch('live/p3.json?v=1111a').then(r=>r.ok?r.json():null).catch(()=>null); // 2026-11-11: visitors get room 3 too (p3.json); if it fails to load they keep rooms 1-2
+    :await fetch('live/p3.json?v=1112a').then(r=>r.ok?r.json():null).catch(()=>null); // 2026-11-11: visitors get room 3 too (p3.json); if it fails to load they keep rooms 1-2
   if(E){ for(const C of (E.copies||[{p:'G3_',dx:E.dx,m:!!E.mirrorR3}])) for(const b of L.baked.filter(b=>b.name.startsWith('G2_'))){ const P=b.pos.slice(); for(let i=0;i<P.length;i+=3) P[i]+=C.dx; let I=b.idx; if(C.m&&b.name==='G2_WallR'){ for(let i=2;i<P.length;i+=3) P[i]=-P[i]; I=[]; for(let i=0;i<b.idx.length;i+=3) I.push(b.idx[i],b.idx[i+2],b.idx[i+1]); } L.baked.push({...b,name:C.p+b.name.slice(3),pos:P,idx:I}); } // room 3 (and 4) = room 2's shell moved along (the far wall flipped when the exit is on the other side)
     L.rooms=[...(L.rooms||[]),...E.rooms]; L.door23=E.door23; L.door34=E.door34||null; L.door2=E.door2; L.shop=E.shop; L.hall=E.hall||null; L.bake2=E.bake2||null; L.text3=E.text3; L.paintings=[...L.paintings,...E.paintings]; L.m3=true;
     if(E.move) L.paintings=L.paintings.map(p=>E.move[p.id]?{...p,...E.move[p.id]}:p); // master: works of rooms 1-2 rehung
@@ -1007,7 +1007,7 @@ function docShow(now){ const p=PEERS.get(DOCID); if(!p&&!DOC_AG) return; let e=(
   p.bub.el.textContent=sents[k]; p.bub.el.style.opacity='1'; p.bub.t=now+(acc-e)*1000+300; }
 function docTick(dt,now){
   if(!DOC||!KIT||mode!=='walk') return;
-  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1111a',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
+  if(!DOCT){ if(!docLoading){ docLoading=true; fetch('docent.json?v=1112a',{cache:'no-cache'}).then(r=>r.json()).then(j=>GB_LANG!=='ja'?j:fetch('docent.ja.json',{cache:'no-cache'}).then(r=>r.json()).then(q=>{ for(const k in j.series) if(q.series[k]) j.series[k].ja=q.series[k]; for(const k in j.works) if(q.works[k]) j.works[k].ja=q.works[k]; return j; })).then(j=>{ j.wl=Object.keys(j.works||{}); DOCT=j; }).catch(e=>console.warn('docent',e)); } return; }
   if(!DOC_AG&&!PEERS.has(DOCID)){ const q=docSpot(D.x,D.y)||docSpot(walk.x+1,walk.y+2)||[walk.x,walk.y]; D.x=q[0]; D.y=q[1]; addPeer({id:DOCID,doc:true,h:170,x:D.x,y:D.y,a:-D.yaw}); }
   if(D.lead) docLead(dt,now); else { const p=PEERS.get(DOCID); if(p){ p.tgt.set(D.x,D.y); p.tyaw=D.yaw; } }
   docShow(now); }
