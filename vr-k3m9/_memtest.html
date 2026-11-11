@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Memory test</title>
+<style>html,body{margin:0;background:#fff;font:14px -apple-system,sans-serif;color:#222}canvas{display:block;width:100vw;height:100vh}
+.l{position:fixed;left:8px;font:700 22px -apple-system,sans-serif;color:#d0021b;text-shadow:0 0 4px #fff}</style></head>
+<body><canvas id="c"></canvas>
+<script type="module">
+// temporary test page (2026-11-11): every painting at once (plus 4 full images and two screen-size buffers), to see if far paintings go dark on iPhone when memory is full. Delete after the test.
+import * as THREE from './three/three.module.min.js';
+const cv=document.getElementById('c'), R=new THREE.WebGLRenderer({canvas:cv,antialias:true}); R.setPixelRatio(Math.min(devicePixelRatio,2));
+const ANI=Math.min(16,R.capabilities.getMaxAnisotropy()||8);
+const FILES=["w6-p-1789629391438-q5qx4.jpg", "w6-p-1789630419727-gt5d4.jpg", "w6-p-1789629401165-lcjrz.jpg", "w3-p-1787592502932-69qpr.jpg", "w3-p-1787592524596-xvwug.jpg", "w3-p-1787592964596-nhm78.jpg", "w3-p-1787592985513-1e47g.jpg", "w3-p-1787593009615-p5ijq.jpg", "w3-p-1787593029600-54rtv.jpg", "w3-p-1787465590493-13mdp-8ddcc532.jpg", "w3-p-1787465287347-94coq-491fd6a7.jpg", "w8-head-of-torso-canvas.jpg", "w3-p-1787464576033-gohda.jpg", "w3-p-1787464596295-v0chu.jpg", "w3-p-1787465231077-kzbxf.jpg", "w3-p-1787465325523-bc1ig.jpg", "w3-p-1787465388849-mlqhg.jpg", "w3-p-1787465558711-9hdxm.jpg", "zodiac-2019-panel-1-1.jpg", "zodiac-2019-panel-1-2.jpg", "zodiac-2019-panel-1-3.jpg", "zodiac-2019-panel-2-1.jpg", "zodiac-2019-panel-2-2.jpg", "zodiac-2019-panel-2-3.jpg", "zodiac-2019-panel-3-1.jpg", "zodiac-2019-panel-3-2.jpg", "zodiac-2019-panel-3-3.jpg", "w5-p-1788441455497-02gac.jpg", "w5-p-1788441580355-xiy3r.jpg", "w5-p-1788441702700-bmh8y.jpg", "w5-p-1788441781206-ln5e6.jpg", "w5-p-1788441864288-y9ejg.jpg", "w5-p-1788441884574-q3oov.jpg", "w5-p-1788441991545-f8gfd.jpg", "w5-p-1788442009976-i914d.jpg", "w5-p-1788442034664-jg4qm.jpg", "w5-p-1788442082080-fsewc.jpg", "w5-p-1788442106405-3i5op.jpg", "w5-p-1788442302016-bfpvy.jpg", "h-w2-p-1787384720915-eoxdq.jpg", "h-ann-c1.jpg", "h-ann-c2.jpg", "h-w2-p-1787383683408-o4qw7.jpg", "h-w4-p-1787386073364-ivnzw-235d1960.jpg", "h-w4-p-1787386116559-njryh-d88de96f.jpg", "h-w4-p-1787386143046-9mpzm-7bf53e97.jpg", "h-gr-00.jpg", "h-gr-01.jpg", "h-gr-02.jpg", "h-gr-03.jpg", "h-gr-04.jpg", "h-gr-10.jpg", "h-gr-11.jpg", "h-gr-12.jpg", "h-gr-13.jpg", "h-gr-14.jpg"], BIG=["w6-p-1789629391438-q5qx4.jpg", "w8-head-of-torso-canvas.jpg", "w3-p-1787465590493-13mdp-8ddcc532.jpg", "w3-p-1787465287347-94coq-491fd6a7.jpg"], ui=document.createElement('div'); ui.style.cssText='position:fixed;left:0;right:0;bottom:0;background:#000c;color:#fff;font:13px -apple-system,sans-serif;padding:6px'; document.body.appendChild(ui);
+const s=new THREE.Scene(); s.background=new THREE.Color(0xf2f2f2); const tl=new THREE.TextureLoader(); let n=0;
+const add=(url,i,z0)=>tl.load(url,t=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=ANI; const m=new THREE.Mesh(new THREE.PlaneGeometry(1.3,1.62),new THREE.MeshBasicMaterial({map:t}));
+  m.position.set(i%2?1.6:-1.6,1.5,z0-Math.floor(i/2)*1.9); m.rotation.y=i%2?-Math.PI/2:Math.PI/2; s.add(m); n++; ui.textContent='그림 '+n+' / '+(FILES.length+BIG.length)+' 불러옴'; draw(); });
+FILES.forEach((f,i)=>add('tex/m/'+f,i,-2)); BIG.forEach((f,i)=>add('/images/'+f,i,-1));
+const cam=new THREE.PerspectiveCamera(60,1,0.1,200); cam.position.set(0,1.5,0.5); cam.lookAt(0,1.5,-10);
+const rts=[0,1].map(()=>new THREE.WebGLRenderTarget(2,2,{samples:4,type:THREE.HalfFloatType}));
+const draw=()=>{ const W=cv.clientWidth,H=cv.clientHeight; R.setSize(W,H,false); cam.aspect=W/H; cam.updateProjectionMatrix(); const pr=R.getPixelRatio(); for(const rt of rts){ rt.setSize(W*pr,H*pr); R.setRenderTarget(rt); R.render(s,cam);} R.setRenderTarget(null); R.render(s,cam); };
+draw(); addEventListener('resize',draw);
+</script></body></html>
