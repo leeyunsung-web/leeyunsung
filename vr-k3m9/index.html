@@ -638,6 +638,7 @@ const FRAMEA=(()=>{ const FW=0.022, FD=0.032, MB=0.06, sR=(r,g,b)=>new THREE.Col
 const panelGapM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.06,0.06,0.055),...PULL}), panelBackM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.035,0.035,0.032),polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-16}); /* just past the walls' pull (-2/-12); the old -6/-40 was strong enough on iPhones to come in front of the canvas */ // multi-panel works: canvas edges and the backing seen through the gaps, in shadow
 const PH=new THREE.DataTexture(new Uint8Array([228,226,222,255]),1,1); PH.colorSpace=THREE.SRGBColorSpace; PH.needsUpdate=true;
 const wallOf=p=>p.wall||(p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R');
+const CAPN={}; for(const p of L.paintings) CAPN[p.caption||'']=(CAPN[p.caption||'']||0)+1; // 2026-11-11: multi-panel works without real gaps are now one stitched picture (u-*.jpg), hung as one canvas
 for(const p of L.paintings){
   const front=new THREE.MeshBasicMaterial({map:PH,color:new THREE.Color(0.93,0.93,0.93),...PULL});
   front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
@@ -654,7 +655,7 @@ for(const p of L.paintings){
       { vec2 c=vMapUv*uSize*700.0; vec2 fw=fwidth(c); float fade=clamp(1.0-max(fw.x,fw.y)*3.0,0.0,1.0); // fades out where threads get smaller than a pixel
         float wx=0.5+0.5*sin(c.x*6.2831), wy=0.5+0.5*sin(c.y*6.2831); float over=step(0.5,fract((floor(c.x)+floor(c.y))*0.5));
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
-  const multi=!p.frame&&/panels/i.test(p.caption||''); /* one canvas of a multi-panel work (Zodiac's nine): edges and backing in shadow, so the hairline between canvases reads dark instead of white wall flickering through */
+  const multi=!p.frame&&/panels/i.test(p.caption||'')&&CAPN[p.caption||'']>1; /* one canvas of a multi-panel work (Zodiac's nine): edges and backing in shadow, so the hairline between canvases reads dark instead of white wall flickering through */
   const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,p.frame?0.004:0.04),multi?[panelGapM,panelGapM,panelGapM,panelGapM,front,panelGapM]:[sLR,sLR,sTop,sBot,front,sLR]); // framed prints: a thin sheet behind glass
   if(multi){ const o=new THREE.Shape(), hl=new THREE.Path(), a=p.w/2+0.002, b=p.h/2+0.002, c=p.w/2, d=p.h/2; o.moveTo(-a,-b); o.lineTo(a,-b); o.lineTo(a,b); o.lineTo(-a,b); o.lineTo(-a,-b); hl.moveTo(-c,-d); hl.lineTo(-c,d); hl.lineTo(c,d); hl.lineTo(c,-d); hl.lineTo(-c,-d); o.holes.push(hl);
     const bk=new THREE.Mesh(new THREE.ShapeGeometry(o),panelBackM); bk.position.z=-0.0175; m.add(bk); } // the dark backing is only a 2 mm ring around the canvas (it only needs to show in the gaps): a full sheet could be drawn over the painting on iPhones and turn it black
@@ -1598,8 +1599,12 @@ let RUN=false; addEventListener('keydown',e=>{ if(e.key==='Shift'&&M3) RUN=true;
 addEventListener('blur',()=>{ keys.clear(); RUN=false; });
 // drag to look
 let drag=null;
-canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(autoGo&&autoGo.orbit) autoGo.orbit.stop=true; /* touching the screen while walking round a sculpture: glide to a stop instead of halting dead */ drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse'}; canvas.setPointerCapture(e.pointerId);});
-canvas.addEventListener('pointermove',e=>{if(!drag) return;
+// 2026-11-11: press and hold near an edge of the screen (left/right/top/bottom) and the view turns that way; sliding still works as before
+const EDGE=0.12; function edgeAt(cx,cy){ const r=canvas.getBoundingClientRect(); if(!r.width) return null; const fx=(cx-r.left)/r.width, fy=(cy-r.top)/r.height;
+  const dx=fx<EDGE?1:fx>1-EDGE?-1:0, dy=fy<EDGE?1:fy>1-EDGE?-1:0; return dx||dy?[dx,dy]:null; }
+const edgeOff=e=>{ if(!drag||!drag.edging) return false; if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<12) return true; /* moved away: back to ordinary sliding from here */ drag.edging=false; drag.edge=null; drag.x=e.clientX; drag.y=e.clientY; drag.yaw=walk.yaw; drag.pitch=walk.pitch; drag.lx=null; return false; };
+canvas.addEventListener('pointerdown',e=>{stage.focus({preventScroll:true}); if(mode!=='walk') return; if(autoGo&&autoGo.orbit) autoGo.orbit.stop=true; /* touching the screen while walking round a sculpture: glide to a stop instead of halting dead */ drag={x:e.clientX,y:e.clientY,yaw:walk.yaw,pitch:walk.pitch,touch:e.pointerType!=='mouse',t0:performance.now(),edge:edgeAt(e.clientX,e.clientY)}; canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{if(!drag) return; if(edgeOff(e)) return;
   if(drag.touch){ // touch: grab-and-pull, the spot under your finger follows it
     const vf=camera.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
     if(drag.lx==null||Math.hypot(e.clientX-drag.lx,e.clientY-(drag.ly??e.clientY))>2) drag.mt=performance.now(); drag.lx=e.clientX; drag.ly=e.clientY; drag.hf=hf; drag.vf=vf; if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){ autoGo=null; drag.moved=true; } /* the view itself follows in the hold loop below, eased */
@@ -1608,7 +1613,7 @@ canvas.addEventListener('pointermove',e=>{if(!drag) return;
     const k=2.2/canvas.clientWidth*Math.PI*0.5;
     if(!GY.on){ walk.yaw=drag.yaw-(e.clientX-drag.x)*k; walk.pitch=Math.max(-0.9,Math.min(0.7,drag.pitch-(e.clientY-drag.y)*k)); } }
   dirty=true;});
-const endDrag=e=>{ const tap=drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
+const endDrag=e=>{ const tap=drag&&!drag.edging&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6; drag=null;
   if(tap){ try{ canvas.releasePointerCapture(e.pointerId); }catch(err){} const x=e.clientX, y=e.clientY, touch=e.pointerType!=='mouse'; setTimeout(()=>{ if(!tryOpenGuestbook(x,y)&&tune.tapWalk!==false) tapMove(x,y); },0); } }; canvas.addEventListener('pointerup',endDrag); canvas.addEventListener('pointercancel',endDrag);
 // phones: two fingers — spread them to walk forward, pinch them to step back
 const TUT={on:false,f:0,b:0}; const TCH=new Map(); let pinch=null; canvas.style.touchAction='none';
@@ -1666,6 +1671,8 @@ const tEnd=e=>{ TCH.delete(e.pointerId); if(TCH.size<2) pinch=null; }; canvas.ad
 { let hv=0, lt=performance.now(), aim=null; (function hold(now){ requestAnimationFrame(hold); const dt=Math.min(0.05,(now-lt)/1000); lt=now;
   let want=0; const td=drag&&drag.touch&&!pinch&&drag.lx!=null?drag:null;
   if(td){ const w=canvas.clientWidth||1, off=(td.lx-td.x)/w; if(Math.abs(off)>0.06&&now-(td.mt||0)>120) want=Math.sign(off)*Math.min(0.24,0.07+(Math.abs(off)-0.06)*0.5); }
+  { const d=drag; if(d&&d.edge&&!pinch&&!GY.on&&!d.moved&&now-d.t0>250){ if(!d.edging){ d.edging=true; d.ek=0; autoGo=null; aim=null; } d.ek=Math.min(1,d.ek+dt*2.5); const e2=d.ek*d.ek*(3-2*d.ek); // eases in over ~0.4 s
+      walk.yaw+=d.edge[0]*0.9*e2*dt; walk.pitch=Math.max(-0.9,Math.min(0.7,walk.pitch+d.edge[1]*0.5*e2*dt)); d.yaw=walk.yaw; d.pitch=walk.pitch; dirty=true; } }
   hv+=(want-hv)*Math.min(1,dt*(Math.abs(want)>Math.abs(hv)?4:2)); /* keeps turning only once the finger rests out to the side (not while it is still sliding), easing in to a gentle top speed */ if(Math.abs(hv)<0.002) hv=0;
   if(GY.on){ aim=null; } /* phone look mode: only the phone's own motion turns the view */
   else if(td&&td.moved){ td.yaw+=hv*dt; aim={yaw:td.yaw+(td.lx-td.x)*td.hf/(canvas.clientWidth||1)*0.45,pitch:Math.max(-0.45,Math.min(0.45,td.pitch+(td.ly-td.y)*td.vf/(canvas.clientHeight||1)*0.4))}; }
