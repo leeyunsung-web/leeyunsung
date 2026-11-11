@@ -2060,11 +2060,15 @@ else if(saved&&saved.walk){Object.assign(walk,saved.walk); setMode(saved.mode===
   /* a loaded picture is not put on the wall straight away: it waits until the view is still, then goes to the graphics card one per frame. Sending (and decoding) a big picture takes a moment, and doing it mid-turn was the stutter you felt */
   const put=(w,t)=>{ t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=MAXANI; upQ.push([w,t]); };
   const tl2=new THREE.TextureLoader();
-  for(const w of first){ const t=tl.load(w.file,undefined,undefined,()=>{ if(!w.hi) tl2.load(w.full,t2=>put(w,t2)); }); put(w,t); } // light copy (1024 px); falls back to the full image
+  for(const w of first){ tl.load(w.file,t=>{ if(!w.hi) put(w,t); },undefined,()=>{ if(!w.hi&&w.full) tl2.load(w.full,t2=>put(w,t2)); }); } // light copy (1024 px), put up once it has arrived (not before: an empty picture shows black); falls back to the full image
   later.sort((a,b)=>dist(a)-dist(b)); let li=0;
   const next=()=>{ const w=later[li++]; if(!w) return; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); setTimeout(next,30); },undefined,()=>tl2.load(w.full,t=>{ put(w,t); setTimeout(next,30); },undefined,()=>setTimeout(next,30))); };
   // full-resolution image only for the work you are actually looking at (or clicked)
-  window.hiRes=u=>{ hiWant=null; for(const w of (u.members||[u])){ if(!w.full||w.hi) continue; w.hi=1; tl2.load(w.full,t=>put(w,t),undefined,()=>{ w.hi=0; tl2.load(w.file,t=>put(w,t)); }); } }; // no full image (404): keep the light copy instead of an empty panel
+  const HIMAX=SMALL?4:COARSE?8:16, hiList=[]; // full images kept on the graphics card at once; older ones go back to the light copy, so a long visit does not run the phone out of memory (that showed as black or white paintings)
+  window.hiRes=u=>{ hiWant=null; const ms=u.members||[u];
+    for(const w of ms){ if(!w.full||w.hi) continue; w.hi=1; hiList.push(w);
+      tl2.load(w.full,t=>{ if(w.hi) put(w,t); },undefined,()=>{ w.full=null; w.hi=0; if(w.mat.map===PH&&!upQ.some(q=>q[0]===w)) tl2.load(w.file,t=>put(w,t)); }); } // no full image (404): never ask again, keep the light copy
+    for(let i=0;hiList.length>HIMAX&&i<hiList.length;){ const w=hiList[i]; if(ms.includes(w)){ i++; continue; } hiList.splice(i,1); if(!w.hi) continue; w.hi=0; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); }); } };
   const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); for(let k=0;k<3;k++) next(); }; // three at a time once the room is on screen
   setTimeout(go,300); window.__texPlan={first:first.length,later:later.length}; }
 setInterval(saveState,1000);
@@ -2109,7 +2113,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
   if(MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99)){ mobT+=dt; MOB.update(mobT); dirty=true; } // keeps the 'draw only when something changed' rule everywhere else
   { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
   { const box=document.getElementById('load'), loading=box&&!box.hidden, still=now-lookT>350;
-    if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} w.mat.map=t; dirty=true; } if(!upQ.length&&typeof scheduleEnv==='function') scheduleEnv(600); } /* new pictures on the walls: refresh what the silver sculpture and the mobile reflect, or they keep showing the grey walls from before and look dark */
+    if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} const o=w.mat.map; w.mat.map=t; if(o&&o!==PH&&o!==t) o.dispose(); dirty=true; } if(!upQ.length&&typeof scheduleEnv==='function') scheduleEnv(600); } /* new pictures on the walls: refresh what the silver sculpture and the mobile reflect, or they keep showing the grey walls from before and look dark */
     if(hiWant&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant);
     if(COARSE){ const full=Math.min(devicePixelRatio,2)*(+tune.res||1), spin=MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99), want=(still&&!spin&&!autoGo&&!drag&&!pinch&&!loading)?Math.max(qPr,full):qPr; /* moving: the light setting so it stays smooth; stopped: one sharp frame at full quality */
       if(Math.abs(renderer.getPixelRatio()-want)>0.01){ renderer.setPixelRatio(want); composer.setPixelRatio(want); resize(); dirty=true; } } }
