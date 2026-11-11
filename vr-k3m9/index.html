@@ -588,7 +588,8 @@ for(const r of ROOMS.slice(1)){ if(r.H) continue; const g2=new THREE.Mesh(new TH
 
 // paintings with captions
 // canvas edges lit from the ceiling: top bright, sides mid, bottom in shade
-const sTop=new THREE.MeshBasicMaterial({color:0xf4f3f0}), sLR=new THREE.MeshBasicMaterial({color:0xcfcdc8}), sBot=new THREE.MeshBasicMaterial({color:0x9c9a96});
+const PULL={polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-12}; // paintings get the same pull toward the eye as room 1's walls (see G_Wall), so a wall can never be drawn over a painting hung on it (on iPhones that showed as white paintings)
+const sTop=new THREE.MeshBasicMaterial({color:0xf4f3f0,...PULL}), sLR=new THREE.MeshBasicMaterial({color:0xcfcdc8,...PULL}), sBot=new THREE.MeshBasicMaterial({color:0x9c9a96,...PULL});
 // 2026-11-11 (master): the canvas sides get the same woven texture as the front (threads in world space, so one material serves every painting)
 for(const m of [sTop,sLR,sBot]) m.onBeforeCompile=sh=>{ sh.uniforms.uWeave=uWeave;
   sh.vertexShader='varying vec3 vWP;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vWP=(modelMatrix*vec4(transformed,1.0)).xyz;');
@@ -634,11 +635,11 @@ const FRAMEA=(()=>{ const FW=0.022, FD=0.032, MB=0.06, sR=(r,g,b)=>new THREE.Col
     const gl=new THREE.Mesh(new THREE.PlaneGeometry(iw,ih),glassM); gl.position.z=z0+FD-0.003; m.add(gl);
     return {ow,oh}; } }; })();
 // paintings load near-first: the room you start in comes with the loading screen, the rest streams in afterwards (nearest first)
-const panelGapM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.06,0.06,0.055)}), panelBackM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.035,0.035,0.032),polygonOffset:true,polygonOffsetFactor:-6,polygonOffsetUnits:-40}); // multi-panel works: canvas edges and the backing seen through the gaps, in shadow
+const panelGapM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.06,0.06,0.055),...PULL}), panelBackM=new THREE.MeshBasicMaterial({color:new THREE.Color(0.035,0.035,0.032),polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-16}); /* just past the walls' pull (-2/-12); the old -6/-40 was strong enough on iPhones to come in front of the canvas */ // multi-panel works: canvas edges and the backing seen through the gaps, in shadow
 const PH=new THREE.DataTexture(new Uint8Array([228,226,222,255]),1,1); PH.colorSpace=THREE.SRGBColorSpace; PH.needsUpdate=true;
 const wallOf=p=>p.wall||(p.y>6?'F':p.y<-6?'B':p.x<0?'L':'R');
 for(const p of L.paintings){
-  const front=new THREE.MeshBasicMaterial({map:PH,color:new THREE.Color(0.93,0.93,0.93)});
+  const front=new THREE.MeshBasicMaterial({map:PH,color:new THREE.Color(0.93,0.93,0.93),...PULL});
   front.onBeforeCompile=sh=>{sh.uniforms.uWeave=uWeave; sh.uniforms.uPBlur=uPBlur; sh.uniforms.uSize={value:new THREE.Vector2(p.w,p.h)};
     sh.vertexShader='varying float vDist;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vDist=-mvPosition.z;');
     // texture anti-aliasing: 4 sub-pixel samples per pixel (rotated grid) so fine lines stop shimmering when far away,
@@ -655,7 +656,8 @@ for(const p of L.paintings){
         float t=mix(wx,wy,over); diffuseColor.rgb*=1.0-uWeave*fade*(0.10*(1.0-t)+0.03); }`);};
   const multi=!p.frame&&/panels/i.test(p.caption||''); /* one canvas of a multi-panel work (Zodiac's nine): edges and backing in shadow, so the hairline between canvases reads dark instead of white wall flickering through */
   const m=new THREE.Mesh(new THREE.BoxGeometry(p.w,p.h,p.frame?0.004:0.04),multi?[panelGapM,panelGapM,panelGapM,panelGapM,front,panelGapM]:[sLR,sLR,sTop,sBot,front,sLR]); // framed prints: a thin sheet behind glass
-  if(multi){ const bk=new THREE.Mesh(new THREE.PlaneGeometry(p.w+0.004,p.h+0.004),panelBackM); bk.position.z=-0.0175; m.add(bk); }
+  if(multi){ const o=new THREE.Shape(), hl=new THREE.Path(), a=p.w/2+0.002, b=p.h/2+0.002, c=p.w/2, d=p.h/2; o.moveTo(-a,-b); o.lineTo(a,-b); o.lineTo(a,b); o.lineTo(-a,b); o.lineTo(-a,-b); hl.moveTo(-c,-d); hl.lineTo(-c,d); hl.lineTo(c,d); hl.lineTo(c,-d); hl.lineTo(-c,-d); o.holes.push(hl);
+    const bk=new THREE.Mesh(new THREE.ShapeGeometry(o),panelBackM); bk.position.z=-0.0175; m.add(bk); } // the dark backing is only a 2 mm ring around the canvas (it only needs to show in the gaps): a full sheet could be drawn over the painting on iPhones and turn it black
   m.position.copy(b2t(p.x,p.y,p.z)); m.rotation.y=THREE.MathUtils.degToRad(p.rot); scene.add(m);
   const FR=p.frame?FRAMEA.build(m,p.w,p.h):null; // posters: natural-oak frame with a white mat (style A)
   const {t,M}=FR?shadowTex(FR.ow,FR.oh):shadowTex(p.w,p.h);
@@ -865,7 +867,7 @@ function addPeer(m){ if(!KIT||m.id===roomMe||PEERS.has(m.id)) return;
   p.F=spawnFig(p.h,p.doc?KIT.docMat:null); PEERS.set(m.id,p); syncFigs(); setPeople(pplMode,true);}
 function removePeer(id){ const p=PEERS.get(id); if(!p) return; dropFig(p); scene.remove(p.sh); p.sh.geometry.dispose(); p.sh.material.dispose(); if(p.bub) p.bub.el.remove(); PEERS.delete(id); syncFigs(); dirty=true;}
 function syncFigs(){ if(PPL) PPL.figs=[...PEERS.values()]; }
-function setPeople(m,force){ pplMode=m; if(m&&!PPL){loadPeople(); return;} if(!PPL) return;
+function setPeople(m,force){ pplMode=m; if(m&&!PPL){ const lb=document.getElementById('load'); if(lb&&!lb.hidden){ setTimeout(()=>setPeople(pplMode,force),400); return; } loadPeople(); return;} // figures (and the docent) only after the gallery has opened: they were the last thing the loading screen waited for if(!PPL) return;
   for(const p of PEERS.values()){ if(p.F) p.F.o.visible=!!m; p.sh.visible=!!m; } dirty=true;}
 // ---------- test bots (master mode): walk the old routes, answer when spoken to; they live only on this screen ----------
 const ROUTES=[
@@ -2055,7 +2057,7 @@ if(document.documentElement.classList.contains('embed')&&sessView&&isFinite(sess
 else if(document.documentElement.classList.contains('embed')&&randomWallView()){ intro={wait:true};
   const stopIntro=()=>{ intro=null; }; for(const ev of ['pointerdown','wheel','keydown']) stage.addEventListener(ev,stopIntro,{capture:true}); }
 else if(saved&&saved.walk&&inR1(saved.walk.x,saved.walk.y)){Object.assign(walk,saved.walk); setMode(saved.mode==='orbit'?'orbit':'walk'); placeWalkCam();} else goView('entry');
-{ // which paintings load when (2026-11-11): room 1 before the gallery opens, room 2 right after, room 3 (and anything further) once you step into room 2
+{ // which paintings load when (2026-11-11): room 1 before the gallery opens; once you are in, room 2 and then room 3 (and anything further)
   const roomOf=(x,y)=>ROOMS.findIndex(r=>x>=r.x0-0.4&&x<=r.x1+0.4&&y>=r.y0-0.4&&y<=r.y1+0.4);
   const first=[], r2=[], r3=[]; for(const w of works){ const i=roomOf(w.mesh.position.x,-w.mesh.position.z); (i===0?first:i===1?r2:r3).push(w); }
   /* a loaded picture is not put on the wall straight away: it waits until the view is still, then goes to the graphics card one per frame. Sending (and decoding) a big picture takes a moment, and doing it mid-turn was the stutter you felt */
@@ -2071,8 +2073,7 @@ else if(saved&&saved.walk&&inR1(saved.walk.x,saved.walk.y)){Object.assign(walk,s
     for(const w of ms){ if(!w.full||w.hi) continue; w.hi=1; hiList.push(w);
       tl2.load(w.full,t=>{ if(w.hi) put(w,t); },undefined,()=>{ w.full=null; w.hi=0; if(w.mat.map===PH&&!upQ.some(q=>q[0]===w)) tl2.load(w.file,t=>put(w,t)); }); } // no full image (404): never ask again, keep the light copy
     for(let i=0;hiList.length>HIMAX&&i<hiList.length;){ const w=hiList[i]; if(ms.includes(w)){ i++; continue; } hiList.splice(i,1); if(!w.hi) continue; w.hi=0; tl2.load(w.file,t=>{ if(!w.hi) put(w,t); }); } };
-  const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); queue(r2); // room 2 once you are in
-    const r3go=()=>{ if(walk.x>ROOMS[1].x0-0.2||!r3.length){ queue(r3); return; } setTimeout(r3go,400); }; r3go(); }; // room 3: when you step through the door into room 2
+  const go=()=>{ const box=document.getElementById('load'); if(box&&!box.hidden) return setTimeout(go,300); queue(r2); queue(r3); }; // once you are in room 1: room 2's paintings, then room 3's (one after the other)
   setTimeout(go,300); window.__texPlan={first:first.length,r2:r2.length,r3:r3.length}; }
 setInterval(saveState,1000);
 // phones that struggle: draw at 1.5x instead of 2x pixel density (only if it stays under ~40 fps; capable phones keep full sharpness)
@@ -2117,7 +2118,7 @@ const toneGo=()=>tone.start(); for(const ev of ['pointerdown','pointerup','touch
   { const mv=Math.abs(walk.yaw-lookY)+Math.abs(walk.pitch-lookZ)+Math.abs(walk.x+walk.y*0.37-lookX)>1e-4; if(mv||drag||pinch){ lookT=now; lookY=walk.yaw; lookZ=walk.pitch; lookX=walk.x+walk.y*0.37; } }
   { const box=document.getElementById('load'), loading=box&&!box.hidden, still=now-lookT>350;
     if(upQ.length&&(loading||still)){ for(let n=loading?6:1;n>0&&upQ.length;n--){ const [w,t]=upQ.shift(); try{ renderer.initTexture(t); }catch(e){} const o=w.mat.map; w.mat.map=t; if(o&&o!==PH&&o!==t) o.dispose(); dirty=true; } if(!upQ.length&&typeof scheduleEnv==='function') scheduleEnv(600); } /* new pictures on the walls: refresh what the silver sculpture and the mobile reflect, or they keep showing the grey walls from before and look dark */
-    if(hiWant&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant);
+    if(hiWant&&!loading&&now-lookT>700&&!upQ.length&&window.hiRes) window.hiRes(hiWant); // not while the loading screen is up: it took bandwidth from room 1
     if(COARSE){ const full=Math.min(devicePixelRatio,2)*(+tune.res||1), spin=MOB&&tune.mobSpin&&!reduce&&camera.position.x>(ROOMS[1]?ROOMS[1].x0-0.9:-99), want=(still&&!spin&&!autoGo&&!drag&&!pinch&&!loading)?Math.max(qPr,full):qPr; /* moving: the light setting so it stays smooth; stopped: one sharp frame at full quality */
       if(Math.abs(cPr-want)>0.01){ cPr=want; const r=stage.getBoundingClientRect(); composer.setPixelRatio(want); composer.setSize(r.width,r.height); dirty=true; } } }
   if(dirty){ const t0=performance.now(); camera.updateMatrixWorld(); updKey(); lens.uniforms.uTime.value=now*0.001; liveMobileTick(); renderer.info.reset(); composer.render(); lastCalls=renderer.info.render.calls; lastTris=renderer.info.render.triangles; dirty=false; fc++; fms+=performance.now()-t0; moved=now; }
