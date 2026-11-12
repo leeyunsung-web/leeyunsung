@@ -6,7 +6,9 @@
 'use strict';
 var H=document.documentElement;
 var ZU=/^zh-(tw|hk|mo)|^zh-hant/i.test(navigator.language||'');
-if(!ZU){ H.classList.remove('zhwait'); return; }
+/* master mode: every language can be picked (KO / EN / 中文), Chinese only when chosen */
+var MU=false; try{ MU=/(^|; )lysM=1/.test(document.cookie)||localStorage.getItem('leeArchiveMasterOn_v2')==='1'||sessionStorage.getItem('leeArchiveMasterOn_v2')==='1'; }catch(e){}
+if(!ZU&&!MU){ H.classList.remove('zhwait'); return; }
 
 /* ---------- exact strings ---------- */
 var D={
@@ -195,7 +197,7 @@ function txt(n){
   var v=n.nodeValue; if(!v||!/[A-Za-z.]/.test(v)) return;
   if(n.__zh&&n.__zh[1]===v) return;
   /* the language buttons: KO becomes 中文 */
-  if(el.matches&&el.matches('[data-setlang="ko"]')){ if(v!=='中文'){ n.__zh=[v,'中文']; done.push(n); n.nodeValue='中文'; } return; }
+  if(ZU&&el.matches&&el.matches('[data-setlang="ko"]')){ if(v!=='中文'){ n.__zh=[v,'中文']; done.push(n); n.nodeValue='中文'; } return; }
   if(!on) return;
   if(el.closest('[data-setlang]')) return;
   var t=tr(v); if(t==null) return;
@@ -222,7 +224,17 @@ function revert(){
   for(var j=0;j<doneA.length;j++){ var el=doneA[j][0], a=doneA[j][1], r=el.__zha&&el.__zha[a]; if(r&&el.getAttribute(a)===r[1]){ el.setAttribute(a,r[0]); el.__zha[a]=null; } }
   doneA=[];
 }
+/* master (not a Taiwan/Hong Kong browser): a third button 中文 after KO / EN */
+function zhBtns(){
+  if(ZU) return;
+  var ls=document.querySelectorAll('.lang-switch:not([data-zhb])');
+  for(var i=0;i<ls.length;i++){ var w=ls[i]; w.setAttribute('data-zhb','1');
+    var sep=document.createElement('i'); sep.textContent='/';
+    var b=document.createElement('button'); b.type='button'; b.setAttribute('data-setlang','zh'); b.textContent='中文';
+    w.appendChild(sep); w.appendChild(b); }
+}
 var mo=new MutationObserver(function(ms){
+  zhBtns();
   for(var i=0;i<ms.length;i++){ var m=ms[i];
     if(m.type==='childList'){ for(var j=0;j<m.addedNodes.length;j++) walk(m.addedNodes[j]); }
     else if(m.type==='characterData') txt(m.target);
@@ -248,20 +260,24 @@ function setOn(v){
 /* 中文 / EN: KO is shown as 中文 for these visitors */
 window.addEventListener('click',function(e){
   var b=e.target&&e.target.closest&&e.target.closest('[data-setlang]'); if(!b) return;
-  if(b.getAttribute('data-setlang')==='ko'){ e.preventDefault(); e.stopImmediatePropagation(); if(!on) setOn(true); }
+  var l=b.getAttribute('data-setlang');
+  if(l==='zh'||(ZU&&l==='ko')){ e.preventDefault(); e.stopImmediatePropagation(); if(!on) setOn(true); }
   else if(on) setOn(false);
 },true);
 
 var css=document.createElement('style');
 css.textContent='html.zhu .lang-switch [data-setlang="ko"]{letter-spacing:.04em}'+
- 'html.zh .lang-switch [data-setlang="ko"]{color:var(--ink)!important;font-weight:600!important}'+
+ 'html.zh .lang-switch [data-setlang="zh"]{color:var(--ink)!important;font-weight:600!important}'+
+ 'html.zhu.zh .lang-switch [data-setlang="ko"]{color:var(--ink)!important;font-weight:600!important}'+
+ 'html.zh:not(.zhu) .lang-switch [data-setlang="ko"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
  'html.zh .lang-switch [data-setlang="en"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
  'html.zh body{word-break:normal;line-break:strict}';
 document.head.appendChild(css);
 
 function start(){
-  H.classList.add('zhu');
-  var want=true; try{ want=localStorage.getItem('lysZh')!=='0'; }catch(e){}
+  if(ZU) H.classList.add('zhu');
+  var want=ZU; try{ var z=localStorage.getItem('lysZh'); want=ZU?z!=='0':z==='1'; }catch(e){}
+  zhBtns();
   on=false; walk(document.body);           /* the 中文 label */
   if(want) setOn(true); else H.classList.remove('zh');
   mo.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:AT});
