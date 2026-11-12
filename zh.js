@@ -7,7 +7,7 @@
 var H=document.documentElement;
 /* any Chinese browser: Traditional for Taiwan / Hong Kong / Macau, Simplified (mainland, Singapore…) otherwise; Japanese browsers: 日本語 */
 var NL=navigator.language||'', ZU=/^zh/i.test(NL), JU=!ZU&&/^ja/i.test(NL), LG='zh';
-/*HANS*/var HC="並并併并來来個个們们備备傳传僅仅價价兒儿內内兩两刪删則则動动務务區区問问啟启單单嗎吗嘗尝國国圖图堅坚報报壓压壞坏學学實实寫写將将尋寻層层屬属帳帐幹干幾几庫库廳厅張张彫雕後后態态戶户捲卷掛挂損损擇择擔担據据擬拟敗败數数斷断於于時时暫暂書书會会條条業业樓楼標标樹树橫横權权歷历氣气沒没減减準准濟济瀏浏為为無无營营爾尔牆墙狀状獎奖獲获獻献現现畫画異异當当發发盡尽確确碼码礎础稅税稱称筆笔範范簡简簽签紀纪約约紅红納纳紙纸細细結结絕绝絡络給给經经網网緒绪線线編编總总繞绕繪绘繳缴續续纏缠聯联聲声臉脸與与蓋盖藝艺虛虚號号術术裝装裡里製制複复見见規规視视親亲覺觉覽览訂订計计訊讯記记設设許许訴诉註注評评詢询試试詮诠話话認认語语誤误請请論论謝谢議议護护讀读變变負负貨货販贩買买費费貼贴資资賣卖購购蹤踪軀躯車车較较載载輸输辦办這这連连週周進进運运過过達达遞递適适選选還还郵邮釋释錄录錯错録录閉闭開开間间閱阅關关隨随隱隐電电靜静韓韩頁页項项預预領领題题額额顯显餘余駐驻體体麼么點点",HW={"· 每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"· 每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","傳送":"发送","傳送中…":"发送中…","傳送失敗。":"发送失败。","傳送失敗。請再試一次，或寄信至 ":"发送失败。请再试一次，或寄信至 ","傳送訊息":"发送消息","傳送訊息給藝術家":"发送消息给艺术家","可使用 PayPal 付款，或透過 PayPal 以信用卡／簽帳金融卡付款。以卡片付款不需要 PayPal 帳戶。":"可使用 PayPal 付款，或通过 PayPal 以信用卡／借记卡付款。以卡片付款不需要 PayPal 帐户。","商品資訊":"商品信息","尚無聯絡資訊。":"尚无联系信息。","尚無訊息。":"尚无消息。","已複製連結，請貼到 Safari 或 Chrome 開啟":"已拷贝链接，请贴到 Safari 或 Chrome 打开","布面壓克力":"布面丙烯","建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。":"建议在 Safari 或 Chrome 中结帐。请点右上角的 •••，再选择「在外部浏览器打开」。","彩繪 3D 列印樹脂":"彩绘 3D 打印树脂","影片":"视频","您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。":"您的收件信息会随 PayPal 订单一并送出。可使用信用卡／借记卡付款。进口关税与税金由买家负担；美国订单除外，以完税方式寄送（到货时无需另付费用）。","收件資訊":"收件信息","數位合成照片":"数字合成照片","查詢":"查找","每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","無法載入 PayPal，請重新整理頁面。":"无法加载 PayPal，请刷新页面。","用 Chrome 開啟":"用 Chrome 打开","登出":"注销","確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 ":"确认付款时连接中断，付款可能已完成也可能未完成。再次尝试前，请先查看「我的订单」或您的 PayPal 帐户，或寄信至 ","紙本數位版畫":"纸本数字版画","網路書店":"网络书店","網路錯誤。":"网络错误。","網路錯誤，請再試一次。":"网络错误，请再试一次。","聯絡":"联系","著：":"着：","藝術家會直接回信到您的電子郵件。您的電子郵件僅用於回覆。":"艺术家会直接回信到您的电子邮件。您的电子邮件仅用于回复。","複製頁面連結":"拷贝页面链接","訂單狀態與訊息":"订单状态与消息","訊息":"消息","請填寫標示紅色的收件資訊。":"请填写标示红色的收件信息。","請複製此連結：":"请拷贝此链接：","請輸入訊息。":"请输入消息。","謝謝您，訊息已送出。藝術家將以電子郵件回覆。":"谢谢您，消息已送出。艺术家将以电子邮件回复。","載入中…":"加载中…","輸入英文搜尋 — 例：T 搜尋 Taiwan":"输入英文搜索 — 例：T 搜索 Taiwan","這些訊息只有您和藝術家看得到。":"这些消息只有您和艺术家看得到。","連線已逾時，請重新輸入電子郵件。":"连接已逾时，请重新输入电子邮件。","郵遞區號":"邮政编码","開啟聲音":"打开声音","開啟購物車":"打开购物车","關於訂單，要如何聯絡您？":"关于订单，要如何联系您？","隱私權政策":"隐私政策"};/*/HANS*/
+/*HANS*/var HC="並并併并來来個个們们備备傳传僅仅價价兒儿內内兩两刪删則则動动務务區区問问啟启單单嗎吗嘗尝國国圖图堅坚報报壓压壞坏學学實实寫写將将尋寻層层屬属帳帐幹干幾几庫库廳厅張张彫雕後后態态戶户捲卷掛挂損损擇择擔担據据擬拟敗败數数斷断於于時时暫暂書书會会條条業业樓楼標标樹树橫横權权歷历氣气沒没減减準准濟济瀏浏為为無无營营爾尔牆墙狀状獎奖獲获獻献現现畫画異异當当發发盡尽確确碼码礎础稅税稱称筆笔範范簡简簽签紀纪約约紅红納纳紙纸細细結结絕绝絡络給给經经網网緒绪線线編编總总繞绕繪绘繳缴續续纏缠聯联聲声臉脸與与蓋盖藝艺虛虚號号術术裝装裡里製制複复見见規规視视親亲覺觉覽览訂订計计訊讯記记設设許许訴诉註注評评詢询試试詮诠話话認认語语誤误請请論论謝谢議议護护讀读變变負负貨货販贩買买費费貼贴資资賣卖購购蹤踪軀躯車车較较載载輸输辦办這这連连週周進进運运過过達达遞递適适選选還还郵邮釋释錄录錯错録录閉闭開开間间閱阅關关隨随隱隐電电靜静韓韩頁页項项預预領领題题額额顯显餘余駐驻體体麼么點点",HW={"· 每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"· 每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","傳送":"发送","傳送中…":"发送中…","傳送失敗。":"发送失败。","傳送失敗。請再試一次，或寄信至 ":"发送失败。请再试一次，或寄信至 ","傳送訊息":"发送消息","傳送訊息給藝術家":"发送消息给艺术家","可使用 PayPal 付款，或透過 PayPal 以信用卡／簽帳金融卡付款。以卡片付款不需要 PayPal 帳戶。":"可使用 PayPal 付款，或通过 PayPal 以信用卡／借记卡付款。以卡片付款不需要 PayPal 帐户。","商品資訊":"商品信息","尚無聯絡資訊。":"尚无联系信息。","尚無訊息。":"尚无消息。","已複製連結，請貼到 Safari 或 Chrome 開啟":"已拷贝链接，请贴到 Safari 或 Chrome 打开","布面壓克力":"布面丙烯","建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。":"建议在 Safari 或 Chrome 中结帐。请点右上角的 •••，再选择「在外部浏览器打开」。","彩繪 3D 列印樹脂":"彩绘 3D 打印树脂","影片":"视频","您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。":"您的收件信息会随 PayPal 订单一并送出。可使用信用卡／借记卡付款。进口关税与税金由买家负担；美国订单除外，以完税方式寄送（到货时无需另付费用）。","收件資訊":"收件信息","數位合成照片":"数字合成照片","查詢":"查找","每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","無法載入 PayPal，請重新整理頁面。":"无法加载 PayPal，请刷新页面。","用 Chrome 開啟":"用 Chrome 打开","用瀏覽器開啟":"用浏览器打开","登出":"注销","確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 ":"确认付款时连接中断，付款可能已完成也可能未完成。再次尝试前，请先查看「我的订单」或您的 PayPal 帐户，或寄信至 ","紙本數位版畫":"纸本数字版画","網路書店":"网络书店","網路錯誤。":"网络错误。","網路錯誤，請再試一次。":"网络错误，请再试一次。","聯絡":"联系","著：":"着：","藝術家會直接回信到您的電子郵件。您的電子郵件僅用於回覆。":"艺术家会直接回信到您的电子邮件。您的电子邮件仅用于回复。","複製頁面連結":"拷贝页面链接","訂單狀態與訊息":"订单状态与消息","訊息":"消息","請填寫標示紅色的收件資訊。":"请填写标示红色的收件信息。","請複製此連結：":"请拷贝此链接：","請輸入訊息。":"请输入消息。","謝謝您，訊息已送出。藝術家將以電子郵件回覆。":"谢谢您，消息已送出。艺术家将以电子邮件回复。","載入中…":"加载中…","輸入英文搜尋 — 例：T 搜尋 Taiwan":"输入英文搜索 — 例：T 搜索 Taiwan","這些訊息只有您和藝術家看得到。":"这些消息只有您和艺术家看得到。","連線已逾時，請重新輸入電子郵件。":"连接已逾时，请重新输入电子邮件。","郵遞區號":"邮政编码","開啟聲音":"打开声音","開啟購物車":"打开购物车","關於訂單，要如何聯絡您？":"关于订单，要如何联系您？","隱私權政策":"隐私政策"};/*/HANS*/
 var HCM={}; for(var hi=0;hi<HC.length;hi+=2) HCM[HC.charAt(hi)]=HC.charAt(hi+1);
 var HANS=false;
 function zhv(){ var v=''; try{ v=localStorage.getItem('lysZhV')||''; }catch(e){} return v?v==='hans':(ZU&&!/^zh-(tw|hk|mo)|^zh-hant/i.test(NL)); }
@@ -72,7 +72,7 @@ var D={
 'Shipping is charged once per order, however many you add.':'每筆訂單只收一次運費，不論加購幾件。',
 'Paying from Instagram?':'正在 Instagram 內付款嗎？',
 'Checkout works best in Safari or Chrome. Tap ••• at the top right, then “Open in external browser”.':'建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。',
-'Copy page link':'複製頁面連結','Open in Chrome':'用 Chrome 開啟','Link copied — paste it in Safari or Chrome':'已複製連結，請貼到 Safari 或 Chrome 開啟',
+'Copy page link':'複製頁面連結','Payment not working?':'無法付款嗎？','Open in browser':'用瀏覽器開啟','Open in Chrome':'用 Chrome 開啟','Link copied — paste it in Safari or Chrome':'已複製連結，請貼到 Safari 或 Chrome 開啟',
 'Copy this link:':'請複製此連結：',
 'Your shipping details are sent with your PayPal order. Credit/debit cards accepted. Import duties/taxes are the buyer\'s responsibility, except US orders, which ship duty-paid (nothing to pay on delivery).':'您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。',
 '. By paying you agree to our':'。付款即表示您同意本站的','.':'。',
@@ -172,7 +172,7 @@ var DJ={
 "Original Work": "原画",
 "Poster Examples": "ポスターの設置例",
 "View on your wall": "自分の壁に飾ってみる（AR）",
-"View in your space": "自分の部屋に置いてみる（AR）",
+"View in your space": "お部屋に置いてみる（AR）",
 "No works yet.": "まだ作品がありません。",
 "No texts yet.": "まだテキストがありません。",
 "Not found.": "見つかりません。",
@@ -276,6 +276,8 @@ var DJ={
 "Paying from Instagram?": "Instagramの中でお支払いですか？",
 "Checkout works best in Safari or Chrome. Tap ••• at the top right, then “Open in external browser”.": "お支払いはSafariまたはChromeがおすすめです。右上の ••• をタップし、「外部ブラウザで開く」を選んでください。",
 "Copy page link": "ページのリンクをコピー",
+"Payment not working?": "お支払いがうまくいきませんか？",
+"Open in browser": "ブラウザで開く",
 "Open in Chrome": "Chromeで開く",
 "Link copied — paste it in Safari or Chrome": "リンクをコピーしました。SafariまたはChromeに貼り付けてください",
 "Copy this link:": "このリンクをコピーしてください：",
@@ -565,11 +567,11 @@ css.textContent='html.zhu .lang-switch [data-setlang="ko"]{letter-spacing:.04em}
  'html.zhu.zh .lang-switch [data-setlang="ko"]{color:var(--ink)!important;font-weight:600!important}'+
  'html.zh:not(.zhu) .lang-switch [data-setlang="ko"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
  'html.zh .lang-switch [data-setlang="en"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
- 'html.zh body{word-break:normal;line-break:strict}'+
+ 'html.zh body,html.zh .cv-statement{word-break:normal;line-break:strict}'+
  'html.xja .lang-switch [data-setlang="ja"],html.jau.xja .lang-switch [data-setlang="ko"]{color:var(--ink)!important;font-weight:600!important}'+
  'html.xja:not(.jau) .lang-switch [data-setlang="ko"],html.xja .lang-switch [data-setlang="en"],html.xja .lang-switch [data-setlang="zh"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
  'html.zh .lang-switch [data-setlang="ja"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
- 'html.xja body{word-break:normal;line-break:strict}';
+ 'html.xja body,html.xja .cv-statement{word-break:normal;line-break:strict}';
 document.head.appendChild(css);
 
 function start(){
