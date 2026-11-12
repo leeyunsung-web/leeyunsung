@@ -7,7 +7,7 @@
 var H=document.documentElement;
 /* any Chinese browser: Traditional for Taiwan / Hong Kong / Macau, Simplified (mainland, Singapore…) otherwise; Japanese browsers: 日本語 */
 var NL=navigator.language||'', ZU=/^zh/i.test(NL), JU=!ZU&&/^ja/i.test(NL), LG='zh';
-/*HANS*/var HC="並并併并來来個个備备傳传僅仅價价內内兩两刪删則则務务區区問问啟启單单嗎吗嘗尝國国圖图堅坚報报壓压壞坏學学實实寫写將将尋寻層层帳帐幾几庫库廳厅張张彫雕後后態态戶户捲卷掛挂損损擇择擔担據据擬拟敗败數数斷断於于時时暫暂書书會会業业樓楼標标樹树權权歷历氣气沒没減减準准濟济瀏浏為为無无營营牆墙狀状獎奖獲获獻献畫画異异當当發发盡尽確确碼码稅税稱称筆笔範范簡简簽签約约紅红納纳紙纸細细結结絕绝絡络給给經经網网線线編编總总繪绘繳缴續续聯联聲声與与蓋盖藝艺虛虚號号術术裝装裡里製制複复見见規规親亲覽览訂订計计訊讯記记設设許许訴诉註注評评詢询試试話话認认語语誤误請请論论謝谢議议護护讀读變变負负貨货販贩買买費费貼贴資资賣卖購购蹤踪車车較较載载輸输辦办這这連连週周進进運运過过達达遞递適适選选還还郵邮錄录錯错録录閉闭開开間间閱阅關关隨随隱隐電电靜静韓韩頁页項项預预領领題题額额顯显駐驻麼么點点",HW={"· 每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"· 每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","傳送":"发送","傳送中…":"发送中…","傳送失敗。":"发送失败。","傳送失敗。請再試一次，或寄信至 ":"发送失败。请再试一次，或寄信至 ","傳送訊息":"发送消息","傳送訊息給藝術家":"发送消息给艺术家","可使用 PayPal 付款，或透過 PayPal 以信用卡／簽帳金融卡付款。以卡片付款不需要 PayPal 帳戶。":"可使用 PayPal 付款，或通过 PayPal 以信用卡／借记卡付款。以卡片付款不需要 PayPal 帐户。","商品資訊":"商品信息","尚無聯絡資訊。":"尚无联系信息。","尚無訊息。":"尚无消息。","已複製連結，請貼到 Safari 或 Chrome 開啟":"已拷贝链接，请贴到 Safari 或 Chrome 打开","布面壓克力":"布面丙烯","建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。":"建议在 Safari 或 Chrome 中结帐。请点右上角的 •••，再选择「在外部浏览器打开」。","彩繪 3D 列印樹脂":"彩绘 3D 打印树脂","影片":"视频","您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。":"您的收件信息会随 PayPal 订单一并送出。可使用信用卡／借记卡付款。进口关税与税金由买家负担；美国订单除外，以完税方式寄送（到货时无需另付费用）。","收件資訊":"收件信息","數位合成照片":"数字合成照片","查詢":"查找","每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","無法載入 PayPal，請重新整理頁面。":"无法加载 PayPal，请刷新页面。","登出":"注销","確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 ":"确认付款时连接中断，付款可能已完成也可能未完成。再次尝试前，请先查看「我的订单」或您的 PayPal 帐户，或寄信至 ","紙本數位版畫":"纸本数字版画","網路書店":"网络书店","網路錯誤。":"网络错误。","網路錯誤，請再試一次。":"网络错误，请再试一次。","聯絡":"联系","著：":"着：","藝術家會直接回信到您的電子郵件。您的電子郵件僅用於回覆。":"艺术家会直接回信到您的电子邮件。您的电子邮件仅用于回复。","複製頁面連結":"拷贝页面链接","訂單狀態與訊息":"订单状态与消息","訊息":"消息","請填寫標示紅色的收件資訊。":"请填写标示红色的收件信息。","請複製此連結：":"请拷贝此链接：","請輸入訊息。":"请输入消息。","謝謝您，訊息已送出。藝術家將以電子郵件回覆。":"谢谢您，消息已送出。艺术家将以电子邮件回复。","載入中…":"加载中…","輸入英文搜尋 — 例：T 搜尋 Taiwan":"输入英文搜索 — 例：T 搜索 Taiwan","這些訊息只有您和藝術家看得到。":"这些消息只有您和艺术家看得到。","連線已逾時，請重新輸入電子郵件。":"连接已逾时，请重新输入电子邮件。","郵遞區號":"邮政编码","開啟聲音":"打开声音","開啟購物車":"打开购物车","關於訂單，要如何聯絡您？":"关于订单，要如何联系您？","隱私權政策":"隐私政策"};/*/HANS*/
+/*HANS*/var HC="並并併并來来個个們们備备傳传僅仅價价兒儿內内兩两刪删則则動动務务區区問问啟启單单嗎吗嘗尝國国圖图堅坚報报壓压壞坏學学實实寫写將将尋寻層层屬属帳帐幹干幾几庫库廳厅張张彫雕後后態态戶户捲卷掛挂損损擇择擔担據据擬拟敗败數数斷断於于時时暫暂書书會会條条業业樓楼標标樹树橫横權权歷历氣气沒没減减準准濟济瀏浏為为無无營营爾尔牆墙狀状獎奖獲获獻献現现畫画異异當当發发盡尽確确碼码礎础稅税稱称筆笔範范簡简簽签紀纪約约紅红納纳紙纸細细結结絕绝絡络給给經经網网緒绪線线編编總总繞绕繪绘繳缴續续纏缠聯联聲声臉脸與与蓋盖藝艺虛虚號号術术裝装裡里製制複复見见規规視视親亲覺觉覽览訂订計计訊讯記记設设許许訴诉註注評评詢询試试詮诠話话認认語语誤误請请論论謝谢議议護护讀读變变負负貨货販贩買买費费貼贴資资賣卖購购蹤踪軀躯車车較较載载輸输辦办這这連连週周進进運运過过達达遞递適适選选還还郵邮釋释錄录錯错録录閉闭開开間间閱阅關关隨随隱隐電电靜静韓韩頁页項项預预領领題题額额顯显餘余駐驻體体麼么點点",HW={"· 每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"· 每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","傳送":"发送","傳送中…":"发送中…","傳送失敗。":"发送失败。","傳送失敗。請再試一次，或寄信至 ":"发送失败。请再试一次，或寄信至 ","傳送訊息":"发送消息","傳送訊息給藝術家":"发送消息给艺术家","可使用 PayPal 付款，或透過 PayPal 以信用卡／簽帳金融卡付款。以卡片付款不需要 PayPal 帳戶。":"可使用 PayPal 付款，或通过 PayPal 以信用卡／借记卡付款。以卡片付款不需要 PayPal 帐户。","商品資訊":"商品信息","尚無聯絡資訊。":"尚无联系信息。","尚無訊息。":"尚无消息。","已複製連結，請貼到 Safari 或 Chrome 開啟":"已拷贝链接，请贴到 Safari 或 Chrome 打开","布面壓克力":"布面丙烯","建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。":"建议在 Safari 或 Chrome 中结帐。请点右上角的 •••，再选择「在外部浏览器打开」。","彩繪 3D 列印樹脂":"彩绘 3D 打印树脂","影片":"视频","您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。":"您的收件信息会随 PayPal 订单一并送出。可使用信用卡／借记卡付款。进口关税与税金由买家负担；美国订单除外，以完税方式寄送（到货时无需另付费用）。","收件資訊":"收件信息","數位合成照片":"数字合成照片","查詢":"查找","每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","無法載入 PayPal，請重新整理頁面。":"无法加载 PayPal，请刷新页面。","用 Chrome 開啟":"用 Chrome 打开","登出":"注销","確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 ":"确认付款时连接中断，付款可能已完成也可能未完成。再次尝试前，请先查看「我的订单」或您的 PayPal 帐户，或寄信至 ","紙本數位版畫":"纸本数字版画","網路書店":"网络书店","網路錯誤。":"网络错误。","網路錯誤，請再試一次。":"网络错误，请再试一次。","聯絡":"联系","著：":"着：","藝術家會直接回信到您的電子郵件。您的電子郵件僅用於回覆。":"艺术家会直接回信到您的电子邮件。您的电子邮件仅用于回复。","複製頁面連結":"拷贝页面链接","訂單狀態與訊息":"订单状态与消息","訊息":"消息","請填寫標示紅色的收件資訊。":"请填写标示红色的收件信息。","請複製此連結：":"请拷贝此链接：","請輸入訊息。":"请输入消息。","謝謝您，訊息已送出。藝術家將以電子郵件回覆。":"谢谢您，消息已送出。艺术家将以电子邮件回复。","載入中…":"加载中…","輸入英文搜尋 — 例：T 搜尋 Taiwan":"输入英文搜索 — 例：T 搜索 Taiwan","這些訊息只有您和藝術家看得到。":"这些消息只有您和艺术家看得到。","連線已逾時，請重新輸入電子郵件。":"连接已逾时，请重新输入电子邮件。","郵遞區號":"邮政编码","開啟聲音":"打开声音","開啟購物車":"打开购物车","關於訂單，要如何聯絡您？":"关于订单，要如何联系您？","隱私權政策":"隐私政策"};/*/HANS*/
 var HCM={}; for(var hi=0;hi<HC.length;hi+=2) HCM[HC.charAt(hi)]=HC.charAt(hi+1);
 var HANS=false;
 function zhv(){ var v=''; try{ v=localStorage.getItem('lysZhV')||''; }catch(e){} return v?v==='hans':(ZU&&!/^zh-(tw|hk|mo)|^zh-hant/i.test(NL)); }
@@ -72,7 +72,7 @@ var D={
 'Shipping is charged once per order, however many you add.':'每筆訂單只收一次運費，不論加購幾件。',
 'Paying from Instagram?':'正在 Instagram 內付款嗎？',
 'Checkout works best in Safari or Chrome. Tap ••• at the top right, then “Open in external browser”.':'建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。',
-'Copy page link':'複製頁面連結','Link copied — paste it in Safari or Chrome':'已複製連結，請貼到 Safari 或 Chrome 開啟',
+'Copy page link':'複製頁面連結','Open in Chrome':'用 Chrome 開啟','Link copied — paste it in Safari or Chrome':'已複製連結，請貼到 Safari 或 Chrome 開啟',
 'Copy this link:':'請複製此連結：',
 'Your shipping details are sent with your PayPal order. Credit/debit cards accepted. Import duties/taxes are the buyer\'s responsibility, except US orders, which ship duty-paid (nothing to pay on delivery).':'您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。',
 '. By paying you agree to our':'。付款即表示您同意本站的','.':'。',
@@ -276,6 +276,7 @@ var DJ={
 "Paying from Instagram?": "Instagramの中でお支払いですか？",
 "Checkout works best in Safari or Chrome. Tap ••• at the top right, then “Open in external browser”.": "お支払いはSafariまたはChromeがおすすめです。右上の ••• をタップし、「外部ブラウザで開く」を選んでください。",
 "Copy page link": "ページのリンクをコピー",
+"Open in Chrome": "Chromeで開く",
 "Link copied — paste it in Safari or Chrome": "リンクをコピーしました。SafariまたはChromeに貼り付けてください",
 "Copy this link:": "このリンクをコピーしてください：",
 "Your shipping details are sent with your PayPal order. Credit/debit cards accepted. Import duties/taxes are the buyer's responsibility, except US orders, which ship duty-paid (nothing to pay on delivery).": "お届け先はPayPalの注文と一緒に送られます。クレジットカード・デビットカードが使えます。輸入関税・税金はお客様のご負担です。ただし米国宛ては関税込みで発送します（受け取り時のお支払いはありません）。",
@@ -395,6 +396,11 @@ var RJ=[
  [/^International checkout is temporarily unavailable\. Please email (.+?)\.?$/, function(m){ return '海外向けのお支払いは一時的にご利用いただけません。'+m[1]+' までメールでご連絡ください。'; }],
  [/^Something went wrong with PayPal\. You have not been charged\. If it keeps happening, email (.+?)\.?$/, function(m){ return 'PayPalで問題が起きました。料金は請求されていません。何度も起きる場合は '+m[1]+' までメールでご連絡ください。'; }],
  [/^Connection lost while confirming the payment — it may or may not have gone through\. Please check MY ORDER or your PayPal account before trying again, or email (.+?)\.?$/, function(m){ return 'お支払いの確認中に接続が切れました。お支払いが完了しているかどうかわかりません。もう一度お試しになる前に「ご注文の確認」かPayPalアカウントをご確認いただくか、'+m[1]+' までメールでご連絡ください。'; }],
+ [/^A poster edition of (.+) \((\d{4})\)\.$/, function(m){ return '《'+m[1]+'》（'+m[2]+'）のポスターエディション。'; }],
+ [/^A poster edition of (.+) \((\d{4})\), originally produced and released as a limited edition in 2021\. To mark the relaunch of the website, the remaining prints are now available once again\.$/, function(m){ return '《'+m[1]+'》（'+m[2]+'）のポスターエディション。2021年に限定版として制作・発売されたもので、ウェブサイトのリニューアルを記念して、残りの部数を再び販売しています。'; }],
+ [/^(The Three Graces Pixel Props \d+) \((\d{4})\) is a painting first shown in the solo exhibition PIXEL PROMETHEUS THE THREE GRACES \(STANDARD\.a \+ Superellipse Gallery, Seoul, 2019\)\. It belongs to a series that renders parts of the faces and bodies of the Three Graces in pixels\.$/, function(m){ return '《'+m[1]+'》（'+m[2]+'）は、個展《PIXEL PROMETHEUS THE THREE GRACES》（STANDARD.a + Superellipse Gallery、ソウル、2019）で初めて発表した絵画で、三美神の顔や体の一部をピクセルで描くシリーズの一点である。'; }],
+ [/^(Laocoon \(face\) \d+) \((\d{4})\) is a painting first shown in the solo exhibition Fragmentary \(YK Presents, Seoul, 2024\)\. It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents\. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion\.$/, function(m){ return '《'+m[1]+'》（'+m[2]+'）は、個展《Fragmentary》（YK Presents、ソウル、2024）で初めて発表した絵画で、海蛇に巻きつかれて死んでいくトロイアの神官と二人の息子の古代彫刻を描き直す白黒の絵画シリーズの一点である。白黒で女性として描き直された人物は、黒い地に隠れた海蛇によって断片となり、画面を横切る線がその感情を増幅する。'; }],
+ [/^(Torso \d+) \((\d{4})\) is a painting from the Torso series, begun in 2012\. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture\.$/, function(m){ return '《'+m[1]+'》（'+m[2]+'）は、2012年に始まったTorsoシリーズの絵画である。このシリーズは、腕や脚のない古典彫刻のトルソをもとに、アニメーションとサブカルチャーの視覚言語で描き直している。'; }],
  [/^Image (\d+)$/, function(m){ return '画像 '+m[1]; }],
  [/^(.+) — WORKS$/, function(m){ return m[1]+' — 作品'; }],
  [/^Business (.+?) · Representative (.+?) · Business Reg\. No\. (.+)$/, function(m){
@@ -432,6 +438,11 @@ var R=[
  [/^International checkout is temporarily unavailable\. Please email (.+?)\.?$/, function(m){ return '海外結帳暫時無法使用，請寄信至 '+m[1]+'。'; }],
  [/^Something went wrong with PayPal\. You have not been charged\. If it keeps happening, email (.+?)\.?$/, function(m){ return 'PayPal 發生問題，您尚未被扣款。若問題持續，請寄信至 '+m[1]+'。'; }],
  [/^Connection lost while confirming the payment — it may or may not have gone through\. Please check MY ORDER or your PayPal account before trying again, or email (.+?)\.?$/, function(m){ return '確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 '+m[1]+'。'; }],
+ [/^A poster edition of (.+) \((\d{4})\)\.$/, function(m){ return '〈'+m[1]+'〉（'+m[2]+'）的海報版。'; }],
+ [/^A poster edition of (.+) \((\d{4})\), originally produced and released as a limited edition in 2021\. To mark the relaunch of the website, the remaining prints are now available once again\.$/, function(m){ return '〈'+m[1]+'〉（'+m[2]+'）的海報版，最初於 2021 年以限量版製作發行。為紀念網站重新開幕，剩餘的版本現在再次開放購買。'; }],
+ [/^(The Three Graces Pixel Props \d+) \((\d{4})\) is a painting first shown in the solo exhibition PIXEL PROMETHEUS THE THREE GRACES \(STANDARD\.a \+ Superellipse Gallery, Seoul, 2019\)\. It belongs to a series that renders parts of the faces and bodies of the Three Graces in pixels\.$/, function(m){ return '〈'+m[1]+'〉（'+m[2]+'）是首次發表於個展〈PIXEL PROMETHEUS THE THREE GRACES〉（STANDARD.a + Superellipse Gallery，首爾，2019）的繪畫，屬於以像素描繪美惠三女神臉部與身體局部的系列。'; }],
+ [/^(Laocoon \(face\) \d+) \((\d{4})\) is a painting first shown in the solo exhibition Fragmentary \(YK Presents, Seoul, 2024\)\. It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents\. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion\.$/, function(m){ return '〈'+m[1]+'〉（'+m[2]+'）是首次發表於個展〈Fragmentary〉（YK Presents，首爾，2024）的繪畫，屬於重新詮釋特洛伊祭司與兩個兒子被海蛇纏繞而死的古代雕塑的黑白繪畫系列。人物以黑白重新畫成女性，被隱入黑色背景的海蛇切成片段，橫切畫面的線條則放大了她們的情緒。'; }],
+ [/^(Torso \d+) \((\d{4})\) is a painting from the Torso series, begun in 2012\. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture\.$/, function(m){ return '〈'+m[1]+'〉（'+m[2]+'）是始於 2012 年的 Torso 系列中的繪畫。這個系列以古典雕塑中沒有手臂和腿的軀幹像為基礎，用動畫與次文化的視覺語言重新描繪。'; }],
  [/^Image (\d+)$/, function(m){ return '圖片 '+m[1]; }],
  [/^(.+) — WORKS$/, function(m){ return m[1]+' — 作品'; }],
  [/^Business (.+?) · Representative (.+?) · Business Reg\. No\. (.+)$/, function(m){
@@ -439,10 +450,18 @@ var R=[
      .replace(' Mail-order Reg. No. ',' 通信販賣業申報 ').replace(/ Address /,' 地址 ').replace(' · Phone ',' · 電話 ').replace(' · Email ',' · 電子郵件 '); }]
 ];
 
+/* the artist's own texts (works and shop descriptions): one file per language, fetched only when that language is on,
+   keyed by a fingerprint of the English paragraph — a paragraph edited later simply stays in English until translated again */
+var DSC={}, DSL={};
+function dkey(){ return LG==='ja'?'ja':HANS?'zhs':'zh'; }
+function fp(t){ var e=2166136261; for(var n=0;n<t.length;n++){ e^=t.charCodeAt(n); e=Math.imul(e,16777619); } return (e>>>0).toString(16)+':'+t.length; }
+function loadDesc(){ var k=dkey(); if(DSL[k]) return; DSL[k]=1;
+  fetch('/desc.'+k+'.json?v=1').then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(!j) return; DSC[k]=j; if(on&&dkey()===k) walk(document.body); }).catch(function(){ DSL[k]=0; }); }
 function tr1(s){
   var k=s.replace(/\s+/g,' ').trim(); if(!k) return null;
   var DD=LG==='ja'?DJ:D, RR=LG==='ja'?RJ:R;
   if(Object.prototype.hasOwnProperty.call(DD,k)) return DD[k];
+  if(k.length>40){ var ds=DSC[dkey()]; if(ds){ var hk=fp(k); if(Object.prototype.hasOwnProperty.call(ds,hk)) return ds[hk]; } }
   for(var i=0;i<RR.length;i++){ var m=k.match(RR[i][0]); if(m) return RR[i][1](m); }
   return null;
 }
@@ -524,7 +543,7 @@ function setMode(m){
   H.classList.toggle('zh',m==='zh'); H.classList.toggle('xja',m==='ja');
   if(m){
     if(H.getAttribute('data-lang')!=='en'){ H.setAttribute('data-lang','en'); try{ localStorage.setItem('lysLang','en'); }catch(e){} }
-    HANS=m==='zh'&&zhv(); H.classList.toggle('zhs',HANS); H.setAttribute('lang',m==='ja'?'ja':HANS?'zh-Hans':'zh-Hant'); walk(document.body);
+    HANS=m==='zh'&&zhv(); H.classList.toggle('zhs',HANS); H.setAttribute('lang',m==='ja'?'ja':HANS?'zh-Hans':'zh-Hant'); walk(document.body); loadDesc();
   } else { H.classList.remove('zhs'); setTimeout(function(){ H.setAttribute('lang',H.getAttribute('data-lang')==='ko'?'ko':'en'); },0); }
 }
 function setOn(v){ setMode(v?'zh':''); }
