@@ -5,7 +5,13 @@
 (function(){
 'use strict';
 var H=document.documentElement;
-var ZU=/^zh-(tw|hk|mo)|^zh-hant/i.test(navigator.language||'');
+/* any Chinese browser: Traditional for Taiwan / Hong Kong / Macau, Simplified (mainland, Singapore…) otherwise */
+var NL=navigator.language||'', ZU=/^zh/i.test(NL);
+/*HANS*/var HC="並并併并來来個个備备傳传僅仅價价內内兩两刪删則则務务區区問问啟启單单嗎吗嘗尝國国圖图堅坚報报壓压壞坏學学實实寫写將将尋寻層层帳帐幾几庫库廳厅張张後后態态戶户捲卷掛挂損损擇择擔担據据擬拟敗败數数斷断於于時时暫暂書书會会業业樓楼標标樹树權权歷历氣气沒没減减準准濟济瀏浏為为無无營营牆墙狀状獎奖獲获獻献畫画異异當当發发盡尽確确碼码稅税稱称筆笔範范簡简簽签約约紅红納纳紙纸細细結结絕绝絡络給给經经網网線线編编總总繪绘繳缴續续聯联聲声與与蓋盖藝艺虛虚號号術术裝装裡里製制複复見见規规親亲覽览訂订計计訊讯記记設设許许訴诉註注評评詢询試试話话認认語语誤误請请論论謝谢議议護护讀读變变負负貨货販贩買买費费貼贴資资賣卖購购蹤踪車车較较載载輸输辦办這这連连週周進进運运過过達达遞递適适選选還还郵邮錄录錯错閉闭開开間间閱阅關关隨随隱隐電电靜静韓韩頁页項项預预領领題题額额顯显駐驻麼么點点",HW={"· 每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"· 每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","傳送":"发送","傳送中…":"发送中…","傳送失敗。":"发送失败。","傳送失敗。請再試一次，或寄信至 ":"发送失败。请再试一次，或寄信至 ","傳送訊息":"发送消息","傳送訊息給藝術家":"发送消息给艺术家","可使用 PayPal 付款，或透過 PayPal 以信用卡／簽帳金融卡付款。以卡片付款不需要 PayPal 帳戶。":"可使用 PayPal 付款，或通过 PayPal 以信用卡／借记卡付款。以卡片付款不需要 PayPal 帐户。","商品資訊":"商品信息","尚無聯絡資訊。":"尚无联系信息。","尚無訊息。":"尚无消息。","已複製連結，請貼到 Safari 或 Chrome 開啟":"已拷贝链接，请贴到 Safari 或 Chrome 打开","布面壓克力":"布面丙烯","建議在 Safari 或 Chrome 中結帳。請點右上角的 •••，再選擇「在外部瀏覽器開啟」。":"建议在 Safari 或 Chrome 中结帐。请点右上角的 •••，再选择「在外部浏览器打开」。","彩繪 3D 列印樹脂":"彩绘 3D 打印树脂","影片":"视频","您的收件資訊會隨 PayPal 訂單一併送出。可使用信用卡／簽帳金融卡付款。進口關稅與稅金由買家負擔；美國訂單除外，以完稅方式寄送（到貨時無需另付費用）。":"您的收件信息会随 PayPal 订单一并送出。可使用信用卡／借记卡付款。进口关税与税金由买家负担；美国订单除外，以完税方式寄送（到货时无需另付费用）。","收件資訊":"收件信息","數位合成照片":"数字合成照片","查詢":"查找","每件作品皆為限量版或單件原作，恕不接受退貨。若商品送達時有損壞，請於收件後 7 天內附上商品及包裝的照片與我聯絡，確認損壞後將為您辦理退款。":"每件作品皆为限量版或单件原作，恕不接受退货。若商品送达时有损坏，请于收件后 7 天内附上商品及包装的照片与我联系，确认损坏后将为您办理退款。","無法載入 PayPal，請重新整理頁面。":"无法加载 PayPal，请刷新页面。","登出":"注销","確認付款時連線中斷，付款可能已完成也可能未完成。再次嘗試前，請先查看「我的訂單」或您的 PayPal 帳戶，或寄信至 ":"确认付款时连接中断，付款可能已完成也可能未完成。再次尝试前，请先查看「我的订单」或您的 PayPal 帐户，或寄信至 ","紙本數位版畫":"纸本数字版画","網路書店":"网络书店","網路錯誤。":"网络错误。","網路錯誤，請再試一次。":"网络错误，请再试一次。","聯絡":"联系","藝術家會直接回信到您的電子郵件。您的電子郵件僅用於回覆。":"艺术家会直接回信到您的电子邮件。您的电子邮件仅用于回复。","複製頁面連結":"拷贝页面链接","訂單狀態與訊息":"订单状态与消息","訊息":"消息","請填寫標示紅色的收件資訊。":"请填写标示红色的收件信息。","請複製此連結：":"请拷贝此链接：","請輸入訊息。":"请输入消息。","謝謝您，訊息已送出。藝術家將以電子郵件回覆。":"谢谢您，消息已送出。艺术家将以电子邮件回复。","載入中…":"加载中…","輸入英文搜尋 — 例：T 搜尋 Taiwan":"输入英文搜索 — 例：T 搜索 Taiwan","這些訊息只有您和藝術家看得到。":"这些消息只有您和艺术家看得到。","連線已逾時，請重新輸入電子郵件。":"连接已逾时，请重新输入电子邮件。","郵遞區號":"邮政编码","開啟聲音":"打开声音","開啟購物車":"打开购物车","關於訂單，要如何聯絡您？":"关于订单，要如何联系您？","隱私權政策":"隐私政策"};/*/HANS*/
+var HCM={}; for(var hi=0;hi<HC.length;hi+=2) HCM[HC.charAt(hi)]=HC.charAt(hi+1);
+var HANS=false;
+function zhv(){ var v=''; try{ v=localStorage.getItem('lysZhV')||''; }catch(e){} return v?v==='hans':(ZU&&!/^zh-(tw|hk|mo)|^zh-hant/i.test(NL)); }
+function cv(t){ if(!HANS||t==null) return t; if(Object.prototype.hasOwnProperty.call(HW,t)) return HW[t]; return t.replace(/[\u3400-\u9fff]/g,function(c){ return HCM[c]||c; }); }
 /* master mode: every language can be picked (KO / EN / 中文), Chinese only when chosen */
 var MU=false; try{ MU=/(^|; )lysM=1/.test(document.cookie)||localStorage.getItem('leeArchiveMasterOn_v2')==='1'||sessionStorage.getItem('leeArchiveMasterOn_v2')==='1'; }catch(e){}
 if(!ZU&&!MU){ H.classList.remove('zhwait'); return; }
@@ -200,7 +206,7 @@ function txt(n){
   if(ZU&&el.matches&&el.matches('[data-setlang="ko"]')){ if(v!=='中文'){ n.__zh=[v,'中文']; done.push(n); n.nodeValue='中文'; } return; }
   if(!on) return;
   if(el.closest('[data-setlang]')) return;
-  var t=tr(v); if(t==null) return;
+  var t=cv(tr(v)); if(t==null) return;
   var lead=v.match(/^\s*/)[0], trail=v.match(/\s*$/)[0], nv=(t.indexOf('\n')>=0?t:lead+t+trail);
   n.__zh=[v,nv]; done.push(n); n.nodeValue=nv;
 }
@@ -209,7 +215,7 @@ function attrs(el){
   if(!on||!el||(el.closest&&el.closest('.l-ko,.only-ko,.modal,.notranslate'))) return;
   for(var i=0;i<AT.length;i++){ var a=AT[i], v=el.getAttribute(a); if(!v||!/[A-Za-z]/.test(v)) continue;
     var rec=el.__zha||(el.__zha={}); if(rec[a]&&rec[a][1]===v) continue;
-    var t=tr(v); if(t==null) continue; rec[a]=[v,t]; doneA.push([el,a]); el.setAttribute(a,t); }
+    var t=cv(tr(v)); if(t==null) continue; rec[a]=[v,t]; doneA.push([el,a]); el.setAttribute(a,t); }
 }
 function walk(root){
   if(root.nodeType===3){ txt(root); return; }
@@ -230,8 +236,9 @@ function zhBtns(){
   var ls=document.querySelectorAll('.lang-switch:not([data-zhb])');
   for(var i=0;i<ls.length;i++){ var w=ls[i]; w.setAttribute('data-zhb','1');
     var sep=document.createElement('i'); sep.textContent='/';
-    var b=document.createElement('button'); b.type='button'; b.setAttribute('data-setlang','zh'); b.textContent='中文';
-    w.appendChild(sep); w.appendChild(b); }
+    w.appendChild(sep);
+    [['hant','繁中'],['hans','简中']].forEach(function(x,j){ if(j){ var s2=document.createElement('i'); s2.textContent='/'; w.appendChild(s2); }
+      var b=document.createElement('button'); b.type='button'; b.setAttribute('data-setlang','zh'); b.setAttribute('data-zhv',x[0]); b.textContent=x[1]; w.appendChild(b); }); }
 }
 var mo=new MutationObserver(function(ms){
   zhBtns();
@@ -244,8 +251,8 @@ var mo=new MutationObserver(function(ms){
 
 /* alerts and prompts from the shop */
 var _al=window.alert, _pr=window.prompt;
-window.alert=function(m){ return _al.call(window, on&&typeof m==='string'?(tr(m)||m):m); };
-window.prompt=function(m,d){ return _pr.call(window, on&&typeof m==='string'?(tr(m)||m):m, d); };
+window.alert=function(m){ return _al.call(window, on&&typeof m==='string'?(cv(tr(m))||m):m); };
+window.prompt=function(m,d){ return _pr.call(window, on&&typeof m==='string'?(cv(tr(m))||m):m, d); };
 
 function setOn(v){
   on=v;
@@ -253,21 +260,23 @@ function setOn(v){
   H.classList.toggle('zh',v);
   if(v){
     if(H.getAttribute('data-lang')!=='en'){ H.setAttribute('data-lang','en'); try{ localStorage.setItem('lysLang','en'); }catch(e){} }
-    H.setAttribute('lang','zh-Hant'); walk(document.body);
-  } else { H.setAttribute('lang','en'); revert(); }
+    HANS=zhv(); H.classList.toggle('zhs',HANS); H.setAttribute('lang',HANS?'zh-Hans':'zh-Hant'); walk(document.body);
+  } else { H.classList.remove('zhs'); revert(); setTimeout(function(){ H.setAttribute('lang',H.getAttribute('data-lang')==='ko'?'ko':'en'); },0); }
 }
 
 /* 中文 / EN: KO is shown as 中文 for these visitors */
 window.addEventListener('click',function(e){
   var b=e.target&&e.target.closest&&e.target.closest('[data-setlang]'); if(!b) return;
   var l=b.getAttribute('data-setlang');
-  if(l==='zh'||(ZU&&l==='ko')){ e.preventDefault(); e.stopImmediatePropagation(); if(!on) setOn(true); }
+  if(l==='zh'||(ZU&&l==='ko')){ e.preventDefault(); e.stopImmediatePropagation();
+    var v=b.getAttribute('data-zhv'); if(v){ try{ localStorage.setItem('lysZhV',v); }catch(er){} if(on&&HANS!==(v==='hans')){ revert(); setOn(true); return; } }
+    if(!on) setOn(true); }
   else if(on) setOn(false);
 },true);
 
 var css=document.createElement('style');
 css.textContent='html.zhu .lang-switch [data-setlang="ko"]{letter-spacing:.04em}'+
- 'html.zh .lang-switch [data-setlang="zh"]{color:var(--ink)!important;font-weight:600!important}'+
+ 'html.zh:not(.zhs) .lang-switch [data-zhv="hant"],html.zh.zhs .lang-switch [data-zhv="hans"]{color:var(--ink)!important;font-weight:600!important}'+
  'html.zhu.zh .lang-switch [data-setlang="ko"]{color:var(--ink)!important;font-weight:600!important}'+
  'html.zh:not(.zhu) .lang-switch [data-setlang="ko"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
  'html.zh .lang-switch [data-setlang="en"]{color:var(--ink-faint,#aaa)!important;font-weight:400!important}'+
