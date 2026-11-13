@@ -2023,7 +2023,9 @@ function updateCaption(){
 }
 // like film subtitles: low and centred, fades out, then the next line fades in
 let capT=0;
-function showCap(c){ GT.cap(c); clearTimeout(capT); const set=()=>{ if(!c){capEl.innerHTML=''; return;} const [t,...rest]=c.split('|'); capEl.innerHTML='<b></b><span></span>'; capEl.firstChild.textContent=t; capEl.lastChild.textContent=rest.join(', '); const u=CAPURL[c]; if(u){ const a=document.createElement('a'); a.href=u; a.target='_top'; a.className='capLink'; a.textContent=GB_LANG==='zh'?'前往商店 →':'View in shop →'; capEl.appendChild(a); } capEl.classList.add('on'); };
+/* 2026-11-13: every work's caption links to its series page in Works ("About this work"); only the master's gift-shop books keep a shop link */
+function workSlug(t){ t=String(t||''); if(/^Torso Sculpture/i.test(t)) return 'torso-sculpture'; if(/Medusa/i.test(t)) return 'medusa'; if(/Torso/i.test(t)) return 'torso'; if(/Annunciation/i.test(t)) return 'the-annunciation'; if(/Dana[eë]/i.test(t)) return 'danae'; if(/Three Graces/i.test(t)) return 'prometheus-and-the-three-graces'; if(/Laoco/i.test(t)) return 'laocoon'; if(/^(Zodiac|Helios|Aquarius|Aries|Cancer|Capricorn|Gemini|Leo|Libra|Pisces|Sagittarius|Scorpio|Taurus|Virgo)\b/i.test(t)) return 'zodiac'; return ''; }
+function showCap(c){ GT.cap(c); clearTimeout(capT); const set=()=>{ if(!c){capEl.innerHTML=''; return;} const [t,...rest]=c.split('|'); capEl.innerHTML='<b></b><span></span>'; capEl.firstChild.textContent=t; capEl.lastChild.textContent=rest.join(', '); const u=CAPURL[c], sl=u?'':workSlug(t); if(u||sl){ const a=document.createElement('a'); a.href=u||('/#works/'+sl); a.target='_top'; a.className='capLink'; a.textContent=u?(GB_LANG==='zh'?'前往商店 →':'View in shop →'):(GB_LANG==='ko'?'작품 소개 →':GB_LANG==='ja'?'作品について →':GB_LANG==='zh'?(ZHS?'作品介绍 →':'作品介紹 →'):'About this work →'); if(sl) a.addEventListener('click',()=>{ GT('g_works',t); GT.flush(); }); capEl.appendChild(a); } capEl.classList.add('on'); };
   if(capEl.classList.contains('on')){ capEl.classList.remove('on'); capT=setTimeout(set,c?450:700); } else set(); }
 
 // modes
