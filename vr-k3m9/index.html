@@ -280,7 +280,7 @@ import { createRoomTone } from './sound.js?v=1105snd';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as FP from './figpack.js?v=1104d';
 import * as FX from './figfx.js?v=1107';
-import { createGuestbook } from './guestbook.js?v=1111sid';
+import { createGuestbook } from './guestbook.js?v=1113undo';
 
 const canvas=document.getElementById('cv'), stage=document.getElementById('stage');
 let dirty=true, lastCap='', PD=document; // PD = document that currently holds the control panel
@@ -1586,7 +1586,7 @@ document.getElementById('chatLogBtn').onclick=async()=>{ const box=PD.getElement
       w.textContent=[q.cc?cn(q.cc):'', q.city||q.rg||'', DEVN[q.dev]||q.dev||'', q.v>0?q.v+'번째 방문':'', q.n>1?'함께 '+q.n+'명':''].filter(Boolean).join(' · '); w.style.cssText='display:block;color:var(--muted);font-size:11.5px;margin-top:1px'; c.appendChild(w);
       d.append(a,b,c); box.appendChild(d); }
     box.scrollTop=box.scrollHeight; }catch(e){ note.textContent='불러오지 못했어요 ('+e.message+')'; } };
-const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',onWrite:g=>{ if(!GT.wrote.has(g)){ GT.wrote.add(g); GT('g_gb_write'); } },onOpen:()=>{keys.clear(); dirty=true; GT('g_gb_open');},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
+const guest=createGuestbook({host:stage,api:'https://leeyunsung-shop.nu-layer.workers.dev/api/gb',lang:GB_LANG,zhs:ZHS,onWrite:g=>{ if(!GT.wrote.has(g)){ GT.wrote.add(g); GT('g_gb_write'); } },onOpen:()=>{keys.clear(); dirty=true; GT('g_gb_open');},onClose:()=>{stage.focus({preventScroll:true}); dirty=true;}});
 const _ray=new THREE.Raycaster(), _nv=new THREE.Vector2();
 function tryOpenGuestbook(cx,cy){ if(!GB||guest.isOpen) return false; const r=canvas.getBoundingClientRect();
   _nv.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1); _ray.setFromCamera(_nv,camera); const hit=_ray.intersectObjects(GB.hits,false)[0];

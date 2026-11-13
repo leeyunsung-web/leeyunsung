@@ -23,6 +23,7 @@ const CSS = `
 .gbx .leaf .side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#faf6ec;overflow:hidden}
 .gbx .leaf .side.back{transform:rotateY(180deg)}
 .gbx .leaf .shade{position:absolute;inset:0;pointer-events:none}
+.gbx .undo{position:absolute;right:4%;top:3%;z-index:7;font:12px system-ui,sans-serif;border:1px solid #d8cfba;background:#fffdf7;color:#5a4a3a;border-radius:999px;padding:3px 11px;cursor:pointer;touch-action:manipulation}
 .gbx .rm{position:absolute;right:4%;top:3%;z-index:7;font:12px system-ui,sans-serif;border:1px solid #d8cfba;background:#fffdf7;color:#7a5a3a;border-radius:999px;padding:2px 10px;cursor:pointer}
 .gbx .corner{position:absolute;top:-2%;bottom:-2%;width:15%;z-index:6;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none}
 .gbx .corner.next{right:-4%}.gbx .corner.prev{left:-4%}
@@ -47,7 +48,8 @@ const rnd = (n, abc) => { const a = new Uint8Array(n); crypto.getRandomValues(a)
 // store (default: the exhibition server at api):
 //   index() -> [{id, g, at}] every visible page, light;  pages(keys) -> {"id:g": [strokes]};  save(g, strokes) -> 'ok'|'conflict'|'fail'
 //   hide(id, g) -> owner only;  canHide() -> true when the owner is looking
-export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, onWrite, doc, viewOnly }) {
+export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, onClose, onWrite, doc, viewOnly, lang, zhs }) {
+  const UNDO = lang === 'ko' ? '↶ 되돌리기' : lang === 'ja' ? '↶ 元に戻す' : lang === 'zh' ? (zhs ? '↶ 撤销' : '↶ 復原') : '↶ Undo'; // 2026-11-13: take back your own last stroke
   const D = doc || (host && host.ownerDocument) || document; // works in another window too (the master's control window)
   if (!D.getElementById('gb-css')) { const st = D.createElement('style'); st.id = 'gb-css'; st.textContent = CSS; D.head.appendChild(st); }
   let me = meIn || null; if (!me) try { me = JSON.parse(localStorage.getItem('gb-me') || 'null'); } catch (e) {}
@@ -91,7 +93,8 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
         b.onclick = async e => { e.stopPropagation(); if (!armed) { armed = true; b.textContent = '정말 지울까요?'; setTimeout(() => { armed = false; b.textContent = '지우기'; }, 3000); return; }
           if (await store.hide(pg.id, pg.g)) { others = others.filter(o => !(o.id === pg.id && o.g === pg.g)); render(); } else b.textContent = '못 지웠어요'; };
         d.appendChild(b); } }
-    else { const g = pg.g, mineG = () => mine.strokes.filter(s => (s.g | 0) === g); requestAnimationFrame(() => paint(cv, mineG())); if (live && !viewOnly) { d.classList.add('mine'); attachPen(d, cv, g, mineG); } }
+    else { const g = pg.g, mineG = () => mine.strokes.filter(s => (s.g | 0) === g); requestAnimationFrame(() => paint(cv, mineG())); if (live && !viewOnly) { d.classList.add('mine'); attachPen(d, cv, g, mineG);
+        if (mineG().length) { const u = D.createElement('button'); u.type = 'button'; u.className = 'undo'; u.textContent = UNDO; u.onpointerdown = e => e.stopPropagation(); u.onclick = e => { e.stopPropagation(); undo(g); }; d.appendChild(u); } } }
     return d;
   }
   // fit the book inside the room view (not the window)
@@ -154,6 +157,8 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     const end = () => { if (st) { st.p = packStroke(st).p; const g0 = st.g; st = null; drawing = false; keep(g0); pendingRender = false; render(); } };
     d.addEventListener('pointerup', end); d.addEventListener('pointercancel', end);
   }
+  // your own pages only: the last stroke on that page comes off, and the page is saved again (the server takes strokes back only from its writer, last first)
+  function undo(g) { if (drawing || !loaded) return; for (let i = mine.strokes.length - 1; i >= 0; i--) if ((mine.strokes[i].g | 0) === g) { mine.strokes.splice(i, 1); full = false; keep(g); render(); return; } }
   async function keep(g) {
     if (writing.has(g)) { queued.add(g); return; } writing.add(g);
     try { const strokes = mine.strokes.filter(x => (x.g | 0) === g).map(x => ({ p: x.p }));
@@ -200,6 +205,7 @@ export function createGuestbook({ host, api, store, me: meIn, inline, onOpen, on
     setTimeout(() => w.remove(), 560); onClose && onClose();
   }
   D.defaultView.addEventListener('keydown', e => { if (!isOpen) return; if (e.key === 'Escape') { if (!inline) close(); return; }
+    if ((e.ctrlKey || e.metaKey) && /^z$/i.test(e.key) && !viewOnly) { const l = mine.strokes[mine.strokes.length - 1]; if (l) undo(l.g | 0); e.preventDefault(); e.stopPropagation(); return; }
     if (e.key === 'ArrowRight') { flip(1); e.preventDefault(); e.stopPropagation(); } else if (e.key === 'ArrowLeft') { flip(-1); e.preventDefault(); e.stopPropagation(); }
     else if (!inline && /^(w|a|s|d|arrowup|arrowdown)$/i.test(e.key)) close(); }, true);
   return { open, close, get isOpen() { return isOpen; } };
