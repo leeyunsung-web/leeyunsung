@@ -1,0 +1,14 @@
+name: Cleanup preview branches
+
+# 수동 실행 전용: 미리보기용으로 잠깐 만든 preview-* 브랜치를 지움 (사이트에는 영향 없음)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for b in $(git ls-remote --heads origin 'preview-*' | awk '{print $2}' | sed 's#refs/heads/##'); do git push origin --delete "$b" && echo "deleted $b"; done
