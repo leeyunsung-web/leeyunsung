@@ -1050,7 +1050,7 @@ function roomConnect(){ if(room&&room.readyState<2) return; try{ room=new WebSoc
   room.onclose=()=>{ for(const id of [...PEERS.keys()]) if(!PEERS.get(id).bot) removePeer(id); online=1; showOnline(); roomMe=null; D.lead=true; setTimeout(roomConnect,roomBack); roomBack=Math.min(30000,roomBack*2); }; }
 function roomTick(now){ if(!room&&KIT) roomConnect(); if(!room||room.readyState!==1||!roomMe) return;
   const moved=Math.hypot(walk.x-roomSent.x,walk.y-roomSent.y)>0.02||Math.abs(walk.yaw-roomSent.a)>0.02;
-  if((moved&&now-roomSent.t>150)||now-roomSent.t>25000){ roomSent={x:walk.x,y:walk.y,a:walk.yaw,t:now}; room.send(JSON.stringify({t:'p',x:+walk.x.toFixed(3),y:+walk.y.toFixed(3),a:+walk.yaw.toFixed(3)})); } }
+  if((moved&&now-roomSent.t>200)||now-roomSent.t>25000){ roomSent={x:walk.x,y:walk.y,a:walk.yaw,t:now}; room.send(JSON.stringify({t:'p',x:+walk.x.toFixed(3),y:+walk.y.toFixed(3),a:+walk.yaw.toFixed(3)})); } }
 addEventListener('pagehide',()=>{ try{ room&&room.close(); }catch(e){} });
 // a tab left in the background drops out of the room after a minute (its figure would stand frozen); it comes back when you return
 let roomHideT=0; document.addEventListener('visibilitychange',()=>{ clearTimeout(roomHideT);
