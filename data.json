@@ -23,33 +23,6 @@
       "slug": "torso-sculpture",
       "photoRows": [
         {
-          "id": "row-1793460000001-trnw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1793460000001-trnw",
-              "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "Torso Sculpture, 2026, 3D rendering (turnaround)",
-              "video": {
-                "src": "./media/torso-sculpture-turnaround.mp4",
-                "ratio": "1:1",
-                "poster": "./images/torso-sculpture-turnaround-poster.jpg"
-              }
-            }
-          ]
-        },
-        {
-          "id": "row-1793283604373-wsc01",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1793283604373-wsc01",
-              "image": "./images/s-1793281860372-q9sg2-cover.jpg",
-              "caption": "Torso Sculpture, 2026, Painted 3D-printed resin, 50 × 43 × 38 cm, edition of 10 + 2 AP. Digitally composited photograph"
-            }
-          ]
-        },
-        {
           "id": "wrow-1793431792096-j8cbo",
           "cols": 1,
           "photos": [
@@ -5681,7 +5654,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
     "page.css": "d4f521e0:2792",
-    "sitemap.xml": "5695ef46:152568",
+    "sitemap.xml": "1eec0279:152144",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "b720e7ca:79980",
     "works/digital/index.html": "3d2d2659:39224",
@@ -5777,12 +5750,12 @@
     "en/shop/laocoon-2024-3/index.html": "687ee70c:29060",
     "shop/torso-16/index.html": "8f0e04d9:35252",
     "en/shop/torso-16/index.html": "d45dfb34:28788",
-    "shop/torso-sculpture/index.html": "608480b5:42540",
-    "en/shop/torso-sculpture/index.html": "aa055a8d:38036",
+    "shop/torso-sculpture/index.html": "d731ac9a:42232",
+    "en/shop/torso-sculpture/index.html": "9dede4a1:37728",
     "shop/head-of-medusa-silver-edition/index.html": "73db96de:36260",
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
-    "works/torso-sculpture/index.html": "3b1d07d6:39160",
-    "en/works/torso-sculpture/index.html": "f3686e3d:35332",
+    "works/torso-sculpture/index.html": "c4f316ee:35340",
+    "en/works/torso-sculpture/index.html": "4f7424a0:31564",
     "shop/head-of-torso/index.html": "e74d082b:33324",
     "en/shop/head-of-torso/index.html": "437fdf6b:28032"
   },
