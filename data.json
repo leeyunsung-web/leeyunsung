@@ -23,6 +23,45 @@
       "slug": "torso-sculpture",
       "photoRows": [
         {
+          "id": "wrow-1795400000001-turn3",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "w-1795400000001-turnface",
+              "image": "./images/torso-sculpture-turn-face-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turn-face.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turn-face-poster.jpg",
+                "vr": 0.8
+              }
+            },
+            {
+              "id": "w-1795400000001-turnlow",
+              "image": "./images/torso-sculpture-turn-low-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turn-low.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turn-low-poster.jpg",
+                "vr": 0.8
+              }
+            },
+            {
+              "id": "w-1795400000001-turnhigh",
+              "image": "./images/torso-sculpture-turn-high-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-turn-high.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turn-high-poster.jpg",
+                "vr": 0.8
+              }
+            }
+          ]
+        },
+        {
           "id": "wrow-1793431792096-j8cbo",
           "cols": 1,
           "photos": [
@@ -5663,8 +5702,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "8b6f92ba:72520",
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
-    "page.css": "d4f521e0:2792",
-    "sitemap.xml": "af1923f8:152168",
+    "page.css": "f1bba3ce:122492",
+    "sitemap.xml": "acfe4ad5:153228",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "dfcfbb07:80028",
     "works/digital/index.html": "2d99fd03:39272",
@@ -5764,8 +5803,8 @@
     "en/shop/torso-sculpture/index.html": "153f41d7:38612",
     "shop/head-of-medusa-silver-edition/index.html": "73db96de:36260",
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
-    "works/torso-sculpture/index.html": "279afc09:35364",
-    "en/works/torso-sculpture/index.html": "d330bc90:31588",
+    "works/torso-sculpture/index.html": "7cb6589d:40404",
+    "en/works/torso-sculpture/index.html": "3c605b79:36552",
     "shop/head-of-torso/index.html": "e74d082b:33324",
     "en/shop/head-of-torso/index.html": "437fdf6b:28032"
   },
