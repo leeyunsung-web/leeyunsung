@@ -342,7 +342,7 @@
             {
               "id": "p-1793700133210-78ufc",
               "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
-              "caption": "Head of Torso, 2023, Oil on canvas, 53 x 45 cm"
+              "caption": "Head of Torso, 2023, Oil on canvas, 53 × 45 cm"
             }
           ]
         }
@@ -820,7 +820,7 @@
             {
               "id": "p-1795215853718-uh2fp",
               "image": "./images/w2-p-1795215853718-uh2fp-66f1c233.jpg",
-              "caption": "2026  Everyday Images: How They Address Us, Seoul National University Museum of Art, Seoul, Korea"
+              "caption": "2026, Everyday Images: How They Address Us, Seoul National University Museum of Art, Seoul, Korea"
             }
           ]
         },
@@ -831,7 +831,7 @@
             {
               "id": "p-1795215867963-4zu4y",
               "image": "./images/w2-p-1795215867963-4zu4y-8dd3d4ca.jpg",
-              "caption": "2026  Everyday Images: How They Address Us, Seoul National University Museum of Art, Seoul, Korea"
+              "caption": "2026, Everyday Images: How They Address Us, Seoul National University Museum of Art, Seoul, Korea"
             }
           ]
         }
@@ -5666,13 +5666,13 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "f5f8c48d:48344",
+    "works/the-annunciation/index.html": "b5c8bb1e:48352",
     "works/torso/index.html": "cdb6fa40:62788",
     "works/danae/index.html": "b147631e:69680",
     "works/zodiac/index.html": "c7f68f5c:110408",
     "works/medusa/index.html": "41adcb8a:64548",
     "works/laocoon/index.html": "8825dc61:72424",
-    "works/frames-of-torso/index.html": "cc18f7a1:61128",
+    "works/frames-of-torso/index.html": "404556b2:61132",
     "text/critical-notes-lim-geunjun/index.html": "d5363f72:54112",
     "text/sections-of-structure-jung-hyun/index.html": "84c9dae4:53764",
     "text/hybrid-of-reference-jang-seungyeon/index.html": "b15afb32:43184",
@@ -5681,7 +5681,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
     "page.css": "d4f521e0:2792",
-    "sitemap.xml": "1634715b:152564",
+    "sitemap.xml": "5695ef46:152568",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "b720e7ca:79980",
     "works/digital/index.html": "3d2d2659:39224",
@@ -5703,14 +5703,14 @@
     "shop/yes-no-like-dislike-2000-2020/index.html": "d0cccd21:33308",
     "shop/torso-10/index.html": "a0459573:35504",
     "shop/torso-18/index.html": "e71db220:35252",
-    "en/works/the-annunciation/index.html": "b6ee9999:40940",
+    "en/works/the-annunciation/index.html": "1d9394a0:40948",
     "en/works/torso/index.html": "88005278:55540",
     "en/works/danae/index.html": "ddcefa1c:63424",
     "en/works/zodiac/index.html": "8ab23104:101956",
     "en/works/pixel-prometheus/index.html": "b56a8be8:74452",
     "en/works/medusa/index.html": "98f0feee:58208",
     "en/works/laocoon/index.html": "1686054a:65564",
-    "en/works/frames-of-torso/index.html": "e2cd9107:55860",
+    "en/works/frames-of-torso/index.html": "3064ba6:55864",
     "en/works/digital/index.html": "c70bf331:32832",
     "en/text/critical-notes-lim-geunjun/index.html": "29d24b85:34096",
     "en/text/sections-of-structure-jung-hyun/index.html": "ef50df21:34532",
@@ -5783,8 +5783,8 @@
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
     "works/torso-sculpture/index.html": "3b1d07d6:39160",
     "en/works/torso-sculpture/index.html": "f3686e3d:35332",
-    "shop/head-of-torso/index.html": "72a6ac9d:33320",
-    "en/shop/head-of-torso/index.html": "91816f6c:28028"
+    "shop/head-of-torso/index.html": "e74d082b:33324",
+    "en/shop/head-of-torso/index.html": "437fdf6b:28032"
   },
   "shopDesign": {
     "mainPct": 56,
