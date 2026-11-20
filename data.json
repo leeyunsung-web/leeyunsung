@@ -812,6 +812,28 @@
               "caption": "The Annunciation III, 2026, Oil on canvas, 227 × 182 cm"
             }
           ]
+        },
+        {
+          "id": "row-1795215853718-ntbjv",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1795215853718-uh2fp",
+              "image": "./images/w2-p-1795215853718-uh2fp-66f1c233.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1795215867963-o5ee8",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1795215867963-4zu4y",
+              "image": "./images/w2-p-1795215867963-4zu4y-8dd3d4ca.jpg",
+              "caption": ""
+            }
+          ]
         }
       ],
       "slug": "the-annunciation",
@@ -5644,7 +5666,7 @@
     "email": "nu-layer@naver.com"
   },
   "pageHashes": {
-    "works/the-annunciation/index.html": "b16367ae:44656",
+    "works/the-annunciation/index.html": "c12982a0:47448",
     "works/torso/index.html": "cdb6fa40:62788",
     "works/danae/index.html": "b147631e:69680",
     "works/zodiac/index.html": "c7f68f5c:110408",
@@ -5658,8 +5680,8 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "8b6f92ba:72520",
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
-    "page.css": "c66c5247:2792",
-    "sitemap.xml": "2a5c40bf:151588",
+    "page.css": "d4f521e0:2792",
+    "sitemap.xml": "cf8dd7c2:152300",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "b720e7ca:79980",
     "works/digital/index.html": "3d2d2659:39224",
@@ -5681,7 +5703,7 @@
     "shop/yes-no-like-dislike-2000-2020/index.html": "d0cccd21:33308",
     "shop/torso-10/index.html": "a0459573:35504",
     "shop/torso-18/index.html": "e71db220:35252",
-    "en/works/the-annunciation/index.html": "a737ffd9:37308",
+    "en/works/the-annunciation/index.html": "cac0159f:40044",
     "en/works/torso/index.html": "88005278:55540",
     "en/works/danae/index.html": "ddcefa1c:63424",
     "en/works/zodiac/index.html": "8ab23104:101956",
