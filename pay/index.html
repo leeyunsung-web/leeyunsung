@@ -80,7 +80,9 @@ h1{font-size:22px;font-weight:400;margin:0 0 4px}
     var html = '<h1>Invoice ' + esc(d.id) + '</h1><p class="muted">' + (d.buyer ? "For " + esc(d.buyer) + " · " : "") + esc(d.date || "") + '</p>' +
       '<div class="card">' +
       '<div class="row"><span class="k">Artwork</span><span class="v">' + esc(d.item) + (d.edition ? '<br><span class="muted">Edition No. ' + esc(d.edition) + '</span>' : '') + '</span></div>' +
-      '<div class="row"><span class="k">Invoice total<br><span class="muted">incl. shipping and insurance</span></span><span class="v">' + usd(d.total) + '</span></div>' +
+      (function(){ var sh = Math.round(((Number(d.deposit) || 0) + (Number(d.balance) || 0) - (Number(d.total) || 0)) * 100) / 100;
+        return sh > 0 ? '<div class="row"><span class="k">Artwork price</span><span class="v">' + usd(d.total) + '</span></div><div class="row"><span class="k">Shipping' + (/united states/i.test(d.country || "") ? ' and US import duty (prepaid)' : '') + '</span><span class="v">' + usd(sh) + '</span></div><div class="row"><span class="k">Invoice total</span><span class="v">' + usd(d.total + sh) + '</span></div>'
+          : '<div class="row"><span class="k">Invoice total<br><span class="muted">incl. shipping</span></span><span class="v">' + usd(d.total) + '</span></div>'; })() +
       (d.deposit ? '<div class="row"><span class="k">Deposit (50%)</span><span class="v">' + usd(d.deposit) + '</span></div>' : '') +
       (d.balance ? '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.balance) + '</span></div>' : '') +
       '</div>';
