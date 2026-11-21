@@ -5162,6 +5162,23 @@
           ]
         },
         {
+          "id": "row-1795222500000-space",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1795222500000-space",
+              "image": "./images/torso-sculpture-space-poster.jpg",
+              "caption": "",
+              "video": {
+                "src": "./media/torso-sculpture-space.mp4",
+                "ratio": "9:16",
+                "poster": "./images/torso-sculpture-space-poster.jpg",
+                "vr": 0.5625
+              }
+            }
+          ]
+        },
+        {
           "id": "row-1793281860690-sc001",
           "cols": 1,
           "photos": [
@@ -5360,7 +5377,8 @@
               "video": {
                 "src": "./media/torso-sculpture-packing.mp4?v=2",
                 "ratio": "9:16",
-                "poster": "./images/torso-sculpture-packing-poster.jpg?v=2"
+                "poster": "./images/torso-sculpture-packing-poster.jpg?v=2",
+                "vr": 0.5625
               }
             }
           ]
@@ -5911,8 +5929,8 @@
     "en/shop/laocoon-2024-9/index.html": "2fca8281:29060",
     "shop/torso-16/index.html": "8f0e04d9:35252",
     "en/shop/torso-16/index.html": "d45dfb34:28788",
-    "shop/torso-sculpture/index.html": "b9eeba43:43196",
-    "en/shop/torso-sculpture/index.html": "55030870:38680",
+    "shop/torso-sculpture/index.html": "2faa27ee:44288",
+    "en/shop/torso-sculpture/index.html": "849525e6:39756",
     "shop/head-of-medusa-silver-edition/index.html": "73db96de:36260",
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
     "works/torso-sculpture/index.html": "7859e4d1:40568",
