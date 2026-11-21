@@ -3342,6 +3342,10 @@
     "en/shop/the-three-graces-pixel-props-07/index.html",
     "shop/sd-zodiac-helios/index.html",
     "en/shop/sd-zodiac-helios/index.html",
+    "shop/sd-zodiac-aries/index.html",
+    "en/shop/sd-zodiac-aries/index.html",
+    "shop/sd-zodiac-pisces/index.html",
+    "en/shop/sd-zodiac-pisces/index.html",
     "shop/torso-06-art-poster/index.html",
     "en/shop/torso-06-art-poster/index.html",
     "shop/yes-no-like-dislike-2000-2020/index.html",
@@ -5823,7 +5827,11 @@
     "shop/head-of-torso/index.html": "e74d082b:33324",
     "en/shop/head-of-torso/index.html": "437fdf6b:28032",
     "shop/sd-zodiac-helios/index.html": "7335979b:30472",
-    "en/shop/sd-zodiac-helios/index.html": "6e175c5e:26864"
+    "en/shop/sd-zodiac-helios/index.html": "6e175c5e:26864",
+    "shop/sd-zodiac-aries/index.html": "3b922079:30448",
+    "en/shop/sd-zodiac-aries/index.html": "e9066f65:26836",
+    "shop/sd-zodiac-pisces/index.html": "365d00ff:30472",
+    "en/shop/sd-zodiac-pisces/index.html": "81504b1b:26864"
   },
   "shopDesign": {
     "mainPct": 56,
