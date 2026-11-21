@@ -5193,7 +5193,10 @@
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "4:5",
                 "poster": "./images/torso-sculpture-turnaround-poster.jpg",
-                "vr": 0.8
+                "vr": 0.8,
+                "zoom": 1,
+                "fx": 0.5,
+                "fy": 0.5
               }
             }
           ]
@@ -5831,7 +5834,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "8b6f92ba:72520",
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
-    "page.css": "406a6f47:122968",
+    "page.css": "1b7e161b:123036",
     "sitemap.xml": "8723529d:156204",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "dfcfbb07:80028",
