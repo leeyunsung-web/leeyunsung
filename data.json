@@ -3340,6 +3340,8 @@
     "en/shop/the-three-graces-pixel-props-09/index.html",
     "shop/the-three-graces-pixel-props-07/index.html",
     "en/shop/the-three-graces-pixel-props-07/index.html",
+    "shop/sd-zodiac-helios/index.html",
+    "en/shop/sd-zodiac-helios/index.html",
     "shop/torso-06-art-poster/index.html",
     "en/shop/torso-06-art-poster/index.html",
     "shop/yes-no-like-dislike-2000-2020/index.html",
@@ -4646,7 +4648,7 @@
         "image": "./images/w5-p-1788445603485-941r0.jpg"
       },
       "rowCols": 3,
-      "hidden": true,
+      "hidden": false,
       "year": "2022",
       "descriptionEn": "SD Zodiac – Helios (2022) is a painting shown in the solo exhibition SD ZODIAC (EDIT HANNAM, Seoul, 2022).\nSD stands for \"super deformed,\" a convention in manga and anime that redraws characters in a small, rounded, two-heads-tall style. The head and eyes are enlarged and the features simplified, compressing the original character into something cute.\nHere the twelve constellation characters of the Zodiac series are redrawn in this manner, and their faces fill the canvas."
     },
@@ -4700,7 +4702,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790778537358-887zs",
@@ -4752,7 +4754,7 @@
       },
       "author": "",
       "authorEn": "",
-      "hidden": true
+      "hidden": false
     },
     {
       "id": "s-1790624960499-n3l60",
@@ -5716,7 +5718,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
     "page.css": "f1bba3ce:122492",
-    "sitemap.xml": "acfe4ad5:153228",
+    "sitemap.xml": "50e023cf:155024",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "dfcfbb07:80028",
     "works/digital/index.html": "2d99fd03:39272",
@@ -5819,7 +5821,9 @@
     "works/torso-sculpture/index.html": "7859e4d1:40568",
     "en/works/torso-sculpture/index.html": "d06d6765:36716",
     "shop/head-of-torso/index.html": "e74d082b:33324",
-    "en/shop/head-of-torso/index.html": "437fdf6b:28032"
+    "en/shop/head-of-torso/index.html": "437fdf6b:28032",
+    "shop/sd-zodiac-helios/index.html": "7335979b:30472",
+    "en/shop/sd-zodiac-helios/index.html": "6e175c5e:26864"
   },
   "shopDesign": {
     "mainPct": 56,
