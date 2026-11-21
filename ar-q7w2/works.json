@@ -607,6 +607,21 @@
    "floor": true
   },
   {
+   "id": "s-1795267808340-ptmdl",
+   "title": "Torso Sculpture 01 (25 cm, White)",
+   "year": "2026",
+   "kind": "sculpture",
+   "medium": "Painted 3D-printed resin",
+   "size": "25 × 21.5 × 19 cm",
+   "url": "",
+   "hidden": false,
+   "glb": "glb/s-1795267808340-ptmdl.glb",
+   "usdz": "usdz/s-1795267808340-ptmdl.usdz",
+   "thumb": "tex/t/s-1795267808340-ptmdl.jpg",
+   "floor": true,
+   "unlisted": true
+  },
+  {
    "id": "s-1793370000000-mdsv1",
    "title": "Head of Medusa (Silver Edition)",
    "year": "2021",

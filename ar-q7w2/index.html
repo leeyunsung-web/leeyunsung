@@ -85,7 +85,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
   document.getElementById('hd').hidden=false; document.getElementById('grid').hidden=false;
   var grid=document.getElementById('grid'), view=document.getElementById('view'), mv=document.getElementById('mv'), items=[], kind='original';
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function render(){ grid.innerHTML=''; items.filter(function(x){return x.kind===kind;}).forEach(function(x){
+  function render(){ grid.innerHTML=''; items.filter(function(x){return x.kind===kind&&(master||!x.unlisted);}).forEach(function(x){
       var b=document.createElement('button'); b.className='tile';
       b.innerHTML='<div class="im"><img loading="lazy" alt="" src="'+esc(x.thumb)+'"></div><b>'+esc(x.title)+'</b><span>'+esc(x.size)+(x.hidden?' · <i class="hid">비공개</i>':'')+'</span>';
       b.onclick=function(){ open(x,true); }; grid.appendChild(b); }); }
