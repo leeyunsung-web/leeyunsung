@@ -5413,6 +5413,98 @@
       "arModel": true
     },
     {
+      "id": "s-1795267808340-ptmdl",
+      "title": "Torso Sculpture 01 (Petit Modèle)",
+      "titleEn": "Torso Sculpture 01 (Petit Modèle)",
+      "year": "2026",
+      "cover": "./images/w-1793283604373-y69no-cover-14b40501.jpg",
+      "description": "〈Torso Sculpture 01 (Petit Modèle)〉은 에디션 10점으로 제작되는 50cm 원작 〈Torso Sculpture 01〉을 절반 크기로 옮긴 공식 축소판입니다. 원작과 형태가 같으며, 3D 프린터로 출력한 뒤 손으로 다듬고 도색하고, 모든 작품에 서명과 번호를 넣어 보증서와 함께 드립니다.",
+      "descriptionEn": "Torso Sculpture 01 (Petit Modèle) is the official half-scale reduction of Torso Sculpture 01, the 50 cm original made in an edition of 10. It shares the original’s form exactly: each piece is 3D printed, then sanded and painted by hand, and is signed and numbered with a certificate of authenticity.",
+      "slug": "torso-sculpture-petit-modele",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793281860372-q9sg2-b4a82b-pt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793281860372-q9sg2-b4a82b-pt",
+              "image": "./images/w-1793283604373-y69no-cover-14b40501.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1793281860690-sc001-pt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793460000002-trns-pt",
+              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "caption": "3D rendering (shown: 50 cm original)",
+              "video": {
+                "src": "./media/torso-sculpture-turnaround.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turnaround-poster.jpg",
+                "vr": 0.8,
+                "zoom": 1,
+                "fx": 0.5,
+                "fy": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-1793431792096-j8cbo-pt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793431792096-j8cbo-pt",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
+              "caption": "Digitally composited photograph (shown: 50 cm original)"
+            }
+          ]
+        },
+        {
+          "id": "row-1793431792099-zbvpm-pt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793431792099-zbvpm-pt",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
+              "caption": "Digitally composited photograph (shown: 50 cm original)"
+            }
+          ]
+        },
+        {
+          "id": "row-1793431792101-p1m1c-pt",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1793431792101-p1m1c-pt",
+              "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
+              "caption": "Digitally composited photograph (shown: 50 cm original)"
+            }
+          ]
+        }
+      ],
+      "spec1": "25 × 21.5 × 19 cm",
+      "spec2": "Painted 3D-printed resin",
+      "edition": "Signed and numbered, edition of 30",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "inquiryOnly": true,
+      "category": "sculpture",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "rowCols": 5,
+      "author": "",
+      "authorEn": "",
+      "hidden": true
+    },
+    {
       "id": "s-1793370000000-mdsv1",
       "title": "Head of Medusa (Silver Edition)",
       "author": "",
