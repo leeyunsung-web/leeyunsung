@@ -98,7 +98,7 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
   var key = hraw.split(/[?&]/)[0].replace(/[^A-Za-z0-9]/g, "");
   var peek = /[?&]m=1/.test(location.search) || /[?&]m=1/.test(hraw);
   /* 윤성 님(마스터) 기기에서 열면 미리보기로만 — 기기 잠금·열람 수·기록에 안 남음 */
-  try{ if(/(?:^|;\s*)lysM=1/.test(document.cookie) || localStorage.getItem("lysNoTrack") === "1") peek = true; }catch(e){}
+  try{ if(/(?:^|;\s*)lysM=1/.test(document.cookie) || localStorage.getItem("lysNoTrack") === "1" || localStorage.getItem("leeArchiveMasterOn_v2") === "1") peek = true; }catch(e){}
   var app = document.getElementById("app");
   function esc(t){ return String(t == null ? "" : t).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   function usd(n){ return "USD " + Number(n || 0).toLocaleString("en-US"); }
