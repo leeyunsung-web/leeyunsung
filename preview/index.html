@@ -102,11 +102,10 @@ button:disabled{opacity:.5;cursor:default}
       }).join('') + '</div>' +
       '<div class="offer">' +
         '<div class="row"><span class="k">Edition</span><span class="v">' + esc(d.edition || '') + '</span></div>' +
-        (d.numbers ? '<div class="row"><span class="k">Offered in this preview</span><span class="v">Numbers ' + esc(d.numbers) + '</span></div>' : '') +
         '<div class="row"><span class="k">Preview price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
         '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
         '<div class="price"><span>Deposit due now (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
-        '<p class="small">Each piece is made to order. The deposit reserves your number and begins production; numbers are assigned in the order deposits arrive. Shipping is quoted for your country and added to the balance before shipping.</p>' +
+        '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping is quoted for your country and added to the balance before shipping.</p>' +
         '<div id="act"></div>' +
       '</div>';
     app.innerHTML = h;
