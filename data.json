@@ -5234,7 +5234,8 @@
                 "vr": 0.8
               }
             }
-          ]
+          ],
+          "size": 70
         },
         {
           "id": "row-1793446257311-j1hai",
@@ -5723,7 +5724,7 @@
     "text/taxidermy-of-joy-jo-saemi/index.html": "8b6f92ba:72520",
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
-    "page.css": "914b6480:122492",
+    "page.css": "3f87f049:122492",
     "sitemap.xml": "50e023cf:155024",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "dfcfbb07:80028",
@@ -5820,8 +5821,8 @@
     "en/shop/laocoon-2024-3/index.html": "687ee70c:29060",
     "shop/torso-16/index.html": "8f0e04d9:35252",
     "en/shop/torso-16/index.html": "d45dfb34:28788",
-    "shop/torso-sculpture/index.html": "4d9d7d6f:43156",
-    "en/shop/torso-sculpture/index.html": "d9c4f6ff:38640",
+    "shop/torso-sculpture/index.html": "dc160005:43196",
+    "en/shop/torso-sculpture/index.html": "90ef175d:38680",
     "shop/head-of-medusa-silver-edition/index.html": "73db96de:36260",
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
     "works/torso-sculpture/index.html": "7859e4d1:40568",
