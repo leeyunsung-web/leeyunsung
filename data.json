@@ -3365,7 +3365,11 @@
     "shop/head-of-medusa-silver-edition/index.html",
     "en/shop/head-of-medusa-silver-edition/index.html",
     "shop/laocoon-2024-3/index.html",
+    "shop/laocoon-2024-8/index.html",
+    "shop/laocoon-2024-9/index.html",
     "en/shop/laocoon-2024-3/index.html",
+    "en/shop/laocoon-2024-8/index.html",
+    "en/shop/laocoon-2024-9/index.html",
     "shop/head-of-torso/index.html",
     "en/shop/head-of-torso/index.html",
     "shop/torso-10/index.html",
@@ -5497,6 +5501,88 @@
       }
     },
     {
+      "id": "s-1795220286127-7b4uf",
+      "title": "Laocoon (face) 08",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w7-p-1789631090335-3172x.jpg",
+      "description": "〈Laocoon (face) 08〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
+      "slug": "laocoon-2024-8",
+      "photoRows": [
+        {
+          "id": "rowc-s-1795220286127-7b4uf-a4807f",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1795220286127-7b4uf-a4807f",
+              "image": "./images/w7-p-1789631090335-3172x.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Laocoon (face) 08 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-p-1789631090335-3172x.jpg"
+      }
+    },
+    {
+      "id": "s-1795220286128-92dui",
+      "title": "Laocoon (face) 09",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w7-p-1789631094582-emyvv.jpg",
+      "description": "〈Laocoon (face) 09〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
+      "slug": "laocoon-2024-9",
+      "photoRows": [
+        {
+          "id": "rowc-s-1795220286128-92dui-f1aac2",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1795220286128-92dui-f1aac2",
+              "image": "./images/w7-p-1789631094582-emyvv.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Laocoon (face) 09 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-p-1789631094582-emyvv.jpg"
+      }
+    },
+    {
       "id": "s-1793710000000-hdtr1",
       "title": "Head of Torso",
       "author": "",
@@ -5725,7 +5811,7 @@
     "text/exploding-bishojo-baek-jihong/index.html": "3afb4cbe:104316",
     "cv/index.html": "77d84b87:19536",
     "page.css": "914b6480:122492",
-    "sitemap.xml": "50e023cf:155024",
+    "sitemap.xml": "8723529d:156204",
     "robots.txt": "e7785df8:92",
     "works/pixel-prometheus/index.html": "dfcfbb07:80028",
     "works/digital/index.html": "2d99fd03:39272",
@@ -5818,7 +5904,11 @@
     "shop/laocoon-2024-2/index.html": "ea0c9495:35664",
     "en/shop/laocoon-2024-2/index.html": "bc170d33:29060",
     "shop/laocoon-2024-3/index.html": "6e063b82:35664",
+    "shop/laocoon-2024-8/index.html": "a353e6a6:35664",
+    "shop/laocoon-2024-9/index.html": "9e3bfb5f:35664",
     "en/shop/laocoon-2024-3/index.html": "687ee70c:29060",
+    "en/shop/laocoon-2024-8/index.html": "84d8fd4f:29060",
+    "en/shop/laocoon-2024-9/index.html": "2fca8281:29060",
     "shop/torso-16/index.html": "8f0e04d9:35252",
     "en/shop/torso-16/index.html": "d45dfb34:28788",
     "shop/torso-sculpture/index.html": "b9eeba43:43196",
