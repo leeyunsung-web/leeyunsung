@@ -5418,8 +5418,8 @@
       "titleEn": "Torso Sculpture 01 (Petit Modèle)",
       "year": "2026",
       "cover": "./images/torso-sculpture-petit-modele-cover.jpg",
-      "description": "〈Torso Sculpture 01 (Petit Modèle)〉은 에디션 10점으로 제작되는 50cm 원작 〈Torso Sculpture 01〉을 절반 크기로 옮긴 공식 축소판입니다. 원작과 형태가 같으며, 3D 프린터로 출력한 뒤 손으로 다듬고 도색하고, 모든 작품에 서명과 번호를 넣어 보증서와 함께 드립니다.",
-      "descriptionEn": "Torso Sculpture 01 (Petit Modèle) is the official half-scale reduction of Torso Sculpture 01, the 50 cm original made in an edition of 10. It shares the original’s form exactly: each piece is 3D printed, then sanded and painted by hand, and is signed and numbered with a certificate of authenticity.",
+      "description": "〈Torso Sculpture 01 (Petit Modèle)〉은 〈Torso Sculpture 01〉의 25cm 에디션입니다. 3D 프린터로 출력한 뒤 손으로 다듬고 도색하며, 모든 작품에 서명과 번호를 넣어 보증서와 함께 드립니다.",
+      "descriptionEn": "Torso Sculpture 01 (Petit Modèle) is the 25 cm edition of Torso Sculpture 01. Each piece is 3D printed, then sanded and painted by hand, and is signed and numbered with a certificate of authenticity.",
       "slug": "torso-sculpture-petit-modele",
       "photoRows": [
         {
@@ -5440,7 +5440,7 @@
             {
               "id": "p-1793460000002-trns-pt",
               "image": "./images/torso-sculpture-turnaround-poster.jpg",
-              "caption": "3D rendering (shown: 50 cm original)",
+              "caption": "3D rendering",
               "video": {
                 "src": "./media/torso-sculpture-turnaround.mp4",
                 "ratio": "4:5",
@@ -5460,7 +5460,7 @@
             {
               "id": "p-1793431792096-j8cbo-pt",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792096-j8cbo.jpg",
-              "caption": "Digitally composited photograph (shown: 50 cm original)"
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5471,7 +5471,7 @@
             {
               "id": "p-1793431792099-zbvpm-pt",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792099-zbvpm.jpg",
-              "caption": "Digitally composited photograph (shown: 50 cm original)"
+              "caption": "Digitally composited photograph"
             }
           ]
         },
@@ -5482,7 +5482,7 @@
             {
               "id": "p-1793431792101-p1m1c-pt",
               "image": "./images/s-1793281860372-q9sg2-p-1793431792101-p1m1c.jpg",
-              "caption": "Digitally composited photograph (shown: 50 cm original)"
+              "caption": "Digitally composited photograph"
             }
           ]
         }

@@ -45,6 +45,10 @@ button:disabled{opacity:.5;cursor:default}
 .foot{margin-top:44px;color:var(--soft);font-size:12px;line-height:1.7}
 .foot a{color:inherit}
 .gate{padding:60px 0;text-align:center;color:var(--soft);font-size:15px;line-height:1.7}
+.sample{background:#111;color:#fff;font-size:12.5px;letter-spacing:.04em;padding:9px 12px;margin:0 0 20px}
+#pp{min-height:110px;margin-top:14px}
+.alt{background:none;border:0;color:var(--soft);font-size:13px;font-weight:400;letter-spacing:0;text-decoration:underline;padding:6px 0;cursor:pointer;text-align:left}
+.terms{font-size:11.5px;line-height:1.55;color:var(--soft);margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -83,10 +87,11 @@ button:disabled{opacity:.5;cursor:default}
   fetch(API + "/api/preview/" + key + (peek ? "?peek=1" : "")).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); }).then(function(res){
     var d = res.j;
     if(!res.ok){ gate(d && d.message || "This preview is by invitation only."); return; }
+    if(d.sample) peek = true;
     TSTART = Date.now(); track("view", "Private preview: " + d.title, 0, true);
     if(d.endsAt) document.getElementById("ends").textContent = (d.open ? "Until " : "Ended ") + day(d.endsAt);
     var ph = d.photos || [], hero = ph[0], rest = ph.slice(1);
-    var h = (d.name ? '<p class="hello">Dear ' + esc(d.name) + ',<br>thank you for your interest in my work. You are invited to see this new edition before its public release.</p>' : '<p class="hello">Thank you for your interest in my work. You are invited to see this new edition before its public release.</p>') +
+    var h = (d.sample ? '<p class="sample">SAMPLE VIEW · 견본 화면입니다. 결제와 예약은 실제로 진행되지 않아요.</p>' : '') + (d.name ? '<p class="hello">Dear ' + esc(d.name) + ',<br>thank you for your interest in my work. You are invited to see this new edition before its public release.</p>' : '<p class="hello">Thank you for your interest in my work. You are invited to see this new edition before its public release.</p>') +
       (hero ? '<img class="hero" src="' + esc(hero.image) + '" alt="' + esc(d.title) + '">' : '') +
       '<h1>' + esc(d.title) + (d.year ? ', ' + esc(d.year) : '') + '</h1>' +
       '<p class="cap">' + [d.spec2, d.spec1, d.edition].filter(Boolean).map(esc).join('<br>') + '</p>' +
@@ -98,25 +103,67 @@ button:disabled{opacity:.5;cursor:default}
       '<div class="offer">' +
         '<div class="row"><span class="k">Edition</span><span class="v">' + esc(d.edition || '') + '</span></div>' +
         (d.numbers ? '<div class="row"><span class="k">Offered in this preview</span><span class="v">Numbers ' + esc(d.numbers) + '</span></div>' : '') +
-        '<div class="price"><span>Preview price</span><b>' + usd(d.priceUsd) + '</b></div>' +
-        '<p class="small">Shipping is quoted separately for your country. Each piece is made to order; production begins once the deposit is received, and numbers are reserved in the order deposits arrive.</p>' +
+        '<div class="row"><span class="k">Preview price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
+        '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
+        '<div class="price"><span>Deposit due now (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
+        '<p class="small">Each piece is made to order. The deposit reserves your number and begins production; numbers are assigned in the order deposits arrive. Shipping is quoted for your country and added to the balance before shipping.</p>' +
         '<div id="act"></div>' +
       '</div>';
     app.innerHTML = h;
     var act = document.getElementById("act");
-    function done(){ act.innerHTML = '<div class="done"><span class="tick">✓</span>Thank you. Your reservation request has been received. I will be in touch shortly with an invoice and a secure payment link.<br><span class="small">— Lee Yunsung</span></div>'; }
-    if(d.reserved){ done(); return; }
+    function done(msg){ act.innerHTML = '<div class="done"><span class="tick">✓</span>' + msg + '<br><span class="small">— Lee Yunsung</span></div>'; }
+    if(d.paid){ done("Your deposit has been received. Thank you — I will keep you updated as your edition is made."); return; }
     if(!d.open){ act.innerHTML = '<p class="msg">The preview period has ended. If you are still interested, please email <a href="mailto:reyunsung@gmail.com">reyunsung@gmail.com</a>.</p>'; return; }
-    act.innerHTML = '<form id="f"><label for="c">Shipping country</label><input id="c" autocomplete="country-name" placeholder="e.g. United States">' +
-      '<label for="n">Message (optional)</label><textarea id="n" placeholder="Anything you would like me to know"></textarea>' +
-      '<button type="submit" id="b">Reserve an edition</button><p id="m" class="msg"></p></form>';
-    document.getElementById("f").onsubmit = function(e){
-      e.preventDefault(); var b = document.getElementById("b"), m = document.getElementById("m"); b.disabled = true; m.textContent = ""; m.className = "msg";
-      fetch(API + "/api/preview/" + key + "/reserve", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:document.getElementById("c").value, note:document.getElementById("n").value})})
-        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Something went wrong."); return j; }); })
-        .then(function(){ track("inquiry_send", "Preview reservation: " + d.title, 0, true); done(); })
-        .catch(function(err){ b.disabled = false; m.className = "msg err"; m.textContent = (err && err.message) || "Something went wrong. Please email reyunsung@gmail.com."; });
+    act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><input id="c" autocomplete="country-name" placeholder="e.g. United States"></form>' +
+      '<div id="pp"></div><p id="m" class="msg"></p>' +
+      '<p class="terms">Each work is made to order, and production begins once payment is received. For this reason, payments are non-refundable, including if the order is canceled later.</p>' +
+      '<button class="alt" id="alt" type="button">Prefer a bank transfer, or have a question first? Send a reservation request instead</button><div id="rf"></div>';
+    var cIn = document.getElementById("c"), mEl = document.getElementById("m");
+    function note(t, err){ mEl.textContent = t || ""; mEl.className = "msg" + (err ? " err" : ""); }
+    document.getElementById("alt").onclick = function(){
+      var rf = document.getElementById("rf"); if(rf.innerHTML) return;
+      rf.innerHTML = '<form id="rq"><label for="n">Message</label><textarea id="n" placeholder="Anything you would like me to know"></textarea><button type="submit" id="b">Send reservation request</button><p id="m2" class="msg"></p></form>';
+      document.getElementById("rq").onsubmit = function(e){
+        e.preventDefault(); var b = document.getElementById("b"), m2 = document.getElementById("m2"); b.disabled = true;
+        fetch(API + "/api/preview/" + key + "/reserve", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value, note:document.getElementById("n").value})})
+          .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Something went wrong."); return j; }); })
+          .then(function(){ track("inquiry_send", "Preview reservation: " + d.title, 0, true); done("Thank you. Your reservation request has been received. I will be in touch shortly."); })
+          .catch(function(err){ b.disabled = false; m2.className = "msg err"; m2.textContent = (err && err.message) || "Something went wrong."; });
+      };
     };
+    if(d.sample){ document.getElementById("pp").innerHTML = '<div style="height:110px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:13px">PayPal / card payment buttons appear here</div>'; return; }
+    var sdk = document.createElement("script");
+    sdk.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(d.clientId) + "&currency=USD&intent=capture&components=buttons&enable-funding=card&disable-funding=paylater,venmo";
+    sdk.onerror = function(){ note("PayPal could not be loaded. Please check your connection or try another browser.", true); };
+    sdk.onload = function(){
+      paypal.Buttons({
+        style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
+        onClick: function(data, actions){
+          if(!cIn.value.trim()){ note("Please enter your shipping country first.", true); cIn.focus(); return actions.reject(); }
+          note(""); track("pay_open", "preview deposit " + (data && data.fundingSource || ""), Math.round(d.deposit), true); return actions.resolve();
+        },
+        createOrder: function(){
+          return fetch(API + "/api/preview/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value})})
+            .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Could not start the payment."); return j.id; }); });
+        },
+        onApprove: function(data, actions){
+          note("Completing your payment…");
+          return fetch(API + "/api/preview/" + key + "/capture/" + data.orderID, {method:"POST"}).then(function(r){ return r.json().then(function(j){
+            if(r.ok && j.ok){
+              track("purchase", "preview-deposit", Math.round(Number(j.amount) || 0), true);
+              done("Thank you. Your deposit of <b>" + usd(j.amount) + "</b> has been received" + (j.edition ? ", and edition <b>No. " + esc(j.edition) + "</b> is reserved for you" : "") + ". A receipt will arrive from PayPal by email, and I will keep you updated as your edition is made.");
+              return;
+            }
+            if(j && j.restart) return actions.restart();
+            track("pay_fail", (j && j.error) || "capture", 0, true);
+            note(j && j.message || "Payment could not be completed. You have not been charged.", true);
+          }); }).catch(function(){ note("The connection was interrupted. Please check your PayPal account before trying again, or email reyunsung@gmail.com.", true); });
+        },
+        onCancel: function(){ track("pay_fail", "cancel", 0, true); },
+        onError: function(e){ track("pay_fail", "error", 0, true); note((e && e.message) || "Something went wrong with PayPal. You have not been charged.", true); }
+      }).render("#pp");
+    };
+    document.head.appendChild(sdk);
   }).catch(function(){ gate("We couldn't load this page. Please try again in a moment."); });
 })();
 </script>
