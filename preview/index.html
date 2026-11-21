@@ -102,11 +102,35 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
   addEventListener("pagehide", function(){ if(TSTART){ var sec = Math.round((Date.now() - TSTART) / 1000); if(sec >= 2) track("time", "", Math.min(sec, 1800)); TSTART = 0; } tflush(); });
 
   if(!key || key.length < 12){ gate("This preview is by invitation only."); return; }
+  /* 기기 표시 — 링크는 처음 연 브라우저에 묶임 (다른 기기는 초대받은 이메일로 확인) */
+  var dev = "";
+  try{ dev = localStorage.getItem("lysPvDev") || ""; if(!dev){ var a = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789", b = new Uint32Array(20); crypto.getRandomValues(b); for(var i = 0; i < 20; i++) dev += a[b[i] % a.length]; localStorage.setItem("lysPvDev", dev); } }catch(e){ dev = ""; }
+  /* 초대받은 사람별 기록 (마스터 화면에서만 보임) */
+  var PQ = [], PT = null, PON = false, PSTART = 0, maxScroll = 0;
+  function pflush(){
+    clearTimeout(PT); PT = null; if(!PON || !PQ.length) return;
+    var body = JSON.stringify({ d: dev, ev: PQ.splice(0, 40) });
+    try{ if(!(navigator.sendBeacon && navigator.sendBeacon(API + "/api/preview/" + key + "/ev", new Blob([body], { type: "text/plain" })))) fetch(API + "/api/preview/" + key + "/ev", { method: "POST", body: body, keepalive: true }).catch(function(){}); }catch(e){}
+  }
+  function plog(t, detail, n, now){ if(!PON) return; PQ.push([t, String(detail || "").slice(0, 160), n || 0]); if(now) pflush(); else if(!PT) PT = setTimeout(pflush, 5000); }
+  addEventListener("scroll", function(){ var h = document.documentElement, p = Math.round((h.scrollTop + innerHeight) / h.scrollHeight * 100); if(p >= maxScroll + 25 || (p >= 98 && maxScroll < 100)){ maxScroll = p >= 98 ? 100 : Math.floor(p / 25) * 25; plog("scroll", "", maxScroll); } }, { passive: true });
+  addEventListener("pagehide", function(){ if(PSTART){ plog("leave", "", Math.min(Math.round((Date.now() - PSTART) / 1000), 7200)); PSTART = 0; } pflush(); });
+  function verifyGate(msg){
+    app.innerHTML = '<div class="gate" style="text-align:left;max-width:420px;margin:0 auto"><p>' + esc(msg) + '</p><form id="vf"><input id="ve" type="email" autocomplete="email" placeholder="Email address" required><button type="submit" id="vb" style="margin-top:10px;width:100%">Continue</button><p id="vm" class="msg err"></p></form></div>';
+    document.getElementById("vf").onsubmit = function(e){
+      e.preventDefault(); var vb = document.getElementById("vb"); vb.disabled = true;
+      fetch(API + "/api/preview/" + key + "/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ d: dev, email: document.getElementById("ve").value }) })
+        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Something went wrong."); }); })
+        .then(function(){ location.reload(); })
+        .catch(function(err){ vb.disabled = false; document.getElementById("vm").textContent = err.message; });
+    };
+  }
 
-  fetch(API + "/api/preview/" + key + (peek ? "?peek=1" : "")).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); }).then(function(res){
+  fetch(API + "/api/preview/" + key + "?d=" + encodeURIComponent(dev) + (peek ? "&peek=1" : "")).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); }).then(function(res){
     var d = res.j;
-    if(!res.ok){ gate(d && d.message || "This preview is by invitation only."); return; }
+    if(!res.ok){ if(d && d.verify){ verifyGate(d.message); return; } gate(d && d.message || "This preview is by invitation only."); return; }
     if(d.sample) peek = true;
+    PON = !peek && !d.sample; PSTART = Date.now(); plog("view", d.paid ? "paid" : "", 0, true);
     TSTART = Date.now(); track("view", "Private preview: " + d.title, 0, true);
     if(d.endsAt) document.getElementById("ends").textContent = (d.open ? "Until " : "Ended ") + day(d.endsAt);
     var ph = d.photos || [], hero = ph[0], rest = ph.slice(1);
@@ -122,16 +146,20 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
       }).join('') + '</div>' +
       '';
     app.innerHTML = h;
+    Array.prototype.forEach.call(app.querySelectorAll(".gal figure"), function(f, i){
+      var cap = (f.querySelector("figcaption") || {}).textContent || "";
+      if("IntersectionObserver" in window){ var seen = false, io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !seen){ seen = true; io.disconnect(); plog(f.querySelector("video") ? "video" : "photo", (i + 2) + "번째 " + cap, i + 2); } }); }, { threshold: .6 }); io.observe(f); }
+    });
     var buy = document.getElementById("buy");
     var dr = document.createElement("div"); dr.className = "drawer"; dr.setAttribute("role", "dialog"); dr.setAttribute("aria-label", "Reserve");
     var dim = document.createElement("div"); dim.className = "dim";
     document.body.appendChild(dim); document.body.appendChild(dr);
-    function shut(){ dr.classList.remove("on"); dim.classList.remove("on"); }
+    function shut(){ if(dr.classList.contains("on")) plog("reserve_close", "", 0, true); dr.classList.remove("on"); dim.classList.remove("on"); }
     dim.onclick = shut; addEventListener("keydown", function(e){ if(e.key === "Escape") shut(); });
     dr.innerHTML = '<div class="dh"><b>Reserve</b><button class="x" type="button" aria-label="Close">×</button></div>' +
       '<div class="it">' + (hero ? '<img src="' + esc(hero.image) + '" alt="">' : '') + '<p>' + esc(d.title) + '<br><span>' + esc(d.edition || '') + '</span></p></div>' +
       '<div class="row"><span class="k">Price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
-      '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
+      '<div class="row"><span class="k">Balance, due before shipping</span><span class="v" id="bal">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
       '<div class="price"><span>Deposit today (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
       '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping for your country is added to the balance before shipping.</p>' +
       '<div id="act"></div>';
@@ -142,7 +170,7 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
     if(!d.open){ buy.innerHTML = '<p class="st">The preview period has ended. If you are still interested, please email <a href="mailto:reyunsung@gmail.com">reyunsung@gmail.com</a>.</p>'; return; }
     buy.innerHTML = '<p class="pr">' + usd(d.priceUsd) + '</p><button type="button" id="rsv">Reserve</button>';
     var started = false;
-    document.getElementById("rsv").onclick = function(){ dr.classList.add("on"); dim.classList.add("on"); if(!started){ started = true; setup(); } };
+    document.getElementById("rsv").onclick = function(){ plog("reserve_open", "", 0, true); dr.classList.add("on"); dim.classList.add("on"); if(!started){ started = true; setup(); } };
     function setup(){
     var cl = (d.countries || []).slice().sort(function(a, b){ return a[1].localeCompare(b[1]); });
     act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><select id="c"><option value="">Select your country</option>' + cl.map(function(c){ return '<option value="' + esc(c[1]) + '" data-z="' + esc(c[2]) + '" data-c="' + esc(c[0]) + '">' + esc(c[1]) + '</option>'; }).join('') + '<option value="Other" data-z="">Other country</option></select><div id="est"></div></form>' +
@@ -152,15 +180,21 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
     var cIn = document.getElementById("c"), mEl = document.getElementById("m");
     cIn.onchange = function(){
       var o = cIn.options[cIn.selectedIndex], z = o.getAttribute("data-z"), code = o.getAttribute("data-c"), box = document.getElementById("est");
-      if(!cIn.value){ box.innerHTML = ""; return; }
+      var bal = document.getElementById("bal"), base = usd(d.priceUsd - d.deposit), pp = document.getElementById("pp");
+      pp.style.display = code === "KR" ? "none" : "";
+      if(!cIn.value){ box.innerHTML = ""; bal.textContent = base + " + shipping"; return; }
+      plog("country", cIn.value, 0, true);
       var sh = d.ship || {}, v = z ? Number(sh[z]) : NaN;
+      if(code === "KR"){ bal.textContent = base; plog("kr_transfer", "", 0); box.innerHTML = '<div class="est">국내 구매는 계좌이체로 진행됩니다. 아래 버튼으로 예약 요청을 보내 주시면 원화 금액과 입금 계좌를 안내드릴게요.<span>Orders within Korea are paid by bank transfer. Send a reservation request below and I will reply with the details.</span></div>'; var al = document.getElementById("alt"); if(al && !document.getElementById("rf").innerHTML) al.click(); return; }
+      if(!z || !isFinite(v)){ bal.textContent = base + " + shipping"; box.innerHTML = '<div class="est">Shipping will be quoted for your country before the balance is due.</div>'; return; }
       if(!z || !isFinite(v)){ box.innerHTML = '<div class="est">Shipping will be quoted for your country before the balance is due.</div>'; return; }
-      if(code === "KR"){ box.innerHTML = '<div class="est">' + (v ? 'Estimated shipping within Korea: <b>' + usd(v) + '</b>' : 'Shipping within Korea is <b>free</b>.') + '</div>'; return; }
       if(code === "US"){
         var duty = Math.round((d.priceUsd || 0) * (d.dutyUs || 0) / 100);
+        bal.textContent = base + " + " + usd(v + duty);
         box.innerHTML = '<div class="est">Estimated shipping and US import duty: <b>' + usd(v + duty) + '</b><span>Shipping ' + usd(v) + (duty ? ' + import duty ' + usd(duty) + ', prepaid by the studio' : '') + '. Nothing more to pay on delivery. Added to the balance before shipping.</span></div>';
         return;
       }
+      bal.textContent = base + " + " + usd(v);
       box.innerHTML = '<div class="est">Estimated shipping: <b>' + usd(v) + '</b><span>Added to the balance before shipping. Import duties and taxes, if any, are not included and are paid by the buyer on delivery.</span></div>';
     };
     function note(t, err){ mEl.textContent = t || ""; mEl.className = "msg" + (err ? " err" : ""); }
@@ -171,7 +205,7 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
         e.preventDefault(); var b = document.getElementById("b"), m2 = document.getElementById("m2"); b.disabled = true;
         fetch(API + "/api/preview/" + key + "/reserve", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value, note:document.getElementById("n").value})})
           .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Something went wrong."); return j; }); })
-          .then(function(){ track("inquiry_send", "Preview reservation: " + d.title, 0, true); done("Thank you. Your reservation request has been received. I will be in touch shortly."); })
+          .then(function(){ plog("reserve_send", cIn.value, 0, true); track("inquiry_send", "Preview reservation: " + d.title, 0, true); done("Thank you. Your reservation request has been received. I will be in touch shortly."); })
           .catch(function(err){ b.disabled = false; m2.className = "msg err"; m2.textContent = (err && err.message) || "Something went wrong."; });
       };
     };
@@ -184,7 +218,7 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
         style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
         onClick: function(data, actions){
           if(!cIn.value.trim()){ note("Please select your shipping country first.", true); cIn.focus(); return actions.reject(); }
-          note(""); track("pay_open", "preview deposit " + (data && data.fundingSource || ""), Math.round(d.deposit), true); return actions.resolve();
+          note(""); plog("pay_open", (data && data.fundingSource || "") + " · " + cIn.value, Math.round(d.deposit), true); track("pay_open", "preview deposit " + (data && data.fundingSource || ""), Math.round(d.deposit), true); return actions.resolve();
         },
         createOrder: function(){
           return fetch(API + "/api/preview/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value})})
@@ -194,17 +228,17 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
           note("Completing your payment…");
           return fetch(API + "/api/preview/" + key + "/capture/" + data.orderID, {method:"POST"}).then(function(r){ return r.json().then(function(j){
             if(r.ok && j.ok){
-              track("purchase", "preview-deposit", Math.round(Number(j.amount) || 0), true);
+              plog("paid", j.edition || "", Math.round(Number(j.amount) || 0), true); track("purchase", "preview-deposit", Math.round(Number(j.amount) || 0), true);
               done("Thank you. Your deposit of <b>" + usd(j.amount) + "</b> has been received" + (j.edition ? ", and edition <b>No. " + esc(j.edition) + "</b> is reserved for you" : "") + ". A receipt will arrive from PayPal by email, and I will keep you updated as your edition is made.");
               return;
             }
             if(j && j.restart) return actions.restart();
-            track("pay_fail", (j && j.error) || "capture", 0, true);
+            plog("pay_error", (j && j.error) || "capture", 0, true); track("pay_fail", (j && j.error) || "capture", 0, true);
             note(j && j.message || "Payment could not be completed. You have not been charged.", true);
           }); }).catch(function(){ note("The connection was interrupted. Please check your PayPal account before trying again, or email reyunsung@gmail.com.", true); });
         },
-        onCancel: function(){ track("pay_fail", "cancel", 0, true); },
-        onError: function(e){ track("pay_fail", "error", 0, true); note((e && e.message) || "Something went wrong with PayPal. You have not been charged.", true); }
+        onCancel: function(){ plog("pay_cancel", "", 0, true); track("pay_fail", "cancel", 0, true); },
+        onError: function(e){ plog("pay_error", (e && e.message) || "", 0, true); track("pay_fail", "error", 0, true); note((e && e.message) || "Something went wrong with PayPal. You have not been charged.", true); }
       }).render("#pp");
     };
     document.head.appendChild(sdk);
