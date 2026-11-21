@@ -5434,21 +5434,52 @@
           ]
         },
         {
-          "id": "row-1793281860690-sc001-pt",
+          "id": "row-pt-turnface",
           "cols": 1,
           "photos": [
             {
-              "id": "p-1793460000002-trns-pt",
-              "image": "./images/torso-sculpture-turnaround-poster.jpg",
+              "id": "p-pt-turnface",
+              "image": "./images/torso-sculpture-turn-face-poster.jpg",
               "caption": "3D rendering",
               "video": {
-                "src": "./media/torso-sculpture-turnaround.mp4",
+                "src": "./media/torso-sculpture-turn-face.mp4",
                 "ratio": "4:5",
-                "poster": "./images/torso-sculpture-turnaround-poster.jpg",
-                "vr": 0.8,
-                "zoom": 1,
-                "fx": 0.5,
-                "fy": 0.5
+                "poster": "./images/torso-sculpture-turn-face-poster.jpg",
+                "vr": 0.8
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-pt-turnlow",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-pt-turnlow",
+              "image": "./images/torso-sculpture-turn-low-poster.jpg",
+              "caption": "3D rendering",
+              "video": {
+                "src": "./media/torso-sculpture-turn-low.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turn-low-poster.jpg",
+                "vr": 0.8
+              }
+            }
+          ]
+        },
+        {
+          "id": "row-pt-turnhigh",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-pt-turnhigh",
+              "image": "./images/torso-sculpture-turn-high-poster.jpg",
+              "caption": "3D rendering",
+              "video": {
+                "src": "./media/torso-sculpture-turn-high.mp4",
+                "ratio": "4:5",
+                "poster": "./images/torso-sculpture-turn-high-poster.jpg",
+                "vr": 0.8
               }
             }
           ]
