@@ -81,8 +81,9 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
 <script>
 (function(){
   var API = "https://leeyunsung-shop.nu-layer.workers.dev";
-  var key = (location.hash || "").replace(/^#/, "").replace(/[^A-Za-z0-9]/g, "");
-  var peek = /[?&]m=1/.test(location.search);
+  var hraw = (location.hash || "").replace(/^#/, "");
+  var key = hraw.split(/[?&]/)[0].replace(/[^A-Za-z0-9]/g, "");
+  var peek = /[?&]m=1/.test(location.search) || /[?&]m=1/.test(hraw);
   var app = document.getElementById("app");
   function esc(t){ return String(t == null ? "" : t).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   function usd(n){ return "USD " + Number(n || 0).toLocaleString("en-US"); }
