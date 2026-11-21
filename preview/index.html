@@ -25,7 +25,22 @@ h1{font-size:24px;font-weight:400;margin:26px 0 6px;line-height:1.3}
 .gal figure{margin:0}
 .gal img,.gal video{width:100%;display:block;background:var(--paper)}
 .gal figcaption{color:var(--soft);font-size:12px;margin-top:6px}
-.offer{border-top:2px solid var(--ink);margin-top:38px;padding-top:8px}
+.buy{margin:22px 0 0}
+.buy .pr{font-size:16px;margin:0 0 12px}
+.buy button{width:100%}
+.buy .st{font-size:14px;color:var(--soft);margin:0}
+.dim{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s;z-index:10}
+.dim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:#fff;z-index:11;transform:translateX(100%);transition:transform .3s ease;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:22px 22px 40px;box-shadow:-8px 0 30px rgba(0,0,0,.08)}
+.drawer.on{transform:none}
+@media (max-width:600px){.drawer{top:auto;left:0;width:100%;max-height:92vh;transform:translateY(100%);box-shadow:0 -8px 30px rgba(0,0,0,.1)}}
+.dh{display:flex;justify-content:space-between;align-items:center;margin:0 0 18px}
+.dh b{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.x{background:none;color:var(--ink);font-size:24px;font-weight:400;padding:0 4px;line-height:1}
+.it{display:flex;gap:14px;align-items:center;padding:0 0 16px;border-bottom:1px solid var(--line)}
+.it img{width:64px;height:80px;object-fit:cover;background:var(--paper);flex:none}
+.it p{margin:0;font-size:14px;line-height:1.5}
+.it span{color:var(--soft);font-size:12.5px}
 .row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
 .row .k{color:var(--soft)}
 .row .v{text-align:right}
@@ -95,24 +110,36 @@ button:disabled{opacity:.5;cursor:default}
       (hero ? '<img class="hero" src="' + esc(hero.image) + '" alt="' + esc(d.title) + '">' : '') +
       '<h1>' + esc(d.title) + (d.year ? ', ' + esc(d.year) : '') + '</h1>' +
       '<p class="cap">' + [d.spec2, d.spec1, d.edition].filter(Boolean).map(esc).join('<br>') + '</p>' +
+      '<div class="buy" id="buy"></div>' +
       (d.description ? '<p class="desc">' + esc(d.description) + '</p>' : '') +
       '<div class="gal">' + rest.map(function(p){
         var m = p.video ? '<video src="' + esc(p.video) + '" poster="' + esc(p.image) + '" muted loop playsinline autoplay preload="metadata"></video>' : '<img src="' + esc(p.image) + '" alt="" loading="lazy">';
         return '<figure>' + m + (p.caption ? '<figcaption>' + esc(p.caption) + '</figcaption>' : '') + '</figure>';
       }).join('') + '</div>' +
-      '<div class="offer">' +
-        '<div class="row"><span class="k">Edition</span><span class="v">' + esc(d.edition || '') + '</span></div>' +
-        '<div class="row"><span class="k">Preview price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
-        '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
-        '<div class="price"><span>Deposit due now (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
-        '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping is quoted for your country and added to the balance before shipping.</p>' +
-        '<div id="act"></div>' +
-      '</div>';
+      '';
     app.innerHTML = h;
+    var buy = document.getElementById("buy");
+    var dr = document.createElement("div"); dr.className = "drawer"; dr.setAttribute("role", "dialog"); dr.setAttribute("aria-label", "Reserve");
+    var dim = document.createElement("div"); dim.className = "dim";
+    document.body.appendChild(dim); document.body.appendChild(dr);
+    function shut(){ dr.classList.remove("on"); dim.classList.remove("on"); }
+    dim.onclick = shut; addEventListener("keydown", function(e){ if(e.key === "Escape") shut(); });
+    dr.innerHTML = '<div class="dh"><b>Reserve</b><button class="x" type="button" aria-label="Close">×</button></div>' +
+      '<div class="it">' + (hero ? '<img src="' + esc(hero.image) + '" alt="">' : '') + '<p>' + esc(d.title) + '<br><span>' + esc(d.edition || '') + '</span></p></div>' +
+      '<div class="row"><span class="k">Price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
+      '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
+      '<div class="price"><span>Deposit today (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
+      '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping is quoted for your country and added to the balance before shipping.</p>' +
+      '<div id="act"></div>';
+    dr.querySelector(".x").onclick = shut;
     var act = document.getElementById("act");
-    function done(msg){ act.innerHTML = '<div class="done"><span class="tick">✓</span>' + msg + '<br><span class="small">— Lee Yunsung</span></div>'; }
-    if(d.paid){ done("Your deposit has been received. Thank you — I will keep you updated as your edition is made."); return; }
-    if(!d.open){ act.innerHTML = '<p class="msg">The preview period has ended. If you are still interested, please email <a href="mailto:reyunsung@gmail.com">reyunsung@gmail.com</a>.</p>'; return; }
+    function done(msg){ act.innerHTML = '<div class="done"><span class="tick">✓</span>' + msg + '<br><span class="small">— Lee Yunsung</span></div>'; buy.innerHTML = '<p class="st">Reserved — thank you.</p>'; }
+    if(d.paid){ buy.innerHTML = '<p class="st">Your deposit has been received. Thank you — I will keep you updated as your edition is made.</p>'; return; }
+    if(!d.open){ buy.innerHTML = '<p class="st">The preview period has ended. If you are still interested, please email <a href="mailto:reyunsung@gmail.com">reyunsung@gmail.com</a>.</p>'; return; }
+    buy.innerHTML = '<p class="pr">' + usd(d.priceUsd) + '</p><button type="button" id="rsv">Reserve</button>';
+    var started = false;
+    document.getElementById("rsv").onclick = function(){ dr.classList.add("on"); dim.classList.add("on"); if(!started){ started = true; setup(); } };
+    function setup(){
     act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><input id="c" autocomplete="country-name" placeholder="e.g. United States"></form>' +
       '<div id="pp"></div><p id="m" class="msg"></p>' +
       '<p class="terms">Each work is made to order, and production begins once payment is received. For this reason, payments are non-refundable, including if the order is canceled later.</p>' +
@@ -163,6 +190,7 @@ button:disabled{opacity:.5;cursor:default}
       }).render("#pp");
     };
     document.head.appendChild(sdk);
+    }
   }).catch(function(){ gate("We couldn't load this page. Please try again in a moment."); });
 })();
 </script>
