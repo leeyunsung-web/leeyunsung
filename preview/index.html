@@ -49,7 +49,7 @@ h1{font-size:24px;font-weight:400;margin:26px 0 6px;line-height:1.3}
 .small{font-size:12.5px;color:var(--soft);line-height:1.6;margin:6px 0 0}
 form{margin-top:24px;display:flex;flex-direction:column;gap:10px}
 label{font-size:13px;color:var(--soft)}
-input,textarea{font:inherit;font-size:15px;border:1px solid var(--line);padding:11px 12px;width:100%;background:#fff;color:var(--ink);border-radius:0}
+input,textarea,select{font:inherit;font-size:15px;border:1px solid var(--line);padding:11px 12px;width:100%;background:#fff;color:var(--ink);border-radius:0}
 textarea{min-height:84px;resize:vertical}
 button{font:inherit;font-size:15px;font-weight:700;letter-spacing:.04em;background:var(--ink);color:#fff;border:0;padding:15px 16px;cursor:pointer}
 button:disabled{opacity:.5;cursor:default}
@@ -63,6 +63,10 @@ button:disabled{opacity:.5;cursor:default}
 .sample{background:#111;color:#fff;font-size:12.5px;letter-spacing:.04em;padding:9px 12px;margin:0 0 20px}
 #pp{min-height:110px;margin-top:14px}
 .alt{background:none;border:0;color:var(--soft);font-size:13px;font-weight:400;letter-spacing:0;text-decoration:underline;padding:6px 0;cursor:pointer;text-align:left}
+.est{background:var(--paper);padding:12px 14px;font-size:14px;line-height:1.55;margin:2px 0 0}
+.est b{font-weight:700}
+.est span{display:block;color:var(--soft);font-size:12px;margin-top:3px}
+select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center}
 .terms{font-size:11.5px;line-height:1.55;color:var(--soft);margin:12px 0 0}
 </style>
 </head>
@@ -129,7 +133,7 @@ button:disabled{opacity:.5;cursor:default}
       '<div class="row"><span class="k">Price</span><span class="v">' + usd(d.priceUsd) + '</span></div>' +
       '<div class="row"><span class="k">Balance, due before shipping</span><span class="v">' + usd(d.priceUsd - d.deposit) + ' + shipping</span></div>' +
       '<div class="price"><span>Deposit today (50%)</span><b>' + usd(d.deposit) + '</b></div>' +
-      '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping is quoted for your country and added to the balance before shipping.</p>' +
+      '<p class="small">Each piece is made to order. The deposit reserves your edition and begins production; your edition number is assigned once the deposit is received. Shipping for your country is added to the balance before shipping.</p>' +
       '<div id="act"></div>';
     dr.querySelector(".x").onclick = shut;
     var act = document.getElementById("act");
@@ -140,11 +144,25 @@ button:disabled{opacity:.5;cursor:default}
     var started = false;
     document.getElementById("rsv").onclick = function(){ dr.classList.add("on"); dim.classList.add("on"); if(!started){ started = true; setup(); } };
     function setup(){
-    act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><input id="c" autocomplete="country-name" placeholder="e.g. United States"></form>' +
+    var cl = (d.countries || []).slice().sort(function(a, b){ return a[1].localeCompare(b[1]); });
+    act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><select id="c"><option value="">Select your country</option>' + cl.map(function(c){ return '<option value="' + esc(c[1]) + '" data-z="' + esc(c[2]) + '" data-c="' + esc(c[0]) + '">' + esc(c[1]) + '</option>'; }).join('') + '<option value="Other" data-z="">Other country</option></select><div id="est"></div></form>' +
       '<div id="pp"></div><p id="m" class="msg"></p>' +
       '<p class="terms">Each work is made to order, and production begins once payment is received. For this reason, payments are non-refundable, including if the order is canceled later.</p>' +
       '<button class="alt" id="alt" type="button">Prefer a bank transfer, or have a question first? Send a reservation request instead</button><div id="rf"></div>';
     var cIn = document.getElementById("c"), mEl = document.getElementById("m");
+    cIn.onchange = function(){
+      var o = cIn.options[cIn.selectedIndex], z = o.getAttribute("data-z"), code = o.getAttribute("data-c"), box = document.getElementById("est");
+      if(!cIn.value){ box.innerHTML = ""; return; }
+      var sh = d.ship || {}, v = z ? Number(sh[z]) : NaN;
+      if(!z || !isFinite(v)){ box.innerHTML = '<div class="est">Shipping will be quoted for your country before the balance is due.</div>'; return; }
+      if(code === "KR"){ box.innerHTML = '<div class="est">' + (v ? 'Estimated shipping within Korea: <b>' + usd(v) + '</b>' : 'Shipping within Korea is <b>free</b>.') + '</div>'; return; }
+      if(code === "US"){
+        var duty = Math.round((d.priceUsd || 0) * (d.dutyUs || 0) / 100);
+        box.innerHTML = '<div class="est">Estimated shipping and US import duty: <b>' + usd(v + duty) + '</b><span>Shipping ' + usd(v) + (duty ? ' + import duty ' + usd(duty) + ', prepaid by the studio' : '') + '. Nothing more to pay on delivery. Added to the balance before shipping.</span></div>';
+        return;
+      }
+      box.innerHTML = '<div class="est">Estimated shipping: <b>' + usd(v) + '</b><span>Added to the balance before shipping. Import duties and taxes, if any, are not included and are paid by the buyer on delivery.</span></div>';
+    };
     function note(t, err){ mEl.textContent = t || ""; mEl.className = "msg" + (err ? " err" : ""); }
     document.getElementById("alt").onclick = function(){
       var rf = document.getElementById("rf"); if(rf.innerHTML) return;
@@ -165,7 +183,7 @@ button:disabled{opacity:.5;cursor:default}
       paypal.Buttons({
         style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
         onClick: function(data, actions){
-          if(!cIn.value.trim()){ note("Please enter your shipping country first.", true); cIn.focus(); return actions.reject(); }
+          if(!cIn.value.trim()){ note("Please select your shipping country first.", true); cIn.focus(); return actions.reject(); }
           note(""); track("pay_open", "preview deposit " + (data && data.fundingSource || ""), Math.round(d.deposit), true); return actions.resolve();
         },
         createOrder: function(){
