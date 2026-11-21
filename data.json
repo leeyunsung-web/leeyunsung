@@ -23,8 +23,8 @@
       "slug": "torso-sculpture",
       "photoRows": [
         {
-          "id": "wrow-1795400000001-turn3",
-          "cols": 3,
+          "id": "wrow-1795400000001-turnface",
+          "cols": 1,
           "photos": [
             {
               "id": "w-1795400000001-turnface",
@@ -36,7 +36,13 @@
                 "poster": "./images/torso-sculpture-turn-face-poster.jpg",
                 "vr": 0.8
               }
-            },
+            }
+          ]
+        },
+        {
+          "id": "wrow-1795400000001-turnlow",
+          "cols": 1,
+          "photos": [
             {
               "id": "w-1795400000001-turnlow",
               "image": "./images/torso-sculpture-turn-low-poster.jpg",
@@ -47,7 +53,13 @@
                 "poster": "./images/torso-sculpture-turn-low-poster.jpg",
                 "vr": 0.8
               }
-            },
+            }
+          ]
+        },
+        {
+          "id": "wrow-1795400000001-turnhigh",
+          "cols": 1,
+          "photos": [
             {
               "id": "w-1795400000001-turnhigh",
               "image": "./images/torso-sculpture-turn-high-poster.jpg",
@@ -5803,8 +5815,8 @@
     "en/shop/torso-sculpture/index.html": "153f41d7:38612",
     "shop/head-of-medusa-silver-edition/index.html": "73db96de:36260",
     "en/shop/head-of-medusa-silver-edition/index.html": "a588cb4c:30392",
-    "works/torso-sculpture/index.html": "7cb6589d:40404",
-    "en/works/torso-sculpture/index.html": "3c605b79:36552",
+    "works/torso-sculpture/index.html": "7859e4d1:40568",
+    "en/works/torso-sculpture/index.html": "d06d6765:36716",
     "shop/head-of-torso/index.html": "e74d082b:33324",
     "en/shop/head-of-torso/index.html": "437fdf6b:28032"
   },
