@@ -120,7 +120,7 @@
 
   @media (max-width:640px){
     
-    .detail-desc, .cv-statement, .static-page .detail-desc{text-align:justify !important;}
+    .detail-desc, .cv-statement, .static-page .detail-desc{text-align:justify !important; word-break:normal !important; line-break:strict;}
     html[data-lang="en"]:not(.zh):not(.xja) .detail-desc, html[data-lang="en"]:not(.zh):not(.xja) .cv-statement{text-align:left !important;}
     .cv-text{text-align:left !important;} 
     .head-grid{grid-template-columns:1fr; text-align:center; gap:14px;}
