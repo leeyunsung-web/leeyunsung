@@ -22,9 +22,11 @@ h1{font-size:24px;font-weight:400;margin:26px 0 6px;line-height:1.3}
 .cap{color:var(--soft);font-size:14px;line-height:1.7;margin:0}
 .desc{font-size:15px;line-height:1.75;margin:20px 0 0}
 .gal{display:flex;flex-direction:column;gap:14px;margin:30px 0 0}
-.gal figure{margin:0}
+.gal figure{margin:0;position:relative}
 .gal img,.gal video{width:100%;display:block;background:var(--paper)}
-.gal figcaption{color:var(--soft);font-size:12px;margin-top:6px}
+.gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 9px;color:#fff;font-size:12px;background:linear-gradient(transparent,rgba(0,0,0,.45));opacity:0;transition:opacity .2s;pointer-events:none}
+@media (hover:hover){.gal figure:hover figcaption{opacity:1}}
+.gal figure.cap figcaption{opacity:1}
 .buy{margin:22px 0 0}
 .buy .pr{font-size:16px;margin:0 0 12px}
 .buy button{width:100%}
@@ -148,6 +150,7 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
       '';
     app.innerHTML = h;
     Array.prototype.forEach.call(app.querySelectorAll(".gal figure"), function(f, i){
+      f.addEventListener("click", function(){ if(!matchMedia("(hover:hover)").matches) f.classList.toggle("cap"); });
       var cap = (f.querySelector("figcaption") || {}).textContent || "";
       if("IntersectionObserver" in window){ var seen = false, io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !seen){ seen = true; io.disconnect(); plog(f.querySelector("video") ? "video" : "photo", (i + 2) + "번째 " + cap, i + 2); } }); }, { threshold: .6 }); io.observe(f); }
     });
