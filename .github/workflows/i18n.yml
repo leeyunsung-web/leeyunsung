@@ -1,0 +1,33 @@
+name: Japanese and Chinese pages
+
+# 영문 정적 페이지가 바뀌면(관리자 "발행" 포함) 일본어(/ja/)·중국어 번체(/zh/) 페이지를 다시 만들어 올림.
+# 번역은 사이트의 번역층(zh.js, desc.ja.json, desc.zh.json) 그대로 — 홈페이지 코드는 건드리지 않음.
+on:
+  push:
+    branches: [main]
+    paths: ["en/**", "desc.ja.json", "desc.zh.json", "zh.js", ".github/i18n/build.mjs"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: i18n-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install browser
+        run: |
+          npm i --prefix .github/i18n --no-save playwright@1.47.2 >/dev/null 2>&1
+          npx --prefix .github/i18n playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Build /ja/ and /zh/
+        run: node .github/i18n/build.mjs .
+      - name: Commit
+        run: |
+          git config user.name "leeyunsung-site-bot"
+          git config user.email "reyunsung@gmail.com"
+          git add -A ja zh sitemap.xml en works shop cv index.html
+          git diff --cached --quiet && { echo "no changes"; exit 0; }
+          git commit -m "Japanese/Chinese pages: rebuilt from the English pages"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done; exit 1
