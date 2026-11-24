@@ -213,6 +213,17 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
       if(code === "KR"){ bal.textContent = base; plog("kr_transfer", "", 0); box.innerHTML = '<div class="est">국내 구매는 계좌이체로 진행됩니다. 아래 버튼으로 예약 요청을 보내 주시면 원화 금액과 입금 계좌를 안내드릴게요.<span>Orders within Korea are paid by bank transfer. Send a reservation request below and I will reply with the details.</span></div>'; var al = document.getElementById("alt"); if(al && !document.getElementById("rf").innerHTML) al.click(); return; }
       if(!z || !isFinite(v)){ bal.textContent = base + " + shipping"; box.innerHTML = '<div class="est">Shipping will be quoted for your country before the balance is due.</div>'; return; }
       if(!z || !isFinite(v)){ box.innerHTML = '<div class="est">Shipping will be quoted for your country before the balance is due.</div>'; return; }
+      if(d.shipWaived && code === "US"){
+        var dW = Math.round((d.priceUsd || 0) * (d.dutyUs || 0) / 100);
+        bal.textContent = base + " + " + usd(dW);
+        box.innerHTML = '<div class="est">Shipping: <b>covered by the studio</b><br>Estimated US import duty: <b>' + usd(dW) + '</b><span>The import duty is prepaid by the studio, so there is nothing more to pay on delivery. Added to the balance before shipping.</span>' + basis + '</div>';
+        return;
+      }
+      if(d.shipWaived){
+        bal.textContent = base;
+        box.innerHTML = '<div class="est">Shipping: <b>covered by the studio</b><span>Import duties and taxes, if any, are not included and are paid by the buyer on delivery.</span>' + basis + '</div>';
+        return;
+      }
       if(code === "US"){
         var duty = Math.round((d.priceUsd || 0) * (d.dutyUs || 0) / 100);
         bal.textContent = base + " + " + usd(v + duty);
