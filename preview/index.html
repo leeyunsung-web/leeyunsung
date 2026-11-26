@@ -197,7 +197,9 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
     function openRsv(){ plog("reserve_open", "", 0, true); dr.classList.add("on"); dim.classList.add("on"); if(!started){ started = true; setup(); } };
     function setup(){
     var cl = (d.countries || []).slice().sort(function(a, b){ return a[1].localeCompare(b[1]); });
-    act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><select id="c"><option value="">Select your country</option>' + cl.map(function(c){ return '<option value="' + esc(c[1]) + '" data-z="' + esc(c[2]) + '" data-c="' + esc(c[0]) + '">' + esc(c[1]) + '</option>'; }).join('') + '<option value="Other" data-z="">Other country</option></select><div id="est"></div></form>' +
+    act.innerHTML = '<form id="f" onsubmit="return false"><label for="c">Shipping country</label><select id="c"><option value="">Select your country</option>' + cl.map(function(c){ return '<option value="' + esc(c[1]) + '" data-z="' + esc(c[2]) + '" data-c="' + esc(c[0]) + '">' + esc(c[1]) + '</option>'; }).join('') + '<option value="Other" data-z="">Other country</option></select><div id="est"></div>' + (d.shared ? '<label for="rn">Your name</label><input id="rn" autocomplete="name"><label for="re">Email</label><input id="re" type="email" autocomplete="email"><p class="small">So I can send your invoice and production updates.</p>' : '') + '</form>' +
+      (/Instagram|FBAN|FBAV|FB_IAB|Threads|KAKAOTALK|Line\//i.test(navigator.userAgent) ? '<p class="small">If PayPal doesn\u2019t open properly, tap \u00b7\u00b7\u00b7 and choose <b>Open in browser</b>.</p>' : '') +
+      '<p class="small">No PayPal account? Choose <b>Debit or Credit Card</b> to pay by card.</p>' +
       '<div id="pp"></div><p id="m" class="msg"></p>' +
       '<p class="terms">Each work is made to order, and production begins once payment is received. For this reason, payments are non-refundable, including if the order is canceled later.</p>' +
       '<button class="alt" id="alt" type="button">Prefer a bank transfer, or have a question first? Send a reservation request instead</button><div id="rf"></div>';
@@ -233,12 +235,14 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
       bal.textContent = base + " + " + usd(v);
       box.innerHTML = '<div class="est">Estimated shipping: <b>' + usd(v) + '</b><span>Added to the balance before shipping. Import duties and taxes, if any, are not included and are paid by the buyer on delivery.</span>' + basis + '</div>';
     };
+    function contact(){ return { name: ((document.getElementById("rn")||{}).value||"").trim(), email: ((document.getElementById("re")||{}).value||"").trim() }; }
+    function contactOk(){ if(!d.shared) return true; var c = contact(); if(c.name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) return true; note("Please enter your name and email first.", true); (document.getElementById(c.name ? "re" : "rn")||{focus:function(){}}).focus(); return false; }
     function note(t, err){ mEl.textContent = t || ""; mEl.className = "msg" + (err ? " err" : ""); }
     document.getElementById("alt").onclick = function(){
       var rf = document.getElementById("rf"); if(rf.innerHTML) return;
-      rf.innerHTML = '<form id="rq">' + (d.shared ? '<label for="rn">Your name</label><input id="rn" autocomplete="name"><label for="re">Email</label><input id="re" type="email" autocomplete="email" required>' : '') + '<label for="n">Message</label><textarea id="n" placeholder="Anything you would like me to know"></textarea><button type="submit" id="b">Send reservation request</button><p id="m2" class="msg"></p></form>';
+      rf.innerHTML = '<form id="rq"><label for="n">Message</label><textarea id="n" placeholder="Anything you would like me to know"></textarea><button type="submit" id="b">Send reservation request</button><p id="m2" class="msg"></p></form>';
       document.getElementById("rq").onsubmit = function(e){
-        e.preventDefault(); var b = document.getElementById("b"), m2 = document.getElementById("m2"); b.disabled = true;
+        e.preventDefault(); if(!contactOk()) return; var b = document.getElementById("b"), m2 = document.getElementById("m2"); b.disabled = true;
         fetch(API + "/api/preview/" + key + "/reserve", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value, note:document.getElementById("n").value, d:dev, name:(document.getElementById("rn")||{}).value||"", email:(document.getElementById("re")||{}).value||""})})
           .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Something went wrong."); return j; }); })
           .then(function(){ plog("reserve_send", cIn.value, 0, true); track("inquiry_send", "Preview reservation: " + d.title, 0, true); done("Thank you. Your reservation request has been received. I will be in touch shortly."); })
@@ -254,10 +258,11 @@ select{-webkit-appearance:none;appearance:none;border-radius:0;background:#fff u
         style:{ layout:"vertical", color:"black", shape:"rect", label:"pay" },
         onClick: function(data, actions){
           if(!cIn.value.trim()){ note("Please select your shipping country first.", true); cIn.focus(); return actions.reject(); }
+          if(!contactOk()) return actions.reject();
           note(""); plog("pay_open", (data && data.fundingSource || "") + " · " + cIn.value, Math.round(d.deposit), true); track("pay_open", "preview deposit " + (data && data.fundingSource || ""), Math.round(d.deposit), true); return actions.resolve();
         },
         createOrder: function(){
-          return fetch(API + "/api/preview/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value, d:dev})})
+          return fetch(API + "/api/preview/" + key + "/order", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({country:cIn.value, d:dev, name:contact().name, email:contact().email})})
             .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j && j.message || "Could not start the payment."); return j.id; }); });
         },
         onApprove: function(data, actions){
