@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /pay/
 Disallow: /preview/
+Disallow: /progress/
 
 Sitemap: https://leeyunsung.com/sitemap.xml
