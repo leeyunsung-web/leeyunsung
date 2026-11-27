@@ -16,13 +16,15 @@ const LANGS = [
   { dir: "ja", locale: "ja-JP", lang: "ja", hreflang: "ja", og: "ja_JP", label: "日本語" },
   { dir: "zh", locale: "zh-TW", lang: "zh-Hant", hreflang: "zh-Hant", og: "zh_TW", label: "中文" }
 ];
-const SKIP = [/^en\/shipping\//, /^en\/text\//];   // 배송 안내·평론 글은 번역이 없어 영어 그대로 둠 (일본어·중국어 페이지 안 만듦)
+const SKIP = [/^en\/shipping\//, /^en\/text\//, /^en\/about\//];   // 2026-11-28: 작가 소개(about)는 4개 언어로 따로 써 둔 정적 페이지 — 다시 만들지 않음   // 배송 안내·평론 글은 번역이 없어 영어 그대로 둠 (일본어·중국어 페이지 안 만듦)
 
 function walk(dir) { const out = []; for (const f of fs.readdirSync(dir)) { const p = path.join(dir, f); if (fs.statSync(p).isDirectory()) out.push(...walk(p)); else if (f === "index.html") out.push(p); } return out; }
 const enPages = walk(path.join(ROOT, "en")).map((p) => path.relative(ROOT, p).split(path.sep).join("/")).filter((p) => !SKIP.some((r) => r.test(p)) && !/http-equiv="refresh"/i.test(fs.readFileSync(path.join(ROOT, p), "utf8").slice(0, 2000))).sort();   // 옛 주소 → 새 주소로 넘기는 페이지는 제외
 const urlOf = (rel) => "/" + rel.replace(/index\.html$/, "");                // en/works/torso/index.html -> /en/works/torso/
 const sub = (rel) => rel.replace(/^en\//, "");                                  // works/torso/index.html
 const enSet = new Set(enPages.map(urlOf));
+const ABOUT = ["/about/", "/en/about/", "/ja/about/", "/zh/about/"].filter((u) => fs.existsSync(path.join(ROOT, u, "index.html")));
+if (ABOUT.includes("/en/about/")) enSet.add("/en/about/");   // 일·중 페이지 하단 About 링크도 같은 언어로
 
 const MIME = { ".html": "text/html; charset=utf-8", ".json": "application/json", ".js": "text/javascript", ".css": "text/css", ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
 const server = http.createServer((q, s) => {
@@ -114,6 +116,9 @@ let sm = fs.readFileSync(smf, "utf8").replace(/\s*<url><loc>https:\/\/leeyunsung
 const today = new Date().toISOString().slice(0, 10);
 const add = enPages.flatMap((rel) => LANGS.map((L) => "  <url><loc>" + SITE + "/" + L.dir + urlOf(rel).replace(/^\/en\//, "/") + "</loc><lastmod>" + today + "</lastmod><priority>0.6</priority></url>")).join("\n");
 sm = sm.replace("</urlset>", add + "\n</urlset>");
+// 작가 소개 페이지 4개는 발행 때 사이트맵에서 빠지므로 여기서 다시 넣음
+sm = sm.replace(/\s*<url><loc>https:\/\/leeyunsung\.com\/(en\/|ja\/|zh\/)?about\/<\/loc>[^\n]*<\/url>/g, "");
+sm = sm.replace("</urlset>", ABOUT.map((u) => "  <url><loc>" + SITE + u + "</loc><lastmod>" + today + "</lastmod><priority>0.8</priority></url>").join("\n") + "\n</urlset>");
 fs.writeFileSync(smf, sm);
 fs.writeFileSync(path.join(ROOT, ".github/i18n/report.json"), JSON.stringify(report, null, 1));
 console.log("pages", report.length, "errors", report.filter((r) => r.errs.length).length);
