@@ -1,0 +1,34 @@
+name: AR files
+
+# 관리자 "발행"으로 data.json이 바뀌면, AR 파일이 없거나 표지·크기가 바뀐 포스터·원화의 AR 파일(glb·usdz·썸네일)을 만들어 올림.
+# 조각은 3D 모델을 따로 만들기 때문에 건드리지 않음.
+on:
+  push:
+    branches: [main]
+    paths: ["data.json", ".github/ar/build_ar.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: ar-files
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -q pillow usd-core
+      - name: Build AR files
+        run: python .github/ar/build_ar.py .
+      - name: Commit
+        run: |
+          git config user.name "leeyunsung-site-bot"
+          git config user.email "reyunsung@gmail.com"
+          git add -A ar-q7w2 .github/ar/state.json
+          git diff --cached --quiet && { echo "no changes"; exit 0; }
+          git commit -m "AR: 새 상품·바뀐 상품의 AR 파일 자동 생성"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done; exit 1

@@ -28,6 +28,7 @@ main{max-width:1100px;margin:0 auto;padding:14px 20px 60px;display:grid;grid-tem
 #back{all:unset;cursor:pointer;font-size:22px;line-height:1;padding:2px 8px}
 #vt b{display:block;font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:18px}
 #vt span{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+#vt small{display:block;color:var(--soft);font-size:11px;margin-top:3px}
 model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--poster-color:transparent}
 #arBtn{position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;border:0;border-radius:999px;padding:15px 26px;font-size:15px;letter-spacing:.02em;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer;white-space:nowrap}
 #arBtn small{display:block;font-size:11px;opacity:.75;margin-top:2px}
@@ -58,7 +59,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
 </header>
 <main id="grid" hidden></main>
 <div id="view">
-  <div class="top"><button id="back" aria-label="Back">←</button><div id="vt"><b></b><span></span></div><a id="shopLink" href="#" target="_top">Shop →</a></div>
+  <div class="top"><button id="back" aria-label="Back">←</button><div id="vt"><b></b><span></span><small id="vNote" hidden>Frame not included · 액자는 상품에 포함되지 않습니다</small></div><a id="shopLink" href="#" target="_top">Shop →</a></div>
   <model-viewer id="mv" ar ar-modes="webxr scene-viewer quick-look" ar-placement="wall" ar-scale="fixed" camera-controls disable-pan
     environment-image="neutral" exposure="1" shadow-intensity="0" camera-orbit="0deg 90deg auto" min-camera-orbit="-55deg 55deg auto" max-camera-orbit="55deg 125deg auto" interaction-prompt="none">
     <button slot="ar-button" id="arBtn">View on your wall<small>내 벽에 걸어 보기 (AR)</small></button>
@@ -92,6 +93,7 @@ model-viewer{flex:1;width:100%;background:linear-gradient(#efeeea,#e3e1dc);--pos
   function open(x,push){
     view.classList.add('on'); document.querySelector('#vt b').textContent=x.title;
     document.querySelector('#vt span').textContent=[x.year,x.medium,x.size].filter(Boolean).join(', ');
+    document.getElementById('vNote').hidden=x.kind!=='edition';   // posters: the frame in the AR view is only for display
     var sl=document.getElementById('shopLink'); sl.hidden=!x.url; sl.href=x.url||'#';
     mv.setAttribute('ar-placement',x.floor?'floor':'wall'); mv.setAttribute('camera-orbit',x.floor?'0deg 75deg auto':'0deg 90deg auto'); mv.setAttribute('min-camera-orbit',x.floor?'-Infinity 20deg auto':'-55deg 55deg auto'); mv.setAttribute('max-camera-orbit',x.floor?'Infinity 100deg auto':'55deg 125deg auto');
     document.getElementById('arBtn').firstChild.textContent=x.floor?'View in your space':'View on your wall'; document.querySelector('#arBtn small').textContent=x.floor?'내 공간에 놓아 보기 (AR)':'내 벽에 걸어 보기 (AR)';
