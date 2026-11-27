@@ -3342,6 +3342,8 @@
     "en/shop/torso-14-art-poster/index.html",
     "shop/danae-pink-art-poster/index.html",
     "en/shop/danae-pink-art-poster/index.html",
+    "shop/danae-yellow-art-poster/index.html",
+    "en/shop/danae-yellow-art-poster/index.html",
     "shop/danae-blue-art-poster/index.html",
     "en/shop/danae-blue-art-poster/index.html",
     "shop/torso-10-art-poster/index.html",
@@ -3350,8 +3352,6 @@
     "en/shop/annunciation-central-panels-art-poster/index.html",
     "shop/torso-18-art-poster/index.html",
     "en/shop/torso-18-art-poster/index.html",
-    "shop/danae-yellow-art-poster/index.html",
-    "en/shop/danae-yellow-art-poster/index.html",
     "shop/cronos-art-poster/index.html",
     "en/shop/cronos-art-poster/index.html",
     "shop/torso-04-art-poster/index.html",
@@ -3371,7 +3371,9 @@
     "shop/torso-03-art-poster/index.html",
     "en/shop/torso-03-art-poster/index.html",
     "shop/torso-06-art-poster/index.html",
-    "en/shop/torso-06-art-poster/index.html"
+    "en/shop/torso-06-art-poster/index.html",
+    "shop/torso-09-art-poster/index.html",
+    "en/shop/torso-09-art-poster/index.html"
   ],
   "shop": [
     {
@@ -6064,7 +6066,9 @@
     "shop/sd-zodiac-aries/index.html": "9b7b6d90:37088",
     "en/shop/sd-zodiac-aries/index.html": "e5b0a67d:33476",
     "shop/sd-zodiac-pisces/index.html": "cacc15c8:37112",
-    "en/shop/sd-zodiac-pisces/index.html": "87f0ad6a:33504"
+    "en/shop/sd-zodiac-pisces/index.html": "87f0ad6a:33504",
+    "shop/torso-09-art-poster/index.html": "1fab82f0:52540",
+    "en/shop/torso-09-art-poster/index.html": "76de0823:45892"
   },
   "shopDesign": {
     "mainPct": 56,
