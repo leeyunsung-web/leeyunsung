@@ -5289,6 +5289,88 @@
       }
     },
     {
+      "id": "s-1795777874226-jgaxd",
+      "title": "The Annunciation II – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/s-1795777874226-jgaxd-cover.jpg",
+      "description": "2026년작 〈The Annunciation II〉의 포스터 에디션입니다.",
+      "slug": "annunciation-ii-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1795777874226-jgaxd-jgaxd0",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1795777874226-jgaxd-jgaxd0",
+              "image": "./images/s-1795777874226-jgaxd-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "63 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": true,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of The Annunciation II (2026).",
+      "original": {
+        "workId": "w2",
+        "image": "./images/w2-p-1791348325235-hjagl-5ffc61ed.jpg"
+      }
+    },
+    {
+      "id": "s-1795777874227-un381",
+      "title": "The Annunciation III – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/s-1795777874227-un381-cover.jpg",
+      "description": "2026년작 〈The Annunciation III〉의 포스터 에디션입니다.",
+      "slug": "annunciation-iii-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1795777874227-un381-un3810",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1795777874227-un381-un3810",
+              "image": "./images/s-1795777874227-un381-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": true,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of The Annunciation III (2026).",
+      "original": {
+        "workId": "w2",
+        "image": "./images/w2-p-1791348354954-hr0vo-2783c096.jpg"
+      }
+    },
+    {
       "id": "s-1790625378337-5f333",
       "title": "Torso 18 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593029600-54rtv.jpg",
