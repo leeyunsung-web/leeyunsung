@@ -404,6 +404,8 @@
   <url><loc>https://leeyunsung.com/en/shop/danae-blue-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-10-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/annunciation-central-panels-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/annunciation-iii-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
+  <url><loc>https://leeyunsung.com/en/shop/annunciation-ii-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-18-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/cronos-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
   <url><loc>https://leeyunsung.com/en/shop/torso-04-art-poster/</loc><lastmod>2026-11-27</lastmod><priority>0.7</priority></url>
@@ -563,6 +565,16 @@
     <loc>https://leeyunsung.com/shop/annunciation-central-panels-art-poster/</loc>
     <lastmod>2026-11-27</lastmod><priority>0.8</priority>
     <image:image><image:loc>https://leeyunsung.com/images/w2-p-1787384904997-pmnc5-347378a8.jpg</image:loc><image:title>The Annunciation (central panels) – Art Poster (2026) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/annunciation-iii-art-poster/</loc>
+    <lastmod>2026-11-27</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1795777874227-un381-cover.jpg</image:loc><image:title>The Annunciation III – Art Poster (2026) — 이윤성 (Lee Yunsung)</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://leeyunsung.com/shop/annunciation-ii-art-poster/</loc>
+    <lastmod>2026-11-27</lastmod><priority>0.8</priority>
+    <image:image><image:loc>https://leeyunsung.com/images/s-1795777874226-jgaxd-cover.jpg</image:loc><image:title>The Annunciation II – Art Poster (2026) — 이윤성 (Lee Yunsung)</image:title></image:image>
   </url>
   <url>
     <loc>https://leeyunsung.com/shop/torso-18-art-poster/</loc>
