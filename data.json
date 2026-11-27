@@ -3381,1017 +3381,6 @@
   ],
   "shop": [
     {
-      "id": "s-1790622121911-1dl7b",
-      "title": "At the Last Judgment – Art Poster (2021)",
-      "cover": "./images/s-1790622121911-1dl7b-cover.jpg",
-      "description": "2010년작 〈At the Last Judgment〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "at-the-last-judgment-art-poster",
-      "photoRows": [
-        {
-          "id": "row-1791037713967-own1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790622121911-1dl7b-943a5c",
-              "image": "./images/s-1790622121911-1dl7b-cover.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "65 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13778974146",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790622121911-1dl7b-cover.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of At the Last Judgment (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790622337229-hzfwn",
-      "title": "NU",
-      "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
-      "description": "2015년 11월 두산갤러리에서 있었던 이윤성 작가 개인전 「NU-FRAME」의 일환으로 발행된 책이다. 전시의 주요 작품인 '다나에' 연작을 여러 페이지를 통해 보여주고 있으며 동시에 2014년 메이크샵아트스페이스에서 있었던 개인전 「NU-TYPE」의 '토르소' 연작도 함께 소개한다. 건축가 정현, 아트인컬쳐 장승연 편집장, 미술 디자인 평론가 임근준의 글도 수록되어 작가의 작품 세계와 작품 이해를 돕는다.",
-      "slug": "nu",
-      "photoRows": [
-        {
-          "id": "row-1791250680100-ehlyv",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791250680100-izfp2",
-              "image": "./images/s-1790622337229-hzfwn-p-1791250680100-izfp2-c3186632.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251444028-g8kfx",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251444028-l1g4h",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251444028-l1g4h-676177f5.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251457999-vpkx7",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251457999-qxo8i",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251457999-qxo8i-1a47f1a0.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251473876-pszny",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251473876-uta43",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251473876-uta43-adee714f.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251487035-8dk71",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251487035-rf31j",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251487035-rf31j-a97217d5.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251502586-s5m7f",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251502586-6ouoe",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251502586-6ouoe-4c59ef8a.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251514181-b60n0",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251514181-v20yu",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251514181-v20yu-ec939d18.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251526936-je21k",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251526936-l3plr",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251526936-l3plr-29841547.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251743315-177bc",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251743315-0z6wh",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251743315-0z6wh-c5588bb2.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791251727130-vntsw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791251727130-qi27m",
-              "image": "./images/s-1790622337229-hzfwn-p-1791251727130-qi27m-0d43e38e.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "Out of print",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "book",
-      "shipProfile": "book",
-      "coverInRows": true,
-      "author": "이윤성",
-      "year": "",
-      "bookLinks": {
-        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=81889394"
-      },
-      "rowCols": 5,
-      "bookInfo": {
-        "designer": "신신(신해옥, 신동혁)",
-        "designerEn": "Shin Shin (Hae-ok Shin, Dong-hyeok Shin)",
-        "publisher": "미디어버스",
-        "publisherEn": "Mediabus",
-        "pubDate": "2016-03-20",
-        "pages": "132",
-        "weight": "251g",
-        "size": "165 x 230mm",
-        "isbn13": "9788994027531"
-      },
-      "toc": "NU-FRAME\n9 정현 - 구조의 단면\n23 장승연 - ‘참조’의 하이브리드: 여러 ‘전형성’이 한 기표에 섞일 때\n33 작품 목록\nNU-TYPE\n84 임근준 - 이윤성의 회화에 관한 비평적 메모\n101 작품 목록",
-      "soldOutExempt": true,
-      "storeOnly": true,
-      "authorEn": "Lee Yunsung",
-      "descriptionEn": "Published in conjunction with Lee Yunsung's solo exhibition NU-FRAME at Doosan Gallery Seoul in November 2015. The book presents the Danae series, the core of that exhibition, across a sequence of pages, alongside the Torso series from his 2014 solo exhibition NU-TYPE at Makeshop Art Space. Essays by architect Hyun Jung, Art in Culture editor-in-chief Seung-yeon Jang, and art and design critic Geun-joon Lim offer context for reading the work.",
-      "tocEn": "NU-FRAME\n9 Hyun Jung - The Cross Section of Structure\n23 Seung-yeon Jang - A Hybrid of ‘References’: One Signifier with Multiple ‘Archetypes’\n33 List of Works\nNU-TYPE\n84 Geun-joon Lim - A Critical Note on Paintings by Yunsung Lee\n101 List of Works"
-    },
-    {
-      "id": "s-1790623313493-6o5cs",
-      "title": "Laocoon – Art Poster (2021)",
-      "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
-      "description": "2010년작 〈Laocoon〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "laocoon-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790623313493-6o5cs-305ea5",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790623313493-6o5cs-305ea5",
-              "image": "./images/s-1790623313493-6o5cs-cover.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "50 × 64 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782577593",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790623313493-6o5cs-cover.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Laocoon (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790625066588-fg7t1",
-      "title": "Torso  – Art Poster (2026)",
-      "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
-      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.",
-      "slug": "torso-digital-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625066588-fg7t1-646eab",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625066588-fg7t1-646eab",
-              "image": "./images/s-1790625066588-fg7t1-cover.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823682661",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "descriptionEn": "A poster edition of Torso (2011).",
-      "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790625066588-fg7t1-cover.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
-      "id": "s-1790625685891-fny4m",
-      "title": "Yunsung Lee The Drawing Book Torso 100",
-      "cover": "./images/s-1790625685891-fny4m-cover-ef271752.jpg",
-      "description": "2019년 8월 22일부터 2020년 3월 11일까지 작가 이윤성이 포스팅한 유튜브 영상을 책으로 옮겼다. 300 × 300픽셀 크기로 그려진 100개의 디지털 드로잉은 전형적인 토르소와 정반대의 프로세스로 완성되었다. 토르소가 오랜 시간에 걸쳐 조각의 일부가 우연히 사라지며 구축된 신화라면, 그의 토르소 드로잉은 수집된 임의의 이미지를 선택적으로 재현해 낸 결과물이다. 이 절대적 크기의 토르소 그림들은 스마트폰, PC, 태블릿 등 여러 디지털 매체에 따라 가변하며 소실된 조각처럼 그 해상도를 잃을 운명이다.\n\n그러나 책의 내부로 옮겨진 이미지들은 웹사이트나 스마트폰에서보다 훨씬 더 커진다. 역설적으로 인쇄된 이미지들은 둘에 비해 고해상도로 전환되는데, 이는 바로 픽셀을 디지털 브러시로 사용했기 때문이다. 그의 말에 따르면 픽셀은 마치 다이아몬드처럼 절대 부술 수 없는 시각화의 최소 단위다. 픽셀은 해상도가 너무나도 낮기에 오히려 해상도라는 한계성에 구애받지 않는다.\n\n또한 점묘화가 그림으로부터 멀어질수록 그 경계와 색상이 흐릿해지는 것과 달리, 픽셀 묘법은 그림과 멀어지면 질서정연한 형상을 드러내고 그림과 가까워지면 오히려 혼돈의 비극을 드러낸다. 그렇기에 오랜 시간 동안 그림을 바라볼수록 그 표상과 의미를 깊이 있게 읽어 내는 기쁨이 있다. 작가 이윤성에게 픽셀은 당대 디자이너와 예술가가 마주한 환경과 개념, 그리고 실천의 불완전성을 상징한다.",
-      "slug": "the-drawing-book-torso-100",
-      "photoRows": [
-        {
-          "id": "row-1791363745255-88pb0",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791363745255-bkn1z",
-              "image": "./images/s-1790625685891-fny4m-cover-ef271752.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791363681137-k7ev8",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791363681137-voold",
-              "image": "./images/s-1790625685891-fny4m-p-1791363681137-voold-4d18f7e6.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791363762100-hjami",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791363762100-ayik6",
-              "image": "./images/s-1790625685891-fny4m-p-1791363762100-ayik6-d3386b1d.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791363774193-iapss",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791363774193-mz9hi",
-              "image": "./images/s-1790625685891-fny4m-p-1791363774193-mz9hi-00d1ae4d.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "Signed and numbered, edition of 500",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "https://smartstore.naver.com/superellipse/products/5284300799",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "book",
-      "shipProfile": "book",
-      "coverInRows": true,
-      "hidden": false,
-      "author": "이윤성 저 / 정현 글",
-      "year": "",
-      "bookLinks": {
-        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=403792908&start=pcsearch_auto",
-        "kyobo": "https://product.kyobobook.co.kr/detail/S000221573142",
-        "yes24": "https://www.yes24.com/product/goods/197707434"
-      },
-      "soldOutExempt": true,
-      "bookInfo": {
-        "publisher": "초타원형",
-        "pubDate": "2020-12-24",
-        "isbn13": "9791196685294",
-        "publisherEn": "Superellipse"
-      },
-      "toc": "7 서문\n9 그림",
-      "rowCols": 5,
-      "authorEn": "Lee Yunsung",
-      "storeOnly": true,
-      "tocEn": "7 Preface\n9 Drawings",
-      "descriptionEn": "This book collects the drawings Lee Yunsung posted as YouTube videos between August 22, 2019 and March 11, 2020. The 100 digital drawings, each made at 300 × 300 pixels, were completed through a process opposite to that of the classical torso. If the torso is a myth built over centuries as parts of a sculpture were lost by chance, his torso drawings are the result of selectively reproducing images he had gathered at random. Fixed at this absolute size, the drawings shift with every digital device—smartphone, PC, tablet—and are destined, like the lost fragments of a sculpture, to lose their resolution.\n\nMoved into the book, however, the images become far larger than on a website or a phone. Paradoxically, in print they become high-resolution images, precisely because the pixel served as the digital brush. In the artist's words, the pixel is the smallest unit of visualization, as unbreakable as a diamond. Its resolution is so low that it is no longer bound by the limits of resolution.\n\nAnd unlike pointillism, whose edges and colors blur as the viewer steps back, pixel drawing reveals an orderly figure from a distance and the tragedy of chaos up close. The longer one looks, the deeper the reading of its image and meaning becomes. For Lee Yunsung, the pixel stands for the incompleteness of the conditions, concepts, and practices that the designers and artists of his time confront."
-    },
-    {
-      "id": "s-1790625359809-iikzl",
-      "title": "Torso 14 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787592985513-1e47g.jpg",
-      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.",
-      "slug": "torso-14-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625359809-iikzl-5b8dcc",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625359809-iikzl-5b8dcc",
-              "image": "./images/w3-p-1787592985513-1e47g.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823652511",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": false,
-      "descriptionEn": "A poster edition of Torso 14 (2023).",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787592985513-1e47g.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
-      "id": "s-1790625368565-3m6dk",
-      "title": "Torso 16 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
-      "description": "2023년작 〈Torso 16〉의 포스터 에디션입니다.",
-      "slug": "torso-16-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625368565-3m6dk-95aaa9",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625368565-3m6dk-95aaa9",
-              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823669415",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": false,
-      "descriptionEn": "A poster edition of Torso 16 (2023).",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
-      "id": "s-1790625378337-5f333",
-      "title": "Torso 18 – Art Poster (2026)",
-      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.",
-      "slug": "torso-18-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790625378337-5f333-4c698c",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790625378337-5f333-4c698c",
-              "image": "./images/s-1790625378337-5f333-pc-s-1790625378337-5f333-4c698c-071eaf07.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823681654",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": false,
-      "descriptionEn": "A poster edition of Torso 18 (2024).",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787593029600-54rtv.jpg"
-      },
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "rowCols": 5
-    },
-    {
-      "id": "s-1792489283261-h6hij",
-      "title": "The Annunciation (central panels) – Art Poster (2026)",
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "cover": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.",
-      "slug": "annunciation-central-panels-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1792489283261-h6hij-e9edc8",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1792489283261-h6hij-e9edc8",
-              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "50 × 67 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823683948",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 5,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014), a four-panel work.",
-      "original": {
-        "workId": "w2",
-        "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg"
-      }
-    },
-    {
-      "id": "s-1792489302614-f6t8c",
-      "title": "Danae Blue – Art Poster (2026)",
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "cover": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
-      "description": "2015년작 〈Danae Blue〉의 포스터 에디션입니다.",
-      "slug": "danae-blue-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1792489302614-f6t8c-6338d6",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1792489302614-f6t8c-6338d6",
-              "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "67 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823685432",
-      "buyUs": "",
-      "soldOut": false,
-      "rowCols": 5,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "hidden": false,
-      "descriptionEn": "A poster edition of Danae Blue (2015).",
-      "original": {
-        "workId": "w4",
-        "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg"
-      }
-    },
-    {
-      "id": "s-1792489341201-sstw5",
-      "title": "Danae Yellow – Art Poster (2026)",
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "cover": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-      "description": "2015년작 〈Danae Yellow〉의 포스터 에디션입니다.",
-      "slug": "danae-yellow-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1792489341201-sstw5-97cb6b",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1792489341201-sstw5-97cb6b",
-              "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "67 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823686516",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 5,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "descriptionEn": "A poster edition of Danae Yellow (2015).",
-      "original": {
-        "workId": "w4",
-        "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg"
-      }
-    },
-    {
-      "id": "s-1792489319925-j2ldo",
-      "title": "Danae Pink – Art Poster (2026)",
-      "author": "",
-      "authorEn": "",
-      "year": "",
-      "cover": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
-      "description": "2015년작 〈Danae Pink〉의 포스터 에디션입니다.",
-      "slug": "danae-pink-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1792489319925-j2ldo-aa0940",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1792489319925-j2ldo-aa0940",
-              "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "67 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823687158",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 5,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "descriptionEn": "A poster edition of Danae Pink (2015).",
-      "original": {
-        "workId": "w4",
-        "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg"
-      }
-    },
-    {
-      "id": "s-1790624996756-xnr3j",
-      "title": "Torso 10 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465590493-13mdp.jpg",
-      "description": "2020년작 〈Torso 10〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-10-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624996756-xnr3j-cf7e55",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624996756-xnr3j-cf7e55",
-              "image": "./images/w3-p-1787465590493-13mdp.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782620391",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465590493-13mdp.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790623028311-pavmn",
-      "title": "Cronos – Art Poster (2021)",
-      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
-      "description": "2011년작 〈Cronos〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "cronos-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790623028311-pavmn-774362",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790623028311-pavmn-774362",
-              "image": "./images/s-1790623028311-pavmn-cover.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "72 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782589448",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w-1790628203345-iya5b",
-        "image": "./images/s-1790623028311-pavmn-cover.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Cronos (2011), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790624929547-vad9p",
-      "title": "Torso 01 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787464242838-rtg3t.jpg",
-      "description": "2012년작 〈Torso 01〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-01-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624929547-vad9p-c0d5ec",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624929547-vad9p-c0d5ec",
-              "image": "./images/w3-p-1787464242838-rtg3t.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782591835",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787464242838-rtg3t.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 01 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
-      "author": "",
-      "authorEn": "",
-      "year": ""
-    },
-    {
-      "id": "s-1790624935331-clud2",
-      "title": "Torso 02 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787464255794-6t81e.jpg",
-      "description": "2012년작 〈Torso 02〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-02-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624935331-clud2-bebe2d",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624935331-clud2-bebe2d",
-              "image": "./images/w3-p-1787464255794-6t81e.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782597255",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787464255794-6t81e.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 02 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
-      "author": "",
-      "authorEn": "",
-      "year": ""
-    },
-    {
-      "id": "s-1790624943259-8qxbq",
-      "title": "Torso 03 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787464576033-gohda.jpg",
-      "description": "2013년작 〈Torso 03〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-03-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624943259-8qxbq-6b8600",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624943259-8qxbq-6b8600",
-              "image": "./images/w3-p-1787464576033-gohda.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782612254",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787464576033-gohda.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 03 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
-      "author": "",
-      "authorEn": "",
-      "year": ""
-    },
-    {
-      "id": "s-1790624948985-2vkw6",
-      "title": "Torso 04 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787464596295-v0chu.jpg",
-      "description": "2013년작 〈Torso 04〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-04-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624948985-2vkw6-2a4bc7",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624948985-2vkw6-2a4bc7",
-              "image": "./images/w3-p-1787464596295-v0chu.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782613789",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "rowCols": 5,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787464596295-v0chu.jpg"
-      },
-      "descriptionEn": "A poster edition of Torso 04 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790624955390-u6892",
-      "title": "Torso 05 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465231077-kzbxf.jpg",
-      "description": "2013년작 〈Torso 05〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-05-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624955390-u6892-ddf1e3",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624955390-u6892-ddf1e3",
-              "image": "./images/w3-p-1787465231077-kzbxf.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782617575",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465231077-kzbxf.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 05 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1790623636184-2mg2s",
-      "title": "불완전한",
-      "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
-      "description": "만화를 통해 동시대 시각 문화를 탐구하는 이윤성 작가의 개인전 《불완전한 Fragmentary》를 담은 도록이다. 작가는 신작 <라오콘 Laocoon> 연작 19점과 <십계 The Ten Commandments>에서 헬레니즘 조각 최고의 걸작으로 불리는 “라오콘(Laocoon)” 상을 회화로 재해석한다. 조각상의 유실된 조각들은 나눠진 캔버스로, 남성은 여성으로, 뱀은 검은색 배경으로 바뀌며 고전의 이미지를 불완전한 형태로 다시 구성한다.\n\n검은색 공간에 놓인 인물과 만화의 말풍선, 페이지를 나누는 선과 칸은 흰색 물감으로 재현된다. 말풍선 속 문자는 사라지고 만화 기호들은 회화 속 형태이자 사물이 되어 캐릭터를 앞에서 가리거나 뒤로 숨으며 공간감을 만든다. 세 명의 라오콘에 따라 나눠진 세 개의 패널과 여기서 파생된 얼굴들을 조합하고, 인물까지 모두 비워진 <십계>를 따로 배치해 만화와 회화의 형식을 탐구한다.\n\n동 제목으로 출판된 전시 도록에는 김명찬의 사진, 안종민의 타입 운용, 초타원형의 렌더링이 더해졌다. 흑백의 1도 인쇄, 유광의 표지, 칸 처리된 이미지와 글씨, 접이식 브로마이드화 된 연작 등 만화의 다양한 특징을 연상시키도록 제작했다. 전시의 기록을 실제 작업과 같은 형식으로 반복하며, 3차원의 전시를 2차원에 압축하고 분해·해체하는 만화적 구성의 확장을 보여준다.",
-      "slug": "fragmentary",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790623636184-2mg2s-5234cd",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790623636184-2mg2s-5234cd",
-              "image": "./images/s-1790623636184-2mg2s-cover.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1790623906918-oxlu1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790623906918-brt2b",
-              "image": "./images/s-1790623636184-2mg2s-p-1790623906918-brt2b-4ed602d5.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1790624773469-fzlgu",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1790624773469-2us7y",
-              "image": "./images/s-1790623636184-2mg2s-p-1790624773469-2us7y.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791042292439-e8zu3",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791042292439-hehbi",
-              "image": "./images/s-1790623636184-2mg2s-p-1791042292439-hehbi-ff534e7f.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791042307063-u7wi6",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791042307063-1rsjc",
-              "image": "./images/s-1790623636184-2mg2s-p-1791042307063-1rsjc-c7abfde6.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "30000",
-      "priceUsd": "25",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "book",
-      "shipProfile": "book",
-      "coverInRows": true,
-      "bookLinks": {
-        "aladin": "https://aladin.kr/p/6hVMP",
-        "kyobo": "http://product.kyobobook.co.kr/detail/S000221509649",
-        "yes24": "https://www.yes24.com/product/goods/197212669"
-      },
-      "rowCols": 5,
-      "titleEn": "Fragmentary",
-      "year": "",
-      "original": {
-        "workId": "w7",
-        "image": "./images/w7-cover.jpg"
-      },
-      "toc": "1. 완전히 충전된 공간, 불완전한 창문\n2. 시점과 렌더링\n3. 전시전경\n4. 작품\n5. 기쁨을 박제하라",
-      "author": "이윤성",
-      "soldOutExempt": true,
-      "bookInfo": {
-        "publisher": "초타원형",
-        "pubDate": "2024-10-01",
-        "pages": "45",
-        "weight": "86g",
-        "size": "188 x 262 mm",
-        "isbn13": "9791197318948",
-        "publisherEn": "Superellipse"
-      },
-      "storeOnly": true,
-      "intlDirect": true,
-      "authorEn": "Lee Yunsung",
-      "descriptionEn": "The catalogue of Lee Yunsung's solo exhibition Fragmentary, in which the artist explores contemporary visual culture through comics. In nineteen new works from the Laocoon series and in The Ten Commandments, he reinterprets in paint the Laocoon group, often called the greatest masterpiece of Hellenistic sculpture. The statue's lost fragments become divided canvases, the men become women, and the serpents become the black ground, reassembling a classical image in fragmentary form.\n\nFigures set in black space, speech balloons, and the lines and panels that divide a comics page are all rendered in white paint. The words inside the balloons have disappeared; the signs of comics become forms and objects within the painting, covering the characters from the front or slipping behind them to create a sense of space. Three panels divided along the three Laocoon figures are combined with the faces derived from them, while The Ten Commandments, emptied even of figures, is placed apart, exploring the forms of both comics and painting.\n\nThe catalogue, published under the same title, adds photography by Myungchan Kim, typography by Jongmin Ahn, and renderings by Superellipse. One-color black printing, a glossy cover, images and text set in panels, and the series reproduced as a fold-out poster all recall the conventions of comics. By repeating the record of the exhibition in the same form as the work itself, the book compresses a three-dimensional exhibition into two dimensions, taking it apart and extending the comic-book structure.",
-      "tocEn": "1. A Fully Charged Space, a Fragmentary Window\n2. Viewpoint and Rendering\n3. Installation Views\n4. Works\n5. Taxidermy the Joy"
-    },
-    {
       "id": "s-1790770248545-hgcaz",
       "title": "The Three Graces Pixel Props 05",
       "cover": "./images/s-1790770248545-hgcaz-cover-e0104b1f.jpg",
@@ -4765,85 +3754,6 @@
       "hidden": false
     },
     {
-      "id": "s-1790624960499-n3l60",
-      "title": "Torso 06 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465287347-94coq.jpg",
-      "description": "2016년작 〈Torso 06〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-06-art-poster",
-      "photoRows": [
-        {
-          "id": "rowc-s-1790624960499-n3l60-15a490",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1790624960499-n3l60-15a490",
-              "image": "./images/w3-p-1787465287347-94coq.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618201",
-      "buyUs": "",
-      "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 06 (2016), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
-    },
-    {
-      "id": "s-1791045430344-i1yns",
-      "title": "네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유 2000-2020년 한국 대중문화의 초상",
-      "year": "",
-      "cover": "./images/s-1791045430344-i1yns-cover-0c6403ef.jpg",
-      "description": "초타원형은 대중문화에 직간접적으로 영향받은 한국 작가의 작품을 지면에 전시하는 출판 프로젝트 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』을 선보인다. 책은 2020년 5월 2일부터 6월 2일까지 서울 아트딜라이트에서 열렸던 동명의 전시 [네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상]의 변역이자 확장이다.\n\n초타원형은 한국 대중문화 기반의 예술을 널리 알리고자 대중문화와 가깝게 또는 느슨하게 연결된 작가들을 책이라는 전시장으로 불러들인다. 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』에는 작가 214명의 작품 856점─참여 작가 스스로 4점의 작품을 선정했다.─이 시간 순서에 따라 위계 없이 전개된다.\n\n이 책은 작품 정보만으로 구성된 「INDEX」와 작품 이미지만으로 구성된 「IMAGES」를 축으로, 김일림, 윤원화, 최정윤, 콘노 유키의 글로 구성된 「TEXTS」와 아트딜라이트에서의 전시 기록으로 구성된 「YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000-2020」가 먼 과거 혹은 미래의 영상처럼 스쳐 지나는 구성을 취하고 있다.\n\n그래픽 디자이너 듀오 신신은 20㎠ 정사각형의 지면에 856개의 작품 컬러 이미지, 4개 국어(영, 중, 일, 한)로 수록된 4개의 글, 46개의 전시 흑백 이미지 등을 담고, 여러 지질의 종이, 컬러/흑백/UV/박 인쇄, 양장, 1쌍의 가름끈 등 다양한 인쇄와 제책 기법을 사용하여 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』이라는 또 하나의 작품을 완성했다.",
-      "slug": "yes-no-like-dislike-2000-2020",
-      "photoRows": [],
-      "spec1": "",
-      "spec2": "",
-      "edition": "",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "https://smartstore.naver.com/superellipse/products/5459751884",
-      "buyUs": "",
-      "soldOut": false,
-      "rowCols": 5,
-      "category": "book",
-      "shipProfile": "book",
-      "coverInRows": true,
-      "bookLinks": {
-        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?itemid=269438738&srsltid=au7gw4vyzu6aknyavy5hc3b8oglaoryh8osfiba3hlz19_5zxulgq3s8",
-        "kyobo": "https://product.kyobobook.co.kr/detail/S000001985736",
-        "yes24": "https://www.yes24.com/product/goods/99309397"
-      },
-      "soldOutExempt": true,
-      "author": "정현/윤원화/김일림/최정윤/콘노유키",
-      "bookInfo": {
-        "publisher": "초타원형",
-        "pubDate": "2020-12-24",
-        "pages": "1,026",
-        "size": "200 x 200 x 70mm",
-        "isbn13": "9791197318900",
-        "publisherEn": "Superellipse"
-      },
-      "toc": "INDEX III\nINTRO 1\nIMAGES 5\nTEXTS 863\nYES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000-2020 921\nOUTRO 983\nINDEX XXI\n\n\n- IMAGE: 502, 갑빠오, 강덕현, 강성모, 고경호, 권경엽, 권서영, 권순영, 권신홍, 권오상, 그라플렉스, 김근예, 김동희, 김들내, 김민석, 김민수, 김민조, 김바르, 김사람피플, 김선우, 김수언, 김수연, 김승현, 김승환, 김시훈, 김쎌, 김예지, 김용오, 김윤경, 김인, 김재용, 김정태, 김지용, 김진우, 김진우, 김진희, 김태중, 김태협, 김한나, 김한샘, 김허앵, 김현주, 김홍식, 김화현, 김희수, 김희주, 나난, 나무13, 남궁호, 남진우, 낸시랭, 노5브라, 다솔, 더리치, 도파민최, 돈선필, 디렌리, 람한, 레오다브, 로렌정, 루이스 루이즈, 마우즈, 무드잔잔, 문경의, 문해진, 미스터 텅, 박경률, 박광수, 박상혁, 박성옥, 박용식, 박정인, 박정혁, 박준우, 박지은, 박지혜, 박채린, 박필교, 박현정, 박형지, 박혜진, 배즈본, 백경호, 백정록, 백향목, 베리킴, 변대용, 브이에스포스, 뿌리, 사박, 상아하, 서기원, 서미지, 성병희, 성태진, 소냐리, 손우정, 손종준, 송송, 송승은, 송진욱, 스피브, 시치, 식스코인, 신모래, 신선미, 신혜미, 심래정, 쎄미, 아댈라리, 아트놈, 안드레, 알타임 죠, 양승욱, 에잇에이엠, 엔조, 여동헌, 연여인, 염승일, 오리지널펑크, 오조, 오주안, 오희원, 옥승철, 왕선정, 왕에스더, 요요진, 울타리, 유리, 유신애, 유용선, 유의정, 유재연, 유창창, 유해나, 윤성광, 윤향로, 윤혜진, 음하영, 이니그마13, 이대규, 이대철, 이동기, 이동훈, 이미미, 이빈소연, 이사라, 이수경, 이아람, 이예린, 이용은, 이윤성, 이재선, 이준원, 이지은, 이지현, 이지현, 이진희, 이학민, 이해강, 이형구, 이효선, 임수빈, 장경린, 장미경, 장수지, 장승근, 장종완, 장콸, 잭슨홍, 전희수, 정수, 정수정, 정태훈, 정필환, 정희민, 제이드, 조강남, 조광훈, 조예솔, 조원경, 조이킴, 주슬아, 주재범, 주지오, 준, 지비데이, 지알원, 지용호, 차영석, 최수진, 최잔, 최지욱, 최지원, 추미림, 콰야, 쿤 작가, 투디, 표재덕, 하승완, 하행은, 한선우, 한승훈, 함성주, 허수연, 현남, 호진, 홍경택, 홍인숙, 홍준기, 홍지민, 홍채연, 황재원, 황현호.\n- TEXT: 김일림, 윤원화, 정현, 최정윤, 콘노 유키.\n- PHOTO: 김경태, 팝콘.",
-      "storeOnly": true,
-      "titleEn": "YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: The Portrait of Korean Pop Culture 2000–2020",
-      "authorEn": "Various authors",
-      "descriptionEn": "Superellipse presents YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: The Portrait of Korean Pop Culture 2000–2020, a publishing project that exhibits on the page the work of Korean artists influenced, directly or indirectly, by popular culture. The book is a translation and expansion of the exhibition of the same title held at Art Delight, Seoul, from May 2 to June 2, 2020.\n\nTo bring art rooted in Korean popular culture to a wider audience, Superellipse invites artists closely or loosely connected to it into the book as an exhibition space. It presents 856 works by 214 artists, each of whom chose four of their own works, in chronological order and without hierarchy. The book is built around INDEX, made up only of information on the works, and IMAGES, made up only of images, with TEXTS, four essays, and a record of the exhibition at Art Delight passing by like footage from a distant past or future.\n\nThe graphic design duo Shin Shin set 856 color images, four essays in four languages (English, Chinese, Japanese, and Korean), and 46 black-and-white installation views on 20 cm square pages, using a range of papers, color, black-and-white, UV and foil printing, a hardcover binding, and a pair of ribbon markers to make the book a work in its own right.",
-      "tocEn": "INDEX III\nINTRO 1\nIMAGES 5\nTEXTS 863\nYES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000–2020 921\nOUTRO 983\nINDEX XXI\n\n- IMAGE: 214 artists, including Lee Yunsung (full list in the Korean version)\n- TEXT: 5 writers\n- PHOTO: 2 photographers"
-    },
-    {
       "id": "s-1793361059290-jkp8o",
       "title": "Laocoon (face) 01",
       "author": "",
@@ -4926,219 +3836,326 @@
       }
     },
     {
-      "id": "s-1790624979413-mam24",
-      "title": "Torso 07 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465325523-bc1ig.jpg",
-      "description": "2013년작 〈Torso 07〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-07-art-poster",
+      "id": "s-1793361496234-dyrzp",
+      "title": "Laocoon (face) 03",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w7-p-1789631056886-lo26y.jpg",
+      "description": "〈Laocoon (face) 03〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
+      "slug": "laocoon-2024-3",
       "photoRows": [
         {
-          "id": "rowc-s-1790624979413-mam24-dd62e7",
+          "id": "rowc-s-1793361496234-dyrzp-459110",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790624979413-mam24-dd62e7",
-              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
+              "id": "pc-s-1793361496234-dyrzp-459110",
+              "image": "./images/w7-p-1789631056886-lo26y.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618547",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
+      "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
+      "hidden": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
       "coverInRows": true,
+      "descriptionEn": "Laocoon (face) 03 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
       "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465325523-bc1ig.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 07 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+        "workId": "w7",
+        "image": "./images/w7-p-1789631056886-lo26y.jpg"
+      }
     },
     {
-      "id": "s-1790624985943-p3hci",
-      "title": "Torso 08 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465388849-mlqhg.jpg",
-      "description": "2014년작 〈Torso 08〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-08-art-poster",
+      "id": "s-1795220286127-7b4uf",
+      "title": "Laocoon (face) 08",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w7-p-1789631090335-3172x.jpg",
+      "description": "〈Laocoon (face) 08〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
+      "slug": "laocoon-2024-8",
       "photoRows": [
         {
-          "id": "rowc-s-1790624985943-p3hci-7d3a81",
+          "id": "rowc-s-1795220286127-7b4uf-a4807f",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790624985943-p3hci-7d3a81",
-              "image": "./images/w3-p-1787465388849-mlqhg.jpg",
+              "id": "pc-s-1795220286127-7b4uf-a4807f",
+              "image": "./images/w7-p-1789631090335-3172x.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618900",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
+      "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
+      "hidden": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
       "coverInRows": true,
+      "descriptionEn": "Laocoon (face) 08 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
       "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465388849-mlqhg.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 08 (2014), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+        "workId": "w7",
+        "image": "./images/w7-p-1789631090335-3172x.jpg"
+      }
     },
     {
-      "id": "s-1790624990900-t4w8b",
-      "title": "Torso 09 – Art Poster (2021)",
-      "cover": "./images/w3-p-1787465558711-9hdxm.jpg",
-      "description": "2013년작 〈Torso 09〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
-      "slug": "torso-09-art-poster",
+      "id": "s-1795220286128-92dui",
+      "title": "Laocoon (face) 09",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w7-p-1789631094582-emyvv.jpg",
+      "description": "〈Laocoon (face) 09〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
+      "slug": "laocoon-2024-9",
       "photoRows": [
         {
-          "id": "rowc-s-1790624990900-t4w8b-b1d839",
+          "id": "rowc-s-1795220286128-92dui-f1aac2",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1790624990900-t4w8b-b1d839",
-              "image": "./images/w3-p-1787465558711-9hdxm.jpg",
+              "id": "pc-s-1795220286128-92dui-f1aac2",
+              "image": "./images/w7-p-1789631094582-emyvv.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "62 × 50 cm",
-      "spec2": "Digital Print on Paper",
-      "edition": "Signed and numbered, edition of 300",
-      "priceKrw": "35000",
-      "priceUsd": "30",
-      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782619353",
+      "spec1": "53 × 45 cm",
+      "spec2": "Acrylic on canvas",
+      "edition": "Unique work",
+      "priceKrw": "2000000",
+      "priceUsd": "1500",
+      "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "category": "edition",
-      "shipProfile": "tube",
+      "hidden": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
       "coverInRows": true,
+      "descriptionEn": "Laocoon (face) 09 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
       "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465558711-9hdxm.jpg"
-      },
-      "rowCols": 5,
-      "descriptionEn": "A poster edition of Torso 09 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+        "workId": "w7",
+        "image": "./images/w7-p-1789631094582-emyvv.jpg"
+      }
     },
     {
-      "id": "s-shared-poster-examples",
-      "title": "포스터 예시 이미지 묶음 (공통)",
-      "slug": "poster-examples",
-      "sharedSet": true,
-      "category": "edition",
-      "shipProfile": "tube",
+      "id": "s-1793710000000-hdtr1",
+      "title": "Head of Torso",
+      "author": "",
+      "authorEn": "",
+      "year": "2023",
+      "cover": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
+      "description": "〈Head of Torso〉(2023)는 〈Torso〉 연작 가운데 한 점이자, 〈Torso Sculpture〉의 원형이 된 회화 작품입니다.\n얼굴 윗부분을 사선으로 잘라 낸 구도와 한쪽만 드러난 눈, 한쪽으로 흩날리는 머리카락이 조각의 형태로 그대로 이어졌습니다.",
+      "slug": "head-of-torso",
+      "photoRows": [
+        {
+          "id": "rowc-s-1793710000000-hdtr1-a1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1793710000000-hdtr1-a1",
+              "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "53 × 45 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
+      "priceKrw": "3000000",
+      "priceUsd": "2300",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Head of Torso (2023), a painting from the Torso series, is the prototype for Torso Sculpture. Its composition, with the upper part of the face cut away on a diagonal, a single visible eye, and hair streaming to one side, carries over directly into the form of the sculpture.",
+      "original": {
+        "workId": "w8",
+        "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg"
+      },
+      "hidden": false,
+      "rowAlone": true
+    },
+    {
+      "id": "s-1791254521015-hvrt2",
+      "title": "Torso 10",
+      "author": "",
+      "authorEn": "",
+      "year": "2020",
+      "cover": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
+      "description": "〈Torso 10〉(2020)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
+      "slug": "torso-10",
+      "photoRows": [
+        {
+          "id": "rowc-s-1791254521015-hvrt2-f6aed4",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1791254521015-hvrt2-f6aed4",
+              "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791254541872-gp9m2",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791254541872-pda97",
+              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "162 × 130 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
       "coverInRows": true,
-      "cover": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg"
+      },
+      "inquiryOnly": true,
+      "descriptionEn": "Torso 10 (2020) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture."
+    },
+    {
+      "id": "s-1793432663182-q6pra",
+      "title": "Torso 16",
+      "author": "",
+      "authorEn": "",
+      "year": "2023",
+      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
+      "description": "〈Torso 16〉(2023)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
+      "slug": "torso-16",
       "photoRows": [
         {
-          "id": "row-shared-1",
-          "cols": 3,
+          "id": "rowc-s-1793432663182-q6pra-y7s6sw",
+          "cols": 1,
           "photos": [
             {
-              "id": "p-1791036333099-7e7l2",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036333099-7e7l2-ce959e0c.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036503744-xah0d",
-              "image": "./images/s-shared-poster-examples-p-1791036503744-xah0d-db154bcd.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036420664-mcnnw",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
+              "id": "pc-s-1793432663182-q6pra-y7s6sw",
+              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
               "caption": ""
             }
           ]
         },
         {
-          "id": "row-shared-2",
-          "cols": 3,
+          "id": "row-1793432663183-h0r2h",
+          "cols": 1,
           "photos": [
             {
-              "id": "p-1791036491554-su6qb",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036491554-su6qb-0c866cd6.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036341181-sa2ox",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036462670-acxve",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-shared-3",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1791036406164-xq8bl",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1790755593306-p3id9",
-              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036497483-lxppd",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-shared-4",
-          "cols": 3,
-          "photos": [
-            {
-              "id": "p-1791036414633-g3ltc",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036469737-40iyf",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
-              "caption": ""
-            },
-            {
-              "id": "p-1791036478669-zx5q9",
-              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
+              "id": "p-1793432663183-lf1tq",
+              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "edition": "",
-      "spec1": "",
-      "spec2": ""
+      "spec1": "162 × 130 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Torso 16 (2023) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      },
+      "inquiryOnly": true,
+      "hidden": false
+    },
+    {
+      "id": "s-1791255439727-qkh2e",
+      "title": "Torso 18",
+      "author": "",
+      "authorEn": "",
+      "year": "2024",
+      "cover": "./images/w3-p-1787593029600-54rtv.jpg",
+      "description": "〈Torso 18〉(2024)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
+      "slug": "torso-18",
+      "photoRows": [
+        {
+          "id": "rowc-s-1791255439727-qkh2e-4c698c",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1791255439727-qkh2e-4c698c",
+              "image": "./images/w3-p-1787593029600-54rtv.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791255503620-pjlbz",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791255503620-gogx5",
+              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "162 × 130 cm",
+      "spec2": "Oil on canvas",
+      "edition": "Unique work",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 3,
+      "category": "original",
+      "shipProfile": "flat",
+      "coverInRows": true,
+      "descriptionEn": "Torso 18 (2024) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593029600-54rtv.jpg"
+      },
+      "inquiryOnly": true
     },
     {
       "id": "s-1793281860372-q9sg2",
@@ -5609,326 +4626,1312 @@
       "arModel": true
     },
     {
-      "id": "s-1793361496234-dyrzp",
-      "title": "Laocoon (face) 03",
-      "author": "",
-      "authorEn": "",
-      "year": "2024",
-      "cover": "./images/w7-p-1789631056886-lo26y.jpg",
-      "description": "〈Laocoon (face) 03〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
-      "slug": "laocoon-2024-3",
+      "id": "s-1790622337229-hzfwn",
+      "title": "NU",
+      "cover": "./images/s-1790622337229-hzfwn-cover.jpg",
+      "description": "2015년 11월 두산갤러리에서 있었던 이윤성 작가 개인전 「NU-FRAME」의 일환으로 발행된 책이다. 전시의 주요 작품인 '다나에' 연작을 여러 페이지를 통해 보여주고 있으며 동시에 2014년 메이크샵아트스페이스에서 있었던 개인전 「NU-TYPE」의 '토르소' 연작도 함께 소개한다. 건축가 정현, 아트인컬쳐 장승연 편집장, 미술 디자인 평론가 임근준의 글도 수록되어 작가의 작품 세계와 작품 이해를 돕는다.",
+      "slug": "nu",
       "photoRows": [
         {
-          "id": "rowc-s-1793361496234-dyrzp-459110",
+          "id": "row-1791250680100-ehlyv",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1793361496234-dyrzp-459110",
-              "image": "./images/w7-p-1789631056886-lo26y.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "53 × 45 cm",
-      "spec2": "Acrylic on canvas",
-      "edition": "Unique work",
-      "priceKrw": "2000000",
-      "priceUsd": "1500",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true,
-      "descriptionEn": "Laocoon (face) 03 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
-      "original": {
-        "workId": "w7",
-        "image": "./images/w7-p-1789631056886-lo26y.jpg"
-      }
-    },
-    {
-      "id": "s-1795220286127-7b4uf",
-      "title": "Laocoon (face) 08",
-      "author": "",
-      "authorEn": "",
-      "year": "2024",
-      "cover": "./images/w7-p-1789631090335-3172x.jpg",
-      "description": "〈Laocoon (face) 08〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
-      "slug": "laocoon-2024-8",
-      "photoRows": [
-        {
-          "id": "rowc-s-1795220286127-7b4uf-a4807f",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1795220286127-7b4uf-a4807f",
-              "image": "./images/w7-p-1789631090335-3172x.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "53 × 45 cm",
-      "spec2": "Acrylic on canvas",
-      "edition": "Unique work",
-      "priceKrw": "2000000",
-      "priceUsd": "1500",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true,
-      "descriptionEn": "Laocoon (face) 08 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
-      "original": {
-        "workId": "w7",
-        "image": "./images/w7-p-1789631090335-3172x.jpg"
-      }
-    },
-    {
-      "id": "s-1795220286128-92dui",
-      "title": "Laocoon (face) 09",
-      "author": "",
-      "authorEn": "",
-      "year": "2024",
-      "cover": "./images/w7-p-1789631094582-emyvv.jpg",
-      "description": "〈Laocoon (face) 09〉(2024)는 개인전 《불완전한 Fragmentary》(YK Presents, 서울, 2024)에서 선보인 작품입니다.\n바다뱀에게 감겨 죽어 가는 트로이 신관과 두 아들의 고대 조각을 흑백 회화로 다시 그린 연작 가운데 한 점입니다.\n여성으로 다시 그려진 흑백의 인물들은 검은 배경에 묻힌 뱀에 가려 조각나고, 화면을 가로지르는 선들이 그 감정을 증폭시킵니다.",
-      "slug": "laocoon-2024-9",
-      "photoRows": [
-        {
-          "id": "rowc-s-1795220286128-92dui-f1aac2",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1795220286128-92dui-f1aac2",
-              "image": "./images/w7-p-1789631094582-emyvv.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "53 × 45 cm",
-      "spec2": "Acrylic on canvas",
-      "edition": "Unique work",
-      "priceKrw": "2000000",
-      "priceUsd": "1500",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "hidden": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true,
-      "descriptionEn": "Laocoon (face) 09 (2024) is a painting first shown in the solo exhibition Fragmentary (YK Presents, Seoul, 2024). It belongs to a series of black-and-white paintings that revisits the ancient sculpture of the Trojan priest and his two sons dying in the coils of sea serpents. Redrawn as women in black and white, the figures are fragmented by serpents hidden in the black ground, while lines cutting across the picture amplify their emotion.",
-      "original": {
-        "workId": "w7",
-        "image": "./images/w7-p-1789631094582-emyvv.jpg"
-      }
-    },
-    {
-      "id": "s-1793710000000-hdtr1",
-      "title": "Head of Torso",
-      "author": "",
-      "authorEn": "",
-      "year": "2023",
-      "cover": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
-      "description": "〈Head of Torso〉(2023)는 〈Torso〉 연작 가운데 한 점이자, 〈Torso Sculpture〉의 원형이 된 회화 작품입니다.\n얼굴 윗부분을 사선으로 잘라 낸 구도와 한쪽만 드러난 눈, 한쪽으로 흩날리는 머리카락이 조각의 형태로 그대로 이어졌습니다.",
-      "slug": "head-of-torso",
-      "photoRows": [
-        {
-          "id": "rowc-s-1793710000000-hdtr1-a1",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1793710000000-hdtr1-a1",
-              "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "53 × 45 cm",
-      "spec2": "Oil on canvas",
-      "edition": "Unique work",
-      "priceKrw": "3000000",
-      "priceUsd": "2300",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true,
-      "descriptionEn": "Head of Torso (2023), a painting from the Torso series, is the prototype for Torso Sculpture. Its composition, with the upper part of the face cut away on a diagonal, a single visible eye, and hair streaming to one side, carries over directly into the form of the sculpture.",
-      "original": {
-        "workId": "w8",
-        "image": "./images/w8-p-1793700133210-78ufc-b266298e.jpg"
-      },
-      "hidden": false,
-      "rowAlone": true
-    },
-    {
-      "id": "s-1791254521015-hvrt2",
-      "title": "Torso 10",
-      "author": "",
-      "authorEn": "",
-      "year": "2020",
-      "cover": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
-      "description": "〈Torso 10〉(2020)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
-      "slug": "torso-10",
-      "photoRows": [
-        {
-          "id": "rowc-s-1791254521015-hvrt2-f6aed4",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1791254521015-hvrt2-f6aed4",
-              "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg",
+              "id": "p-1791250680100-izfp2",
+              "image": "./images/s-1790622337229-hzfwn-p-1791250680100-izfp2-c3186632.jpg",
               "caption": ""
             }
           ]
         },
         {
-          "id": "row-1791254541872-gp9m2",
+          "id": "row-1791251444028-g8kfx",
           "cols": 1,
           "photos": [
             {
-              "id": "p-1791254541872-pda97",
-              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
-              "caption": ""
-            }
-          ]
-        }
-      ],
-      "spec1": "162 × 130 cm",
-      "spec2": "Oil on canvas",
-      "edition": "Unique work",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
-      "buyUs": "",
-      "soldOut": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
-      "coverInRows": true,
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787465590493-13mdp-8ddcc532.jpg"
-      },
-      "inquiryOnly": true,
-      "descriptionEn": "Torso 10 (2020) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture."
-    },
-    {
-      "id": "s-1793432663182-q6pra",
-      "title": "Torso 16",
-      "author": "",
-      "authorEn": "",
-      "year": "2023",
-      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
-      "description": "〈Torso 16〉(2023)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
-      "slug": "torso-16",
-      "photoRows": [
-        {
-          "id": "rowc-s-1793432663182-q6pra-y7s6sw",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "pc-s-1793432663182-q6pra-y7s6sw",
-              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
+              "id": "p-1791251444028-l1g4h",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251444028-l1g4h-676177f5.jpg",
               "caption": ""
             }
           ]
         },
         {
-          "id": "row-1793432663183-h0r2h",
+          "id": "row-1791251457999-vpkx7",
           "cols": 1,
           "photos": [
             {
-              "id": "p-1793432663183-lf1tq",
-              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "id": "p-1791251457999-qxo8i",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251457999-qxo8i-1a47f1a0.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251473876-pszny",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251473876-uta43",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251473876-uta43-adee714f.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251487035-8dk71",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251487035-rf31j",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251487035-rf31j-a97217d5.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251502586-s5m7f",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251502586-6ouoe",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251502586-6ouoe-4c59ef8a.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251514181-b60n0",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251514181-v20yu",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251514181-v20yu-ec939d18.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251526936-je21k",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251526936-l3plr",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251526936-l3plr-29841547.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251743315-177bc",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251743315-0z6wh",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251743315-0z6wh-c5588bb2.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791251727130-vntsw",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791251727130-qi27m",
+              "image": "./images/s-1790622337229-hzfwn-p-1791251727130-qi27m-0d43e38e.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "162 × 130 cm",
-      "spec2": "Oil on canvas",
-      "edition": "Unique work",
+      "spec1": "",
+      "spec2": "",
+      "edition": "Out of print",
       "priceKrw": "",
       "priceUsd": "",
       "buyKr": "",
       "buyUs": "",
       "soldOut": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
+      "category": "book",
+      "shipProfile": "book",
       "coverInRows": true,
-      "descriptionEn": "Torso 16 (2023) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
-      "original": {
-        "workId": "w3",
-        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      "author": "이윤성",
+      "year": "",
+      "bookLinks": {
+        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=81889394"
       },
-      "inquiryOnly": true,
-      "hidden": false
+      "rowCols": 5,
+      "bookInfo": {
+        "designer": "신신(신해옥, 신동혁)",
+        "designerEn": "Shin Shin (Hae-ok Shin, Dong-hyeok Shin)",
+        "publisher": "미디어버스",
+        "publisherEn": "Mediabus",
+        "pubDate": "2016-03-20",
+        "pages": "132",
+        "weight": "251g",
+        "size": "165 x 230mm",
+        "isbn13": "9788994027531"
+      },
+      "toc": "NU-FRAME\n9 정현 - 구조의 단면\n23 장승연 - ‘참조’의 하이브리드: 여러 ‘전형성’이 한 기표에 섞일 때\n33 작품 목록\nNU-TYPE\n84 임근준 - 이윤성의 회화에 관한 비평적 메모\n101 작품 목록",
+      "soldOutExempt": true,
+      "storeOnly": true,
+      "authorEn": "Lee Yunsung",
+      "descriptionEn": "Published in conjunction with Lee Yunsung's solo exhibition NU-FRAME at Doosan Gallery Seoul in November 2015. The book presents the Danae series, the core of that exhibition, across a sequence of pages, alongside the Torso series from his 2014 solo exhibition NU-TYPE at Makeshop Art Space. Essays by architect Hyun Jung, Art in Culture editor-in-chief Seung-yeon Jang, and art and design critic Geun-joon Lim offer context for reading the work.",
+      "tocEn": "NU-FRAME\n9 Hyun Jung - The Cross Section of Structure\n23 Seung-yeon Jang - A Hybrid of ‘References’: One Signifier with Multiple ‘Archetypes’\n33 List of Works\nNU-TYPE\n84 Geun-joon Lim - A Critical Note on Paintings by Yunsung Lee\n101 List of Works"
     },
     {
-      "id": "s-1791255439727-qkh2e",
-      "title": "Torso 18",
+      "id": "s-1790625685891-fny4m",
+      "title": "Yunsung Lee The Drawing Book Torso 100",
+      "cover": "./images/s-1790625685891-fny4m-cover-ef271752.jpg",
+      "description": "2019년 8월 22일부터 2020년 3월 11일까지 작가 이윤성이 포스팅한 유튜브 영상을 책으로 옮겼다. 300 × 300픽셀 크기로 그려진 100개의 디지털 드로잉은 전형적인 토르소와 정반대의 프로세스로 완성되었다. 토르소가 오랜 시간에 걸쳐 조각의 일부가 우연히 사라지며 구축된 신화라면, 그의 토르소 드로잉은 수집된 임의의 이미지를 선택적으로 재현해 낸 결과물이다. 이 절대적 크기의 토르소 그림들은 스마트폰, PC, 태블릿 등 여러 디지털 매체에 따라 가변하며 소실된 조각처럼 그 해상도를 잃을 운명이다.\n\n그러나 책의 내부로 옮겨진 이미지들은 웹사이트나 스마트폰에서보다 훨씬 더 커진다. 역설적으로 인쇄된 이미지들은 둘에 비해 고해상도로 전환되는데, 이는 바로 픽셀을 디지털 브러시로 사용했기 때문이다. 그의 말에 따르면 픽셀은 마치 다이아몬드처럼 절대 부술 수 없는 시각화의 최소 단위다. 픽셀은 해상도가 너무나도 낮기에 오히려 해상도라는 한계성에 구애받지 않는다.\n\n또한 점묘화가 그림으로부터 멀어질수록 그 경계와 색상이 흐릿해지는 것과 달리, 픽셀 묘법은 그림과 멀어지면 질서정연한 형상을 드러내고 그림과 가까워지면 오히려 혼돈의 비극을 드러낸다. 그렇기에 오랜 시간 동안 그림을 바라볼수록 그 표상과 의미를 깊이 있게 읽어 내는 기쁨이 있다. 작가 이윤성에게 픽셀은 당대 디자이너와 예술가가 마주한 환경과 개념, 그리고 실천의 불완전성을 상징한다.",
+      "slug": "the-drawing-book-torso-100",
+      "photoRows": [
+        {
+          "id": "row-1791363745255-88pb0",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791363745255-bkn1z",
+              "image": "./images/s-1790625685891-fny4m-cover-ef271752.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791363681137-k7ev8",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791363681137-voold",
+              "image": "./images/s-1790625685891-fny4m-p-1791363681137-voold-4d18f7e6.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791363762100-hjami",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791363762100-ayik6",
+              "image": "./images/s-1790625685891-fny4m-p-1791363762100-ayik6-d3386b1d.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791363774193-iapss",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791363774193-mz9hi",
+              "image": "./images/s-1790625685891-fny4m-p-1791363774193-mz9hi-00d1ae4d.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "Signed and numbered, edition of 500",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "https://smartstore.naver.com/superellipse/products/5284300799",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "book",
+      "shipProfile": "book",
+      "coverInRows": true,
+      "hidden": false,
+      "author": "이윤성 저 / 정현 글",
+      "year": "",
+      "bookLinks": {
+        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=403792908&start=pcsearch_auto",
+        "kyobo": "https://product.kyobobook.co.kr/detail/S000221573142",
+        "yes24": "https://www.yes24.com/product/goods/197707434"
+      },
+      "soldOutExempt": true,
+      "bookInfo": {
+        "publisher": "초타원형",
+        "pubDate": "2020-12-24",
+        "isbn13": "9791196685294",
+        "publisherEn": "Superellipse"
+      },
+      "toc": "7 서문\n9 그림",
+      "rowCols": 5,
+      "authorEn": "Lee Yunsung",
+      "storeOnly": true,
+      "tocEn": "7 Preface\n9 Drawings",
+      "descriptionEn": "This book collects the drawings Lee Yunsung posted as YouTube videos between August 22, 2019 and March 11, 2020. The 100 digital drawings, each made at 300 × 300 pixels, were completed through a process opposite to that of the classical torso. If the torso is a myth built over centuries as parts of a sculpture were lost by chance, his torso drawings are the result of selectively reproducing images he had gathered at random. Fixed at this absolute size, the drawings shift with every digital device—smartphone, PC, tablet—and are destined, like the lost fragments of a sculpture, to lose their resolution.\n\nMoved into the book, however, the images become far larger than on a website or a phone. Paradoxically, in print they become high-resolution images, precisely because the pixel served as the digital brush. In the artist's words, the pixel is the smallest unit of visualization, as unbreakable as a diamond. Its resolution is so low that it is no longer bound by the limits of resolution.\n\nAnd unlike pointillism, whose edges and colors blur as the viewer steps back, pixel drawing reveals an orderly figure from a distance and the tragedy of chaos up close. The longer one looks, the deeper the reading of its image and meaning becomes. For Lee Yunsung, the pixel stands for the incompleteness of the conditions, concepts, and practices that the designers and artists of his time confront."
+    },
+    {
+      "id": "s-1790623636184-2mg2s",
+      "title": "불완전한",
+      "cover": "./images/s-1790623636184-2mg2s-cover.jpg",
+      "description": "만화를 통해 동시대 시각 문화를 탐구하는 이윤성 작가의 개인전 《불완전한 Fragmentary》를 담은 도록이다. 작가는 신작 <라오콘 Laocoon> 연작 19점과 <십계 The Ten Commandments>에서 헬레니즘 조각 최고의 걸작으로 불리는 “라오콘(Laocoon)” 상을 회화로 재해석한다. 조각상의 유실된 조각들은 나눠진 캔버스로, 남성은 여성으로, 뱀은 검은색 배경으로 바뀌며 고전의 이미지를 불완전한 형태로 다시 구성한다.\n\n검은색 공간에 놓인 인물과 만화의 말풍선, 페이지를 나누는 선과 칸은 흰색 물감으로 재현된다. 말풍선 속 문자는 사라지고 만화 기호들은 회화 속 형태이자 사물이 되어 캐릭터를 앞에서 가리거나 뒤로 숨으며 공간감을 만든다. 세 명의 라오콘에 따라 나눠진 세 개의 패널과 여기서 파생된 얼굴들을 조합하고, 인물까지 모두 비워진 <십계>를 따로 배치해 만화와 회화의 형식을 탐구한다.\n\n동 제목으로 출판된 전시 도록에는 김명찬의 사진, 안종민의 타입 운용, 초타원형의 렌더링이 더해졌다. 흑백의 1도 인쇄, 유광의 표지, 칸 처리된 이미지와 글씨, 접이식 브로마이드화 된 연작 등 만화의 다양한 특징을 연상시키도록 제작했다. 전시의 기록을 실제 작업과 같은 형식으로 반복하며, 3차원의 전시를 2차원에 압축하고 분해·해체하는 만화적 구성의 확장을 보여준다.",
+      "slug": "fragmentary",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623636184-2mg2s-5234cd",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623636184-2mg2s-5234cd",
+              "image": "./images/s-1790623636184-2mg2s-cover.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1790623906918-oxlu1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790623906918-brt2b",
+              "image": "./images/s-1790623636184-2mg2s-p-1790623906918-brt2b-4ed602d5.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1790624773469-fzlgu",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1790624773469-2us7y",
+              "image": "./images/s-1790623636184-2mg2s-p-1790624773469-2us7y.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791042292439-e8zu3",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791042292439-hehbi",
+              "image": "./images/s-1790623636184-2mg2s-p-1791042292439-hehbi-ff534e7f.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-1791042307063-u7wi6",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "p-1791042307063-1rsjc",
+              "image": "./images/s-1790623636184-2mg2s-p-1791042307063-1rsjc-c7abfde6.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "30000",
+      "priceUsd": "25",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "book",
+      "shipProfile": "book",
+      "coverInRows": true,
+      "bookLinks": {
+        "aladin": "https://aladin.kr/p/6hVMP",
+        "kyobo": "http://product.kyobobook.co.kr/detail/S000221509649",
+        "yes24": "https://www.yes24.com/product/goods/197212669"
+      },
+      "rowCols": 5,
+      "titleEn": "Fragmentary",
+      "year": "",
+      "original": {
+        "workId": "w7",
+        "image": "./images/w7-cover.jpg"
+      },
+      "toc": "1. 완전히 충전된 공간, 불완전한 창문\n2. 시점과 렌더링\n3. 전시전경\n4. 작품\n5. 기쁨을 박제하라",
+      "author": "이윤성",
+      "soldOutExempt": true,
+      "bookInfo": {
+        "publisher": "초타원형",
+        "pubDate": "2024-10-01",
+        "pages": "45",
+        "weight": "86g",
+        "size": "188 x 262 mm",
+        "isbn13": "9791197318948",
+        "publisherEn": "Superellipse"
+      },
+      "storeOnly": true,
+      "intlDirect": true,
+      "authorEn": "Lee Yunsung",
+      "descriptionEn": "The catalogue of Lee Yunsung's solo exhibition Fragmentary, in which the artist explores contemporary visual culture through comics. In nineteen new works from the Laocoon series and in The Ten Commandments, he reinterprets in paint the Laocoon group, often called the greatest masterpiece of Hellenistic sculpture. The statue's lost fragments become divided canvases, the men become women, and the serpents become the black ground, reassembling a classical image in fragmentary form.\n\nFigures set in black space, speech balloons, and the lines and panels that divide a comics page are all rendered in white paint. The words inside the balloons have disappeared; the signs of comics become forms and objects within the painting, covering the characters from the front or slipping behind them to create a sense of space. Three panels divided along the three Laocoon figures are combined with the faces derived from them, while The Ten Commandments, emptied even of figures, is placed apart, exploring the forms of both comics and painting.\n\nThe catalogue, published under the same title, adds photography by Myungchan Kim, typography by Jongmin Ahn, and renderings by Superellipse. One-color black printing, a glossy cover, images and text set in panels, and the series reproduced as a fold-out poster all recall the conventions of comics. By repeating the record of the exhibition in the same form as the work itself, the book compresses a three-dimensional exhibition into two dimensions, taking it apart and extending the comic-book structure.",
+      "tocEn": "1. A Fully Charged Space, a Fragmentary Window\n2. Viewpoint and Rendering\n3. Installation Views\n4. Works\n5. Taxidermy the Joy"
+    },
+    {
+      "id": "s-1791045430344-i1yns",
+      "title": "네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유 2000-2020년 한국 대중문화의 초상",
+      "year": "",
+      "cover": "./images/s-1791045430344-i1yns-cover-0c6403ef.jpg",
+      "description": "초타원형은 대중문화에 직간접적으로 영향받은 한국 작가의 작품을 지면에 전시하는 출판 프로젝트 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』을 선보인다. 책은 2020년 5월 2일부터 6월 2일까지 서울 아트딜라이트에서 열렸던 동명의 전시 [네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상]의 변역이자 확장이다.\n\n초타원형은 한국 대중문화 기반의 예술을 널리 알리고자 대중문화와 가깝게 또는 느슨하게 연결된 작가들을 책이라는 전시장으로 불러들인다. 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』에는 작가 214명의 작품 856점─참여 작가 스스로 4점의 작품을 선정했다.─이 시간 순서에 따라 위계 없이 전개된다.\n\n이 책은 작품 정보만으로 구성된 「INDEX」와 작품 이미지만으로 구성된 「IMAGES」를 축으로, 김일림, 윤원화, 최정윤, 콘노 유키의 글로 구성된 「TEXTS」와 아트딜라이트에서의 전시 기록으로 구성된 「YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000-2020」가 먼 과거 혹은 미래의 영상처럼 스쳐 지나는 구성을 취하고 있다.\n\n그래픽 디자이너 듀오 신신은 20㎠ 정사각형의 지면에 856개의 작품 컬러 이미지, 4개 국어(영, 중, 일, 한)로 수록된 4개의 글, 46개의 전시 흑백 이미지 등을 담고, 여러 지질의 종이, 컬러/흑백/UV/박 인쇄, 양장, 1쌍의 가름끈 등 다양한 인쇄와 제책 기법을 사용하여 『네/아니오/좋아요/싫어요/사랑/혐오/댓글/공유: 2000-2020년 한국 대중문화의 초상』이라는 또 하나의 작품을 완성했다.",
+      "slug": "yes-no-like-dislike-2000-2020",
+      "photoRows": [],
+      "spec1": "",
+      "spec2": "",
+      "edition": "",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "https://smartstore.naver.com/superellipse/products/5459751884",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 5,
+      "category": "book",
+      "shipProfile": "book",
+      "coverInRows": true,
+      "bookLinks": {
+        "aladin": "https://www.aladin.co.kr/shop/wproduct.aspx?itemid=269438738&srsltid=au7gw4vyzu6aknyavy5hc3b8oglaoryh8osfiba3hlz19_5zxulgq3s8",
+        "kyobo": "https://product.kyobobook.co.kr/detail/S000001985736",
+        "yes24": "https://www.yes24.com/product/goods/99309397"
+      },
+      "soldOutExempt": true,
+      "author": "정현/윤원화/김일림/최정윤/콘노유키",
+      "bookInfo": {
+        "publisher": "초타원형",
+        "pubDate": "2020-12-24",
+        "pages": "1,026",
+        "size": "200 x 200 x 70mm",
+        "isbn13": "9791197318900",
+        "publisherEn": "Superellipse"
+      },
+      "toc": "INDEX III\nINTRO 1\nIMAGES 5\nTEXTS 863\nYES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000-2020 921\nOUTRO 983\nINDEX XXI\n\n\n- IMAGE: 502, 갑빠오, 강덕현, 강성모, 고경호, 권경엽, 권서영, 권순영, 권신홍, 권오상, 그라플렉스, 김근예, 김동희, 김들내, 김민석, 김민수, 김민조, 김바르, 김사람피플, 김선우, 김수언, 김수연, 김승현, 김승환, 김시훈, 김쎌, 김예지, 김용오, 김윤경, 김인, 김재용, 김정태, 김지용, 김진우, 김진우, 김진희, 김태중, 김태협, 김한나, 김한샘, 김허앵, 김현주, 김홍식, 김화현, 김희수, 김희주, 나난, 나무13, 남궁호, 남진우, 낸시랭, 노5브라, 다솔, 더리치, 도파민최, 돈선필, 디렌리, 람한, 레오다브, 로렌정, 루이스 루이즈, 마우즈, 무드잔잔, 문경의, 문해진, 미스터 텅, 박경률, 박광수, 박상혁, 박성옥, 박용식, 박정인, 박정혁, 박준우, 박지은, 박지혜, 박채린, 박필교, 박현정, 박형지, 박혜진, 배즈본, 백경호, 백정록, 백향목, 베리킴, 변대용, 브이에스포스, 뿌리, 사박, 상아하, 서기원, 서미지, 성병희, 성태진, 소냐리, 손우정, 손종준, 송송, 송승은, 송진욱, 스피브, 시치, 식스코인, 신모래, 신선미, 신혜미, 심래정, 쎄미, 아댈라리, 아트놈, 안드레, 알타임 죠, 양승욱, 에잇에이엠, 엔조, 여동헌, 연여인, 염승일, 오리지널펑크, 오조, 오주안, 오희원, 옥승철, 왕선정, 왕에스더, 요요진, 울타리, 유리, 유신애, 유용선, 유의정, 유재연, 유창창, 유해나, 윤성광, 윤향로, 윤혜진, 음하영, 이니그마13, 이대규, 이대철, 이동기, 이동훈, 이미미, 이빈소연, 이사라, 이수경, 이아람, 이예린, 이용은, 이윤성, 이재선, 이준원, 이지은, 이지현, 이지현, 이진희, 이학민, 이해강, 이형구, 이효선, 임수빈, 장경린, 장미경, 장수지, 장승근, 장종완, 장콸, 잭슨홍, 전희수, 정수, 정수정, 정태훈, 정필환, 정희민, 제이드, 조강남, 조광훈, 조예솔, 조원경, 조이킴, 주슬아, 주재범, 주지오, 준, 지비데이, 지알원, 지용호, 차영석, 최수진, 최잔, 최지욱, 최지원, 추미림, 콰야, 쿤 작가, 투디, 표재덕, 하승완, 하행은, 한선우, 한승훈, 함성주, 허수연, 현남, 호진, 홍경택, 홍인숙, 홍준기, 홍지민, 홍채연, 황재원, 황현호.\n- TEXT: 김일림, 윤원화, 정현, 최정윤, 콘노 유키.\n- PHOTO: 김경태, 팝콘.",
+      "storeOnly": true,
+      "titleEn": "YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: The Portrait of Korean Pop Culture 2000–2020",
+      "authorEn": "Various authors",
+      "descriptionEn": "Superellipse presents YES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: The Portrait of Korean Pop Culture 2000–2020, a publishing project that exhibits on the page the work of Korean artists influenced, directly or indirectly, by popular culture. The book is a translation and expansion of the exhibition of the same title held at Art Delight, Seoul, from May 2 to June 2, 2020.\n\nTo bring art rooted in Korean popular culture to a wider audience, Superellipse invites artists closely or loosely connected to it into the book as an exhibition space. It presents 856 works by 214 artists, each of whom chose four of their own works, in chronological order and without hierarchy. The book is built around INDEX, made up only of information on the works, and IMAGES, made up only of images, with TEXTS, four essays, and a record of the exhibition at Art Delight passing by like footage from a distant past or future.\n\nThe graphic design duo Shin Shin set 856 color images, four essays in four languages (English, Chinese, Japanese, and Korean), and 46 black-and-white installation views on 20 cm square pages, using a range of papers, color, black-and-white, UV and foil printing, a hardcover binding, and a pair of ribbon markers to make the book a work in its own right.",
+      "tocEn": "INDEX III\nINTRO 1\nIMAGES 5\nTEXTS 863\nYES/NO/LIKE/DISLIKE/LOVE/HATE/REPLY/SHARE: THE PORTRAIT OF KOREAN POP CULTURE 2000–2020 921\nOUTRO 983\nINDEX XXI\n\n- IMAGE: 214 artists, including Lee Yunsung (full list in the Korean version)\n- TEXT: 5 writers\n- PHOTO: 2 photographers"
+    },
+    {
+      "id": "s-1790622121911-1dl7b",
+      "title": "At the Last Judgment – Art Poster (2021)",
+      "cover": "./images/s-1790622121911-1dl7b-cover.jpg",
+      "description": "2010년작 〈At the Last Judgment〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "at-the-last-judgment-art-poster",
+      "photoRows": [
+        {
+          "id": "row-1791037713967-own1",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790622121911-1dl7b-943a5c",
+              "image": "./images/s-1790622121911-1dl7b-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "65 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13778974146",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790622121911-1dl7b-cover.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of At the Last Judgment (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790625359809-iikzl",
+      "title": "Torso 14 – Art Poster (2026)",
+      "cover": "./images/w3-p-1787592985513-1e47g.jpg",
+      "description": "2023년작 〈Torso 14〉의 포스터 에디션입니다.",
+      "slug": "torso-14-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790625359809-iikzl-5b8dcc",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790625359809-iikzl-5b8dcc",
+              "image": "./images/w3-p-1787592985513-1e47g.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823652511",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "hidden": false,
+      "descriptionEn": "A poster edition of Torso 14 (2023).",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787592985513-1e47g.jpg"
+      },
       "author": "",
       "authorEn": "",
-      "year": "2024",
+      "year": "",
+      "rowCols": 5
+    },
+    {
+      "id": "s-1792489319925-j2ldo",
+      "title": "Danae Pink – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
+      "description": "2015년작 〈Danae Pink〉의 포스터 에디션입니다.",
+      "slug": "danae-pink-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1792489319925-j2ldo-aa0940",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1792489319925-j2ldo-aa0940",
+              "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "67 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823687158",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": false,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of Danae Pink (2015).",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386116559-njryh-d88de96f.jpg"
+      }
+    },
+    {
+      "id": "s-1792489302614-f6t8c",
+      "title": "Danae Blue – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
+      "description": "2015년작 〈Danae Blue〉의 포스터 에디션입니다.",
+      "slug": "danae-blue-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1792489302614-f6t8c-6338d6",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1792489302614-f6t8c-6338d6",
+              "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "67 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823685432",
+      "buyUs": "",
+      "soldOut": false,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "hidden": false,
+      "descriptionEn": "A poster edition of Danae Blue (2015).",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386073364-ivnzw-235d1960.jpg"
+      }
+    },
+    {
+      "id": "s-1790624996756-xnr3j",
+      "title": "Torso 10 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465590493-13mdp.jpg",
+      "description": "2020년작 〈Torso 10〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-10-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624996756-xnr3j-cf7e55",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624996756-xnr3j-cf7e55",
+              "image": "./images/w3-p-1787465590493-13mdp.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782620391",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465590493-13mdp.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 10 (2020), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1792489283261-h6hij",
+      "title": "The Annunciation (central panels) – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
+      "description": "2014년작 〈The Annunciation〉의 가운데 두 폭을 담은 포스터 에디션입니다.\n원작은 캔버스 네 개로 이루어진 작품입니다.",
+      "slug": "annunciation-central-panels-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1792489283261-h6hij-e9edc8",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1792489283261-h6hij-e9edc8",
+              "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "50 × 67 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823683948",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": false,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of the two central panels of The Annunciation (2014), a four-panel work.",
+      "original": {
+        "workId": "w2",
+        "image": "./images/w2-p-1787384904997-pmnc5-347378a8.jpg"
+      }
+    },
+    {
+      "id": "s-1790625378337-5f333",
+      "title": "Torso 18 – Art Poster (2026)",
       "cover": "./images/w3-p-1787593029600-54rtv.jpg",
-      "description": "〈Torso 18〉(2024)는 2012년부터 이어 온 〈Torso〉 연작의 작품입니다.\n팔과 다리가 없는 고전 조각의 토르소를 바탕으로, 애니메이션과 서브컬처의 시각 언어로 다시 그린 연작입니다.",
-      "slug": "torso-18",
+      "description": "2024년작 〈Torso 18〉의 포스터 에디션입니다.",
+      "slug": "torso-18-art-poster",
       "photoRows": [
         {
-          "id": "rowc-s-1791255439727-qkh2e-4c698c",
+          "id": "rowc-s-1790625378337-5f333-4c698c",
           "cols": 1,
           "photos": [
             {
-              "id": "pc-s-1791255439727-qkh2e-4c698c",
-              "image": "./images/w3-p-1787593029600-54rtv.jpg",
-              "caption": ""
-            }
-          ]
-        },
-        {
-          "id": "row-1791255503620-pjlbz",
-          "cols": 1,
-          "photos": [
-            {
-              "id": "p-1791255503620-gogx5",
-              "image": "./images/w3-p-1787385568997-d3x3y.jpg",
+              "id": "pc-s-1790625378337-5f333-4c698c",
+              "image": "./images/s-1790625378337-5f333-pc-s-1790625378337-5f333-4c698c-071eaf07.jpg",
               "caption": ""
             }
           ]
         }
       ],
-      "spec1": "162 × 130 cm",
-      "spec2": "Oil on canvas",
-      "edition": "Unique work",
-      "priceKrw": "",
-      "priceUsd": "",
-      "buyKr": "",
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823681654",
       "buyUs": "",
       "soldOut": false,
-      "rowCols": 3,
-      "category": "original",
-      "shipProfile": "flat",
+      "category": "edition",
+      "shipProfile": "tube",
       "coverInRows": true,
-      "descriptionEn": "Torso 18 (2024) is a painting from the Torso series, begun in 2012. The series takes the torso of classical sculpture, a body without arms or legs, as its basis and redraws it in the visual language of animation and subculture.",
+      "hidden": false,
+      "descriptionEn": "A poster edition of Torso 18 (2024).",
       "original": {
         "workId": "w3",
         "image": "./images/w3-p-1787593029600-54rtv.jpg"
       },
-      "inquiryOnly": true
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
+    },
+    {
+      "id": "s-1792489341201-sstw5",
+      "title": "Danae Yellow – Art Poster (2026)",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "cover": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
+      "description": "2015년작 〈Danae Yellow〉의 포스터 에디션입니다.",
+      "slug": "danae-yellow-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1792489341201-sstw5-97cb6b",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1792489341201-sstw5-97cb6b",
+              "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "67 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823686516",
+      "buyUs": "",
+      "soldOut": false,
+      "hidden": false,
+      "rowCols": 5,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of Danae Yellow (2015).",
+      "original": {
+        "workId": "w4",
+        "image": "./images/w4-p-1787386143046-9mpzm-7bf53e97.jpg"
+      }
+    },
+    {
+      "id": "s-1790623028311-pavmn",
+      "title": "Cronos – Art Poster (2021)",
+      "cover": "./images/s-1790623028311-pavmn-cover.jpg",
+      "description": "2011년작 〈Cronos〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "cronos-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623028311-pavmn-774362",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623028311-pavmn-774362",
+              "image": "./images/s-1790623028311-pavmn-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "72 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782589448",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790623028311-pavmn-cover.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Cronos (2011), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790624948985-2vkw6",
+      "title": "Torso 04 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787464596295-v0chu.jpg",
+      "description": "2013년작 〈Torso 04〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-04-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624948985-2vkw6-2a4bc7",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624948985-2vkw6-2a4bc7",
+              "image": "./images/w3-p-1787464596295-v0chu.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782613789",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "rowCols": 5,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464596295-v0chu.jpg"
+      },
+      "descriptionEn": "A poster edition of Torso 04 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790624955390-u6892",
+      "title": "Torso 05 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465231077-kzbxf.jpg",
+      "description": "2013년작 〈Torso 05〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-05-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624955390-u6892-ddf1e3",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624955390-u6892-ddf1e3",
+              "image": "./images/w3-p-1787465231077-kzbxf.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782617575",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465231077-kzbxf.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 05 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790624985943-p3hci",
+      "title": "Torso 08 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465388849-mlqhg.jpg",
+      "description": "2014년작 〈Torso 08〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-08-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624985943-p3hci-7d3a81",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624985943-p3hci-7d3a81",
+              "image": "./images/w3-p-1787465388849-mlqhg.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618900",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465388849-mlqhg.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 08 (2014), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790625066588-fg7t1",
+      "title": "Torso  – Art Poster (2026)",
+      "cover": "./images/s-1790625066588-fg7t1-cover.jpg",
+      "description": "2011년작 〈Torso〉의 포스터 에디션입니다.",
+      "slug": "torso-digital-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790625066588-fg7t1-646eab",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790625066588-fg7t1-646eab",
+              "image": "./images/s-1790625066588-fg7t1-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823682661",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "descriptionEn": "A poster edition of Torso (2011).",
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790625066588-fg7t1-cover.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
+    },
+    {
+      "id": "s-1790623313493-6o5cs",
+      "title": "Laocoon – Art Poster (2021)",
+      "cover": "./images/s-1790623313493-6o5cs-cover.jpg",
+      "description": "2010년작 〈Laocoon〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "laocoon-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790623313493-6o5cs-305ea5",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790623313493-6o5cs-305ea5",
+              "image": "./images/s-1790623313493-6o5cs-cover.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "50 × 64 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782577593",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w-1790628203345-iya5b",
+        "image": "./images/s-1790623313493-6o5cs-cover.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Laocoon (2010), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790625368565-3m6dk",
+      "title": "Torso 16 – Art Poster (2026)",
+      "cover": "./images/w3-p-1787593009615-p5ijq.jpg",
+      "description": "2023년작 〈Torso 16〉의 포스터 에디션입니다.",
+      "slug": "torso-16-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790625368565-3m6dk-95aaa9",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790625368565-3m6dk-95aaa9",
+              "image": "./images/w3-p-1787593009615-p5ijq.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13823669415",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "hidden": false,
+      "descriptionEn": "A poster edition of Torso 16 (2023).",
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787593009615-p5ijq.jpg"
+      },
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "rowCols": 5
+    },
+    {
+      "id": "s-1790624929547-vad9p",
+      "title": "Torso 01 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787464242838-rtg3t.jpg",
+      "description": "2012년작 〈Torso 01〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-01-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624929547-vad9p-c0d5ec",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624929547-vad9p-c0d5ec",
+              "image": "./images/w3-p-1787464242838-rtg3t.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782591835",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464242838-rtg3t.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 01 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "author": "",
+      "authorEn": "",
+      "year": ""
+    },
+    {
+      "id": "s-1790624943259-8qxbq",
+      "title": "Torso 03 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787464576033-gohda.jpg",
+      "description": "2013년작 〈Torso 03〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-03-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624943259-8qxbq-6b8600",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624943259-8qxbq-6b8600",
+              "image": "./images/w3-p-1787464576033-gohda.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782612254",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464576033-gohda.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 03 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "author": "",
+      "authorEn": "",
+      "year": ""
+    },
+    {
+      "id": "s-1790624960499-n3l60",
+      "title": "Torso 06 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465287347-94coq.jpg",
+      "description": "2016년작 〈Torso 06〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-06-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624960499-n3l60-15a490",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624960499-n3l60-15a490",
+              "image": "./images/w3-p-1787465287347-94coq.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618201",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465287347-94coq-491fd6a7.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 06 (2016), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again."
+    },
+    {
+      "id": "s-1790624935331-clud2",
+      "title": "Torso 02 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787464255794-6t81e.jpg",
+      "description": "2012년작 〈Torso 02〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-02-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624935331-clud2-bebe2d",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624935331-clud2-bebe2d",
+              "image": "./images/w3-p-1787464255794-6t81e.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782597255",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787464255794-6t81e.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 02 (2012), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "author": "",
+      "authorEn": "",
+      "year": "",
+      "hidden": true
+    },
+    {
+      "id": "s-1790624979413-mam24",
+      "title": "Torso 07 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465325523-bc1ig.jpg",
+      "description": "2013년작 〈Torso 07〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-07-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624979413-mam24-dd62e7",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624979413-mam24-dd62e7",
+              "image": "./images/w3-p-1787465325523-bc1ig.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782618547",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465325523-bc1ig.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 07 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "hidden": true
+    },
+    {
+      "id": "s-1790624990900-t4w8b",
+      "title": "Torso 09 – Art Poster (2021)",
+      "cover": "./images/w3-p-1787465558711-9hdxm.jpg",
+      "description": "2013년작 〈Torso 09〉의 포스터 에디션입니다.\n2021년 한정 에디션으로 처음 제작·출시되었으며,\n웹사이트 리뉴얼을 맞아 남은 수량을 다시 선보입니다.",
+      "slug": "torso-09-art-poster",
+      "photoRows": [
+        {
+          "id": "rowc-s-1790624990900-t4w8b-b1d839",
+          "cols": 1,
+          "photos": [
+            {
+              "id": "pc-s-1790624990900-t4w8b-b1d839",
+              "image": "./images/w3-p-1787465558711-9hdxm.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "spec1": "62 × 50 cm",
+      "spec2": "Digital Print on Paper",
+      "edition": "Signed and numbered, edition of 300",
+      "priceKrw": "35000",
+      "priceUsd": "30",
+      "buyKr": "https://smartstore.naver.com/leeyunsung/products/13782619353",
+      "buyUs": "",
+      "soldOut": false,
+      "category": "edition",
+      "shipProfile": "tube",
+      "coverInRows": true,
+      "original": {
+        "workId": "w3",
+        "image": "./images/w3-p-1787465558711-9hdxm.jpg"
+      },
+      "rowCols": 5,
+      "descriptionEn": "A poster edition of Torso 09 (2013), originally produced and released as a limited edition in 2021. To mark the relaunch of the website, the remaining prints are now available once again.",
+      "hidden": true
+    },
+    {
+      "id": "s-shared-poster-examples",
+      "title": "포스터 예시 이미지 묶음 (공통)",
+      "slug": "poster-examples",
+      "sharedSet": true,
+      "category": "edition",
+      "shipProfile": "tube",
+      "priceKrw": "",
+      "priceUsd": "",
+      "buyKr": "",
+      "buyUs": "",
+      "soldOut": false,
+      "coverInRows": true,
+      "cover": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
+      "photoRows": [
+        {
+          "id": "row-shared-1",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036333099-7e7l2",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036333099-7e7l2-ce959e0c.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036503744-xah0d",
+              "image": "./images/s-shared-poster-examples-p-1791036503744-xah0d-db154bcd.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036420664-mcnnw",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036420664-mcnnw-edc09822.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-2",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036491554-su6qb",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036491554-su6qb-0c866cd6.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036341181-sa2ox",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036341181-sa2ox-f3020c07.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036462670-acxve",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036462670-acxve-badcff6c.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-3",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036406164-xq8bl",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036406164-xq8bl-efc3c568.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1790755593306-p3id9",
+              "image": "./images/s-1790622121911-1dl7b-p-1790755593306-p3id9-83e60f8a.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036497483-lxppd",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036497483-lxppd-00aebda4.jpg",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "id": "row-shared-4",
+          "cols": 3,
+          "photos": [
+            {
+              "id": "p-1791036414633-g3ltc",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036414633-g3ltc-fe8e2a52.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036469737-40iyf",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036469737-40iyf-921ffa8f.jpg",
+              "caption": ""
+            },
+            {
+              "id": "p-1791036478669-zx5q9",
+              "image": "./images/s-1790622121911-1dl7b-p-1791036478669-zx5q9-0cb53136.jpg",
+              "caption": ""
+            }
+          ]
+        }
+      ],
+      "edition": "",
+      "spec1": "",
+      "spec2": ""
     }
   ],
   "shopApi": "https://leeyunsung-shop.nu-layer.workers.dev",
