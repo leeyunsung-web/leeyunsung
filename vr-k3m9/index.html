@@ -238,6 +238,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <label for="k-vig"><span>화면 가장자리 어둡게 <output id="o-vig"></output></span><input type="range" id="k-vig" min="0" max="1" step="0.02"></label>
       <label for="k-grain"><span>필름 입자 <output id="o-grain"></output></span><input type="range" id="k-grain" min="0" max="1" step="0.02"></label>
       <label for="k-weave"><span>캔버스 천 질감 <output id="o-weave"></output></span><input type="range" id="k-weave" min="0" max="1" step="0.02"></label>
+      <label for="k-spot"><span>스포트 조명 세기 (마스터 시험) <output id="o-spot"></output></span><input type="range" id="k-spot" min="0" max="2" step="0.02"></label>
+      <label for="k-spotDim"><span>스포트 밖 벽 어둡게 <output id="o-spotDim"></output></span><input type="range" id="k-spotDim" min="0" max="0.4" step="0.01"></label>
     </div>
     <div class="grp"><div class="gt">공간·보기</div>
       <div class="pick" role="group" aria-label="시야" id="fovPick">
@@ -449,6 +451,7 @@ function trimBandSides(s){const P=s.pos.slice();
   for(let f=0;f<P.length/12;f++){const ys=[0,1,2,3].map(k=>P[(f*4+k)*3+1]), lo=Math.min(...ys), hi=Math.max(...ys); if(hi-lo<1e-4) continue;
     for(let k=0;k<4;k++){const v=f*4+k; if(P[v*3+1]-lo<1e-4) P[v*3+1]=lo+0.002;}}
   return {...s,pos:P};}
+const WALLDIM=[], CEILDIM=[]; // master preview (2026-11-29): gallery spotlights dim the even ambient light a little so each work sits in its own pool
 for(let s of L.baked){
   if(B2&&/^G[234]?_/.test(s.name)&&!/Pedestal/.test(s.name)) s={...s,img:'bake/'+s.name+'.jpg?v='+B2.v};
   if((s.name.startsWith('G_Wall')||s.name.startsWith('G2_Wall')||s.name.startsWith('G3_Wall')||s.name.startsWith('G4_Wall'))&&false) s=liftWallFoot(s);
@@ -472,11 +475,11 @@ for(let s of L.baked){
       const val=!inside?0.03:horiz?(cy<H-0.01?0.78:0.03):0.94; C.setRGB(val,val*0.997,val*0.99,THREE.SRGBColorSpace);
       for(let k=0;k<4;k++){const v=f*4+k; col[v*3]=C.r; col[v*3+1]=C.g; col[v*3+2]=C.b;}}
     if(/Soffit[FB]$/.test(s.name)) geo.translate(0,-0.0008,0); // keep the overlapping corner faces from flickering
-    geo.setAttribute('color',new THREE.BufferAttribute(col,3)); scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true}))); continue; }
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3)); {const cm=new THREE.MeshBasicMaterial({vertexColors:true}); CEILDIM.push(cm); scene.add(new THREE.Mesh(geo,cm));} continue; }
   const isFloor=/FloorBox$/.test(s.name);
   const m=new THREE.MeshBasicMaterial({map:tex((SMALL&&/^lm_/.test(s.img)?'live/m/':'live/')+s.img),transparent:isFloor,opacity:isFloor?0.80:1}); // phones: half-size light maps (smooth light, no visible change)
   if(s.name.startsWith('G_Wall')||s.name==='G3_WallW'||s.name==='G4_WallW'){ m.polygonOffset=true; m.polygonOffsetFactor=-2; m.polygonOffsetUnits=-12; } // where the two rooms' walls overlap, room 1's wins cleanly (no flicker)
-  const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh);
+  const mesh=new THREE.Mesh(geo,m); if(isFloor){mesh.renderOrder=1; floorMats.push(m);} scene.add(mesh); if(/Wall/.test(s.name)) WALLDIM.push(m);
   if(s.name.startsWith('G_Pedestal')){ // rebuilt below as a resizable box shaded like its bake
     geo.computeBoundingBox(); const bb=geo.boundingBox, c=bb.getCenter(new THREE.Vector3());
     scene.remove(mesh); peds[s.name]=makePedestal(s.name,c.x,c.z,bb.max.x-bb.min.x,bb.max.z-bb.min.z); }
@@ -683,6 +686,71 @@ for(const [k,wd] of Object.entries(WALLS)){
   wd.gap0=wd.units.length>1?Math.round(((hi.p[wd.u]+hi.p.w/2)-(lo.p[wd.u]-lo.p.w/2)-sumW)/(wd.units.length-1)*100)/100:0.6;
   wd.sumW=sumW;
 }
+
+// ---------- master preview (2026-11-29): gallery spotlights ----------
+// one adjustable recessed spot in the ceiling band for each work (wide works get several), aimed at the canvas from about 30 degrees.
+// The pool it throws on the wall is worked out per pixel (cone + distance + angle of incidence), so it follows the works when they are moved or raised.
+const SPOT=(()=>{ if(!M3) return null;
+  const g=new THREE.Group(); scene.add(g);
+  const DOORS=[L.door,L.door2,L.door23,L.door34].filter(Boolean);
+  const inDoorB=(bx,by)=>DOORS.some(d=>bx>d.x0-0.03&&bx<d.x1+0.03&&by>d.y0-0.03&&by<d.y1+0.03);
+  const skip=(bx,by)=>(L.hall&&bx>L.hall.x0-0.2&&bx<L.hall.x1+0.2&&by>L.hall.y0-0.2&&by<L.hall.y1+0.2)||(L.shop&&bx>L.shop.x0-0.2&&bx<L.shop.x1+0.2&&by>L.shop.y0-0.2&&by<L.shop.y1+0.2);
+  const CEIL=4.15, OUT=0.52; // underside of the ceiling band, and how far out from the wall the spot sits (the band is 0.8 m wide)
+  const uS={value:1}, uWarm={value:new THREE.Color(1.0,0.955,0.885)};
+  const poolMat=()=>new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-20,toneMapped:false,
+    uniforms:{uL:{value:[]},uN:{value:0},uS,uWarm,uK:{value:0.3},uSz:{value:new THREE.Vector2(1,1)}},
+    vertexShader:'varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+    fragmentShader:`#define NL 4
+      uniform vec4 uL[NL*2]; uniform int uN; uniform float uS,uK; uniform vec3 uWarm; uniform vec2 uSz; varying vec3 vP;
+      float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+      void main(){ float E=0.0; vec2 P=vP.xy*uSz; vec2 eg=min(uSz*0.5-abs(P),vec2(9.0)); float edge=smoothstep(0.0,0.35,eg.x)*smoothstep(0.0,0.05,eg.y);
+        for(int i=0;i<NL;i++){ if(i>=uN) break; vec3 S=uL[i*2].xyz; float I=uL[i*2].w; vec3 A=uL[i*2+1].xyz; float co=uL[i*2+1].w;
+          vec3 v=vec3(P,0.0)-S; float r=length(v); vec3 d=v/r; float ca=dot(d,A);
+          float t=clamp((ca-co)/(1.0-co),0.0,1.0); float cone=smoothstep(0.0,0.30,t)*(0.6+0.4*t); // soft edge, a little brighter in the middle of the beam
+          E+=I*cone*(S.z/r)/(r*r); }
+        E=edge*E/(1.0+E*0.6); // roll off so the top of the scallop never burns out
+        gl_FragColor=vec4(uWarm*E*uK*uS+(h(gl_FragCoord.xy)-0.5)/255.0,1.0); }`});
+  // fixture: white trim ring flush with the band, dark baffle, a small bright lens turned toward the work
+  const trimM=new THREE.MeshBasicMaterial({color:new THREE.Color().setRGB(0.80,0.798,0.79,THREE.SRGBColorSpace)}), bafM=new THREE.MeshBasicMaterial({color:0x1a1a1a}), lensM=new THREE.MeshBasicMaterial({color:new THREE.Color(3.2,3.0,2.7),toneMapped:false});
+  const trimG=new THREE.CircleGeometry(0.075,28), bafG=new THREE.CylinderGeometry(0.055,0.05,0.07,24,1,true), lensG=new THREE.CircleGeometry(0.03,20);
+  const fix=()=>{ const o=new THREE.Group(); const t=new THREE.Mesh(trimG,trimM); t.rotation.x=Math.PI/2; t.position.y=-0.001; o.add(t);
+    const b=new THREE.Mesh(bafG,bafM); b.position.y=0.03; o.add(b); const bc=new THREE.Mesh(new THREE.CircleGeometry(0.055,24),bafM); bc.rotation.x=Math.PI/2; bc.position.y=0.064; o.add(bc);
+    const lp=new THREE.Group(); lp.position.y=0.035; const l=new THREE.Mesh(lensG,lensM); l.rotation.x=Math.PI/2; l.position.y=0.0; lp.add(l); o.add(lp); o.userData.lp=lp; return o; };
+  const items=[]; // one per work unit on a wall
+  for(const [k,wd] of Object.entries(WALLS)) for(const U of wd.units){ const p0=U.items[0].p; if(skip(p0.x,p0.y)) continue;
+    const n=Math.min(4,Math.max(1,Math.round(U.w/1.6)));
+    const pm=new THREE.Mesh(new THREE.PlaneGeometry(1,1),poolMat()); pm.renderOrder=-1; g.add(pm);
+    const fx=[]; for(let i=0;i<n;i++){ const f=fix(); g.add(f); fx.push(f); }
+    items.push({U,wd,n,pm,fx}); }
+  const _q=new THREE.Quaternion(), _e=new THREE.Euler(), _v=new THREE.Vector3(), _a=new THREE.Vector3();
+  function sync(){ if(!tune) return; const on=(+tune.spot||0)>0.001; g.visible=on;
+    const dim=on?1-(+tune.spotDim||0):1;
+    for(const m of WALLDIM) m.color.setScalar(dim); for(const m of CEILDIM) m.color.setScalar(1-(1-dim)*0.7);
+    for(const w of works) if(w.mat&&!skip(w.p.x,w.p.y)) w.mat.color.setScalar(on?0.93+0.07*Math.min(1,+tune.spot):0.93);
+    if(!on) return; uS.value=+tune.spot;
+    for(const it of items){ const ms=it.U.items.map(w=>w.mesh), m0=ms[0], ry=m0.rotation.y;
+      const ax=new THREE.Vector3(Math.cos(ry),0,-Math.sin(ry)), nz=new THREE.Vector3(Math.sin(ry),0,Math.cos(ry)); // along the wall (local +x), out of the wall (local +z)
+      let lo=1e9,hi=-1e9,yb=1e9,yt=-1e9; const c0=m0.position.clone();
+      for(const w of it.U.items){ const d=_v.copy(w.mesh.position).sub(c0).dot(ax); lo=Math.min(lo,d-w.p.w/2); hi=Math.max(hi,d+w.p.w/2); yb=Math.min(yb,w.mesh.position.y-w.p.h/2); yt=Math.max(yt,w.mesh.position.y+w.p.h/2); }
+      const wallP=c0.clone().addScaledVector(nz,-0.0195); // the wall surface behind the canvas
+      // how far the pool may run along the wall before a doorway or a corner
+      const reach=(sgn,from)=>{ let s=0; for(;s<1.6;s+=0.05){ const q=wallP.clone().addScaledVector(ax,from+sgn*(s+0.05)), qi=q.clone().addScaledVector(nz,-0.06), qo=q.clone().addScaledVector(nz,0.06);
+          if(inDoorB(qi.x,-qi.z)||!inRoom3(qo.x,qo.z,0.01)) break; } return s; };
+      const ex0=reach(-1,lo), ex1=reach(1,hi), x0=lo-ex0, x1=hi+ex1;
+      it.pm.position.copy(wallP).addScaledVector(ax,(x0+x1)/2).setY(CEIL/2); it.pm.rotation.set(0,ry,0); it.pm.scale.set(x1-x0,CEIL,1); it.pm.material.uniforms.uSz.value.set(x1-x0,CEIL);
+      const ox=-(x0+x1)/2, U=it.pm.material.uniforms; U.uN.value=it.n; U.uK.value=0.16; const Lv=[];
+      const cy=(yb+yt)/2, th=yt-yb, tw=(hi-lo)/it.n;
+      for(let i=0;i<it.n;i++){ const tx=lo+(i+0.5)*tw, ty=cy+th*0.04; // aim a touch above centre
+        const S=new THREE.Vector3(tx+ox,CEIL-0.04-CEIL/2,OUT), T=new THREE.Vector3(tx+ox,ty-CEIL/2,0), A=T.clone().sub(S).normalize();
+        let mx=0; for(const [cx2,cy2] of [[tx-tw/2,yb],[tx+tw/2,yb],[tx-tw/2,yt],[tx+tw/2,yt]]){ const d=new THREE.Vector3(cx2+ox,cy2-CEIL/2,0).sub(S).normalize(); mx=Math.max(mx,Math.acos(Math.min(1,d.dot(A)))); }
+        const half=Math.min(0.95,mx*1.06+0.06), rT=T.distanceTo(S), I=rT*rT/(S.z/rT); // normalised: 1.0 at the aim point
+        Lv.push(new THREE.Vector4(S.x,S.y,S.z,I),new THREE.Vector4(A.x,A.y,A.z,Math.cos(half)));
+        const f=it.fx[i]; f.position.copy(wallP).addScaledVector(ax,tx).addScaledVector(nz,OUT).setY(CEIL);
+        const tw3=wallP.clone().addScaledVector(ax,tx).setY(ty); f.userData.lp.lookAt(tw3); f.userData.lp.rotateX(-Math.PI/2); }
+      while(Lv.length<8) Lv.push(new THREE.Vector4());
+      U.uL.value=Lv; }
+    dirty=true; }
+  return {sync,items}; })();
 
 // environment for the sculptures
 const env=tl.load('live/env.jpg'); env.mapping=THREE.EquirectangularReflectionMapping; env.colorSpace=THREE.SRGBColorSpace;
@@ -1135,6 +1203,7 @@ const DEF={contrast:1.9,bright:0.82,refl:1.0,gloss:0.04,medH:MED_BASE,
   medX:L.medusa.x,medY:L.medusa.y,medR:0,torX:0,torY:-3.5,torR:0,msel:'M',
   mobH:1.5,mobSpin:true,mwX:8.1,mwY:-4.4,mwR:0,mwW:0.36,mwD:0.36,mwH:1.0, mgdX:10.1,mgdY:-4.4,mgdR:0,mgdW:0.36,mgdD:0.36,mgdH:1.0, hallWall:'white',hallSky:'clear',pyHN:1.55,pyHS:1.55,pyHE:1.55};
 for(const [k,wd] of Object.entries(WALLS)){DEF['gap'+k]=wd.gap0; DEF['sh'+k]=0;}
+DEF.spot=1; DEF.spotDim=0.16; // master preview: gallery spotlights
 Object.assign(DEF,{"contrast": 2.05, "bright": 0.82, "refl": 1, "gloss": 0.04, "medH": 1.2, "medW": 0.36, "medD": 0.36, "torW": 0.5, "torD": 0.5, "tContrast": 1.65, "tBright": 1, "tDark": 0.1, "tRough": 0.15, "torH": 1.2, "paintY": 1.55, "shadow": 1.5, "sculptOff": 0, "floor": 0.24, "fov": 45, "bob": true, "wsel": "F", "res": 0.9, "aa": 2, "pblur": 1, "rblur": 0.66, "sshadow": 0.24, "ao": 0.6, "bloom": 0.1, "vig": 0.14, "grain": 0.3, "weave": 1, "medX": 0, "medY": 4.85, "medR": 0, "torX": 0, "torY": -3.5, "torR": 0, "msel": "M", "gapF": 0.55, "shF": 0, "gapB": 1.1, "shB": 0, "gapL": 0.6, "shL": 0, "gapR": 0.6, "shR": 0}); // starting point = the settings saved to the homepage on 2026-11-03
 const KEY='medusa-room-tune-v2';
 let tune={...DEF};
@@ -1145,7 +1214,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); const st=+(localStora
   else{const o=JSON.parse(localStorage.getItem('medusa-room-tune-v1')||'null'); // keep earlier settings, but start the torso on the new matte look
     if(o){delete o.tContrast; delete o.tBright; delete o.tRough; tune={...DEF,...o};}}}catch(e){}
 for(const k of ['med','tor','mw','mgd']) if(!inRoom3(tune[k+'X'],-tune[k+'Y'],0.2)){tune[k+'X']=DEF[k+'X']; tune[k+'Y']=DEF[k+'Y'];} // a sculpture saved outside today's rooms goes back to its place
-const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','portH','figBlur','figUp','figNear','helloY','bubY','bubS'].map(k=>[k,'k-'+k]));
+const ui=Object.fromEntries(['contrast','bright','refl','gloss','medH','medW','medD','torW','torD','tContrast','tBright','tWhite','tDark','tDeepR','tDeep','tRough','torH','paintY','shadow','sculptOff','floor','res','aa','pblur','rblur','sshadow','ao','bloom','vig','grain','weave','mobH','portH','spot','spotDim','figBlur','figUp','figNear','helloY','bubY','bubS'].map(k=>[k,'k-'+k]));
 function layoutWall(k){
   const wd=WALLS[k], gap=tune['gap'+k], total=wd.sumW+gap*(wd.units.length-1);
   const lim=Math.max(0,(wd.len-0.6)/2-total/2); tune['sh'+k]=Math.max(-lim,Math.min(lim,tune['sh'+k]));
@@ -1212,6 +1281,7 @@ function applyTune(){
   uBlur.value=tune.rblur; uAO.value=tune.ao; bloom.enabled=tune.bloom>0.001; bloom.strength=tune.bloom*1.2;
   lens.uniforms.uVig.value=tune.vig; lens.uniforms.uGrain.value=tune.grain; uWeave.value=tune.weave;
   for(const [k,id] of Object.entries(ui)){PD.getElementById(id).value=tune[k]; PD.getElementById('o-'+k).textContent=(k==='sculptOff'&&tune[k]>0?'+':'')+(+tune[k]).toFixed(2);}
+  if(SPOT) SPOT.sync();
   lastCap='~'; dirty=true; saveTune(false);}
 function saveTune(manual){let ok=true; try{localStorage.setItem(KEY,JSON.stringify(tune)); localStorage.setItem(KEY+'-at',String(Date.now()));}catch(e){ok=false;}
   const el=PD.getElementById('saveInfo'); if(!el) return; const t=new Date(); const hm=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0')+':'+String(t.getSeconds()).padStart(2,'0');
